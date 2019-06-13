@@ -1,2 +1,68 @@
-<div>
+<div class="container">
+  <div class="container">
+    <button class="btn" (click)="onImport()">Import</button>
+  </div>
+  <div class="container">
+    <ul class="nav nav-pills">
+      <li class="nav-item" *ngFor="let tab of tabs">
+        <a class="nav-link" (click)="changeDisplayTable(tab.id)">{{tab.name}}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="container">
+    <form #formElement="ngForm" (ngSubmit)="navigation(formElement.value)">
+      <div class="container">
+        <label class="container">Line Graph
+          <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
+                 (change)="checkboxSelect($event)">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="container">
+        <label class="container">Scatter Graph
+          <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
+                 (change)="checkboxSelect($event)">
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="container" *ngIf="!show">
+        <div class="container">
+          <label>Y:</label>
+          <select name="ySpinner" [(ngModel)]="temp" (change)="ySelector($event)">
+            <option *ngFor="let column of columnsXandY" value="{{column.identifier}}">{{column.name}}</option>
+          </select>
+          <h4 *ngFor="let selector of ySelectorList" (click)="removeFromListLine($event)">{{selector.name}}</h4>
+        </div>
+        <div class="container">
+          <label>Time Series:</label>
+          <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)">
+            <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
+          </select>
+          <h4 *ngFor="let selector of timeSeriesLineElement">{{selector.name}}</h4>
+        </div>
+      </div>
+      <div class="container" *ngIf="show">
+        <div class="container">
+          <label>Y:</label>
+          <select name="ySpinner" [(ngModel)]="temp" (change)="ySelector($event)">
+            <option *ngFor="let column of columnsXandY" value="{{column.identifier}}">{{column.name}}</option>
+          </select>
+          <h4 *ngFor="let selector of ySelectorList" (click)="removeFromListLine($event)">{{selector.name}}</h4>
+        </div>
+        <div class="container">
+          <label>Time Series:</label>
+          <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)">
+            <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
+          </select>
+          <h4 *ngFor="let selector of timeSeriesLineElement">{{selector.name}}</h4>
+        </div>
+      </div>
+      <div class="container">
+        <button class="btn" type="submit">Show</button>
+      </div>
+    </form>
+  </div>
 </div>

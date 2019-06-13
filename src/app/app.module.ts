@@ -18,17 +18,34 @@ import { WebviewDirective } from './directives/webview.directive';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
+import { ToolHeaderComponent } from './components/tool-header/tool-header.component';
+import { TableDataComponent } from './components/table-data/table-data.component';
+import { PlotLineGraphComponent } from './components/plot-line-graph/plot-line-graph.component';
+import { PlotScatterGraphComponent } from './components/plot-scatter-graph/plot-scatter-graph.component';
+import { ImportDataComponent } from './components/import-data/import-data.component';
+
+
+// Log Tool Imports
+import * as PlotlyJS from 'plotly.js/dist/plotly.js';
+import { PlotlyModule } from 'angular-plotly.js';
+import { AgGridModule } from 'ag-grid-angular';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-
+// Plotly assignment
+PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    WebviewDirective
+    WebviewDirective,
+    ToolHeaderComponent,
+    TableDataComponent,
+    PlotLineGraphComponent,
+    PlotScatterGraphComponent,
+    ImportDataComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +58,10 @@ export function HttpLoaderFactory(http: HttpClient) {
         useFactory: (HttpLoaderFactory),
         deps: [HttpClient]
       }
-    })
+    }),
+    // Log Tool imports
+    PlotlyModule,
+    AgGridModule.withComponents([])
   ],
   providers: [ElectronService],
   bootstrap: [AppComponent]

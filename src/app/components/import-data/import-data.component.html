@@ -1,0 +1,52 @@
+<div class="container">
+  <header class="model-layout__header">Import</header>
+  <div class="form-group file-area">
+    <input type="file" name="images" id="images" required="required" multiple="multiple" (change)="onChange($event)"/>
+    <div class="file-dummy">
+      <div class="success">{{fileName}}</div>
+      <div class="default">Please select some files</div>
+    </div>
+  </div>
+  <table>
+    <tr>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Data Count</th>
+      <th>Number of Columns</th>
+    </tr>
+    <tr>
+      <td>{{start}}</td>
+      <td>{{end}}</td>
+      <td>{{data_count}}</td>
+      <td>{{number_columns}}</td>
+    </tr>
+  </table>
+  <br>
+  <form #formElement="ngForm" (ngSubmit)="submitCheckBox(formElement.value)">
+    <table>
+      <tr>
+        <th>
+          Column Name
+        </th>
+        <th>
+          Rename
+        </th>
+        <th>
+          Data
+        </th>
+        <th>
+          Check box
+        </th>
+      </tr>
+      <tr *ngFor="let head of header; let i = index" [attr.data-index]="i">
+        <td>{{head.name}}</td>
+        <td><input type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
+        <td>{{readFirstRow[i]}}</td>
+        <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
+      </tr>
+    </table>
+    <div class="container">
+      <button class="btn" type="submit">Show</button>
+    </div>
+  </form>
+</div>
