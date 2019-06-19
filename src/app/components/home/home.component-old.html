@@ -1,8 +1,33 @@
-<div style="margin: 0; border: 0; padding:0; width:100%">
-  <div class="row" style="height: 400px; width:100%; margin: 1.5px">
-    <div class="col-sm-3 panel"     style="min-height: 300px; min-width: 300px; margin-bottom: 5px;" >
+<div>
+<div class="upperBox">
+  <div class="container" style="margin-bottom:0; ">
+    <div class="row" style="min-height:40px;">
+      <button class="btn" style="position: absolute; right:15px" (click)="onImport()">Import</button>
       <br>
-      <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> Graph Selection </p>
+    </div>
+
+    <div class="row">
+      <ul class="nav nav-pills">
+        <li class="nav-item" *ngFor="let tab of tabs">
+          <a class="nav-link" (click)="changeDisplayTable(tab.id)"
+             [ngStyle]="{'background-color':sendingValue === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
+                         'border-width'    :sendingValue === tab.id ? '3px': '2px'}"
+          >{{tab.name}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6 panel">
+      <br>
       <form #formElement="ngForm" (ngSubmit)="navigation(formElement.value)">
 
         <!-- radio buttons --------------------------------------------------------------------------->
@@ -29,12 +54,11 @@
         <div class="container" *ngIf="!show">
 
           <div class="row">
-            <div class="col" style="max-width: 50px">
+            <div class="col" style="max-width: 120px">
               <p>Y:</p>
             </div>
             <div class="col">
-              <select name="ySpinner" [(ngModel)]="temp" style="width:100%" multiple>
-                <!--(change)="ySelector($event)"-->
+              <select name="ySpinner" [(ngModel)]="temp"  style="width:100%" multiple> <!--(change)="ySelector($event)"-->
                 <option *ngFor="let column of columnsXandY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
               <p *ngFor="let selector of ySelectorList" (click)="removeFromListLine($event)">{{selector.name}}</p>
@@ -42,7 +66,7 @@
           </div> <!-- spinner 1: Y--->
 
           <div class="row">
-            <div class="col" style="max-width: 50px">
+            <div class="col" style="max-width: 120px">
               <p>X:</p>
             </div>
             <div class="col">
@@ -61,7 +85,7 @@
 
         <div class="container" *ngIf="show">
           <div class="row">
-            <div class="col" style="max-width: 50px">
+            <div class="col" style="max-width: 120px">
               <p>Y:</p>
             </div>
             <div class="col">
@@ -72,11 +96,11 @@
             </div>
           </div><!-- spinner 1: Y--->
           <div class="row">
-            <div class="col" style="max-width: 50px">
+            <div class="col" style="max-width: 120px">
               <p style="font-size:16px; text-align:right">Time Series:</p>
             </div>
             <div class="col">
-              <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)">
+              <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)" >
                 <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
               </select>
             </div>
@@ -96,46 +120,19 @@
         <br>
       </form>
     </div>
-    <div class="col-sm-7 upperBox"  style="min-height: 300px; min-width: 350px ;">
+    <div class="col-sm-3  panel"></div>
+    <div class="col panel"></div>
+  </div>
+</div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col panel" style="min-height: 800px;">
 
-      <div class="container" style="margin-bottom:0; ">
-        <div class="row" style="min-height:40px;">
-          <button class="btn" style="position: absolute; right:15px" (click)="onImport()">Import</button>
-          <br>
-        </div>
-
-        <div class="row">
-          <ul class="nav nav-pills">
-            <li class="nav-item" *ngFor="let tab of tabs">
-              <a class="nav-link" (click)="changeDisplayTable(tab.id)"
-                 [ngStyle]="{'background-color':sendingValue === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
-                         'border-width'    :sendingValue === tab.id ? '3px': '2px'}"
-              >{{tab.name}}</a>
-            </li>
-          </ul>
-        </div>
       </div>
 
-      <div class="container">
-        <router-outlet></router-outlet>
-      </div>
 
     </div>
-    <div class="col panel" style="height: 175%; width:100%">
-      <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> HELP panel </p>
-    </div>
   </div>
-
-  <div class="row" style="width:100%; margin: 1.5px">
-    <div class="col-sm-3 panel" style="min-height: 150px; min-width: 300px; margin-bottom: 5px"></div>
-    <div class="col-sm-7 upperBox" style="min-height: 300px; min-width: 350px; height:100%"> </div>
-  </div>
-
-  <!-- Not sure how to do space filler here-->
-  <div class="row" style="height:100%; margin: 1.5px">
-    <div class="col panel" style="margin: 1.5px; height:200px "></div>
-  </div>
-
 </div>
 <!-- OLD as in I did NOT change any of this
 <div class="container">

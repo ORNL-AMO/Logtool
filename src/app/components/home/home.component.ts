@@ -169,6 +169,7 @@ export class HomeComponent implements OnInit {
 
   //Unchanged
   ySelector(event) {
+
     this.ySelectorList.push({
       name: this.columnsXandY[event.target.options.selectedIndex].name,
       value: event.target.value
