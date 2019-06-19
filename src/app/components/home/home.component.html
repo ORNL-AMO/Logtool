@@ -1,6 +1,6 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
-  <div class="row" style="height: 400px; width:100%; margin: 1.5px">
-    <div class="col-sm-3 panel"     style="min-height: 300px; min-width: 300px; margin-bottom: 5px;" >
+  <div class="row" style="height: 400px;">
+    <div class="col-sm-3 panel col1"     style="min-height: 300px;  height:100%;" >
       <br>
       <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> Graph Selection </p>
       <form #formElement="ngForm" (ngSubmit)="navigation(formElement.value)">
@@ -96,10 +96,11 @@
         <br>
       </form>
     </div>
-    <div class="col-sm-7 upperBox"  style="min-height: 300px; min-width: 350px ;">
+    <div class="col-sm-7 panel col2"     style="min-height: 300px;  height:100%;">
 
       <div class="container" style="margin-bottom:0; ">
         <div class="row" style="min-height:40px;">
+          <p>Import Section</p>
           <button class="btn" style="position: absolute; right:15px" (click)="onImport()">Import</button>
           <br>
         </div>
@@ -121,19 +122,25 @@
       </div>
 
     </div>
-    <div class="col panel" style="height: 175%; width:100%">
+    <div class="col panel" style="height: 212.5%; width:100%">
       <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> HELP panel </p>
     </div>
   </div>
 
-  <div class="row" style="width:100%; margin: 1.5px">
-    <div class="col-sm-3 panel" style="min-height: 150px; min-width: 300px; margin-bottom: 5px"></div>
-    <div class="col-sm-7 upperBox" style="min-height: 300px; min-width: 350px; height:100%"> </div>
+  <div class="row" style="height: 300px;">
+    <div class="col-sm-3 panel col1"    style="min-height: 150px;  height:100%">
+      <p> Day Type </p>
+    </div>
+    <div class="col-sm-7 panel col2"    style="min-height: 300px;  height:150%">
+      <p> Graph Stuff </p>
+    </div>
   </div>
 
   <!-- Not sure how to do space filler here-->
-  <div class="row" style="height:100%; margin: 1.5px">
-    <div class="col panel" style="margin: 1.5px; height:200px "></div>
+  <div class="row">
+    <div class="col-sm-3 panel col1" style=" height:150px; ">
+      <p> Analytics </p>
+    </div>
   </div>
 
 </div>

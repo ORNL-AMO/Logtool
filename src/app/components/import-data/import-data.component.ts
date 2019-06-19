@@ -20,12 +20,13 @@ export class ImportDataComponent implements OnInit {
   number_columns;
   readFirstRow: any;
   fileCsvRead = [];
-
+   filled: boolean;
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {
   }
 
   ngOnInit() {
     this.fileName = 'Please select a file to upload';
+    this.filled = false;
   }
 
   onChange(event) {
@@ -69,6 +70,7 @@ export class ImportDataComponent implements OnInit {
       me.data_count = me.fileContent.length;
       me.number_columns = me.header.length;
     };
+    this.filled=true;
   }
 
   submitCheckBox(formData) {

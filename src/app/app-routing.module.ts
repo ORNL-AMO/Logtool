@@ -12,7 +12,7 @@ const routes: Routes = [
       children: [
         {
           path: 'table-data',
-          component: TableDataComponent,
+          component: TableDataComponent
         }]
     },
   {
