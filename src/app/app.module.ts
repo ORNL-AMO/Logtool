@@ -23,12 +23,13 @@ import { TableDataComponent } from './components/table-data/table-data.component
 import { PlotLineGraphComponent } from './components/plot-line-graph/plot-line-graph.component';
 import { PlotScatterGraphComponent } from './components/plot-scatter-graph/plot-scatter-graph.component';
 import { ImportDataComponent } from './components/import-data/import-data.component';
-
+import {BsModalService, ModalModule} from 'ngx-bootstrap';
 
 // Log Tool Imports
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 import { PlotlyModule } from 'angular-plotly.js';
 import { AgGridModule } from 'ag-grid-angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -47,6 +48,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotScatterGraphComponent,
     ImportDataComponent
   ],
+  entryComponents: [ImportDataComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -61,7 +63,9 @@ PlotlyModule.plotlyjs = PlotlyJS;
     }),
     // Log Tool imports
     PlotlyModule,
-    AgGridModule.withComponents([])
+    AgGridModule.withComponents([]),
+    BrowserAnimationsModule,
+    ModalModule.forRoot(),
   ],
   providers: [ElectronService],
   bootstrap: [AppComponent]

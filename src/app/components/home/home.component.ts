@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ImportDataComponent } from '../import-data/import-data.component';
 import { IndexFileStoreService } from '../../providers/index-file-store.service';
 import { RouteDataTransferService } from '../../providers/route-data-transfer.service';
+import {BsModalRef, BsModalService, ModalModule, ModalDirective } from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-home',
@@ -20,10 +21,11 @@ export class HomeComponent implements OnInit {
   ySelectorList: any = [];
   timeSeriesLineElement: any = [];
   temp: any;
+  bsModalRef: BsModalRef;
 
-  constructor(private router: Router, private indexFileStore: IndexFileStoreService, private routeDataTransfer: RouteDataTransferService) {
+  constructor(private router: Router, private indexFileStore: IndexFileStoreService, private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
   }
-
+  // Unchanged
   ngOnInit() {
     this.dataFromDialog = [];
     this.columnsXandY = [];
@@ -73,12 +75,17 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  // Changed? or needs to be;
   onImport() {
-    /*this.dataFromDialog = [];
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
+    this.bsModalRef.content.closeBtnName = 'Close';
+
+
+    this.dataFromDialog = [];
     this.columnsXandY = [];
     this.timeSeriesY = [];
-    // const dialogRef = this.dialog.open(ImportDataComponent);
-    dialogRef.afterClosed().subscribe(() => {
+     //const dialogRef = this.dialog.open(ImportDataComponent);
+    this.modalService.onHide.subscribe(() => {
       this.indexFileStore.viewDataDB().then(result => {
         this.dataFromDialog = result;
         this.tabs = [];
@@ -117,9 +124,10 @@ export class HomeComponent implements OnInit {
           });
         });
       });
-    });*/
+    });
   }
 
+  //Unchanged
   navigation(formData) {
     if (formData.graph === '' || formData.graph === undefined) {
       alert('Please select Graph type');
@@ -138,6 +146,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //Unchanged
   changeDisplayTable(value) {
     this.router.navigateByUrl('/table-data', {skipLocationChange: true}).then(() => {
       this.sendingValue = value;
@@ -149,6 +158,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  //Unchanged
   checkboxSelect(event) {
     if (event.target.value === 'line_graph') {
       this.show = true;
@@ -157,6 +167,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //Unchanged
   ySelector(event) {
     this.ySelectorList.push({
       name: this.columnsXandY[event.target.options.selectedIndex].name,
@@ -164,6 +175,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  //Unchanged
   removeFromListLine(event) {
     for (let i = 0; i < this.ySelectorList.length; i++) {
       if (this.ySelectorList[i].name === event.target.innerText) {
@@ -181,6 +193,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  //Unchanged
   timeSeriesLineY(event) {
     this.timeSeriesLineElement.pop();
     this.timeSeriesLineElement.push({

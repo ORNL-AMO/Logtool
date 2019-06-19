@@ -1,12 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import * as d3 from 'd3';
+import {BsModalRef, BsModalService, ModalDirective, ModalModule} from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-import-data',
   templateUrl: './import-data.component.html',
-  styleUrls: ['./import-data.component.scss']
+  styleUrls: ['./import-data.component.scss'],
+  encapsulation: ViewEncapsulation.None,   //THIS IS IMPORTANT FOR READING THE SCSS
 })
+
 export class ImportDataComponent implements OnInit {
   fileName: any;
   fileContent: any = '';
@@ -18,7 +21,7 @@ export class ImportDataComponent implements OnInit {
   readFirstRow: any;
   fileCsvRead = [];
 
-  constructor(private indexFileStore: IndexFileStoreService) {
+  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {
   }
 
   ngOnInit() {
@@ -109,4 +112,7 @@ export class ImportDataComponent implements OnInit {
   columnNameChange(event) {
     console.log(event);
   }
+
+
+
 }

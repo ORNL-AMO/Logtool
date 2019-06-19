@@ -1,3 +1,111 @@
+<!-- may have to rework line graph section-->
+<!-- row renaming is not implimented -->
+
+<div class="container-fluid header" style="background-color: darkseagreen">
+  <div class="row" style="top:20px;">
+    <div class="col-sm-6" style="text-align:left;">
+      <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
+    </div>
+    <div class="col-sm-6" style="text-align: right">
+      <button type="button" class="close pull-right" aria-label="Close" style="padding-right: 15px; padding-top: 15px;"
+              (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="form-group file-area">
+
+
+        <div class="file-dummy">
+          <input type="file" name="images" id="images" required="required" multiple="multiple"
+                 (change)="onChange($event)"/>
+          <div class="success" *ngIf="filled">{{fileName}}</div>
+          <div class="default" *ngIf="!filled">Click to Upload a File</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="row" *ngIf="filled">
+  <div class="col" style="padding-right:-10px">
+    <button (click)="applyRename()" class="float-right">Rename</button>
+  </div>
+
+  <div class="col" style="padding-right:0">
+    <input id="ailis_box" type="text" class="float-left">
+  </div>
+</div>
+
+<br>
+
+<!--data display && row renaming-->
+
+<table id="metaData" *ngIf="filled" style="border:thick">
+
+  <tr>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Number of Samples</th>
+    <th>Columns per Sample</th>
+  </tr>
+  <tr>
+    <td>{{start}}</td>
+    <td>{{end}}</td>
+    <td>{{data_count}}</td>
+    <td>{{number_columns}}</td>
+  </tr>
+</table>
+<br>
+
+<form #formElement="ngForm" id="form1" (ngSubmit)="submitCheckBox(formElement.value)" style="padding-bottom: 50px;"
+      *ngIf="filled">
+  <table style="border-radius: 32px">
+    <colgroup>
+      <col/>
+    </colgroup>
+    <tr>
+      <th>
+        Column Name
+      </th>
+      <th>
+        Rename (Optional)
+      </th>
+      <th>
+        First Sample
+      </th>
+      <th>
+        Selected
+      </th>
+    </tr>
+    <tr *ngFor="let head of header; let i = index" [attr.data-index]="i">
+      <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
+      <td><input type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
+      <td>{{readFirstRow[i]}}</td>
+      <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
+    </tr>
+  </table>
+</form>
+<div class="container-fluid" *ngIf="filled">
+  <div class="row">
+    <button form="form1" type="submit" style="position: relative; left:30%; bottom: 10px ">Show</button>
+    <button style="position:absolute; right:0;" (click)="close()" style="position: relative; left:60%; bottom: 10px">
+      Cancel
+    </button>
+
+  </div>
+
+
+</div>
+
+
+<!-- original form-
 <div class="container">
   <header class="model-layout__header">Import</header>
   <div class="form-group file-area">
@@ -50,3 +158,5 @@
     </div>
   </form>
 </div>
+-->
+
