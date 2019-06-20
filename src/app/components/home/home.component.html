@@ -8,16 +8,14 @@
         <!--Radio Buttons-------------------------------------------------------------------------------->
         <div class="row">
           <div class="col">
-            <label class="container"> &nbsp; Line Graph
-              <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
-                     (change)="checkboxSelect($event)">
+            <label class="selectable"> &nbsp;  &nbsp;Line Graph
+              <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph" (change)="checkboxSelect($event)">
               <span class="checkmark"></span>
-
             </label>
           </div>
 
           <div class="col">
-            <label class="container"> &nbsp; Scatter Graph
+            <label class="selectable"> &nbsp;  &nbsp;Scatter Graph
               <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
               <span class="checkmark"></span>
@@ -26,7 +24,7 @@
         </div>
         <!------------------------------------------------------------------------------------------------>
 
-        <div class="container" style="padding-left:0;" *ngIf="!show">
+        <div class="selectable" style="padding-left:0;" *ngIf="!show">
           <div class="row">
             <div class="col" style="max-width: 50px">
               <p class="picker">Y:</p>
