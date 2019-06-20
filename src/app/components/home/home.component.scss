@@ -118,6 +118,7 @@ button:active {
   margin-right: 5px;
   border-radius: 15px;
   margin: 1.5px;
+  height: 100%;
 }
 
 .upperBox{
@@ -143,7 +144,7 @@ button:active {
 }
 
 p{
-text-align: center;
+  text-align: center;
   font-size: 150%;
   background-color: rgba(100,200,100,.7);
   margin-top: 5px;
@@ -163,5 +164,5 @@ select{
   min-width: 300px;
 }
 .col2{
-  min-width: 350px
+  min-width: 300px;
 }

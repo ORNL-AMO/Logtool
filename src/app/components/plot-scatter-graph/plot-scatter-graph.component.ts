@@ -11,27 +11,24 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 export class PlotScatterGraphComponent implements OnInit {
   graph: any;
   dataInput = [];
-  timeSeries = [];
+  xValue = [];
   yValue = [];
   plotGraph = [];
 
-  constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTrasfer: RouteDataTransferService) {
+  constructor(private data: DataService, private exportCsvService: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
 
   ngOnInit() {
     this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
-    this.timeSeries = this.routeDataTrasfer.storage.timeSeries[0].value.split(',');
-    this.yValue = this.routeDataTrasfer.storage.value;
-    for (let i = 0; i < this.yValue.length; i++) {
-      const value = this.yValue[i].value.split(',');
-      this.plotGraph.push({
-        x: this.dataInput[parseInt(this.timeSeries[0], 10)].dataArrayColumns[parseInt(this.timeSeries[1], 10)],
-        y: this.dataInput[parseInt(value[0], 10)].dataArrayColumns[parseInt(value[1], 10)],
-        type: 'scattergl',
-        mode: 'markers',
-        name: this.yValue[i].name
-      });
-    }
+    console.log(this.routeDataTransfer.storage.x[0].value);
+    this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
+    this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
+    this.plotGraph.push({
+      x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
+      y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
+      type: 'scattergl',
+      mode: 'markers'
+    });
     console.log(this.plotGraph);
     this.graph = {
       data: this.plotGraph,
@@ -47,15 +44,27 @@ export class PlotScatterGraphComponent implements OnInit {
         },
         title: 'Scatter Plot',
         xaxis: {
-          autorange: true,
-          range: ['2013-10-11', '2013-10-25'],
+          title: {
+            text: this.routeDataTransfer.storage.x[0].name,
+            font: {
+              family: 'Courier New, monospace',
+              size: 18,
+              color: '#7f7f7f',
+              style: 'bold'
+            }
+          },
         },
         yaxis: {
-          autorange: true,
-          range: [0.000, 250.000],
-          type: 'linear'
+          title: {
+            text: this.routeDataTransfer.storage.y[0].name,
+            font: {
+              family: 'Courier New, monospace',
+              size: 18,
+              color: '#7f7f7f',
+              style: 'bold'
+            }
+          }
         }
-
       }
     };
   }

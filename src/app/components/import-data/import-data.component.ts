@@ -1,26 +1,31 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import * as d3 from 'd3';
-import {BsModalRef, BsModalService, ModalDirective, ModalModule} from 'ngx-bootstrap';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-import-data',
   templateUrl: './import-data.component.html',
   styleUrls: ['./import-data.component.scss'],
-  encapsulation: ViewEncapsulation.None,   //THIS IS IMPORTANT FOR READING THE SCSS
+  encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
 })
 
 export class ImportDataComponent implements OnInit {
   fileName: any;
   fileContent: any = '';
   header = [];
+  selectedHeader = [];
   start: any;
   end: any;
   data_count: any;
   number_columns;
-  readFirstRow: any;
-  fileCsvRead = [];
-   filled: boolean;
+  readFirstRow = [];
+  interval = '';
+  filled: boolean;
+  dataWithHeader = [];
+  dataArrayColumns = [];
+
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {
   }
 
@@ -33,88 +38,77 @@ export class ImportDataComponent implements OnInit {
     this.fileName = '';
     this.fileContent = '';
     this.header = [];
+    this.selectedHeader = [];
     this.start = '';
     this.end = '';
     this.data_count = '';
     this.number_columns = '';
-    this.readFirstRow = '';
-    this.fileCsvRead = [];
-    const reader = new FileReader();
-    this.fileName = event.target.files[0].name;
-    reader.readAsText(event.target.files[0]);
-    const me = this;
-    reader.onload = function () {
-      me.fileContent = '';
-      me.fileContent = reader.result;
-      me.fileCsvRead = me.fileContent.split('\n');
-      me.fileContent = d3.csvParse(me.fileContent);
-      me.readFirstRow = me.fileCsvRead[1].split(',');
-      for (let i = 0; i < me.fileCsvRead[0].split(',').length; i++) {
-        let check = false;
-        check = !(me.readFirstRow[i] === null || me.readFirstRow[i] === undefined
-          || me.readFirstRow[i] === '' || me.readFirstRow[i] === ' ');
-        me.header.push({
-          id: i,
-          checked: check,
-          name: me.fileCsvRead[0].split(',')[i]
-        });
+    this.readFirstRow = [];
+    this.dataWithHeader = [];
+    this.dataArrayColumns = [];
+    const files = event.target.files;
+    const f = files[0];
+    this.fileName = f.name;
+    const workbook = XLSX.readFile(f.path, {cellDates: true});
+    const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
+    this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+    this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+    this.header = Object.values(this.dataArrayColumns[0]);
+    this.dataArrayColumns.shift();
+    this.readFirstRow = Object.values(this.dataArrayColumns[1]);
+    for (let i = 0; i < this.header.length; i++) {
+      let check = false;
+      check = !(this.readFirstRow[i] === null || this.readFirstRow[i] === undefined
+        || this.readFirstRow[i] === '' || this.readFirstRow[i] === ' ');
+      this.selectedHeader.push({
+        id: i,
+        checked: check,
+        name: this.header[i]
+      });
+    }
+    for (let i = 0; i < this.header.length; i++) {
+      if (isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) {
+        this.start = this.dataArrayColumns[1][i];
+        this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
+        break;
       }
-      me.start = me.fileCsvRead[1].split(',')[1];
-      if (me.fileCsvRead[me.fileCsvRead.length - 1] === '' ||
-        me.fileCsvRead[me.fileCsvRead.length - 1] === undefined
-        || me.fileCsvRead[me.fileCsvRead.length - 1] === null) {
-        me.end = me.fileCsvRead[me.fileCsvRead.length - 2].split(',')[1];
-      } else {
-        me.end = me.fileCsvRead[me.fileCsvRead.length - 1].split(',')[1];
-      }
-      me.data_count = me.fileContent.length;
-      me.number_columns = me.header.length;
-    };
-    this.filled=true;
+    }
+    this.data_count = this.dataArrayColumns.length - 1;
+    this.number_columns = this.header.length;
+    // Interval **************************************************************************************************************************
+    this.filled = true;
   }
 
-  submitCheckBox(formData) {
-    const formDataVariable = [];
-    const dataArrayColumns = [];
-    const selectedHeader = [];
-    for (let i = 0; i < this.header.length; i++) {
-      if (formData[i]) {
-        formDataVariable.push(i);
-      }
-    }
-    for (let z = 0; z < formDataVariable.length; z++) {
-      const temp = [];
-      for (let i = 1; i < this.fileCsvRead.length; i++) {
-        const initialSplit = this.fileCsvRead[i].split(',');
-        for (let j = 0; j < initialSplit.length; j++) {
-          if (j === formDataVariable[z]) {
-            temp.push(initialSplit[j]);
-          }
-        }
-      }
-      dataArrayColumns.push(temp);
-    }
-    for (let i = 0; i < this.header.length; i++) {
-      if (this.header[i].checked) {
-        selectedHeader.push({
-          headerName: this.header[i].name,
-          field: this.header[i].name,
+  submitCheckBox() {
+    const displayHeader = [];
+    for (let i = 0; i < this.selectedHeader.length; i++) {
+      if (this.selectedHeader[i].checked) {
+        displayHeader.push({
+          headerName: this.selectedHeader[i].name,
+          field: this.selectedHeader[i].name,
           editable: true
         });
       }
-
     }
-    this.indexFileStore.addIntoDB(this.fileName, this.fileContent, dataArrayColumns,
-      this.header, selectedHeader, this.fileContent.columns, this.start, this.end, '', this.data_count, this.number_columns, '');
+    const holder = [];
+    for (let i = 0; i < this.selectedHeader.length; i++) {
+      const temp = [];
+      if (this.selectedHeader[i].checked) {
+        for (let j = 0; j < this.data_count; j++) {
+          temp[j] = this.dataArrayColumns[j][i];
+        }
+        holder.push(temp);
+      }
+    }
+    this.dataArrayColumns = holder;
+    this.indexFileStore.addIntoDB(this.fileName, this.dataWithHeader, this.dataArrayColumns,
+      this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, '');
     setTimeout(() => {
-     // this.dialog.close();
+      this.bsModalRef.hide();
       console.log('Send Data');
     }, 2000);
   }
   columnNameChange(event) {
     console.log(event);
   }
-
-
-
 }

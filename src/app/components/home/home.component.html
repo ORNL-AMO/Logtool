@@ -1,19 +1,17 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
   <div class="row" style="height: 400px;">
-    <div class="col-sm-3 panel col1"     style="min-height: 300px;  height:100%;" >
+    <div class="col-sm-3 col-md-3 panel col1">
       <br>
       <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> Graph Selection </p>
-      <form #formElement="ngForm" (ngSubmit)="navigation(formElement.value)">
-
-        <!-- radio buttons --------------------------------------------------------------------------->
+      <form #formElement="ngForm" (ngSubmit)="plotGraphNavigation()">
         <div class="row">
           <div class="col">
             <label class="container"> &nbsp; Line Graph
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
               <span class="checkmark"></span>
-            </label>
 
+            </label>
           </div>
 
           <div class="col">
@@ -27,76 +25,74 @@
         <!------------------------------------------------------------------------------------------------>
 
         <div class="container" *ngIf="!show">
-
           <div class="row">
             <div class="col" style="max-width: 50px">
               <p>Y:</p>
             </div>
             <div class="col">
-              <select name="ySpinner" [(ngModel)]="temp" style="width:100%" multiple>
-                <!--(change)="ySelector($event)"-->
-                <option *ngFor="let column of columnsXandY" value="{{column.identifier}}">{{column.name}}</option>
+              <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)" style="width:100%">
+                <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p *ngFor="let selector of ySelectorList" (click)="removeFromListLine($event)">{{selector.name}}</p>
+              <p *ngFor="let selector of ySelectorListLine" (click)="removeFromListLine($event)">{{selector.name}}</p>
             </div>
           </div> <!-- spinner 1: Y--->
 
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p>X:</p>
+              <p>Time Series:</p>
             </div>
             <div class="col">
-              <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)">
+              <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
                 <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
               </select>
             </div>
-          </div><!-- spinner 2: X -->
+          </div>
           <div class="row">
             <div class="col" style="max-width: 120px"></div>
             <div class="col">
-              <p *ngFor="let selector of timeSeriesLineElement">{{selector.name}}</p>
+              <p *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
             </div>
-          </div><!-- X: select -->
-        </div><!-- scatter graph---------------------------------------------------->
+          </div>
+        </div><!-- Line graph---------------------------------------------------->
 
         <div class="container" *ngIf="show">
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p>Y:</p>
+              <p style="font-size:16px; text-align:right">X:</p>
             </div>
             <div class="col">
-              <select name="ySpinner" [(ngModel)]="temp" (change)="ySelector($event)">
-                <option *ngFor="let column of columnsXandY" value="{{column.identifier}}">{{column.name}}</option>
+              <select name="xSpinner" [(ngModel)]="temp3" (change)="scatterSelector($event)">
+                <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p *ngFor="let selector of ySelectorList" (click)="removeFromListLine($event)">{{selector.name}}</p>
+              <p style="font-size: 10px" *ngFor="let selector of xSelectorListScatter"
+                 title="xSelectorListScatter">{{selector.name}}</p>
             </div>
-          </div><!-- spinner 1: Y--->
+          </div>
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p style="font-size:16px; text-align:right">Time Series:</p>
+              <p style="font-size:16px; text-align:right">Y:</p>
             </div>
             <div class="col">
-              <select name="timeSeriesLine" [(ngModel)]="temp" (change)="timeSeriesLineY($event)">
-                <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
+              <select name="ySpinner" [(ngModel)]="temp4" (change)="scatterSelector($event)">
+                <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
             </div>
-          </div><!-- spinner 2: Time Select--->
+          </div>
           <div class="row">
             <div class="col" style="max-width: 120px"></div>
             <div class="col">
-              <p *ngFor="let selector of timeSeriesLineElement">{{selector.name}}</p>
+              <p *ngFor="let selector of ySelectorListScatter" title="ySelectorListScatter">{{selector.name}}</p>
             </div>
-          </div><!-- Time Select Result -->
-        </div><!-- line graph------------------------------------------------------->
-
+          </div>
+        </div><!-- Scatter graph------------------------------------------------------->
 
         <div class="row">
-          <button class="btn" type="submit" style="margin:auto;">Show</button>
+          <button class="btn" type="submit" style="margin:auto; z-index:10;">Show</button>
         </div>
         <br>
       </form>
     </div>
-    <div class="col-sm-7 panel col2"     style="min-height: 300px;  height:100%;">
+    <div class="col-sm-7 col-md-7 panel col2" style="min-height: 300px;   height:100%;">
 
       <div class="container" style="margin-bottom:0; ">
         <div class="row" style="min-height:40px;">
@@ -109,8 +105,8 @@
           <ul class="nav nav-pills">
             <li class="nav-item" *ngFor="let tab of tabs">
               <a class="nav-link" (click)="changeDisplayTable(tab.id)"
-                 [ngStyle]="{'background-color':sendingValue === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
-                         'border-width'    :sendingValue === tab.id ? '3px': '2px'}"
+                 [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
+                         'border-width'    :activeTab === tab.id ? '3px': '2px'}"
               >{{tab.name}}</a>
             </li>
           </ul>
@@ -122,17 +118,39 @@
       </div>
 
     </div>
-    <div class="col panel" style="height: 212.5%; width:100%">
-      <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> HELP panel </p>
+    <div class="col-sm panel " style="height: 212.5%; width:100%;">
+      <p> HELP panel </p>
+      <!-- SO MUCH Stuff-->
     </div>
   </div>
 
   <div class="row" style="height: 300px;">
-    <div class="col-sm-3 panel col1"    style="min-height: 150px;  height:100%">
-      <p> Day Type </p>
+    <div class="col-sm-3 panel col1" style="min-height: 150px;  height:100%">
+      <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
+        <h2>Day Types</h2>
+        <br>
+        <div class="container">
+          <label>File:</label>
+          <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)">
+            <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
+          </select>
+        </div>
+        <br>
+        <div class="container">
+          <label>File:</label>
+          <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
+            <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
+          </select>
+          <h4 *ngFor="let selector of columnSelectorList" title="columnSelectorList"
+              (click)="removeFromListColumn($event)">{{selector.name}}</h4>
+        </div>
+        <div class="container">
+          <button class="btn" type="submit">Send</button>
+        </div>
+      </form>
     </div>
-    <div class="col-sm-7 panel col2"    style="min-height: 300px;  height:150%">
-      <p> Graph Stuff </p>
+    <div class="col-sm-7 panel col2" style="min-height: 300px;  height:150%">
+      <p>Graph</p>
     </div>
   </div>
 

@@ -15,13 +15,13 @@ export class PlotLineGraphComponent implements OnInit {
   yValue = [];
   plotGraph = [];
 
-  constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTrasfer: RouteDataTransferService) {
+  constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
 
   ngOnInit() {
     this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
-    this.timeSeries = this.routeDataTrasfer.storage.timeSeries[0].value.split(',');
-    this.yValue = this.routeDataTrasfer.storage.value;
+    this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
+    this.yValue = this.routeDataTransfer.storage.value;
     for (let i = 0; i < this.yValue.length; i++) {
       const value = this.yValue[i].value.split(',');
       this.plotGraph.push({
@@ -47,11 +47,9 @@ export class PlotLineGraphComponent implements OnInit {
         title: 'Line Plot',
         xaxis: {
           autorange: true,
-          range: ['2013-10-11', '2013-10-25']
         },
         yaxis: {
           autorange: true,
-          range: [0.000, 250.000],
           type: 'linear'
         }
 
