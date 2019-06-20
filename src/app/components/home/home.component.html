@@ -36,8 +36,8 @@
                 <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
               <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
-              <p style="font-size: 12px; margin:0;" *ngFor="let selector of ySelectorListLine"
-                 (click)="removeFromListLine($event)">{{selector.name}}</p>
+                <p style="font-size: 12px; margin:0;" *ngFor="let selector of ySelectorListLine"
+                   (click)="removeFromListLine($event)">{{selector.name}}</p>
               </div>
             </div>
           </div> <!-- spinner 1: Y--->
@@ -50,15 +50,13 @@
               <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
                 <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
               </select>
+              <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
+                <p class="picker" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col" style="max-width: 120px"></div>
-            <div class="col">
-              <p class="picker" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
-            </div>
-          </div>
-        </div><!-- Line graph------------------------------------------------------------------->
+        </div>
+        <!-- Line graph------------------------------------------------------------------->
 
         <div class="container" style="padding-left:0;" *ngIf="show">
           <div class="row">
@@ -147,7 +145,7 @@
           <h4 *ngFor="let selector of columnSelectorList" title="columnSelectorList"
               (click)="removeFromListColumn($event)">{{selector.name}}</h4>
         </div>
-        <div class="container">
+        <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
           <button class="btn" type="submit">Send</button>
         </div>
       </form>
