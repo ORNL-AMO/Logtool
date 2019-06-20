@@ -23,7 +23,7 @@ import { TableDataComponent } from './components/table-data/table-data.component
 import { PlotLineGraphComponent } from './components/plot-line-graph/plot-line-graph.component';
 import { PlotScatterGraphComponent } from './components/plot-scatter-graph/plot-scatter-graph.component';
 import { ImportDataComponent } from './components/import-data/import-data.component';
-import {BsModalService, ModalModule} from 'ngx-bootstrap';
+import {ModalModule} from 'ngx-bootstrap';
 
 // Log Tool Imports
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';

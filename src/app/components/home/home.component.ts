@@ -235,6 +235,9 @@ export class HomeComponent implements OnInit {
 
 // Custom Function
   populateSpinner() {
+    this.lineListY = [];
+    this.timeSeriesY = [];
+    this.scatterList = [];
     for (let i = 0; i < this.tabs.length; i++) {
       const filename = this.tabs[i].name;
       for (let j = 0; j < this.dataFromDialog[i].selectedHeader.length; j++) {

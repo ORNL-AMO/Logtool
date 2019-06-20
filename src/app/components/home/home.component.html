@@ -2,8 +2,10 @@
   <div class="row" style="height: 400px;">
     <div class="col-sm-3 col-md-3 panel col1">
       <br>
-      <p Style="text-align: center; font-size: 150%; background-color: rgba(100,200,100,.7)"> Graph Selection </p>
-      <form #formElement="ngForm" (ngSubmit)="plotGraphNavigation()">
+      <p> Graph Selection </p>
+      <form #formElement="ngForm" style="max-height:300px" (ngSubmit)="plotGraphNavigation()">
+
+        <!--Radio Buttons-------------------------------------------------------------------------------->
         <div class="row">
           <div class="col">
             <label class="container"> &nbsp; Line Graph
@@ -24,22 +26,25 @@
         </div>
         <!------------------------------------------------------------------------------------------------>
 
-        <div class="container" *ngIf="!show">
+        <div class="container" style="padding-left:0;" *ngIf="!show">
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p>Y:</p>
+              <p class="picker">Y:</p>
             </div>
             <div class="col">
               <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)" style="width:100%">
                 <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p *ngFor="let selector of ySelectorListLine" (click)="removeFromListLine($event)">{{selector.name}}</p>
+              <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
+              <p style="font-size: 12px; margin:0;" *ngFor="let selector of ySelectorListLine"
+                 (click)="removeFromListLine($event)">{{selector.name}}</p>
+              </div>
             </div>
           </div> <!-- spinner 1: Y--->
 
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p>Time Series:</p>
+              <p class="picker">Time Series:</p>
             </div>
             <div class="col">
               <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
@@ -50,40 +55,38 @@
           <div class="row">
             <div class="col" style="max-width: 120px"></div>
             <div class="col">
-              <p *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
+              <p class="picker" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
             </div>
           </div>
-        </div><!-- Line graph---------------------------------------------------->
+        </div><!-- Line graph------------------------------------------------------------------->
 
-        <div class="container" *ngIf="show">
+        <div class="container" style="padding-left:0;" *ngIf="show">
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p style="font-size:16px; text-align:right">X:</p>
+              <p class="picker">X:</p>
             </div>
             <div class="col">
               <select name="xSpinner" [(ngModel)]="temp3" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p style="font-size: 10px" *ngFor="let selector of xSelectorListScatter"
+              <p style="font-size: 12px" *ngFor="let selector of xSelectorListScatter"
                  title="xSelectorListScatter">{{selector.name}}</p>
             </div>
           </div>
           <div class="row">
             <div class="col" style="max-width: 50px">
-              <p style="font-size:16px; text-align:right">Y:</p>
+              <p class="picker">Y:</p>
             </div>
             <div class="col">
               <select name="ySpinner" [(ngModel)]="temp4" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
+              <p style="font-size: 12px" *ngFor="let selector of ySelectorListScatter"
+                 title="ySelectorListScatter">{{selector.name}}</p>
             </div>
           </div>
-          <div class="row">
-            <div class="col" style="max-width: 120px"></div>
-            <div class="col">
-              <p *ngFor="let selector of ySelectorListScatter" title="ySelectorListScatter">{{selector.name}}</p>
-            </div>
-          </div>
+
+
         </div><!-- Scatter graph------------------------------------------------------->
 
         <div class="row">

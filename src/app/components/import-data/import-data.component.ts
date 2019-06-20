@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
-import * as d3 from 'd3';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
 
