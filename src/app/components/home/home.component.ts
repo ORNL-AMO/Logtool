@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit {
     this.fileSelector = [];
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
-      console.log(this.dataFromDialog);
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
         this.tabs = [];
