@@ -31,6 +31,7 @@ import { PlotlyModule } from 'angular-plotly.js';
 import { AgGridModule } from 'ag-grid-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DayTypeCalculationComponent } from './components/day-type-calculation/day-type-calculation.component';
+import { PlotGraphComponent } from './components/plot-graph/plot-graph.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -48,7 +49,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotLineGraphComponent,
     PlotScatterGraphComponent,
     ImportDataComponent,
-    DayTypeCalculationComponent
+    DayTypeCalculationComponent,
+    PlotGraphComponent
   ],
   entryComponents: [ImportDataComponent],
   imports: [
