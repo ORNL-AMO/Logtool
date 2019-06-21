@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit {
   // Modal Ref
   bsModalRef: BsModalRef;
   activeTab;
+  showGraph = false;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
@@ -50,6 +51,7 @@ export class HomeComponent implements OnInit {
     this.timeSeriesY = [];
     this.scatterList = [];
     this.fileSelector = [];
+
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
@@ -62,6 +64,7 @@ export class HomeComponent implements OnInit {
           });
         }
         this.populateSpinner();
+        this.populateGraph();
         this.changeDisplayTable(0);
       }
     }, error => {
@@ -88,7 +91,7 @@ export class HomeComponent implements OnInit {
           });
         }
         this.populateSpinner();
-        this.activeTab = this.dataFromDialog.length - 1;
+        this.populateGraph();
         this.changeDisplayTable(this.dataFromDialog.length - 1);
       });
     });
@@ -100,16 +103,18 @@ export class HomeComponent implements OnInit {
     } else if (this.graph === 'line_graph') {
       this.routeDataTransfer.storage = {
         value: this.ySelectorListLine,
-        timeSeries: this.timeSeriesSelectList
+        timeSeries: this.timeSeriesSelectList,
+        graphType: 'line_graph'
       };
-      this.router.navigate(['/line-graph']);
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
-        y: this.ySelectorListScatter
+        y: this.ySelectorListScatter,
+        graphType: 'scatter_graph'
       };
-      this.router.navigate(['/scatter-graph']);
     }
+    this.showGraph = true;
+    // this.router.navigate(['/plot-graph']);
   }
 
   changeDisplayTable(value) {
@@ -120,6 +125,7 @@ export class HomeComponent implements OnInit {
         }
       });
     });
+    this.activeTab = value;
   }
 
   checkboxSelect(event) {
@@ -262,6 +268,26 @@ export class HomeComponent implements OnInit {
         name: filename,
         identifier: i
       });
+    }
+  }
+  populateGraph() {
+    if (this.graph === '' || this.graph === undefined) {
+      console.log('Inside Graph');
+      this.routeDataTransfer.storage = {
+        graphType: 'empty'
+      };
+    } else if (this.graph === 'line_graph') {
+      this.routeDataTransfer.storage = {
+        value: this.ySelectorListLine,
+        timeSeries: this.timeSeriesSelectList,
+        graphType: 'line_graph'
+      };
+    } else if (this.graph === 'scatter_graph') {
+      this.routeDataTransfer.storage = {
+        x: this.xSelectorListScatter,
+        y: this.ySelectorListScatter,
+        graphType: 'scatter_graph'
+      };
     }
   }
 }
