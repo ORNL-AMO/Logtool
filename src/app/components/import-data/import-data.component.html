@@ -30,10 +30,7 @@
 
 <!-- Rename option -->
 <div class="row justify-content-center" *ngIf="filled">
-  <form action="rename()">
-    <input type="submit" value="rename">
-    <input type="text" placeholder="{{fileName}}" style="text-align: center;">
-  </form>
+    <input type="text"  placeholder="{{fileName}}" (change) = rename($event) style="text-align: center;">
 </div>
 
 <br>
@@ -79,7 +76,7 @@
     </tr>
     <tr *ngFor="let head of selectedHeader; let i = index" [attr.data-index]="i">
       <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
-      <td><input type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
+      <td><input [attr.id]="i" type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
       <td>{{readFirstRow[i]}}</td>
       <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
     </tr>

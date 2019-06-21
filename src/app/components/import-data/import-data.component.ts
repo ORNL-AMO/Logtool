@@ -24,7 +24,8 @@ export class ImportDataComponent implements OnInit {
   filled: boolean;
   dataWithHeader = [];
   dataArrayColumns = [];
-
+  temp = [];
+  alias = '';
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {
   }
 
@@ -76,15 +77,22 @@ export class ImportDataComponent implements OnInit {
     this.number_columns = this.header.length;
     // Interval **************************************************************************************************************************
     this.filled = true;
+    this.temp = this.selectedHeader.map(a => a.name);
+    //console.log(this.temp);
+    this.alias = this.fileName;
   }
 
   submitCheckBox() {
+
+    // console.log('new name', this.alias);
+    // console.log('row names', this.temp);
     const displayHeader = [];
     for (let i = 0; i < this.selectedHeader.length; i++) {
       if (this.selectedHeader[i].checked) {
         displayHeader.push({
-          headerName: this.selectedHeader[i].name,
-          field: this.selectedHeader[i].name,
+
+          headerName: this.temp[i], // this.selectedHeader[i].name, //Rename Stuff
+          field: this.selectedHeader[i].name, //Original Name
           editable: true
         });
       }
@@ -100,7 +108,8 @@ export class ImportDataComponent implements OnInit {
       }
     }
     this.dataArrayColumns = holder;
-    this.indexFileStore.addIntoDB(this.fileName, this.dataWithHeader, this.dataArrayColumns,
+    this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
+    //this.indexFileStore.addIntoDB(this.fileName, this.dataWithHeader, this.dataArrayColumns,
       this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, '');
     setTimeout(() => {
       this.bsModalRef.hide();
@@ -108,6 +117,12 @@ export class ImportDataComponent implements OnInit {
     }, 2000);
   }
   columnNameChange(event) {
-    console.log(event);
+    this.temp[parseInt(event.target.id, 10)] = event.target.value;
+    //console.log(this.temp);
   }
+
+  rename(event){
+    this.alias = event.target.value;
+  }
+
 }
