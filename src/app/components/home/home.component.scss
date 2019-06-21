@@ -19,13 +19,11 @@ button:active {
 }
 //---------------------------------------------------------------------------------
 
-//Radio button definitions-------------------------------------------------------
-
-
 .selectable{
   cursor: pointer;
 }
 
+//Radio button definitions-------------------------------------------------------
 /* Hide the browser's default radio button */  //WHY??
 input[type=radio] {
   position: absolute;
@@ -78,9 +76,6 @@ input:checked ~ .checkmark {
 //---------------------------------------------------------------------------------
 
 
-
-
-
 // Basic containers
 .container {
   display: block;
@@ -120,14 +115,14 @@ input:checked ~ .checkmark {
 }
 
 
-//bootstrap defaults ----------------------------------------------------------
-.container-fluid{
-  font-size: 18px;
-}
-
+//Set Grid defaults ----------------------------------------------------------
 .row{
   width:100%;
   margin: 1.5px;
+}
+
+.r1{
+  height: 400px;
 }
 
 .col1{
@@ -142,6 +137,20 @@ input:checked ~ .checkmark {
 
 }
 
+.expand-horizontal{
+  margin-right: 0;
+  margin-left: 0;
+  padding-right:0;
+  padding-left: 0;
+}
+
+.expand-vertical{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-topt:0;
+  padding-bottom: 0;
+}
+
 //------------------------------------------------------------------------------
 
 //Font styling
@@ -152,15 +161,28 @@ input:checked ~ .checkmark {
   margin-top: 5px;
 }
 select{
+  margin-top: 10px;
   width: 100%;
 }
 
+//Font Styling
+.radio-label{
+}
 
 
-
-
-.picker{
+.dropbox-label{
+  margin-top: 10px;
   text-align: right;
-  font-size: 100%;
+  font-size: 14.5px;
+}
 
+.list{
+  font-size:12px;
+  text-align: right;
+}
+
+.panel-title{
+  margin-top: 5px;
+  vertical-align: middle;
+  font-weight: bold;
 }
