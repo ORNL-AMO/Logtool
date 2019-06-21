@@ -1,23 +1,21 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
-  <div class="row" style="height: 400px;">
+  <div class="row r1">
     <div class="col-sm-3 col-md-3 panel col1">
-      <br>
-      <p> Graph Selection </p>
+      <p class="panel-title"> Graph Selection </p>
       <form #formElement="ngForm" style="max-height:300px" (ngSubmit)="plotGraphNavigation()">
 
-        <!--Radio Buttons-------------------------------------------------------------------------------->
+        <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row">
-          <div class="col">
-            <label class="container"> &nbsp; Line Graph
+          <div class="col-5">
+            <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
               <span class="checkmark"></span>
-
             </label>
           </div>
 
-          <div class="col">
-            <label class="container"> &nbsp; Scatter Graph
+          <div class="col-5">
+            <label class="selectable radio-label"> &nbsp; &nbsp;Scatter Graph
               <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
               <span class="checkmark"></span>
@@ -26,79 +24,81 @@
         </div>
         <!------------------------------------------------------------------------------------------------>
 
-        <div class="container" style="padding-left:0;" *ngIf="!show">
+        <!-- Line graph-------------------------------->
+        <div class="selectable" style="padding-left:0;" *ngIf="!show">
           <div class="row">
-            <div class="col" style="max-width: 50px">
-              <p class="picker">Y:</p>
+            <div class="col-4 expand-horizontal" style="text-align: right; ">
+              <p class="dropbox-label">Y:</p>
             </div>
-            <div class="col">
-              <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)" style="width:100%">
+
+            <div class="col-7 expand-horizontal" style="margin-left: 5px;">
+              <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)">
                 <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
               <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
-                <p style="font-size: 12px; margin:0;" *ngFor="let selector of ySelectorListLine"
+                <p class="list" style="margin:0;" *ngFor="let selector of ySelectorListLine"
                    (click)="removeFromListLine($event)">{{selector.name}}</p>
               </div>
             </div>
           </div> <!-- spinner 1: Y--->
 
           <div class="row">
-            <div class="col" style="max-width: 50px">
-              <p class="picker">Time Series:</p>
+            <div class="col-4 expand-horizontal">
+              <p class="dropbox-label">Time Series:</p>
             </div>
-            <div class="col">
+            <div class="col-7 expand-horizontal" style="margin-left: 5px;">
               <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
                 <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
               </select>
-              <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
-                <p class="picker" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
+              <div style="max-height: 100px; overflow:auto; margin-bottom: 4px;">
+                <p class="list" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
               </div>
             </div>
           </div>
         </div>
-        <!-- Line graph------------------------------------------------------------------->
 
-        <div class="container" style="padding-left:0;" *ngIf="show">
+        <!-- Scatter graph----------------------------->
+        <div class="selectable" style="padding-left:0;" *ngIf="show">
           <div class="row">
-            <div class="col" style="max-width: 50px">
-              <p class="picker">X:</p>
+            <div class="col-1 dropbox-label">
+              <p class="dropbox-label">X:</p>
             </div>
-            <div class="col">
+            <div class="col-10" style="margin-top: 10px;">
               <select name="xSpinner" [(ngModel)]="temp3" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p style="font-size: 12px" *ngFor="let selector of xSelectorListScatter"
+              <p class="dropbox-label" *ngFor="let selector of xSelectorListScatter"
                  title="xSelectorListScatter">{{selector.name}}</p>
             </div>
           </div>
           <div class="row">
-            <div class="col" style="max-width: 50px">
-              <p class="picker">Y:</p>
+            <div class="col-1 dropbox-label">
+              <p class="dropbox-label">Y:</p>
             </div>
-            <div class="col">
+            <div class="col-10" style="margin-top: 10px;">
               <select name="ySpinner" [(ngModel)]="temp4" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <p style="font-size: 12px" *ngFor="let selector of ySelectorListScatter"
+              <p class="list" *ngFor="let selector of ySelectorListScatter"
                  title="ySelectorListScatter">{{selector.name}}</p>
             </div>
           </div>
 
 
-        </div><!-- Scatter graph------------------------------------------------------->
-
+        </div>
+        <!--Button-------------------------------------------------------------------->
         <div class="row">
           <button class="btn" type="submit" style="margin:auto; z-index:10;">Show</button>
         </div>
-        <br>
       </form>
     </div>
     <div class="col-sm-7 col-md-7 panel col2" style="min-height: 300px;   height:100%;">
 
-      <div class="container" style="margin-bottom:0; ">
+      <div class="container">
+        <!-- Label and Import Button ------------------------------------------------------------------------------->
         <div class="row" style="min-height:40px;">
-          <p>Import Section</p>
-          <button class="btn" style="position: absolute; right:15px" (click)="onImport()">Import</button>
+          <p class="panel-title">Import Section</p>
+          <button class="btn" style="position: absolute; right:15px; top:10px" (click)="onImport()">Import</button>
           <br>
         </div>
 
@@ -107,7 +107,7 @@
             <li class="nav-item" *ngFor="let tab of tabs">
               <a class="nav-link" (click)="changeDisplayTable(tab.id)"
                  [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
-                         'border-width'    :activeTab === tab.id ? '3px': '2px'}"
+                             'border-width'    :activeTab === tab.id ? '3px': '2px'}"
               >{{tab.name}}</a>
             </li>
           </ul>
@@ -121,41 +121,56 @@
     </div>
     <div class="col-sm panel " style="height: 212.5%; width:100%;">
       <p> HELP panel </p>
-      <!-- SO MUCH Stuff-->
+      <!-- SO MUCH Stuff, use ngIf to toggle between help items, Toggle visibility as well?-->
     </div>
   </div>
 
   <div class="row">
     <div class="col-sm-3 panel col1" style="min-height: 150px;  height:100%">
+      <div class="row">
+        <p class="panel-title"> Averages by Day Type</p>
+      </div>
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
-        <h2>Day Types</h2>
-        <br>
-        <div class="container">
-          <label>File:</label>
-          <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)">
-            <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
-          </select>
+        <!-- File select box --->
+        <div class=" row">
+          <div class="col-2">
+            <p class=".dropbox-label">File:</p>
+          </div>
+          <div class="col-9">
+            <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)">
+              <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
+            </select>
+          </div>
         </div>
-        <br>
-        <div class="container">
-          <label>File:</label>
-          <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
-            <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
-          </select>
-          <h4 *ngFor="let selector of columnSelectorList" title="columnSelectorList"
-              (click)="removeFromListColumn($event)">{{selector.name}}</h4>
+
+        <div class="row">
+          <div class="col-2">
+            <p class=".dropbox-label">Data:</p>
+          </div>
+          <div class="col-9">
+            <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
+              <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
+            </select>
+            <div style="max-height: 150px; overflow:auto; margin-bottom: 4px;">
+              <p class="list" style="font-size: 14px;" *ngFor="let selector of columnSelectorList"
+                 title="columnSelectorList"
+                 (click)="removeFromListColumn($event)">{{selector.name}}</p>
+            </div>
+          </div>
         </div>
-        <div style="max-height: 50px; overflow:auto; margin-bottom: 4px;">
-          <button class="btn" type="submit">Send</button>
+        <div class="row justify-content-center" >
+
+            <button class="btn" type="submit">Send</button>
+
         </div>
       </form>
     </div>
     <div class="col-sm-7 panel col2" style="min-height: 300px;  height:150%">
-      <app-plot-graph></app-plot-graph>
+      <app-plot-graph *ngIf="showGraph"></app-plot-graph>
     </div>
   </div>
 
-  <!-- Not sure how to do space filler here-->
+  <!-- Not sure how to do space filler here.    ngIF to toggle?-->
   <div class="row">
     <div class="col-sm-3 panel col1" style=" height:150px; ">
       <p> Analytics </p>
