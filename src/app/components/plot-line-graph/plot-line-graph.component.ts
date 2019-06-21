@@ -37,13 +37,6 @@ export class PlotLineGraphComponent implements OnInit {
       layout: {
         hovermode: 'closest',
         autosize: true,
-        margin: {
-          l: 50,
-          r: 20,
-          b: 50,
-          t: 50,
-          pad: 10
-        },
         title: 'Line Plot',
         xaxis: {
           autorange: true,

@@ -5,6 +5,7 @@ import {TableDataComponent} from './components/table-data/table-data.component';
 import {PlotLineGraphComponent} from './components/plot-line-graph/plot-line-graph.component';
 import {PlotScatterGraphComponent} from './components/plot-scatter-graph/plot-scatter-graph.component';
 import {DayTypeCalculationComponent} from './components/day-type-calculation/day-type-calculation.component';
+import {PlotGraphComponent} from './components/plot-graph/plot-graph.component';
 
 const routes: Routes = [
   {
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'day-type-calculation',
     component: DayTypeCalculationComponent
+  },
+  {
+    path: 'plot-graph',
+    component: PlotGraphComponent
   }
 ];
 
