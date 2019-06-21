@@ -89,7 +89,6 @@ export class HomeComponent implements OnInit {
           });
         }
         this.populateSpinner();
-        this.activeTab = this.dataFromDialog.length - 1;
         this.changeDisplayTable(this.dataFromDialog.length - 1);
       });
     });
@@ -121,6 +120,7 @@ export class HomeComponent implements OnInit {
         }
       });
     });
+    this.activeTab=value;
   }
 
   checkboxSelect(event) {
