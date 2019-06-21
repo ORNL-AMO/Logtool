@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {ImportDataComponent} from '../import-data/import-data.component';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 
 @Component({
   selector: 'app-home',
@@ -38,20 +39,18 @@ export class HomeComponent implements OnInit {
   // Modal Ref
   bsModalRef: BsModalRef;
   activeTab;
-  showGraph = false;
+
+  @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
   }
-
-  // Unchanged
   ngOnInit() {
     this.dataFromDialog = [];
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
     this.fileSelector = [];
-
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
@@ -113,8 +112,8 @@ export class HomeComponent implements OnInit {
         graphType: 'scatter_graph'
       };
     }
-    this.showGraph = true;
-    // this.router.navigate(['/plot-graph']);
+      this.plotGraph.changeGraph();
+
   }
 
   changeDisplayTable(value) {
@@ -270,9 +269,9 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+
   populateGraph() {
     if (this.graph === '' || this.graph === undefined) {
-      console.log('Inside Graph');
       this.routeDataTransfer.storage = {
         graphType: 'empty'
       };

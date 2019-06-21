@@ -21,52 +21,9 @@ export class PlotScatterGraphComponent implements OnInit {
   ngOnInit() {
     this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
     console.log(this.routeDataTransfer.storage.x[0].value);
-    this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
-    this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
-    this.plotGraph.push({
-      x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
-      y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
-      type: 'scattergl',
-      mode: 'markers'
-    });
+
     console.log(this.plotGraph);
-    this.graph = {
-      data: this.plotGraph,
-      layout: {
-        hovermode: 'closest',
-        autosize: true,
-        margin: {
-          l: 50,
-          r: 20,
-          b: 50,
-          t: 50,
-          pad: 10
-        },
-        title: 'Scatter Plot',
-        xaxis: {
-          title: {
-            text: this.routeDataTransfer.storage.x[0].name,
-            font: {
-              family: 'Courier New, monospace',
-              size: 18,
-              color: '#7f7f7f',
-              style: 'bold'
-            }
-          },
-        },
-        yaxis: {
-          title: {
-            text: this.routeDataTransfer.storage.y[0].name,
-            font: {
-              family: 'Courier New, monospace',
-              size: 18,
-              color: '#7f7f7f',
-              style: 'bold'
-            }
-          }
-        }
-      }
-    };
+
   }
   /*onCreateCsv() {
   const csvData = [];

@@ -171,7 +171,6 @@ export class DayTypeCalculationComponent implements OnInit {
         });
       }
     }
-    console.log(this.sumArray);
   }
 
   changeSelector(event) {
