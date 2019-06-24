@@ -1,52 +1,41 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
 
-<div class="container-fluid header">
-  <div class="row" style="top:20px;">
-    <div class="col-sm-6" style="text-align:left;">
-      <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
-    </div>
-    <div class="col-sm-6" style="text-align: right">
-      <button type="button" class="close pull-right" aria-label="Close" style="padding-right: 15px; padding-top: 15px;"
-              (click)="bsModalRef.hide()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+
+<!-- Header Data && Close button-------------------------------------------------------------------------------->
+<div class="row" style="top:20px;">
+  <div class="col-sm-6" style="text-align:left;">
+    <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
   </div>
-
-  <div class="row">
-    <div class="col">
-      <div class="form-group file-area">
-
-
-        <div class="file-dummy">
-          <input type="file" name="images" id="images" required="required" multiple="multiple"
-                 (change)="onChange($event)"/>
-          <div class="success" *ngIf="filled">{{fileName}}</div>
-          <div class="default" *ngIf="!filled">Click to Upload a File</div>
-        </div>
-
-      </div>
-    </div>
+  <div class="col-sm-6" style="text-align: right">
+    <button type="button" class="close pull-right" aria-label="Close" style="padding-right: 15px; padding-top: 15px;"
+            (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
+</div>
+
+<!-- File upload area -->
+<div class="row justify-content-center" style="min-height: 50px;">
+  <div class="col-9 drop-area" style="vertical-align: center;"
+       [ngStyle]="{'background-color': filled ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
+    <input type="file" name="images" id="images" required="required" multiple="multiple"
+           (change)="onChange($event)"/>
+    <p class="file-box-fill" *ngIf="!filled">Click to Upload a File</p>
+    <p class="file-box-fill" *ngIf="filled">{{fileName}}</p>
+
+
+  </div>
+</div>
+
+<!-- Rename option -->
+<div class="row justify-content-center" *ngIf="filled">
+    <input type="text"  placeholder="{{fileName}}" (change) = rename($event) style="text-align: center;">
 </div>
 
 <br>
 
-<div class="row" *ngIf="filled">
-  <div class="col" style="padding-right:-10px">
-    <button (click)="applyRename()" class="float-right">Rename</button>
-  </div>
-
-  <div class="col" style="padding-right:0">
-    <input id="ailis_box" type="text" class="float-left">
-  </div>
-</div>
-
-<br>
-
-<!--data display && row renaming-->
-
+<!-- metaData display-->
 <table id="metaData" *ngIf="filled" style="border:thick">
 
   <tr>
@@ -64,7 +53,8 @@
 </table>
 <br>
 
-<form #formElement="ngForm" (ngSubmit)="submitCheckBox()" style="padding-bottom: 50px;"
+<!--data display && row renaming-->
+<form #formElement="ngForm" id="import_file" (ngSubmit)="submitCheckBox()" style="padding-bottom: 20px;"
       *ngIf="filled">
   <table style="border-radius: 32px">
     <colgroup>
@@ -86,20 +76,26 @@
     </tr>
     <tr *ngFor="let head of selectedHeader; let i = index" [attr.data-index]="i">
       <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
-      <td><input type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
+      <td><input [attr.id]="i" type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
       <td>{{readFirstRow[i]}}</td>
       <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
     </tr>
   </table>
-  <button type="submit" style="position: relative; left:30%; bottom: 10px ">Show</button>
+
 </form>
+
 <div class="container-fluid" *ngIf="filled">
   <div class="row">
-   <!-- <button form="form1" type="submit" style="position: relative; left:30%; bottom: 10px ">Show</button> -->
-    <button style="position:absolute; right:0;" (click)="bsModalRef.hide()"
-            style="position: relative; left:60%; bottom: 10px">
-      Cancel
-    </button>
+    <div class="col justify-content-center">
+      <button class=btn type="submit" form="import_file">Show
+      </button>
+    </div>
+    <div class="col"></div>
+    <div class="col justify-content-center">
+      <button class=btn (click)="bsModalRef.hide()">
+        Cancel
+      </button>
+    </div>
   </div>
 </div>
 

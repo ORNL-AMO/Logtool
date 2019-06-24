@@ -11,55 +11,24 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 export class PlotGraphComponent implements OnInit {
   graph: any;
   dataInput = [];
-  timeSeries = [];
   xValue = [];
   yValue = [];
+  timeSeries = [];
   plotGraph = [];
-  type = '';
+  graphType = '';
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
 
   ngOnInit() {
-    this.displayGraph('');
-  }
-
-  changeGraph() {
-    this.plotGraph = [];
-    this.timeSeries = [];
-    this.xValue = [];
-    this.yValue = [];
-    this.plotGraph = [];
-    this.graph = [];
-    this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
-    this.type = this.routeDataTransfer.storage.graphType;
-    if (this.type === 'line_graph') {
-      this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
-      this.yValue = this.routeDataTransfer.storage.value;
-      for (let i = 0; i < this.yValue.length; i++) {
-        const value = this.yValue[i].value.split(',');
-        this.plotGraph.push({
-          x: this.dataInput[parseInt(this.timeSeries[0], 10)].dataArrayColumns[parseInt(this.timeSeries[1], 10)],
-          y: this.dataInput[parseInt(value[0], 10)].dataArrayColumns[parseInt(value[1], 10)],
-          type: 'linegl',
-          mode: 'lines',
-          name: this.yValue[i].name
-        });
-      }
+    if (this.routeDataTransfer.storage === undefined) {
+      this.displayGraph(this.graphType);
     } else {
-      this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
-      this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
-      this.plotGraph.push({
-        x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
-        y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
-        type: 'scattergl',
-        mode: 'markers'
-      });
+      this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
+      this.graphType = this.routeDataTransfer.storage.graphType;
+      this.displayGraph(this.graphType);
     }
-
-    this.displayGraph(this.type);
   }
-
   displayGraph(type) {
     if (type === 'line_graph') {
       this.graph = {
@@ -79,6 +48,14 @@ export class PlotGraphComponent implements OnInit {
         }
       };
     } else if (type === 'scatter_graph') {
+      this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
+      this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
+      this.plotGraph.push({
+        x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
+        y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
+        type: 'scattergl',
+        mode: 'markers'
+      });
       this.graph = {
         data: this.plotGraph,
         layout: {

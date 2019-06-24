@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit {
   // Modal Ref
   bsModalRef: BsModalRef;
   activeTab;
+  showGraph = false;
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
@@ -51,6 +52,7 @@ export class HomeComponent implements OnInit {
     this.timeSeriesY = [];
     this.scatterList = [];
     this.fileSelector = [];
+
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
@@ -105,12 +107,14 @@ export class HomeComponent implements OnInit {
         timeSeries: this.timeSeriesSelectList,
         graphType: 'line_graph'
       };
+      this.plotGraph.ngOnInit();
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
         y: this.ySelectorListScatter,
         graphType: 'scatter_graph'
       };
+      this.plotGraph.ngOnInit();
     }
       this.plotGraph.changeGraph();
 
@@ -269,9 +273,9 @@ export class HomeComponent implements OnInit {
       });
     }
   }
-
   populateGraph() {
     if (this.graph === '' || this.graph === undefined) {
+      console.log('Inside Graph');
       this.routeDataTransfer.storage = {
         graphType: 'empty'
       };
