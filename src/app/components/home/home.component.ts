@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {ImportDataComponent} from '../import-data/import-data.component';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 
 @Component({
   selector: 'app-home',
@@ -39,6 +40,8 @@ export class HomeComponent implements OnInit {
   bsModalRef: BsModalRef;
   activeTab;
   showGraph = false;
+
+  @ViewChild(PlotGraphComponent) plotGraph;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
@@ -106,15 +109,15 @@ export class HomeComponent implements OnInit {
         timeSeries: this.timeSeriesSelectList,
         graphType: 'line_graph'
       };
+      this.plotGraph.ngOnInit();
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
         y: this.ySelectorListScatter,
         graphType: 'scatter_graph'
       };
+      this.plotGraph.ngOnInit();
     }
-    this.showGraph = true;
-    // this.router.navigate(['/plot-graph']);
   }
 
   changeDisplayTable(value) {
