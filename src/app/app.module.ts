@@ -20,8 +20,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { ToolHeaderComponent } from './components/tool-header/tool-header.component';
 import { TableDataComponent } from './components/table-data/table-data.component';
-import { PlotLineGraphComponent } from './components/plot-line-graph/plot-line-graph.component';
-import { PlotScatterGraphComponent } from './components/plot-scatter-graph/plot-scatter-graph.component';
 import { ImportDataComponent } from './components/import-data/import-data.component';
 import {ModalModule} from 'ngx-bootstrap';
 
@@ -46,8 +44,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
     WebviewDirective,
     ToolHeaderComponent,
     TableDataComponent,
-    PlotLineGraphComponent,
-    PlotScatterGraphComponent,
     ImportDataComponent,
     DayTypeCalculationComponent,
     PlotGraphComponent

@@ -11,19 +11,31 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 export class PlotGraphComponent implements OnInit {
   graph: any;
   dataInput = [];
-  timeSeries = [];
+  xValue = [];
   yValue = [];
+  timeSeries = [];
   plotGraph = [];
-  type = '';
+  graphType = '';
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
 
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
-      console.log('undefined');
-  } else {
+      this.displayGraph(this.graphType);
+    } else {
       this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
+      this.graphType = this.routeDataTransfer.storage.graphType;
+      this.displayGraph(this.graphType);
+    }
+  }
+
+  displayGraph(type) {
+    this.plotGraph = [];
+    this.xValue = [];
+    this.yValue = [];
+    this.timeSeries = [];
+    if (type === 'line_graph') {
       this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
       this.yValue = this.routeDataTransfer.storage.value;
       for (let i = 0; i < this.yValue.length; i++) {
@@ -36,24 +48,80 @@ export class PlotGraphComponent implements OnInit {
           name: this.yValue[i].name
         });
       }
-    }
-    console.log(this.type);
-    this.graph = {
-      data: this.plotGraph,
-      layout: {
-        hovermode: 'closest',
-        autosize: true,
-        title: 'Line Plot',
-        xaxis: {
-          autorange: true,
-        },
-        yaxis: {
-          autorange: true,
-          type: 'linear'
-        }
+      this.graph = {
+        data: this.plotGraph,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Line Plot',
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
 
-      }
-    };
+        }
+      };
+    } else if (type === 'scatter_graph') {
+      this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
+      this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
+      this.plotGraph.push({
+        x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
+        y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
+        type: 'scattergl',
+        mode: 'markers'
+      });
+      this.graph = {
+        data: this.plotGraph,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Scatter Plot',
+          xaxis: {
+            title: {
+              text: this.routeDataTransfer.storage.x[0].name,
+              font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f',
+                style: 'bold'
+              }
+            },
+          },
+          yaxis: {
+            title: {
+              text: this.routeDataTransfer.storage.y[0].name,
+              font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f',
+                style: 'bold'
+              }
+            }
+          }
+        }
+      };
+
+    } else {
+      this.graph = {
+        data: this.plotGraph,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Plot',
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+
+        }
+      };
+    }
   }
 
 }
