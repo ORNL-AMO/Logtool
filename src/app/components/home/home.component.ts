@@ -116,7 +116,6 @@ export class HomeComponent implements OnInit {
       };
       this.plotGraph.ngOnInit();
     }
-      this.plotGraph.changeGraph();
 
   }
 
@@ -275,7 +274,6 @@ export class HomeComponent implements OnInit {
   }
   populateGraph() {
     if (this.graph === '' || this.graph === undefined) {
-      console.log('Inside Graph');
       this.routeDataTransfer.storage = {
         graphType: 'empty'
       };

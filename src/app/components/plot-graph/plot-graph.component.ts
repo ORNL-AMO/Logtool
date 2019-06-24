@@ -29,8 +29,21 @@ export class PlotGraphComponent implements OnInit {
       this.displayGraph(this.graphType);
     }
   }
+
   displayGraph(type) {
     if (type === 'line_graph') {
+      this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
+      this.yValue = this.routeDataTransfer.storage.value;
+      for (let i = 0; i < this.yValue.length; i++) {
+        const value = this.yValue[i].value.split(',');
+        this.plotGraph.push({
+          x: this.dataInput[parseInt(this.timeSeries[0], 10)].dataArrayColumns[parseInt(this.timeSeries[1], 10)],
+          y: this.dataInput[parseInt(value[0], 10)].dataArrayColumns[parseInt(value[1], 10)],
+          type: 'linegl',
+          mode: 'lines',
+          name: this.yValue[i].name
+        });
+      }
       this.graph = {
         data: this.plotGraph,
         layout: {
