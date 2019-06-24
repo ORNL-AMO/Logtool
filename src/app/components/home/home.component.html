@@ -10,7 +10,7 @@
             <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
-             <!-- <span class="checkmark"></span> -->
+              <!-- <span class="checkmark"></span> -->
             </label>
           </div>
 
@@ -35,10 +35,14 @@
               <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)">
                 <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <div class="list-box">
-                <p class="list" style="margin:0;" *ngFor="let selector of ySelectorListLine"
-                   (click)="removeFromListLine($event)">{{selector.name}}</p>
+
+              <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+                <div class="row list-item " *ngFor="let selector of ySelectorListLine let i= index" (click)="removeFromListLine($event)"  style="margin:0">
+                  <p class="col-11 list">{{selector.name}}</p>
+                  <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: gray; border: 1px solid black;">x</p>
+                </div>
               </div>
+
             </div>
           </div> <!-- spinner 1: Y--->
 
@@ -63,7 +67,7 @@
             <div class="col-1">
               <p class="dropbox-label">X:</p>
             </div>
-            <div class="col-10" >
+            <div class="col-10">
               <select name="xSpinner" [(ngModel)]="temp3" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
@@ -77,7 +81,7 @@
             <div class="col-1">
               <p class="dropbox-label">Y:</p>
             </div>
-            <div class="col-10" >
+            <div class="col-10">
               <select name="ySpinner" [(ngModel)]="temp4" (change)="scatterSelector($event)">
                 <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
               </select>
@@ -100,19 +104,25 @@
 
       <div>
         <!-- Label and Import Button ------------------------------------------------------------------------------->
-        <div class="row" style="min-height:40px;">
-          <p class="panel-title">Import Section</p>
-          <button class="btn" style="position: absolute; right:15px; top:10px" (click)="onImport()">Import</button>
+       <!-- <div class="row" style="min-height:40px;"> -->
+          <span class="col-10 panel-title" style="width:80%">Import Section</span>
+          <button class="btn pull-close-right" style="margin:auto; z-index:10; max-width: 120px; position: absolute; right:10px; top: 10px" (click)="onImport()">Import
+          </button>
           <br>
-        </div>
+      <!--  </div> -->
 
-        <div class="row">
+        <div class="row" style="margin-left: 20px">
           <ul class="nav nav-pills">
             <li class="nav-item" *ngFor="let tab of tabs">
-              <a class="nav-link" (click)="changeDisplayTable(tab.id)"
+
+              <div class="nav-link" (click)="changeDisplayTable(tab.id)"
                  [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(56,148,0,1)': 'rgba(144,238,144,.75)',
                              'border-width'    :activeTab === tab.id ? '3px': '2px'}"
-              >{{tab.name}}</a>
+              >
+              <span style="margin: 10px 5px;" >{{tab.name}}</span>
+              <button (click)="removeFile(tab.id)" style="padding-top: 0; margin-top:0; float: right; font-size: 8px; ">x</button>
+
+              </div>
             </li>
           </ul>
         </div>
@@ -153,13 +163,17 @@
             <p class=".dropbox-label">Data:</p>
           </div>
           <div class="col-9">
-            <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
-              <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
-            </select>
-            <div class="list-box">
-              <p class="list" style="font-size: 14px;" *ngFor="let selector of columnSelectorList"
-                 title="columnSelectorList"
-                 (click)="removeFromListColumn($event)">{{selector.name}}</p>
+
+              <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
+                <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
+              </select>
+
+
+            <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+              <div class="row list-item " *ngFor="let selector of columnSelectorList" (click)="removeFromListColumn($event)"  style="margin:0">
+                <p class="col-11 list">{{selector.name}}</p>
+                <p class="col-1 align-self-end list" style="padding:0; margin:0; background-color: gray; border: 1px solid black;">x</p>
+              </div>
             </div>
           </div>
         </div>
