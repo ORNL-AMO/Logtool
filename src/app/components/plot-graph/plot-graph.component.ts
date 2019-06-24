@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import * as XLSX from 'xlsx';
+
 
 @Component({
   selector: 'app-plot-graph',
@@ -31,6 +33,11 @@ export class PlotGraphComponent implements OnInit {
   }
 
   displayGraph(type) {
+    this.xValue = [];
+    this.yValue = [];
+    this.timeSeries = [];
+    this.plotGraph = [];
+
     if (type === 'line_graph') {
       this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
       this.yValue = this.routeDataTransfer.storage.value;
@@ -44,6 +51,7 @@ export class PlotGraphComponent implements OnInit {
           name: this.yValue[i].name
         });
       }
+      console.log(this.plotGraph);
       this.graph = {
         data: this.plotGraph,
         layout: {
@@ -60,7 +68,8 @@ export class PlotGraphComponent implements OnInit {
 
         }
       };
-    } else if (type === 'scatter_graph') {
+    } //-----------------------------------------------------------------------------------------------------------------------
+    else if (type === 'scatter_graph') {
       this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
       this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
       this.plotGraph.push({
@@ -69,6 +78,7 @@ export class PlotGraphComponent implements OnInit {
         type: 'scattergl',
         mode: 'markers'
       });
+      console.log(this.plotGraph);
       this.graph = {
         data: this.plotGraph,
         layout: {
@@ -119,15 +129,88 @@ export class PlotGraphComponent implements OnInit {
   }
 
   onCreateCsv() {
-    const csvData = [];
-    for (let i = 0; i < this.dataInput[0].inputData.length; i++) {
-      csvData.push({
-        'id': i,
-        '100Amp': this.dataInput[0].inputData[i],
-        '150Amp': this.dataInput[1].inputData[i],
-        'TimeStamp': this.dataInput[0]
-      });
+    console.log(this.routeDataTransfer.storage);
+    //set up workbook and sheet to catch data
+    var wb = XLSX.utils.book_new();
+
+    let input: any[] = [];
+    input[0] = [];
+
+    // Get header data
+    // Get time series or X value based on graph type
+    console.log(this.routeDataTransfer.storage.graphType);
+    if (this.routeDataTransfer.storage.graphType === 'scatter_graph') {
+      console.log(this.routeDataTransfer.storage.x.name);
+      input[0].push(this.routeDataTransfer.storage.x.name);
+    } else {
+      input[0].push(this.routeDataTransfer.storage.timeSeries[0].name);
     }
-    this.csvexport.exportAsExcelFile(csvData, 'workfile');
+
+    let max_sample = 0;
+    // get Y-headers & calculate how many data samples
+    console.log(this.plotGraph[0].name);
+    for (let i = 0; i < this.plotGraph.length; i++) {
+      input[0].push(this.plotGraph[i].name);
+      if (max_sample < this.plotGraph[i].x.length) {
+        max_sample = this.plotGraph[i].x.length;
+      }
+      if (max_sample < this.plotGraph[i].y.length) {
+        max_sample = this.plotGraph[i].y.length;
+      }
+    }
+    console.log(input, max_sample);
+    const data: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(input);
+    XLSX.utils.book_append_sheet(wb, data, 'test');
+
+
+    for (let i = 0; i < max_sample; i++) {
+      input[0] = [];
+      input[0].push(this.plotGraph[0].x[i]);
+      for (let j = 0; j < this.plotGraph.length; j++) {
+        input[0].push(this.plotGraph[j].y[i]);
+      }
+      //console.log(input, input[0][0] instanceof Date , typeof input[0][1]);
+      XLSX.utils.sheet_add_aoa(data, input, {origin: -1});
+    }
+    let range = XLSX.utils.decode_range(data['!ref']);
+    for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+      for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
+        var cell = data[XLSX.utils.encode_cell( {c: colNum, r: rowNum})];
+        if ((cell.z) === 'm/d/yy'){
+
+          cell.z = 'dd/mm/yy hh:mm:ss.000';
+          delete cell.w;
+          XLSX.utils.format_cell(cell);
+          console.log(cell.z, cell.v, cell.w);
+        }
+
+      }
+    }
+    XLSX.writeFile(wb, 'THISPAGE.csv',{bookType: 'csv'});
+
+
   }
+
+//grab X's
+
+  /*
+
+    XLSX.utils.sheet_add_aoa(ws,,{origin: -1})
+    XLSX.utils.book_append_sheet(wb, data, 'test');
+
+    */
+  /*
+  const csvData = [];
+  for (let i = 0; i < this.dataInput[0].inputData.length; i++) {
+    csvData.push({
+      'id': i,
+      '100Amp': this.dataInput[0].inputData[i],
+      '150Amp': this.dataInput[1].inputData[i],
+      'TimeStamp': this.dataInput[0]
+    });
+  }
+  this.csvexport.exportAsExcelFile(csvData, 'workfile');
+  */
+//}
+
 }

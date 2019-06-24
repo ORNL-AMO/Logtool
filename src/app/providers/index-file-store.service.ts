@@ -80,4 +80,17 @@ export class IndexFileStoreService {
         });
     });
   }
+
+  removeFromTab(index) {
+/*    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.delete('fileInput', index).then( ()=>);
+        },
+        error => {
+          console.log(error);
+        });
+    });*/
+  }
 }
