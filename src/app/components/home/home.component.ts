@@ -48,6 +48,9 @@ export class HomeComponent implements OnInit {
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService,  ) {
   }
+  test(){
+    this.router.navigate(['/test']);
+  }
   ngOnInit() {
     this.dataFromDialog = [];
     this.lineListY = [];

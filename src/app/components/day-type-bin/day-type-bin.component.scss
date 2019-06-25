@@ -1,0 +1,27 @@
+.panel{
+  width: 30%;
+  border: solid 4px darkgreen;
+  min-height: 300px;
+  min-width: 500px;
+  background: darkgrey;
+  margin: 2px;
+  border-radius: 15px;
+}
+
+.list-box{
+  max-height: 125px;
+  align-content: center;
+  margin-bottom: 4px;
+  background: antiquewhite;
+  border: 1px solid black;
+}
+
+.list{
+  font-size: 85%;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom:0;
+  margin-left: 0;
+  white-space: nowrap;
+  border-bottom: 1px solid black;
+}

@@ -1,0 +1,69 @@
+<div class="container panel ">
+  <!-- Title -->
+  <div class="row ">
+    <div class="col justify-content-md-center">
+      <h2 style="text-align: center; border: 5px solid black;" >{{name | uppercase}}</h2>
+    </div>
+  </div>
+
+  <!-- Add box -->
+  <div class="row">
+    <div class="col" style="max-width: 50%; border: 1px solid black">
+      <p class="test" style="text-align: center; border: 1px solid black; width: 100%; margin:5px;">Dates Available for Import</p>
+
+      <!-- Dates to pull into bin -->
+      <select name="rejects" style="width: 100%;   margin:5px;" (click)="addPull($event)">
+        <option *ngFor="let day of date_pull" value="{{day}}"  > {{day}} </option>
+      </select>
+
+      <!-- display dates currently in bin -->
+      <p>Current Contents</p>
+      <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+        <div class="row list-item " *ngFor="let selector of bin_contents let i= index"  style="margin:0">
+          <p class="col-11 list">{{selector}}</p>
+        </div>
+      </div>
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+    <!--  </div>
+      <div class="row">
+        <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+          <div class="row list-item " *ngFor="let selector of days_contained let i= index" style="margin:0">
+            <p class="col-11 list">{{selector.name}}</p>
+          </div>
+        </div>
+      </div>-->
+
+  </div>
+  <!--<div class="dropdown_form" style="height:200px">
+
+    <div class="row" style="border: 1px solid black">
+      &lt;!&ndash; Day selector box &ndash;&gt;
+      <div class="col">
+        <select name="date_box" multiple>
+          <option *ngFor="let day of days_contained" value="{{day}}"> {{day}}    </option>
+        </select>
+      </div>
+
+      <div class="col"></div>
+
+      &lt;!&ndash; Destination selector box &ndash;&gt;
+      <div class="col">
+        <input type="text" #typebox name="example" list="exampleList" value="" (keyup.enter)=moveDays(typebox.value)>
+        <datalist id="exampleList">
+          <option *ngFor="let column of day_types" value="{{column}}">{{column}}</option>
+        </datalist>
+      </div>
+    </div>
+  </div>-->
+
+
+

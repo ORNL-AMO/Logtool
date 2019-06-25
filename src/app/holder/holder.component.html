@@ -1,0 +1,9 @@
+<p>{{feedback}}</p>
+
+<app-day-type-bin *ngFor="let bin of bins let i = index"
+                  [name]=types[i]
+                  [date_pull]="bin"
+                  [bin_contents]="contents[i]"
+                  (update)="onUpdate($event)">
+
+</app-day-type-bin>
