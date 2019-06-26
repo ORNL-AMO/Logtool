@@ -1,9 +1,28 @@
 <p>{{feedback}}</p>
+<div class="scrolling-wrapper-flexbox" style=" overflow-x: auto; white-space: nowrap;">
+  <div class="col-5" *ngFor="let bin of bins let i = index ">
+    <app-day-type-bin
+      [name]=types[i]
+      [date_pull]="bin"
+      [bin_contents]="contents[i]"
+      (update)="onUpdate($event)"
+      (delete)="onRemove($event)"
+      (plot_change)="updatePlot($event)">
+    </app-day-type-bin>
+  </div>
+  <!-- add blank "ADD TYPE COMPONENT HERE -->
+  <div class="col-5">
+    <app-day-type-bin
+      [name]="'Add Type'"
+      (add)="addType()" >
+    </app-day-type-bin>
+  </div>
+</div>
+<div class="row" style="height:100%">
+  <div class="container" style="width: 100%; height:100%; background-color: gray;">
+    FILLER
 
-<app-day-type-bin *ngFor="let bin of bins let i = index"
-                  [name]=types[i]
-                  [date_pull]="bin"
-                  [bin_contents]="contents[i]"
-                  (update)="onUpdate($event)">
+  </div>
 
-</app-day-type-bin>
+
+</div>

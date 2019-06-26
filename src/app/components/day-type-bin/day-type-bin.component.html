@@ -1,69 +1,54 @@
-<div class="container panel ">
+<div style="width:100%; height:100%;">
+<div class="container panel " *ngIf="name!=='Add Type'">
   <!-- Title -->
   <div class="row ">
     <div class="col justify-content-md-center">
-      <h2 style="text-align: center; border: 5px solid black;" >{{name | uppercase}}</h2>
+      <h2 style="text-align: center; border: 5px solid black;">{{name | uppercase}}</h2>
     </div>
   </div>
 
   <!-- Add box -->
-  <div class="row">
-    <div class="col" style="max-width: 50%; border: 1px solid black">
-      <p class="test" style="text-align: center; border: 1px solid black; width: 100%; margin:5px;">Dates Available for Import</p>
+  <div class="row" style="width: 100%">
+    <div class="col-6" style="width: 100%; border: 1px solid black;">
+      <!--Block Title -->
+      <p class="test" style="white-space:normal; word-wrap: break-word; border: 1px solid black; width: 100%; margin:5px;">Dates Available for
+        Import</p>
 
       <!-- Dates to pull into bin -->
-      <select name="rejects" style="width: 100%;   margin:5px;" (click)="addPull($event)">
-        <option *ngFor="let day of date_pull" value="{{day}}"  > {{day}} </option>
+      <select name="pull_dates" style="width: 100%;   margin:5px;" (click)="addPull($event)">
+        <option *ngFor="let day of date_pull" value="{{day}}"> {{day}} </option>
       </select>
-
+    </div>
+    <div class="col-6" style=" border: 1px solid black">
       <!-- display dates currently in bin -->
       <p>Current Contents</p>
-      <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
-        <div class="row list-item " *ngFor="let selector of bin_contents let i= index"  style="margin:0">
-          <p class="col-11 list">{{selector}}</p>
-        </div>
+      <div>
+      <ul class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+        <li class="list-item " *ngFor="let selector of bin_contents let i= index"> {{selector}}
+          <span id={{i}} class="close" style=" background: darkgrey;" (click)=removeDate($event) >x</span>
+        </li>
+      </ul>
+
       </div>
-
-
-
-
-
-
 
     </div>
   </div>
 
-    <!--  </div>
-      <div class="row">
-        <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
-          <div class="row list-item " *ngFor="let selector of days_contained let i= index" style="margin:0">
-            <p class="col-11 list">{{selector.name}}</p>
-          </div>
-        </div>
-      </div>-->
 
+
+  <div class="row" style="margin-top: 10%; height:25%;">
+    <input type="checkbox" checked="graph" style="height: 50%; width: 50%;" (click)="plot($event)" >
+    <p style=" vertical-align: center; height: 50%; font-size: 12vm"> On Graph </p>
   </div>
-  <!--<div class="dropdown_form" style="height:200px">
+</div>
 
-    <div class="row" style="border: 1px solid black">
-      &lt;!&ndash; Day selector box &ndash;&gt;
-      <div class="col">
-        <select name="date_box" multiple>
-          <option *ngFor="let day of days_contained" value="{{day}}"> {{day}}    </option>
-        </select>
-      </div>
-
-      <div class="col"></div>
-
-      &lt;!&ndash; Destination selector box &ndash;&gt;
-      <div class="col">
-        <input type="text" #typebox name="example" list="exampleList" value="" (keyup.enter)=moveDays(typebox.value)>
-        <datalist id="exampleList">
-          <option *ngFor="let column of day_types" value="{{column}}">{{column}}</option>
-        </datalist>
-      </div>
-    </div>
-  </div>-->
-
-
-
+<div class="container panel" *ngIf="name=='Add Type'" style="border: 1vw dashed black;  display: flex; justify-content: center; align-items: center;"  (click) = add_type();>
+  <form style="height:75%; width:75%;" action="add_type($event)" >
+    <p>Add Type</p>
+    <label>
+      <input id="INPUT" type="text" style="width:100%; text-align: center">
+    </label>
+    <p style="text-align: center; font-size: 25.5vw; height: 100%; width: 100%">+</p>
+  </form>
+</div>
+</div>

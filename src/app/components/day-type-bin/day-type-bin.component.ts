@@ -9,18 +9,20 @@ export class DayTypeBinComponent implements OnInit, OnChanges{
   @Input() name: string;
   @Input() date_pull: any [];
   @Input() bin_contents: any [];
-  @Output() update = new EventEmitter<{name: string, dates: any[]}>();
 
+  @Output() update = new EventEmitter<{name: string, dates: any[]}>();
+  @Output() delete = new EventEmitter<any>();
+  @Output() plot_change = new EventEmitter<{name: string, graph:boolean}>();
+  @Output() add = new EventEmitter<any>();
   //Array of dates to pull inside
   pull_in: any[];
 
   constructor() {}
 
-  ngOnInit() {}
-
+  ngOnInit() {
+  }
 
   ngOnChanges(changes: SimpleChanges){}
-
 
   addPull(event) {
     //console.log(this.date_pull);
@@ -31,5 +33,22 @@ export class DayTypeBinComponent implements OnInit, OnChanges{
         this.update.emit({name: this.name, dates: this.pull_in});
     }
   }
+
+  removeDate(event){
+    console.log(event.target.id);
+    const index = event.target.id;
+    if (index > -1) {
+      this.delete.emit(this.bin_contents[index]);
+      console.log("CHECKPOINT 1");
+    }
+  }
+
+  add_type(){
+    this.add.emit(event);
+  }
+
+   plot(event){
+    this.plot_change({name:this.name, graph:event.target.checked});
+   }
 
 }

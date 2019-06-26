@@ -1,20 +1,20 @@
 
 
-<app-holder></app-holder>
-<!--
+<!--<app-holder></app-holder>-->
+<
 <div style="margin: 0; border: 0; padding:0; width:100%">
   <div class="row r1">
     <div class="col-sm-3 panel col1">
       <p class="panel-title"> Graph Selection </p>
       <form #formElement="ngForm" style="max-height:300px" (ngSubmit)="plotGraphNavigation()">
 
-        --> <!--Radio Buttons---------------------------------------------------------------------------------
+        <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row">
           <div class="col-5">
             <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
-              --><!-- <span class="checkmark"></span> --
+                      <span class="checkmark"></span>
             </label>
           </div>
 
@@ -22,13 +22,13 @@
             <label class="selectable radio-label"> &nbsp; &nbsp;Scatter Graph
               <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
-              --><!-- <span class="checkmark"></span> --
+                      <span class="checkmark"></span>
             </label>
           </div>
         </div>
-        --><!------------------------------------------------------------------------------------------------>
+        <!------------------------------------------------------------------------------------------------>
 
-        <!-- Line graph--------------------------------
+        <!-- Line graph-------------------------------->
         <div class="selectable" style="padding-left:0;" *ngIf="!show">
           <div class="row">
             <div class="col-4 expand-horizontal" style="text-align: right; ">
@@ -48,7 +48,7 @@
               </div>
 
             </div>
-          </div> <!-- spinner 1: Y---
+          </div> <!-- spinner 1: Y--->
 
           <div class="row">
             <div class="col-4 expand-horizontal">
@@ -65,7 +65,7 @@
           </div>
         </div>
 
-        <!-- Scatter graph-----------------------------
+        <!-- Scatter graph----------------------------->
         <div class="selectable" style="padding-left:0;" *ngIf="show">
           <div class="row">
             <div class="col-1">
@@ -98,7 +98,7 @@
 
 
         </div>
-        Button--------------------------------------------------------------------
+        <!--Button-------------------------------------------------------------------->
         <div class="row">
           <button class="btn" type="submit" style="margin:auto; z-index:10;">Show</button>
         </div>
@@ -107,7 +107,7 @@
     <div class="col-sm-7 panel col2" style="min-height: 300px;   height:100%;">
 
       <div>
-         Label and Import Button -------------------------------------------------------------------------------
+         <!--Label and Import Button ------------------------------------------------------------------------------->
         <div class="row" style="min-height:40px;"> --
           <span class="col-10 panel-title" style="width:80%">Import Section</span>
           <button class="btn pull-close-right" style="margin:auto; z-index:10; max-width: 120px; position: absolute; right:10px; top: 10px" (click)="onImport()">Import
@@ -149,8 +149,8 @@
         <p class="panel-title"> Averages by Day Type</p>
       </div>
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
--->
-        <!-- File select box ---
+
+        <!-- File select box --->
         <div class=" row">
           <div class="col-2">
             <p class=".dropbox-label">File:</p>
@@ -193,7 +193,7 @@
     </div>
   </div>
 
-  <-- Not sure how to do space filler here.    ngIF to toggle?--
+  <!-- Not sure how to do space filler here.    ngIF to toggle?-->
   <div class="row">
     <div class="col-sm-3 panel col1" style=" height:150px; ">
       <p> Analytics </p>
@@ -201,4 +201,4 @@
   </div>
 
 </div>
--->
+
