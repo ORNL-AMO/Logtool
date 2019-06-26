@@ -1,54 +1,58 @@
 <div style="width:100%; height:100%;">
-<div class="container panel " *ngIf="name!=='Add Type'">
-  <!-- Title -->
-  <div class="row ">
-    <div class="col justify-content-md-center">
-      <h2 style="text-align: center; border: 5px solid black;">{{name | uppercase}}</h2>
+  <div class="panel " *ngIf="name!=='Add Type'">
+    <!-- Title -->
+    <div class="row ">
+      <div class="col justify-content-md-center">
+        <h2 class="header">{{name | uppercase}}</h2>
+      </div>
     </div>
-  </div>
 
-  <!-- Add box -->
-  <div class="row" style="width: 100%">
-    <div class="col-6" style="width: 100%; border: 1px solid black;">
-      <!--Block Title -->
-      <p class="test" style="white-space:normal; word-wrap: break-word; border: 1px solid black; width: 100%; margin:5px;">Dates Available for
-        Import</p>
+    <!-- basic box -->
+    <div class="row justify-content-center">
+      <div class="col-5" style=" border: 1px solid black;">
+        <!--Block Title -->
+        <p class="import-label">Dates Available </p>
 
-      <!-- Dates to pull into bin -->
-      <select name="pull_dates" style="width: 100%;   margin:5px;" (click)="addPull($event)">
-        <option *ngFor="let day of date_pull" value="{{day}}"> {{day}} </option>
-      </select>
+        <!-- Dates to pull into bin -->
+        <select name="pull_dates" class="import-label" (click)="addPull($event)">
+          <option id = "{{i}} + date" *ngFor="let day of datePull let i = index">
+             {{day.day + " " + day.date}} </option>
+        </select>
+      </div>
+
+      <div class="col-6" style=" border: 1px solid black">
+        <!-- display dates currently in bin -->
+        <p class="import-label">Current Contents</p>
+        <div>
+          <ul class="list-box">
+            <li class="list " *ngFor="let selector of binContents let i= index"> {{selector.day + " " + selector.date}}
+              <span id={{i}} class="list" style=" background: darkgrey;" (click)=removeDate($event)>x</span>
+            </li>
+          </ul>
+
+        </div>
+
+      </div>
     </div>
-    <div class="col-6" style=" border: 1px solid black">
-      <!-- display dates currently in bin -->
-      <p>Current Contents</p>
-      <div>
-      <ul class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
-        <li class="list-item " *ngFor="let selector of bin_contents let i= index"> {{selector}}
-          <span id={{i}} class="close" style=" background: darkgrey;" (click)=removeDate($event) >x</span>
-        </li>
-      </ul>
 
+    <div class="row justify-content-left" style="margin-top: 10%; height:25%;">
+      <div class="col-6 " style="border: 1px solid black;">
+        <div class="row">
+          <input type="checkbox" class="check" style="border-radius: 50%" (click)="plot($event)">
+          <p>Graph</p>
+        </div>
       </div>
 
     </div>
   </div>
 
-
-
-  <div class="row" style="margin-top: 10%; height:25%;">
-    <input type="checkbox" checked="graph" style="height: 50%; width: 50%;" (click)="plot($event)" >
-    <p style=" vertical-align: center; height: 50%; font-size: 12vm"> On Graph </p>
+  <div class="panel add-panel" *ngIf="name=='Add Type'">
+    <form action="add_type($event)">
+      <p>Add Type</p>
+      <label>
+        <input id="INPUT" type="text" style="width:100%; text-align: center">
+      </label>
+      <p style="text-align: center; font-size: 45px; height: 100%; width: 100%">+</p>
+    </form>
   </div>
-</div>
-
-<div class="container panel" *ngIf="name=='Add Type'" style="border: 1vw dashed black;  display: flex; justify-content: center; align-items: center;"  (click) = add_type();>
-  <form style="height:75%; width:75%;" action="add_type($event)" >
-    <p>Add Type</p>
-    <label>
-      <input id="INPUT" type="text" style="width:100%; text-align: center">
-    </label>
-    <p style="text-align: center; font-size: 25.5vw; height: 100%; width: 100%">+</p>
-  </form>
-</div>
 </div>

@@ -1,95 +1,118 @@
-//Basic panel -----------------------------------------
+//Basic panel ---------------------------------------------------------------------
 .panel{
   width: 30%;
-  border: solid 4px darkgreen;
+  border: #ddd solid 1px;
   min-height: 50px;
-  background: url(../../../assets/complex.jpeg) no-repeat center fixed;
-  background-size: cover;
-  margin: 2px;
-  border-radius: 15px;
+  background: #fff;
+  margin: 5px;
+  border-radius: 4px;
   height: 100%;
+  box-shadow: 0px 0px 10px 5px grey;
+  padding:0;
 }
 
-//Font styling
-.section-header{
-  text-align: center;
-  font-size: 150%;
-  background-color: rgba(100,200,100,.7);
+.header{
+  padding-left: 15px;
+  background-color: lightskyblue;
+  width: 100%;
+}
+
+.panel-title{
   margin-top: 5px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 18px;
 }
 
+.radio-label{
+  font-size: 14px;
+}
+
+//Drop boxes ----------------------------------------------------------------------
 .dropbox-label{
   margin-top: 0;
   text-align: right;
   font-size: 100%;
 }
 
-.panel-title{
-  margin-top: 5px;
-  vertical-align: middle;
-  font-weight: bold;
-}
-
 .list-box{
   max-height: 125px;
   align-content: center;
   margin-bottom: 4px;
-  background: antiquewhite;
-  border: 1px solid black;
+  width: 100%;
+  background: rgba(0,0,0,.1);
+  padding:0;
+  border:0;
+  overflow-y: auto;
+
+
 }
 
 .list{
-  font-size: 85%;
+
   text-align: center;
   margin-top: 0;
   margin-bottom:0;
   margin-left: 0;
   white-space: nowrap;
-  border-bottom: 1px solid black;
+  border: 1px solid black;
+  font-size: 12px;
 }
 
-.list-item{
-
+.list single{
+  overflow-x: auto;
 }
 
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space:nowrap;
+}
+ul li {
+  text-align: center;
+  white-space:nowrap;
+}
 
-//Dropboxes--------------------------------------------------
 select{
   margin-top: 0;
   width: 100%;
 }
 
 
-//Button definitions---------------------------------------------------------------
+//Button definitions-----------------------------------------------------------------
 button:hover {
-  background-color: #ce0606;
+  background-color: darkblue;
 }
 
 button:active {
   box-shadow: none;
+  background-color: #007bff;
   top: 5px;
 }
 
 .btn {
-  background-color: palegreen;
+  color: #fff;
+  background: #2980b9;
+  border-color: #000B13;
+  font-weight: normal;
+  border-radius: 2px;
+  fon-size: 16px;
   box-shadow: 4px 4px 0 rgba(20,20,20,.5);
-  color: black;
+
   //position: relative;
   text-decoration: none;
   text-transform: uppercase;
 }
-//---------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------
 .selectable{
   cursor: pointer;
 }
 
-//Radio button definitions-------------------------------------------------------
+//Custom Radio Button- Currently used--------------------------------------------------
 //Font Styling
-.radio-label{
-}
-
-
 input[type=radio] {
   position: absolute;
   cursor: pointer;
@@ -100,7 +123,6 @@ input[type=radio] {
   background: red;
 }
 
-//Custom Radio Button- Currently not used------------------------------------------
   /* Create a custom radio button */
 .checkmark {
   position: absolute;
@@ -119,20 +141,7 @@ input[type=radio] {
 
 /* When the radio button is checked, add a blue background */
 input:checked ~ .checkmark {
-  //background-color: #2196F3;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: relative;
-  display: none;
-}
-
-
-/* Show the indicator (dot/circle) when checked */
-.selectable input:checked ~ .checkmark:after {
-  display: block;
+  background-color: white;
 }
 
 /* Style the indicator (dot/circle) */
@@ -144,7 +153,21 @@ input:checked ~ .checkmark {
   border-radius: 50%;
   background: Blue//#2196F3;
 }
-//---------------------------------------------------------------------------------
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: relative;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.selectable input:checked ~ .checkmark:after {
+  display: block;
+}
+
+
+//--------------------------------------------------------------------------------------
 
 
 // Basic containers
@@ -160,8 +183,6 @@ input:checked ~ .checkmark {
   -ms-user-select: none;
   user-select: none;
 }
-
-
 .nav-link {
   font-size: medium;
   border: 2px solid black;
