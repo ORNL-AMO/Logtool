@@ -61,13 +61,13 @@ export class HomeComponent implements OnInit {
       } else {
         this.tabs = [];
         for (let i = 0; i < this.dataFromDialog.length; i++) {
-          console.log(this.dataFromDialog[i].id);
+          // console.log(this.dataFromDialog[i].id);
           this.tabs.push({
             name: this.dataFromDialog[i].name,
             id: i
           });
         }
-        console.log(this.tabs);
+        // console.log(this.tabs);
         this.populateSpinner();
         this.populateGraph();
         this.changeDisplayTable(0);

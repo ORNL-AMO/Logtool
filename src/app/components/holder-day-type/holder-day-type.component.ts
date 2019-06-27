@@ -9,8 +9,8 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 })
 export class HolderDayTypeComponent implements OnInit {
 
-  specificBin = [];
-  specificContent = [];
+  dropDownBinList = [];
+  selectedBinList = [];
   // Shubham
   dataInput = [];
   dataArrayColumns = [];
@@ -38,6 +38,7 @@ export class HolderDayTypeComponent implements OnInit {
     'Weekday',
     'Weekend'
   ];
+  i = 0;
 
   constructor(private data: DataService, private routeDataTransfer: RouteDataTransferService) {
   }
@@ -84,8 +85,8 @@ export class HolderDayTypeComponent implements OnInit {
               this.days.push({
                 date: this.timeSeriesDayType[i - 1].getDate(),
                 day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
-                bin: 'Excluded',
-                displayDate: this.timeSeriesDayType[i - 1].getDate()
+                bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
+                id: this.days.length
               });
             }
             this.dayArray = [];
@@ -108,49 +109,49 @@ export class HolderDayTypeComponent implements OnInit {
             this.days.push({
               date: this.timeSeriesDayType[i - 1].getDate(),
               day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
-              bin: 'Excluded',
-              displayDate: this.timeSeriesDayType[i - 1].getDate()
+              bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
+              id: this.days.length
             });
           }
         }
       }
       this.columnMainArray.push(this.mainArray);
-      console.log(this.columnMainArray);
-      console.log(this.days);
+      // console.log(this.columnMainArray);
+      //console.log(this.days);
     }
+
+    /*    console.log('WHAT',this.dropDownBinList.length);
+        console.log('WHAT',this.dropDownBinList);*/
     this.allocateBins();
-
-    console.log('binContent');
-    console.log(this.specificContent);
-    console.log('specificBin');
-    console.log(this.specificBin);
   }
 
-  onUpdate(event) {
-    console.log(event);
-    /*this.days[event.target.id].bin = event.target.value;
-    this.allocateBins();*/
+  // disabled
+  addSelectedDate(event) {
+    this.days[event.date.id].bin = event.name;
+    this.allocateBins();
   }
 
-  onRemove(event) {
-    console.log(event);
-    /*this.days[this.day.indexOf(date)].bin = 'Excluded';
-    this.allocateBins();*/
+  // disabled
+  onSelectedRemove(event) {
+    this.days[event.date.id].bin = 'Excluded';
+    this.allocateBins();
   }
 
   allocateBins() {
-    for (let j = 0; j < this.binList.length; j++) {
-      this.specificBin[j] = [];
-      this.specificContent[j] = [];
-    }
-    for (let i = 0; i < this.days.length; i++) {
-      for (let j = 0; j < this.binList.length; j++) {
-        if (this.days[i].bin === this.binList[j]) {
-          this.specificContent[j].push(this.days[i]);
+    this.selectedBinList = [];
+    this.dropDownBinList = [];
+    for (let i = 0; i < this.binList.length; i++) {
+      const tempSelectedBinList = [];
+      const tempdropDownBinList = [];
+      for (let j = 0; j < this.days.length; j++) {
+        if (this.days[j].bin === this.binList[i]) {
+          tempSelectedBinList.push(this.days[j]);
         } else {
-          this.specificBin.push(this.days[i]);
+          tempdropDownBinList.push(this.days[j]);
         }
       }
+      this.dropDownBinList.push(tempdropDownBinList);
+      this.selectedBinList.push(tempSelectedBinList);
     }
   }
 
@@ -197,15 +198,11 @@ export class HolderDayTypeComponent implements OnInit {
           averageValue: singleSumArray,
           binValue: bigTempArray[i].binValue,
           entries: bigTempArray[i].binArray.length,
-          columnName: this.value[column].name
+          channelName: this.value[column].name
         });
       }
     }
-  }
-
-  // ????
-  addType() {
-    console.log('add');
+    console.log(this.sumArray);
   }
 
   averageArray(input) {
@@ -217,6 +214,16 @@ export class HolderDayTypeComponent implements OnInit {
       }
     }
     return sum / input.length;
+  }
+
+  binAllocation(tempDayArray, tempDayType): string {
+    if (tempDayArray.length < 20) {
+      return 'Excluded';
+    } else if (tempDayType < 5) {
+      return 'Weekday';
+    } else {
+      return 'Weekend';
+    }
   }
 
 }

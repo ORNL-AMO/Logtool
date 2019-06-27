@@ -9,16 +9,16 @@ export class DayTypeBinComponent implements OnInit {
   @Input()
   name: string;
   @Input()
-  datePull: any [];
+  dropDownList: any [];
   @Input()
-  binContents: any [];
+  activeContents: any [];
 
-  @Output() update = new EventEmitter<{ name: string, dates: any[] }>();
-  @Output() delete = new EventEmitter<any>();
+  @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
+  @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() plot_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() add = new EventEmitter<any>();
+
   // Array of dates to pull inside
-  pull_in: any[];
 
   constructor() {
   }
@@ -26,23 +26,23 @@ export class DayTypeBinComponent implements OnInit {
   ngOnInit() {
   }
 
-  addPull(event) {
-    // console.log(this.date_pull);
-    this.pull_in = [];
+  addSelectedDate(event) {
     const index = event.target.options.selectedIndex;
     if (index > -1) {
-      this.pull_in.push(this.datePull[index]);
-      this.update.emit({name: this.name, dates: this.pull_in});
+      this.addSelectedDateOutput.emit({name: this.name, date: this.dropDownList[index]});
     }
   }
 
-  removeDate(event) {
-    console.log(event.target.id);
-    const index = event.target.id;
-    if (index > -1) {
-      this.delete.emit(this.binContents[index]);
-      console.log('CHECKPOINT 1');
+  onSelectedRemove(event) {
+    let index = -1;
+    if (event.target.id === undefined || event.target.id === '' || event.target.id === null) {
+    } else {
+      index = event.target.id;
+      if (index > -1) {
+        this.onSelectedRemoveOutput.emit({name: this.name, date: this.activeContents[index]});
+      }
     }
+
   }
 
   add_type() {
