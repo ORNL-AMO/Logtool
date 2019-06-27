@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
           // console.log(this.dataFromDialog[i].id);
           this.tabs.push({
             name: this.dataFromDialog[i].name,
-            id: i
+            id: this.dataFromDialog[i].id
           });
         }
         // console.log(this.tabs);
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           this.tabs.push({
             name: this.dataFromDialog[i].name,
-            id: i
+            id: this.dataFromDialog[i].id
           });
         }
         this.populateSpinner();
@@ -298,4 +298,25 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  removeFile(id) {
+    console.log(id);
+    this.indexFileStore.deleteFromDB(id).then(() => {
+      this.indexFileStore.viewDataDB().then(result => {
+          console.log(result);
+        for (let i = 0; i < this.tabs.length; i++) {
+          if (id === 0) {
+            this.tabs.shift();
+            break;
+          } else if (id === this.tabs.length) {
+            this.tabs.pop();
+            break;
+          } else {
+            this.tabs.splice(1, i);
+            break;
+          }
+        }
+      });
+    });
+
+  }
 }
