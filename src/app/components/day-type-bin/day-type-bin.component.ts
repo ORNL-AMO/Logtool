@@ -45,7 +45,7 @@ export class DayTypeBinComponent implements OnInit {
   }
 
   addType(event) {
-    //test string vs. regular expression;
+    // test string vs. regular expression;
     console.log(event);
     const type = event.target.value;
     const acceptable = RegExp('^[a-z]');
@@ -55,7 +55,7 @@ export class DayTypeBinComponent implements OnInit {
     } else {
       console.log('false');
     }
-    //this.addTypeOutput.emit(type);
+    // this.addTypeOutput.emit(type);
   }
 
   plot(event) {

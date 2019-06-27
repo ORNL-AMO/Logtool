@@ -24,6 +24,7 @@ export class HolderDayTypeComponent implements OnInit {
   days = [];
   columnMainArray = [];
   sumArray = [];
+  channelId = 0;
   weekday = [
     'Monday',
     'Tuesday',

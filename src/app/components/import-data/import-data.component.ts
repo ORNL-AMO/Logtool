@@ -78,7 +78,7 @@ export class ImportDataComponent implements OnInit {
     // Interval **************************************************************************************************************************
     this.filled = true;
     this.temp = this.selectedHeader.map(a => a.name);
-    //console.log(this.temp);
+    // console.log(this.temp);
     this.alias = this.fileName;
   }
 
@@ -92,7 +92,7 @@ export class ImportDataComponent implements OnInit {
         displayHeader.push({
 
           headerName: this.temp[i], // this.selectedHeader[i].name, //Rename Stuff
-          field: this.selectedHeader[i].name, //Original Name
+          field: this.selectedHeader[i].name, // Original Name
           editable: true
         });
       }
@@ -109,7 +109,7 @@ export class ImportDataComponent implements OnInit {
     }
     this.dataArrayColumns = holder;
     this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
-    //this.indexFileStore.addIntoDB(this.fileName, this.dataWithHeader, this.dataArrayColumns,
+    // this.indexFileStore.addIntoDB(this.fileName, this.dataWithHeader, this.dataArrayColumns,
       this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, '');
     setTimeout(() => {
       this.bsModalRef.hide();
@@ -118,10 +118,10 @@ export class ImportDataComponent implements OnInit {
   }
   columnNameChange(event) {
     this.temp[parseInt(event.target.id, 10)] = event.target.value;
-    //console.log(this.temp);
+    // console.log(this.temp);
   }
 
-  rename(event){
+  rename(event) {
     this.alias = event.target.value;
   }
 
