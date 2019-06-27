@@ -1,4 +1,6 @@
-<div class="scrolling-wrapper-flexbox" style=" overflow-x: auto; white-space: nowrap;">
+<div>
+  <!--Scrolling list of bins -->
+  <div class="scrolling-wrapper-flexbox" style=" overflow-x: auto; white-space: nowrap;">
   <div class="col-5" style="margin: 5px; max-width: 360px;" *ngFor="let bin of binList let i = index ">
     <app-day-type-bin
       [name]=bin
@@ -12,13 +14,15 @@
   <div class="col-5">
     <app-day-type-bin
       [name]="'Add Type'"
-      (add)="addType()">
+      (addTypeOutput)="addType() ">
     </app-day-type-bin>
   </div>
 </div>
-<div class="row" style="height:100%; overlow:auto">
+
+  <!-- Table plot -->
+  <div class="row" style="height:100%; overflow-x:auto">
   <button (click)="calculateType()">Day Type</button>
-  <div class="container" style="width: 100%; height:100%; background-color: gray; margin:0;">
+  <div class="container" style="width: 100%; height:100%; margin:0;">
         <table>
           <th class="dayType">
             Day Type
@@ -36,4 +40,6 @@
           </tr>
         </table>
   </div>
+
+    <!-- graph -->
 </div>

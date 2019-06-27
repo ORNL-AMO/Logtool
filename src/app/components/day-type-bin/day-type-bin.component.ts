@@ -16,15 +16,14 @@ export class DayTypeBinComponent implements OnInit {
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() plot_change = new EventEmitter<{ name: string, graph: boolean }>();
-  @Output() add = new EventEmitter<any>();
+  @Output() addTypeOutput = new EventEmitter<any>();
 
   // Array of dates to pull inside
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
+
 
   addSelectedDate(event) {
     const index = event.target.options.selectedIndex;
@@ -45,8 +44,18 @@ export class DayTypeBinComponent implements OnInit {
 
   }
 
-  add_type() {
-    this.add.emit(event);
+  addType(event) {
+    //test string vs. regular expression;
+    console.log(event);
+    const type = event.target.value;
+    const acceptable = RegExp('^[a-z]');
+    console.log('pass');
+    if (acceptable.test(type)) {
+    console.log('pass');
+    } else {
+      console.log('false');
+    }
+    //this.addTypeOutput.emit(type);
   }
 
   plot(event) {
