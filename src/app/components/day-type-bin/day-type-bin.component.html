@@ -25,9 +25,10 @@
         <p class="import-label">Current Contents</p>
         <div>
           <ul class="list-box">
-            <li  class="list"
-                *ngFor="let selector of activeContents let i= index" (click)=onSelectedRemove($event)> {{selector.day + " " + selector.date}}
-              <span id={{i}} *ngIf="name!=='Excluded'" class="list" style=" background: darkgrey;" >x</span>
+            <li class="list"
+                *ngFor="let selector of activeContents let i= index"
+                (click)=onSelectedRemove($event)> {{selector.day + " " + selector.date}}
+              <span id={{i}} *ngIf="name!=='Excluded'" class="list" style=" background: darkgrey;">x</span>
             </li>
           </ul>
 
@@ -47,13 +48,20 @@
     </div>
   </div>
 
-  <div class="panel add-panel" *ngIf="name=='Add Type'">
-    <form action="add_type($event)">
-      <p>Add Type</p>
-      <label>
-        <input id="INPUT" type="text" style="width:100%; text-align: center">
-      </label>
-      <p style="text-align: center; font-size: 45px; height: 100%; width: 100%">+</p>
-    </form>
+  <div class="panel" *ngIf="name=='Add Type'">
+    <div class="row ">
+      <div class="col justify-content-md-center">
+        <h2 class="header">{{name | uppercase}}</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <form>
+        <label>
+          <input #typeBox keyup="0">
+        </label>
+        <button value = "{{typeBox.value}}" (click)="addType($event)"> Press Enter to Confirm </button>
+      </form>
+    </div>
   </div>
 </div>

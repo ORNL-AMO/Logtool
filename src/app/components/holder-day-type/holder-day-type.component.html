@@ -1,4 +1,6 @@
-<div class="scrolling-wrapper-flexbox" style=" overflow-x: auto; white-space: nowrap;">
+<div>
+  <!--Scrolling list of bins -->
+  <div class="scrolling-wrapper-flexbox" style=" overflow-x: auto; white-space: nowrap;">
   <div class="col-5" style="margin: 5px; max-width: 360px;" *ngFor="let bin of binList let i = index ">
     <app-day-type-bin
       [name]=bin
@@ -12,11 +14,12 @@
   <div class="col-5">
     <app-day-type-bin
       [name]="'Add Type'"
-      (add)="addType()" >
+      (addTypeOutput)="addType() ">
     </app-day-type-bin>
   </div>
 </div>
-<div class="row" style="height:100%">
+  <!-- Table plot -->
+  <div class="row" style="height:100%; overflow-x:auto">
   <button (click)="calculateType()">Day Type</button>
   <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout"></plotly-plot>
   <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout"></plotly-plot>
@@ -41,7 +44,7 @@
             <td *ngFor="let row of content.averageValue">{{row}}</td>
           </tr>
         </table>
-      </div>
-    </div>
   </div>
+
+    <!-- graph -->
 </div>
