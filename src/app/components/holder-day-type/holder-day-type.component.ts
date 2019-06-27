@@ -124,7 +124,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.columnMainArray.push(this.mainArray);
     }
     this.allocateBins();
-    this.plotGraph(0);
+    this.plotGraph(0, 'Weekday');
     this.plotGraphAverage(0);
   }
 
@@ -132,12 +132,14 @@ export class HolderDayTypeComponent implements OnInit {
   addSelectedDate(event) {
     this.days[event.date.id].bin = event.name;
     this.allocateBins();
+    this.plotGraph(0, 'Weekday');
   }
 
   // disabled
   onSelectedRemove(event) {
     this.days[event.date.id].bin = 'Excluded';
     this.allocateBins();
+    this.plotGraph(0, 'Weekday');
   }
 
   allocateBins() {
@@ -231,15 +233,23 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  plotGraph(channelId) {
+  plotGraph(channelId, plotSpecificDayType) {
     let name = '';
     this.plotData = [];
     if (this.columnMainArray.length > 0) {
       const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
       for (let i = 0; i < this.columnMainArray[channelId].length; i++) {
         const tempHourAverage = [];
-        for (let hour = 0; hour < this.columnMainArray[channelId][i].length; hour++) {
-          tempHourAverage.push(this.columnMainArray[channelId][i][hour].hourAverage);
+        if (plotSpecificDayType !== null || plotSpecificDayType !== '') {
+          if (this.days[i].bin === plotSpecificDayType) {
+            for (let hour = 0; hour < this.columnMainArray[channelId][i].length; hour++) {
+              tempHourAverage.push(this.columnMainArray[channelId][i][hour].hourAverage);
+            }
+          }
+        } else {
+          for (let hour = 0; hour < this.columnMainArray[channelId][i].length; hour++) {
+            tempHourAverage.push(this.columnMainArray[channelId][i][hour].hourAverage);
+          }
         }
         this.plotData.push({
           x: timeSeries,
@@ -285,53 +295,53 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-    plotGraphAverage(channelName) {
-      let name = '';
-      this.plotData = [];
-      if (this.sumArray.length > 0) {
-        const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
-        for (let i = 0; i < this.sumArray[channelName].length; i++) {
-          this.plotData.push({
-            x: timeSeries,
-            y: this.sumArray[0][i].averageValue,
-            type: 'linegl',
-            mode: 'lines',
-            name: this.sumArray[0][i].binValue
-          });
-          name = this.sumArray[0][0].channelName;
-        }
-        this.graphBinAverage = {
-          data: this.plotData,
-          layout: {
-            hovermode: 'closest',
-            autosize: true,
-            title: name,
-            xaxis: {
-              autorange: true,
-            },
-            yaxis: {
-              autorange: true,
-              type: 'linear'
-            }
-
-          }
-        };
-      } else {
-        this.graphBinAverage = {
-          data: this.plotData,
-          layout: {
-            hovermode: 'closest',
-            autosize: true,
-            title: 'Average Bin Graph',
-            xaxis: {
-              autorange: true,
-            },
-            yaxis: {
-              autorange: true,
-              type: 'linear'
-            }
-          }
-        };
+  plotGraphAverage(channelName) {
+    let name = '';
+    this.plotData = [];
+    if (this.sumArray.length > 0) {
+      const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+      for (let i = 0; i < this.sumArray[channelName].length; i++) {
+        this.plotData.push({
+          x: timeSeries,
+          y: this.sumArray[0][i].averageValue,
+          type: 'linegl',
+          mode: 'lines',
+          name: this.sumArray[0][i].binValue
+        });
+        name = this.sumArray[0][0].channelName;
       }
+      this.graphBinAverage = {
+        data: this.plotData,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: name,
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+
+        }
+      };
+    } else {
+      this.graphBinAverage = {
+        data: this.plotData,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Average Bin Graph',
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+        }
+      };
     }
+  }
 }
