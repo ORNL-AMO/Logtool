@@ -38,7 +38,9 @@ export class HolderDayTypeComponent implements OnInit {
     'Weekday',
     'Weekend'
   ];
-  i = 0;
+  graphDayAverage: any;
+  graphBinAverage: any;
+  plotData = [];
 
   constructor(private data: DataService, private routeDataTransfer: RouteDataTransferService) {
   }
@@ -67,7 +69,9 @@ export class HolderDayTypeComponent implements OnInit {
               this.dayArray.push({
                 valueArray: this.valueArray,
                 hourAverage: this.averageArray(this.valueArray),
-                hourValue: hourValue === -1 ? 23 : hourValue
+                hourValue: hourValue === -1 ? 23 : hourValue,
+                date: this.day,
+                channelName: this.value[column].name
               });
               this.valueArray = [];
               this.hour = this.timeSeriesDayType[i].getHours();
@@ -78,7 +82,9 @@ export class HolderDayTypeComponent implements OnInit {
             this.dayArray.push({
               valueArray: this.valueArray,
               hourAverage: this.averageArray(this.valueArray),
-              hourValue: hourValue === -1 ? 23 : hourValue
+              hourValue: hourValue === -1 ? 23 : hourValue,
+              date: this.day,
+              channelName: this.value[column].name
             });
             this.mainArray.push(this.dayArray);
             if (column === 0) {
@@ -116,13 +122,10 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
       this.columnMainArray.push(this.mainArray);
-      // console.log(this.columnMainArray);
-      //console.log(this.days);
     }
-
-    /*    console.log('WHAT',this.dropDownBinList.length);
-        console.log('WHAT',this.dropDownBinList);*/
     this.allocateBins();
+    this.plotGraph(0);
+    this.plotGraphAverage(0);
   }
 
   // disabled
@@ -178,6 +181,7 @@ export class HolderDayTypeComponent implements OnInit {
       tempArray = [];
     }
     for (let column = 0; column < this.value.length; column++) {
+      const tempSumArray = [];
       for (let i = 0; i < bigTempArray.length; i++) {
         singleSumArray = [];
         for (let j = 0; j < bigTempArray[i].binArray.length; j++) {
@@ -194,15 +198,16 @@ export class HolderDayTypeComponent implements OnInit {
         singleSumArray = singleSumArray.map((element) => {
           return (element / bigTempArray[i].binArray.length).toFixed(2);
         });
-        this.sumArray.push({
+        tempSumArray.push({
           averageValue: singleSumArray,
           binValue: bigTempArray[i].binValue,
           entries: bigTempArray[i].binArray.length,
           channelName: this.value[column].name
         });
       }
+      this.sumArray.push(tempSumArray);
     }
-    console.log(this.sumArray);
+    this.plotGraphAverage(0);
   }
 
   averageArray(input) {
@@ -226,4 +231,107 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
+  plotGraph(channelId) {
+    let name = '';
+    this.plotData = [];
+    if (this.columnMainArray.length > 0) {
+      const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+      for (let i = 0; i < this.columnMainArray[channelId].length; i++) {
+        const tempHourAverage = [];
+        for (let hour = 0; hour < this.columnMainArray[channelId][i].length; hour++) {
+          tempHourAverage.push(this.columnMainArray[channelId][i][hour].hourAverage);
+        }
+        this.plotData.push({
+          x: timeSeries,
+          y: tempHourAverage,
+          type: 'linegl',
+          mode: 'lines',
+          name: this.columnMainArray[channelId][i][0].date + ' ' + 'Day'
+        });
+        name = this.columnMainArray[channelId][i][channelId].channelName;
+      }
+      this.graphDayAverage = {
+        data: this.plotData,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: name,
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+
+        }
+      };
+    } else {
+      this.graphDayAverage = {
+        data: this.plotData,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Plot',
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+        }
+      };
+    }
+  }
+
+    plotGraphAverage(channelName) {
+      let name = '';
+      this.plotData = [];
+      if (this.sumArray.length > 0) {
+        const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+        for (let i = 0; i < this.sumArray[channelName].length; i++) {
+          this.plotData.push({
+            x: timeSeries,
+            y: this.sumArray[0][i].averageValue,
+            type: 'linegl',
+            mode: 'lines',
+            name: this.sumArray[0][i].binValue
+          });
+          name = this.sumArray[0][0].channelName;
+        }
+        this.graphBinAverage = {
+          data: this.plotData,
+          layout: {
+            hovermode: 'closest',
+            autosize: true,
+            title: name,
+            xaxis: {
+              autorange: true,
+            },
+            yaxis: {
+              autorange: true,
+              type: 'linear'
+            }
+
+          }
+        };
+      } else {
+        this.graphBinAverage = {
+          data: this.plotData,
+          layout: {
+            hovermode: 'closest',
+            autosize: true,
+            title: 'Average Bin Graph',
+            xaxis: {
+              autorange: true,
+            },
+            yaxis: {
+              autorange: true,
+              type: 'linear'
+            }
+          }
+        };
+      }
+    }
 }
