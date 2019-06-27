@@ -7,7 +7,6 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 
 
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -46,8 +45,9 @@ export class HomeComponent implements OnInit {
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
-              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService,  ) {
+              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
   }
+
   ngOnInit() {
     this.dataFromDialog = [];
     this.lineListY = [];
@@ -61,13 +61,13 @@ export class HomeComponent implements OnInit {
       } else {
         this.tabs = [];
         for (let i = 0; i < this.dataFromDialog.length; i++) {
-          console.log(this.dataFromDialog[i].id);
+          // console.log(this.dataFromDialog[i].id);
           this.tabs.push({
             name: this.dataFromDialog[i].name,
             id: i
           });
         }
-        console.log(this.tabs);
+        // console.log(this.tabs);
         this.populateSpinner();
         this.populateGraph();
         this.changeDisplayTable(0);
@@ -106,8 +106,6 @@ export class HomeComponent implements OnInit {
     if (this.graph === '' || this.graph === undefined) {
       alert('Please select Graph type');
     } else if (this.graph === 'line_graph') {
-      //console.log( this.ySelectorListLine);
-      //console.log( this.timeSeriesSelectList);
 
       this.routeDataTransfer.storage = {
         value: this.ySelectorListLine,
@@ -243,7 +241,7 @@ export class HomeComponent implements OnInit {
         value: this.columnSelectorList,
         timeSeriesDayType: this.timeSeriesDayType
       };
-      this.router.navigate(['/day-type-calculation']);
+      this.router.navigate(['/holder-day-type']);
     }
   }
 
@@ -279,6 +277,7 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+
   populateGraph() {
     if (this.graph === '' || this.graph === undefined) {
       this.routeDataTransfer.storage = {
@@ -298,17 +297,5 @@ export class HomeComponent implements OnInit {
       };
     }
   }
-
-  removeFile(id){
-    //alert("This cannot be undone. Continue?"); //change to confimration box
-    //console.log(id+1);
-    //this.indexFileStore.removeFromDB(id+1);
-
-
-
-
-
-  }
-
 
 }

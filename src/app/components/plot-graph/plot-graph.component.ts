@@ -178,7 +178,7 @@ export class PlotGraphComponent implements OnInit {
         var cell = data[XLSX.utils.encode_cell( {c: colNum, r: rowNum})];
         if ((cell.z) === 'm/d/yy'){
 
-          cell.z = 'dd/mm/yy hh:mm:ss.000';
+          cell.z = 'dd/mm/yy hh:mm:ss';
           delete cell.w;
           XLSX.utils.format_cell(cell);
           console.log(cell.z, cell.v, cell.w);
