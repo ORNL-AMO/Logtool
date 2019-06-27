@@ -174,7 +174,7 @@ export class PlotGraphComponent implements OnInit {
     for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
       for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
         const cell = data[XLSX.utils.encode_cell( {c: colNum, r: rowNum})];
-        if ((cell.z) === 'm/d/yy'){
+        if ((cell.z) === 'm/d/yy') {
 
           cell.z = 'dd/mm/yy hh:mm:ss';
           delete cell.w;
@@ -184,7 +184,7 @@ export class PlotGraphComponent implements OnInit {
 
       }
     }
-    XLSX.writeFile(wb, 'THISPAGE.csv',{bookType: 'csv'});
+    XLSX.writeFile(wb, 'THISPAGE.csv', {bookType: 'csv'});
   }
 
 }

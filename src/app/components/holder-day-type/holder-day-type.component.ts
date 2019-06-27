@@ -24,6 +24,7 @@ export class HolderDayTypeComponent implements OnInit {
   days = [];
   columnMainArray = [];
   sumArray = [];
+  channelId = 0;
   weekday = [
     'Monday',
     'Tuesday',
@@ -132,12 +133,14 @@ export class HolderDayTypeComponent implements OnInit {
   addSelectedDate(event) {
     this.days[event.date.id].bin = event.name;
     this.allocateBins();
+    this.plotGraph(0);
   }
 
   // disabled
   onSelectedRemove(event) {
     this.days[event.date.id].bin = 'Excluded';
     this.allocateBins();
+    this.plotGraph(0);
   }
 
   allocateBins() {
