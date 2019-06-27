@@ -126,7 +126,7 @@
             <li class="nav-item" *ngFor="let tab of tabs">
 
               <div class="nav-link" (click)="changeDisplayTable(tab.id)"
-                   [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(0,0,255,.5)': 'rgba(0,0,255,.75)',
+                   [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(0,0,255,.75)': 'rgba(0,0,255,.5)',
                                 'border-width'    :activeTab === tab.id ? '3px': '2px'}"
               >
                 <span style="margin: 10px 5px;">{{tab.name}}</span>

@@ -3,7 +3,7 @@
   max-width: 360px;
   //height: 100%;
   border: #ddd solid 1px;
-  min-height: 50px;
+  height: 200px;
   background: #fff;
   margin-right: 5px;
   margin-left: 5px;
@@ -34,14 +34,14 @@
 }
 
 .list-box{
-  max-height: 125px;
+  max-height: 75px;
   align-content: center;
   width: 100%;
   background: antiquewhite;
   border: 1px solid black;
   font-size: 12px;
   padding:0;
-  margin:0;
+  margin:5px;
   overflow-y: auto
 }
 

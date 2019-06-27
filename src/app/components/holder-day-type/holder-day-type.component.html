@@ -10,6 +10,7 @@
         (onSelectedRemoveOutput)="onSelectedRemove($event)">
       </app-day-type-bin>
     </div>
+
     <!-- add blank "ADD TYPE COMPONENT HERE -->
     <div class="col-5">
       <app-day-type-bin
@@ -45,8 +46,8 @@
           </th>
         </tr>
         <tr *ngFor="let content of sumArray">
-          <td class="dayType">{{content[channelId].binValue}}</td>
-          <td class="channelName">{{content[channelId].channelName}}</td>
+          <td class="dayType">{{content.binValue}}</td>
+          <td class="channelName">{{content.channelName}}</td>
           <td class="dataColumn" *ngFor="let row of content[channelId].averageValue"><p class="entry"> {{row}}</p></td>
         </tr>
       </table>
