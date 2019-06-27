@@ -7,3 +7,26 @@
     flex: 0 0 auto;
   }
 }
+
+.dayType {
+  text-align: center;
+  min-width: 50px;
+  white-space: nowrap;
+  border: 1px solid black;
+}
+.channelName{
+  text-align: center;
+  min-width: 50px;
+  white-space: nowrap;
+  border: 1px solid black;
+}
+
+.dataColumn{
+  text-align: center;
+    min-width: 50px;
+  border: 1px solid black;
+}
+
+.entry{
+  margin: 2px;
+}
