@@ -68,8 +68,7 @@ export class PlotGraphComponent implements OnInit {
 
         }
       };
-    } //-----------------------------------------------------------------------------------------------------------------------
-    else if (type === 'scatter_graph') {
+    } else if (type === 'scatter_graph') {
       this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
       this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
       this.plotGraph.push({
@@ -130,10 +129,10 @@ export class PlotGraphComponent implements OnInit {
 
   onCreateCsv() {
     console.log(this.routeDataTransfer.storage);
-    //set up workbook and sheet to catch data
-    var wb = XLSX.utils.book_new();
+    // set up workbook and sheet to catch data
+    const wb = XLSX.utils.book_new();
 
-    let input: any[] = [];
+    const input: any[] = [];
     input[0] = [];
 
     // Get header data
@@ -169,13 +168,12 @@ export class PlotGraphComponent implements OnInit {
       for (let j = 0; j < this.plotGraph.length; j++) {
         input[0].push(this.plotGraph[j].y[i]);
       }
-      //console.log(input, input[0][0] instanceof Date , typeof input[0][1]);
       XLSX.utils.sheet_add_aoa(data, input, {origin: -1});
     }
-    let range = XLSX.utils.decode_range(data['!ref']);
+    const range = XLSX.utils.decode_range(data['!ref']);
     for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
       for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
-        var cell = data[XLSX.utils.encode_cell( {c: colNum, r: rowNum})];
+        const cell = data[XLSX.utils.encode_cell( {c: colNum, r: rowNum})];
         if ((cell.z) === 'm/d/yy'){
 
           cell.z = 'dd/mm/yy hh:mm:ss';
@@ -187,30 +185,6 @@ export class PlotGraphComponent implements OnInit {
       }
     }
     XLSX.writeFile(wb, 'THISPAGE.csv',{bookType: 'csv'});
-
-
   }
-
-//grab X's
-
-  /*
-
-    XLSX.utils.sheet_add_aoa(ws,,{origin: -1})
-    XLSX.utils.book_append_sheet(wb, data, 'test');
-
-    */
-  /*
-  const csvData = [];
-  for (let i = 0; i < this.dataInput[0].inputData.length; i++) {
-    csvData.push({
-      'id': i,
-      '100Amp': this.dataInput[0].inputData[i],
-      '150Amp': this.dataInput[1].inputData[i],
-      'TimeStamp': this.dataInput[0]
-    });
-  }
-  this.csvexport.exportAsExcelFile(csvData, 'workfile');
-  */
-//}
 
 }
