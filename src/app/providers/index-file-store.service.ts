@@ -71,6 +71,7 @@ export class IndexFileStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
           db.getAll('fileInput').then(fileInput => {
+            console.log(fileInput);
             resolve(fileInput);
             this.data.changeInputArray(fileInput);
           });
@@ -81,16 +82,18 @@ export class IndexFileStoreService {
     });
   }
 
-  removeFromTab(index) {
-/*    return new Promise(resolve => {
+  deleteFromDB(index) {
+    return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.delete('fileInput', index).then( ()=>);
-        },
-        error => {
-          console.log(error);
-        });
-    });*/
+        db.delete('fileInput', index).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
   }
 }

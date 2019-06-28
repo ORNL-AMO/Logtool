@@ -127,8 +127,9 @@
 
               <div class="nav-link" (click)="changeDisplayTable(tab.id)"
                    [ngStyle]="{'background-color':activeTab === tab.id ? 'rgba(0,0,255,.75)': 'rgba(0,0,255,.5)',
-                                'border-width'    :activeTab === tab.id ? '3px': '2px'}"
-              >
+                                'border-width'    :activeTab === tab.id ? '3px': '2px'}" >
+
+
                 <span style="margin: 10px 5px;">{{tab.name}}</span>
                 <button (click)="removeFile(tab.id)"
                         style="padding-top: 0; margin-top:0; float: right; font-size: 8px; ">x
