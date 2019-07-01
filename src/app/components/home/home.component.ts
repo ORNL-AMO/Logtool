@@ -1,10 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, IterableDiffers, ViewChild, DoCheck} from '@angular/core';
 import {Router} from '@angular/router';
 import {ImportDataComponent} from '../import-data/import-data.component';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
+import {ConfirmationModalComponent} from '../../confirmation-modal/confirmation-modal.component';
 
 
 @Component({
@@ -12,7 +13,9 @@ import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, DoCheck {
+
+
   graph: any;
   tabs = [];
   dataFromDialog: any = [];
@@ -41,11 +44,12 @@ export class HomeComponent implements OnInit {
   bsModalRef: BsModalRef;
   activeTab;
   showGraph = false;
-
+  differ: any;
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
-              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService) {
+              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
+             this.differ = differs.find([]).create(null);
   }
 
   ngOnInit() {
@@ -75,6 +79,11 @@ export class HomeComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+  }
+
+  //updates tablist on removal
+  ngDoCheck(): void {
+    this.differ.diff(this.tabs);
   }
 
   onImport() {
@@ -206,6 +215,7 @@ export class HomeComponent implements OnInit {
       } else if (this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
         this.timeSeriesDayType = `${currentSelectedFile},${i}`;
       }
+      console.log(this.timeSeriesDayType);
     }
   }
 
@@ -300,23 +310,29 @@ export class HomeComponent implements OnInit {
 
   removeFile(id) {
     console.log(id);
-    this.indexFileStore.deleteFromDB(id).then(() => {
-      this.indexFileStore.viewDataDB().then(result => {
-          console.log(result);
-        for (let i = 0; i < this.tabs.length; i++) {
-          if (id === 0) {
-            this.tabs.shift();
-            break;
-          } else if (id === this.tabs.length) {
-            this.tabs.pop();
-            break;
-          } else {
-            this.tabs.splice(1, i);
-            break;
-          }
-        }
-      });
+    this.bsModalRef = this.modalService.show(ConfirmationModalComponent);
+    this.bsModalRef.content.onClose.subscribe(result => {
+      if (result) {
+        this.indexFileStore.deleteFromDB(id).then(() => {
+          this.indexFileStore.viewDataDB().then(result => {
+            for (let i = 0; i < this.tabs.length; i++) {
+              if (id === 0) {
+                this.tabs.shift();
+                break;
+              } else if (id === this.tabs.length) {
+                this.tabs.pop();
+                break;
+              } else {
+                this.tabs.splice(1, i);
+                break;
+              }
+            }
+          });
+        });
+      }
     });
 
   }
+
+
 }

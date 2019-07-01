@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, AfterContentInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-holder-day-type',
   templateUrl: './holder-day-type.component.html',
   styleUrls: ['./holder-day-type.component.scss']
 })
-export class HolderDayTypeComponent implements OnInit {
+export class HolderDayTypeComponent implements OnInit, AfterContentInit {
 
   dropDownBinList = [];
   selectedBinList = [];
@@ -345,4 +346,32 @@ export class HolderDayTypeComponent implements OnInit {
       };
     }
   }
+
+  ngAfterContentInit() { d3.select('p').style('color', 'Blue'); }
+
+
+  clicked(event) {
+    /*d3.select(event.target).append('circle')
+      .attr('cx', event.x)
+      .attr('cy', event.y)
+      .attr('r', this.radius)
+      .attr('fill', 'red');*/
+    const start = new Date('5/22/1991');
+    const end = new Date('5/30/1991');
+
+/*    const value = [0,1,2,3,4,5,6,7,8];
+    const w = d3.utcMonday.count(start , end);
+
+    d3.select(event.target).append('rect')
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("x", w)
+      .attr("y", )
+      .attr("fill", 'red');
+
+    console.log(n);*/
+  }
+
+
+
 }

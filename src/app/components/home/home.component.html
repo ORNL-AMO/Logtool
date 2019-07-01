@@ -122,7 +122,7 @@
         </div>
 
         <div class="row " style="margin-left: 20px">
-          <ul class="nav nav-pills">
+          <ul class="nav nav-pills" #fileList>
             <li class="nav-item" *ngFor="let tab of tabs">
 
               <div class="nav-link" (click)="changeDisplayTable(tab.id)"
@@ -205,4 +205,6 @@
   </div>
 
 </div>
+
+
 
