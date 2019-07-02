@@ -32,6 +32,7 @@ import { PlotGraphComponent } from './components/plot-graph/plot-graph.component
 import { DayTypeBinComponent } from './components/day-type-bin/day-type-bin.component';
 import { HolderDayTypeComponent } from './components/holder-day-type/holder-day-type.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -50,7 +51,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PlotGraphComponent,
     DayTypeBinComponent,
     HolderDayTypeComponent,
-    ConfirmationModalComponent
+    ConfirmationModalComponent,
+    CalendarComponent
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent],
   imports: [
