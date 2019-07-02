@@ -23,7 +23,7 @@ import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 
 })
 
-export class HomeComponent implements OnInit, DoCheck  {
+export class HomeComponent implements OnInit, DoCheck {
 
   graph: any;
 
@@ -587,8 +587,6 @@ export class HomeComponent implements OnInit, DoCheck  {
     this.bsModalRef = this.modalService.show(ConfirmationModalComponent);
     this.bsModalRef.content.onClose.subscribe(result => {
       if (result) {
-        console.log('Result', result);
-        console.log('before', this.tabs);
         this.indexFileStore.deleteFromDB(id).then(result2 => {
           for (let i = 0; i < this.tabs.length; i++) {
 
