@@ -4,11 +4,12 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 import * as d3 from 'd3';
 
 @Component({
-  selector: 'app-holder-day-type',
-  templateUrl: './holder-day-type.component.html',
-  styleUrls: ['./holder-day-type.component.scss']
+  selector: 'app-calendar',
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss']
 })
-export class HolderDayTypeComponent implements OnInit {
+export class CalendarComponent implements OnInit {
+
 
   dropDownBinList = [];
   selectedBinList = [];
@@ -48,7 +49,6 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   ngOnInit() {
-
     this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
     this.value = this.routeDataTransfer.storage.value;
     const timeSeries = this.routeDataTransfer.storage.timeSeriesDayType.split(',');
@@ -129,9 +129,6 @@ export class HolderDayTypeComponent implements OnInit {
     this.allocateBins();
     this.plotGraph(0, 'Weekday');
     this.plotGraphAverage(0);
-    //console.log(this.days);
-    this.clicked();
-    //console.log(this.timeSeriesDayType);
   }
 
   // disabled
@@ -356,73 +353,30 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 
-  clicked() {
-    const cell_dimension = 30;
-    const width3 = d3.select('#grid');
-    console.log(width3._groups[0]);
-    const week = d3.timeFormat('%U');
-    const daynum = d3.timeFormat('%d');
-    const dayindex = d3.timeFormat('%w');
+  clicked(event) {
+    /*d3.select(event.target).append('circle')
+      .attr('cx', event.x)
+      .attr('cy', event.y)
+      .attr('r', this.radius)
+      .attr('fill', 'red');*/
+    const start = new Date('5/22/1991');
+    const end = new Date('5/30/1991');
 
+    const value = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    const w = d3.utcMonday.count(start, end);
+/*
 
-
-
-    const dayList = d3.nest()
-      .key(function (d) {
-        return week(new Date(d));
-      })
-      .key(function (d) {
-        return daynum(new Date(d));
-      })
-      .entries(this.timeSeriesDayType);
-
-
-    const svg = d3.select('#grid').selectAll('g')
-      .data(dayList)
-      .join('g')
-      .attr('transform', function(d, i) {  return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5))  + ')' ; } );
-
-    // Squares
-    svg.append('g')
-      .selectAll('g')
-      .data(d => d.values)
+    d3.select(event.target).append('g')
+      .selectAll('rect')
+      .data(value)
       .join('rect')
-        .attr('width', cell_dimension)
-        .attr('height', cell_dimension)
-        .attr('x', function(d) {return dayindex(d.values[0]) * (cell_dimension + 5); } )
-        .attr('y', 0)
-        .attr('fill', d => this.getColor(d.values[0]));
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('x', value * 21)
+        .attr('y',)
+        .attr('fill', 'red');
+*/
 
-    /*
-    // Text
-    svg.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('text')
-      .attr('x', function(d) {return dayindex(d.values[0]) * (cell_dimension + 5); } )
-      .attr('y', function(d) { return cell_dimension; })
-      .text(function(d) { return d.key; });
-    */
-    svg.selectAll('rect')
-      .on('click', d => this.changeColor(event.target));
-  }
-
-  bincolor = ['red', 'green', 'blue'];
-
-  getColor(key) {
-    const daynum =  d3.timeFormat('%d')(key);
-    const obj = this.days.find(obj => obj.date == daynum);
-    return this.bincolor[ this.binList.indexOf(obj.bin)];
-  }
-
-  changeColor(rect) {
-    const active = d3.select(rect);
-    const index = this.bincolor.indexOf(active.attr('fill'));
-    if (index === this.bincolor.length - 1 ) {
-      active.attr('fill', this.bincolor[0]);
-    } else {
-      active.attr('fill', this.bincolor[index + 1]);
-    }
   }
 
 

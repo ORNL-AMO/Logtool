@@ -1,6 +1,5 @@
 <div style="width:100%; height:100%;">
   <div class="panel " *ngIf="name!=='Add Type'">
-
     <!-- Title -->
     <div class="row ">
       <div class="col justify-content-md-center">
@@ -10,56 +9,50 @@
 
     <!-- basic box -->
     <div class="row justify-content-center" style="margin-bottom: 5px">
-      <div class="col-5" *ngIf="name!=='Excluded'" style=" border: 1px solid black;">
-        <!--Block Title -->
-        <p class="import-label">Dates Available </p>
-
-        <!-- Dates to pull into bin -->
-        <select name="pull_dates" class="import-label" (click)="addSelectedDate($event)">
-          <option id="{{i}} + date" *ngFor="let day of dropDownList let i = index">
-            {{day.day + " " + day.date}} </option>
-        </select>
-      </div>
-
-      <!-- display dates currently in bin -->
-      <div class="col-6" style=" border: 1px solid black; max-height:100%;">
-
-        <p class="import-label">Current Contents</p>
-        <div>
+      <div class="col-10">
+        <!-- Dates located in bin currently -->
+        <p class="row import-label" style="text-align: center;">Current Contents</p>
+        <div class="row">
           <ul class="list-box">
-            <div class="row" *ngFor="let selector of activeContents let i= index"
-                 (click)="onSelectedRemove($event)" style="margin:0">
-              <p class="col-11 list">{{selector.day + " " + selector.date}}</p>
+            <li class="row" *ngFor="let selector of activeContents let i= index"
+                (click)="onSelectedRemove($event)" style="margin:0">
+              <p class="col-11 list" >{{selector.day + " " + selector.date}}</p>
               <p id="{{i}}" class="col-1 align-self-end list"
                  style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>
-            </div>
-             <!--  <li class="list" *ngFor="let selector of activeContents let i= index"
-                (click)=onSelectedRemove($event)> {{selector.day + " " + selector.date}}
-              <span id={{i}} *ngIf="name!=='Excluded'" class="list" style=" background: darkgrey;">x</span>
-            </li>-->
+            </li>
           </ul>
-
         </div>
 
-      </div>
-    </div>
 
-  </div>
-  <!-- ADD BOX ----------->
-  <div class="panel" *ngIf="name=='Add Type'">
-    <div class="row ">
-      <div class="col justify-content-md-center">
-        <h2 class="header">{{name | uppercase}}</h2>
-      </div>
-    </div>
-
-    <div class="row">
-      <form>
-        <label>
-          <input #typeBox keyup="0">
+        <!--Block Title  <p class="import-label">Dates Available </p> -->
+        <div class="row justify-content-center"> <p style="text-align: center; margin: 0;">Add a date</p> </div>
+        <!-- Dates to pull into bin -->
+        <label class="row">
+          <select name="pull_dates" class="import-label" (click)="addSelectedDate($event)">
+            <option id="{{i}} + date" *ngFor="let day of dropDownList let i = index" style="text-align: center;">
+              {{day.day + " " + day.date}} </option>
+          </select>
         </label>
-        <button value = "{{typeBox.value}}" (click)="addType($event)"> Press Enter to Confirm </button>
-      </form>
+      </div>
     </div>
+  </div>
+
+</div>
+<!-- ADD BOX ----------->
+<div class="panel" *ngIf="name=='Add Type'">
+  <div class="row ">
+    <div class="col justify-content-md-center">
+      <h2 class="header">{{name | uppercase}}</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <form>
+      <label>
+        <input #typeBox keyup="0">
+      </label>
+      <button value="{{typeBox.value}}" (click)="addType($event)"> Press Enter to Confirm</button>
+    </form>
   </div>
 </div>
+
