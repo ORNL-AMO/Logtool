@@ -275,15 +275,17 @@ export class HolderDayTypeComponent implements OnInit {
       };
     }
   }
-
   clicked() {
-    const cell_dimension = 30;
-    const width3 = d3.select('#grid');
-    console.log(width3._groups[0]);
+
+    const width3 = d3.select('#grid').attr('viewBox');
+    console.log(width3, width3.split(','), width3.split(',')[2]);
+    //const cell_dimension = width3.attr('width');
+    const cell_dimension = width3.split(',')[2] * .1;
+
+
     const week = d3.timeFormat('%U');
     const daynum = d3.timeFormat('%d');
     const dayindex = d3.timeFormat('%w');
-
     const dayList = d3.nest()
       .key(function (d) {
         return week(new Date(d));
@@ -292,37 +294,61 @@ export class HolderDayTypeComponent implements OnInit {
         return daynum(new Date(d));
       })
       .entries(this.timeSeriesDayType);
-
     const svg = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
       .attr('transform', function (d, i) {
         return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5)) + ')';
       });
-    // Squares
-    svg.append('g')
+    //Attach squares to week groups
+    const squares = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('rect')
-      .attr('width', cell_dimension)
-      .attr('height', cell_dimension)
-      .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + 5);
-      })
+        .attr('width', cell_dimension)
+        .attr('height', cell_dimension)
+        .attr('x', function (d) {
+            return dayindex(d.values[0]) * (cell_dimension + 5);
+        })
       .attr('y', 0)
       .attr('fill', d => this.getColor(d.values[0]));
-    /*
+
+      console.log(squares);
+
+/*    svg.selectAll('rect')
+      .on('click', d => this.changeColor(event.target));*/
     // Text
-    svg.append('g')
+    const dateText =  svg.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('text')
-      .attr('x', function(d) {return dayindex(d.values[0]) * (cell_dimension + 5); } )
-      .attr('y', function(d) { return cell_dimension; })
-      .text(function(d) { return d.key; });
-    */
-    svg.selectAll('rect')
-      .on('click', d => this.changeColor(event.target));
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * (1 / 3);
+      })
+      .attr('y', function (d) {
+        return cell_dimension - cell_dimension * (1 / 3);
+      })
+      .text(function (d) {
+        return d.key;
+      });
+
+    const checkboxes = svg.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('rect')
+      .attr('width', cell_dimension * .25)
+      .attr('height', cell_dimension * .25)
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * .7;
+      })
+      .attr('y', function (d) {
+        return cell_dimension * .05;
+      })
+      .attr('fill', 'white');
+
+     checkboxes.on('click', this.toggleColor(event));
+
+
   }
   getColor(key) {
     const daynum = d3.timeFormat('%d')(key);
@@ -451,7 +477,6 @@ export class HolderDayTypeComponent implements OnInit {
           name: tempHeader[i].headerName,
           identifier: `${currentSelectedFile},${i}`
         });
-
       } else if (this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
         this.timeSeriesDayType = `${currentSelectedFile},${i}`;
       }
