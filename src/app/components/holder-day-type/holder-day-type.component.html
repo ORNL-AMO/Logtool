@@ -26,13 +26,8 @@
             <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
               <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
             </select>
-            <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
-              <div class="row list-item " *ngFor="let selector of columnSelectorList"
-                   (click)="removeFromListColumn($event)" style="margin:0">
-                <p class="col-11 list">{{selector.name}}</p>
-                <p class="col-1 align-self-end list"
-                   style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>
-              </div>
+            <div class="list-box">
+              <p class="list" *ngFor="let selector of columnSelectorList" title="columnSelectorList">{{selector.name}}</p>
             </div>
           </div>
         </div>
@@ -106,7 +101,7 @@
     <button (click)="calculateType()">Day Type</button>
   </div>
   <div class="row">
-  <!-- graph-->
+  <graph-->
 <!--  <div class="row">
     <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout"></plotly-plot>
   </div>

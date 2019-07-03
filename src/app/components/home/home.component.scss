@@ -1,137 +1,219 @@
-.row{
-  width:100%;
-  margin: 5px;
-}
-
-.inner-row {
-  width:100%;
-}
-
+//Basic panel ---------------------------------------------------------------------
 .panel{
   width: 30%;
   border: #ddd solid 1px;
   min-height: 50px;
   background: #fff;
-  margin: 10px;
+  margin: 5px;
   border-radius: 4px;
   height: 100%;
   box-shadow: 0px 0px 10px 5px grey;
   padding:0;
 }
 
-
-.bin-holder-holder{
-  max-width: 380px;
-  min-width: 220px;
+.header{
+  padding-left: 15px;
+  background-color: lightskyblue;
   width: 100%;
-  background: lightgrey;
-  box-shadow: 0px 0px 10px 5px darkgrey;
-  border: 1px solid black;
-  margin: 5px;
-
-}
-.bin-holder{
-  width: 90%;
-  background: darkgrey;
-  box-shadow: 0px 0px 10px 5px darkgrey;
-  border: 1px solid black;
-  margin: 5px;
-  padding: 0;
 }
 
-.dayType {
+.panel-title{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.radio-label{
+  font-size: 14px;
+}
+
+//Drop boxes ----------------------------------------------------------------------
+.dropbox-label{
+  margin-top: 0;
+  text-align: right;
+  font-size: 100%;
+}
+
+.list-box{
+  max-height: 125px;
+  align-content: center;
+  margin-bottom: 4px;
+  width: 100%;
+  background: rgba(0,0,0,.1);
+  padding:0;
+  border:0;
+  overflow-y: auto;
+
+
+}
+
+.list{
+
   text-align: center;
-  min-width: 50px;
+  margin-top: 0;
+  margin-bottom:0;
+  margin-left: 0;
   white-space: nowrap;
   border: 1px solid black;
+  font-size: 12px;
 }
 
-.channelName {
+.list single{
+  overflow-x: auto;
+}
+
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space:nowrap;
+}
+ul li {
   text-align: center;
-  min-width: 50px;
-  white-space: nowrap;
-  border: 1px solid black;
+  white-space:nowrap;
 }
 
-.dataColumn {
-  text-align: center;
-  min-width: 50px;
-  border: 1px solid black;
-  min-height: 10px;
+select{
+  margin-top: 0;
+  width: 100%;
 }
 
-.entry{
-  margin: 2px;
+
+//Button definitions-----------------------------------------------------------------
+button:hover {
+  background-color: darkblue;
 }
-// --------------------------------------------------------------------------
 
-/*
+button:active {
+  box-shadow: none;
+  background-color: #007bff;
+  top: 5px;
+}
 
-!* Button used to open the contact form - fixed at the bottom of the page *!
-.open-button {
-  background-color: #555;
-  color: white;
-  padding: 16px 20px;
-  border: none;
+.btn {
+  color: #fff;
+  background: #2980b9;
+  border-color: #000B13;
+  font-weight: normal;
+  border-radius: 2px;
+  fon-size: 16px;
+  box-shadow: 4px 4px 0 rgba(20,20,20,.5);
+
+  //position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+
+//------------------------------------------------------------------------------------
+.selectable{
   cursor: pointer;
-  opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
 }
 
-!* The popup form - hidden by default *!
-.form-popup {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  right: 15px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
+//Custom Radio Button- Currently used--------------------------------------------------
+//Font Styling
+input[type=radio] {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background: red;
 }
 
-!* Add styles to the form container *!
-.form-container {
-  max-width: 300px;
-  padding: 10px;
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.selectable:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+input:checked ~ .checkmark {
   background-color: white;
 }
 
-!* Full-width input fields *!
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: #f1f1f1;
+/* Style the indicator (dot/circle) */
+.selectable .checkmark:after {
+  top: 5px;
+  left: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: Blue//#2196F3;
 }
 
-!* When the inputs get focus, do something *!
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: relative;
+  display: none;
 }
 
-!* Set a style for the submit/login button *!
-.form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
+/* Show the indicator (dot/circle) when checked */
+.selectable input:checked ~ .checkmark:after {
+  display: block;
+}
+
+
+//--------------------------------------------------------------------------------------
+
+
+// Basic containers
+.table-display {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
   cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.nav-link {
+  font-size: medium;
+  border: 2px solid black;
+  //margin-bottom: 5px;
+  padding:0;
+  margin: auto;
+  min-height:45px;
+  color: white;
 }
 
-!* Add a red background color to the cancel button *!
-.form-container .cancel {
-  background-color: red;
+
+
+//Set Grid defaults ----------------------------------------------------------
+.row{
+  width:100%;
+  margin: 1.5px;
 }
 
-!* Add some hover effects to buttons *!
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
+.expand-horizontal{
+  margin-right: 0;
+  margin-left: 0;
+  padding-right:0;
+  padding-left: 0;
 }
-*/
+
+.expand-vertical{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top:0;
+  padding-bottom: 0;
+}
+
+//------------------------------------------------------------------------------
+//Playing with calendar

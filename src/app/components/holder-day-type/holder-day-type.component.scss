@@ -24,7 +24,7 @@
   max-width: 380px;
   min-width: 220px;
   width: 100%;
-  background: lightgraygrey;
+  background: lightgrey;
   box-shadow: 0px 0px 10px 5px darkgrey;
   border: 1px solid black;
   margin: 5px;
@@ -64,6 +64,37 @@
   margin: 2px;
 }
 // --------------------------------------------------------------------------
+
+.header{
+  padding-left: 15px;
+  background-color: lightskyblue;
+  width: 100%;
+}
+
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space:nowrap;
+}
+ul li {
+  text-align: center;
+  white-space:nowrap;
+}
+
+.bob{
+  pointer-events: none;
+   fill: yellow;
+}
+
+svg text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+svg text::selection {
+  background: none;
+}
 
 /*
 
