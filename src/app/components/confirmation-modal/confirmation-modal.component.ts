@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
   templateUrl: './confirmation-modal.component.html',
   styleUrls: ['./confirmation-modal.component.scss']
 })
-export class ConfirmationModalComponent implements OnInit{
+export class ConfirmationModalComponent implements OnInit {
 
   public onClose: Subject<boolean>;
 

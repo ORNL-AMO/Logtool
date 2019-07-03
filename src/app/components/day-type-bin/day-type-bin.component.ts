@@ -20,9 +20,11 @@ export class DayTypeBinComponent implements OnInit {
 
   // Array of dates to pull inside
 
-  constructor() {}
+  constructor() {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 
   addSelectedDate(event) {
@@ -51,7 +53,7 @@ export class DayTypeBinComponent implements OnInit {
     const acceptable = RegExp('^[a-z]');
     console.log('pass');
     if (acceptable.test(type)) {
-    console.log('pass');
+      console.log('pass');
     } else {
       console.log('false');
     }
