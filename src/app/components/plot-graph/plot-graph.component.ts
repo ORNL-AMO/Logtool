@@ -51,7 +51,6 @@ export class PlotGraphComponent implements OnInit {
           name: this.yValue[i].name
         });
       }
-      console.log(this.plotGraph);
       this.graph = {
         data: this.plotGraph,
         layout: {
@@ -77,7 +76,6 @@ export class PlotGraphComponent implements OnInit {
         type: 'scattergl',
         mode: 'markers'
       });
-      console.log(this.plotGraph);
       this.graph = {
         data: this.plotGraph,
         layout: {

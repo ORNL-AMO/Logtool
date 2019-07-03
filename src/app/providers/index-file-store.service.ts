@@ -71,7 +71,6 @@ export class IndexFileStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
           db.getAll('fileInput').then(fileInput => {
-            console.log(fileInput);
             resolve(fileInput);
             this.data.changeInputArray(fileInput);
           });
