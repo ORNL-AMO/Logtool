@@ -21,8 +21,6 @@ export class HomeComponent implements OnInit, DoCheck {
   temp2;
   temp3;
   temp4;
-  temp5;
-  temp6;
 // Line Graph
   lineListY: any = [];
   timeSeriesY: any = [];
@@ -33,14 +31,10 @@ export class HomeComponent implements OnInit, DoCheck {
   xSelectorListScatter: any = [];
   ySelectorListScatter: any = [];
 // Day Types
-  columnSelectorList = [];
-  fileSelector = [];
-  columnSelector = [];
   timeSeriesDayType = '';
   // Modal Ref
   bsModalRef: BsModalRef;
   activeTab;
-  showGraph = false;
   differ: any;
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
@@ -55,7 +49,6 @@ export class HomeComponent implements OnInit, DoCheck {
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
-    this.fileSelector = [];
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
@@ -88,7 +81,6 @@ export class HomeComponent implements OnInit, DoCheck {
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
-    this.fileSelector = [];
     this.modalService.onHide.subscribe(() => {
       this.indexFileStore.viewDataDB().then(result => {
         this.dataFromDialog = result;
@@ -196,58 +188,8 @@ export class HomeComponent implements OnInit, DoCheck {
     }
   }
 
-  fileSelectorEvent(event) {
-    this.columnSelectorList = [];
-    this.columnSelector = [];
-    const currentSelectedFile = event.target.value;
-    const tempHeader = this.dataFromDialog[parseInt(currentSelectedFile, 10)].selectedHeader;
-    for (let i = 0; i < tempHeader.length; i++) {
-      if (!(this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
-        this.columnSelector.push({
-          name: tempHeader[i].headerName,
-          identifier: `${currentSelectedFile},${i}`
-        });
-
-      } else if (this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
-        this.timeSeriesDayType = `${currentSelectedFile},${i}`;
-      }
-    }
-  }
-
-  columnSelectorEvent(event) {
-    this.columnSelectorList.push({
-      name: this.columnSelector[event.target.options.selectedIndex].name,
-      value: event.target.value
-    });
-  }
-
-  removeFromListColumn(event) {
-    for (let i = 0; i < this.columnSelectorList.length; i++) {
-      if (this.columnSelectorList[i].name.trim() === event.target.innerText.trim()) {
-        if (i === 0) {
-          this.columnSelectorList.shift();
-          break;
-        } else if (this.columnSelectorList.length === 1) {
-          this.columnSelectorList.pop();
-          break;
-        } else {
-          this.columnSelectorList.splice(1, i);
-          break;
-        }
-      }
-    }
-  }
-
   dayTypeNavigation() {
-    if (this.columnSelectorList.length === 0) {
-      alert('Please select Column');
-    } else if (this.columnSelectorList.length > 0) {
-      this.routeDataTransfer.storage = {
-        value: this.columnSelectorList,
-        timeSeriesDayType: this.timeSeriesDayType
-      };
-      this.router.navigate(['/holder-day-type']);
-    }
+    this.router.navigate(['/holder-day-type']);
   }
 
 // Custom Function
@@ -255,7 +197,6 @@ export class HomeComponent implements OnInit, DoCheck {
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
-    this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
       const filename = this.tabs[i].name;
       for (let j = 0; j < this.dataFromDialog[i].selectedHeader.length; j++) {
@@ -277,10 +218,6 @@ export class HomeComponent implements OnInit, DoCheck {
           });
         }
       }
-      this.fileSelector.push({
-        name: filename,
-        identifier: i
-      });
     }
   }
 
