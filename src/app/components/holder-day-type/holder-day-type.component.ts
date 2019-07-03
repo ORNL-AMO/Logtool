@@ -351,26 +351,29 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  ngAfterContentInit() {
-    d3.select('p').style('color', 'Blue');
-  }
+  /*  ngAfterContentInit() {
+      d3.select('p').style('color', 'Blue');
+    }*/
 
 
   clicked() {
 
     const width3 = d3.select('#grid').attr('viewBox');
-    console.log(width3, width3.split(","),  width3.split(",")[2]);
+    console.log(width3, width3.split(','), width3.split(',')[2]);
     //const cell_dimension = width3.attr('width');
-    const cell_dimension = width3.split(",")[2] * .1 ;
+    const cell_dimension = width3.split(',')[2] * .1;
 
 
     const week = d3.timeFormat('%U');
     const daynum = d3.timeFormat('%d');
     const dayindex = d3.timeFormat('%w');
 
+    /*
+     const svg = d3.select('#grid').selectAll('text')
+       .data(['M','T','W',"R",'F',"S",'S'])
+ */
 
-
-
+    //Parse date list into weeks and days
     const dayList = d3.nest()
       .key(function (d) {
         return week(new Date(d));
@@ -379,58 +382,93 @@ export class HolderDayTypeComponent implements OnInit {
         return daynum(new Date(d));
       })
       .entries(this.timeSeriesDayType);
-/*
-    const svg = d3.select('#grid').selectAll('text')
-      .data(['M','T','W',"R",'F',"S",'S'])
-*/
 
+    //Create week groups
     const svg = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
-      .attr('transform', function(d, i) {  return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5))  + ')' ; } );
+      .attr('transform', function (d, i) {
+        return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5)) + ')';
+      });
 
-    // Squares
-    svg.append('g')
+    //Attach squares to week groups
+    const squares = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('rect')
         .attr('width', cell_dimension)
         .attr('height', cell_dimension)
-        .attr('x', function(d) {return dayindex(d.values[0]) * (cell_dimension + 5); } )
-        .attr('y', 0)
-        .attr('fill', d => this.getColor(d.values[0]));
+        .attr('x', function (d) {
+            return dayindex(d.values[0]) * (cell_dimension + 5);
+        })
+      .attr('y', 0)
+      .attr('fill', d => this.getColor(d.values[0]));
 
+      console.log(squares);
+
+/*    svg.selectAll('rect')
+      .on('click', d => this.changeColor(event.target));*/
 
     // Text
-    svg.append('g')
+    const dateText =  svg.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('text')
-      .attr('x', function(d) {return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * ( 1 / 3 ); } )
-      .attr('y', function(d) { return cell_dimension - cell_dimension * ( 1 / 3 ); })
-      .text(function(d) { return d.key; });
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * (1 / 3);
+      })
+      .attr('y', function (d) {
+        return cell_dimension - cell_dimension * (1 / 3);
+      })
+      .text(function (d) {
+        return d.key;
+      });
 
-    svg.selectAll('rect')
-      .on('click', d => this.changeColor(event.target));
+    const checkboxes = svg.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('rect')
+      .attr('width', cell_dimension * .25)
+      .attr('height', cell_dimension * .25)
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * .7;
+      })
+      .attr('y', function (d) {
+        return cell_dimension * .05;
+      })
+      .attr('fill', 'white');
+
+     checkboxes.on('click', this.toggleColor(event));
+
+
   }
 
   bincolor = ['red', 'green', 'blue'];
 
   getColor(key) {
-    const daynum =  d3.timeFormat('%d')(key);
+    const daynum = d3.timeFormat('%d')(key);
     const obj = this.days.find(obj => obj.date == daynum);
-    return this.bincolor[ this.binList.indexOf(obj.bin)];
+    return this.bincolor[this.binList.indexOf(obj.bin)];
   }
 
   changeColor(rect) {
     const active = d3.select(rect);
     const index = this.bincolor.indexOf(active.attr('fill'));
-    if (index === this.bincolor.length - 1 ) {
+    if (index === this.bincolor.length - 1) {
       active.attr('fill', this.bincolor[0]);
     } else {
       active.attr('fill', this.bincolor[index + 1]);
     }
   }
+
+const toggleColor = (function(){
+  var currentColor = "white";
+
+  return function(){
+    currentColor = currentColor == "white" ? "magenta" : "white";
+    d3.select(this).style("fill", currentColor);
+  }
+})();
 
 
 }

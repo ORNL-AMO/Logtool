@@ -2,8 +2,88 @@
   <!-- Control panel and calendar -->
   <div class="row" style="min-height: 200px;">
     <!-- control panel -->
-    <div class="col-3 panel" style="height:200px;">
-      Channel Selection
+    <div class="col-sm-3 panel col1" style="min-height: 150px;  height:100%">
+
+      <div class="row header">
+
+        <p class="panel-title"> Averages by Day Type</p>
+
+      </div>
+
+      <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
+
+
+        <!-- File select box --->
+
+        <div class=" row">
+
+          <div class="col-2">
+
+            <p class=".dropbox-label">File:</p>
+
+          </div>
+
+          <div class="col-9">
+
+            <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)">
+
+              <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="row">
+
+          <div class="col-2">
+
+            <p class=".dropbox-label">Data:</p>
+
+          </div>
+
+          <div class="col-9">
+
+
+            <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
+
+              <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
+
+            </select>
+
+
+            <div class="list-box" style="padding:0; margin:0; border:0; overflow-y: auto">
+
+              <div class="row list-item " *ngFor="let selector of columnSelectorList"
+
+                   (click)="removeFromListColumn($event)" style="margin:0">
+
+                <p class="col-11 list">{{selector.name}}</p>
+
+                <p class="col-1 align-self-end list"
+
+                   style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row justify-content-center">
+
+
+          <button class="btn" type="submit">Send</button>
+
+
+        </div>
+
+      </form>
+
     </div>
     <!-- calendar panel -->
     <div class="col-4 panel">
@@ -72,12 +152,13 @@
 </div>
 
 <!-- graphs -->
+<!--
 <div class="col">
-  <!-- execute -->
+  &lt;!&ndash; execute &ndash;&gt;
   <div class="row">
     <button (click)="calculateType()">Day Type</button>
   </div>
-  <!-- graph-->
+  &lt;!&ndash; graph&ndash;&gt;
   <div class="row">
     <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout"></plotly-plot>
   </div>
@@ -85,6 +166,7 @@
     <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout"></plotly-plot>
   </div>
 </div>
+-->
 
 <!-- Table plot -->
 <!--  <div class="row" style="height:100px; overflow-x:auto">
