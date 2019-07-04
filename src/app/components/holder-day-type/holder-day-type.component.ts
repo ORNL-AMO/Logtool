@@ -87,7 +87,7 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
       this.populateSpinner();
-
+      this.plotGraph(0);
     });
   }
 
@@ -196,8 +196,8 @@ export class HolderDayTypeComponent implements OnInit {
       return 'WEEKEND';
     }
   }
-
   plotGraph(channelId) {
+
     let name = '';
     this.plotData = [];
     if (this.columnMainArray.length > 0) {
@@ -329,6 +329,10 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
+
+// **************************************************
+
+
   clicked() {
     d3.select('#grid').selectAll('*').remove();
     const width3 = d3.select('#grid').attr('viewBox');
@@ -337,6 +341,7 @@ export class HolderDayTypeComponent implements OnInit {
     const week = d3.timeFormat('%U');
     const daynum = d3.timeFormat('%d');
     const dayindex = d3.timeFormat('%w');
+
     const dayList = d3.nest()
       .key(function (d) {
         return week(new Date(d));
@@ -345,11 +350,28 @@ export class HolderDayTypeComponent implements OnInit {
         return daynum(new Date(d));
       })
       .entries(this.timeSeriesDayType);
+
+
     const svg = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5)) + ')';
+        return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5) + 20) + ')';
+      });
+    const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const header = d3.select('#grid').append('g')
+      .selectAll('g')
+      .data(d => weekdays)
+      .attr('transform', 'translate( 40 , 0 )')
+      .join('text')
+      .attr('x', function (d, i) {
+        console.log(d, i, i * cell_dimension + 5);
+        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + 30;
+      })
+      .attr('y', 15)
+
+      .text(function (d) {
+        return d;
       });
     // Attach squares to week groups
     const squares = svg.append('g')
@@ -363,11 +385,11 @@ export class HolderDayTypeComponent implements OnInit {
       })
       .attr('y', 0)
       .attr('fill', d => this.getColor(d.values[0]));
-
     console.log(squares);
     svg.selectAll('rect')
       .on('click', d => this.changeColor(event.target, dayList));
     // Text
+
     const dateText = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
@@ -378,6 +400,7 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('y', function (d) {
         return cell_dimension - cell_dimension * (1 / 3);
       })
+      .classed('bob', true)
       .style('pointer-events', 'none')
       .style('user-select', 'none')
       .text(function (d) {
@@ -397,8 +420,8 @@ export class HolderDayTypeComponent implements OnInit {
         return cell_dimension * .05;
       })
       .attr('fill', 'white');
-
-    // checkboxes.on('click', this.toggleColor(event));
+    squares.on('click', d => this.changeColor(event.target));
+    checkboxes.on('click', d => this.toggleColor(event.target));
   }
 
   getColor(key) {
@@ -408,11 +431,12 @@ export class HolderDayTypeComponent implements OnInit {
       obj1.date.getDate() === dayNum.getDate()
     );
     if (obj !== undefined) {
+      return 'blue';
+    } else {
       return this.binList.find(bin => bin.binName === obj.bin).binColor;
     } else {
       return 'purple';
     }
-
   }
 
   changeColor(rect, dayList) {
@@ -423,6 +447,17 @@ export class HolderDayTypeComponent implements OnInit {
     } else {
       active.attr('fill', this.binList[(this.binList.indexOf(index)) + 1].binColor);
     }
+    //update bin in days array
+    /*const key = active._groups[0][0].__data__.key;
+    const found = this.days.find(obj => obj.date.getDate().toString() === key);
+    console.log(found.id);
+    this.addSelectedDate(found.id);*/
+  }
+  toggleColor(box) {
+    console.log(box);
+    const active = d3.select(box);
+    const newColor = active.attr('fill') === 'white' ? 'black' : 'white';
+    active.attr('fill', newColor);
     console.log(dayList);
     console.log(active);
     /*let foundTemp;
@@ -441,14 +476,6 @@ export class HolderDayTypeComponent implements OnInit {
     console.log(found);*/
     // this.addSelectedDate(found);
   }
-
-  toggleColor(box) {
-    console.log(box);
-    const active = d3.select(box);
-    const newColor = active.attr('fill') === 'white' ? 'black' : 'white';
-    active.attr('fill', newColor);
-  }
-
   populateSpinner() {
     this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
@@ -459,7 +486,6 @@ export class HolderDayTypeComponent implements OnInit {
       });
     }
   }
-
   dayTypeNavigation() {
     if (this.columnSelectorList.length === 0) {
       alert('Please select Column');
@@ -574,3 +600,4 @@ export class HolderDayTypeComponent implements OnInit {
     });
   }
 }
+

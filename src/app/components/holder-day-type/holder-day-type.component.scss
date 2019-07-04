@@ -81,6 +81,37 @@ ul li {
 }
 // --------------------------------------------------------------------------
 
+.header{
+  padding-left: 15px;
+  background-color: lightskyblue;
+  width: 100%;
+}
+
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space:nowrap;
+}
+ul li {
+  text-align: center;
+  white-space:nowrap;
+}
+
+.bob{
+  pointer-events: none;
+   fill: yellow;
+}
+
+svg text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+svg text::selection {
+  background: none;
+}
+
 /*
 
 !* Button used to open the contact form - fixed at the bottom of the page *!
