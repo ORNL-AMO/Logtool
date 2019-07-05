@@ -75,7 +75,9 @@
               [dropDownList]="dropDownBinList[i]"
               [activeContents]="selectedBinList[i]"
               (addSelectedDateOutput)="addSelectedDate($event)"
-              (onSelectedRemoveOutput)="onSelectedRemove($event)">
+              (onSelectedRemoveOutput)="onSelectedRemove($event)"
+              (toggle_change)="binToggled($event)"
+            >
             </app-day-type-bin>
           </div>
         </div>
