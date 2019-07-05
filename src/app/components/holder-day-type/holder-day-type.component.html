@@ -82,8 +82,8 @@
       </div>
     </div>
     <!-- graph holder -->
-    <div class=" col-8 panel" style="min-height: 600px;">
-      <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout"></plotly-plot>
+    <div class=" col-8 panel" style="min-height: 600px;" id="myDiv">
+      <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"></plotly-plot>
     </div>
   </div>
   <!-- <div class="row">
