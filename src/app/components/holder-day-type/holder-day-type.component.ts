@@ -289,6 +289,25 @@ export class HolderDayTypeComponent implements OnInit {
         }
       };
     }
+
+    PlotlyJS.newPlot("plot_1", this.graphDayAverage );
+
+/*
+
+    PlotlyJS.newPlot('plot_1', [{
+      y: [1, 2, 1]
+    }, {
+      y: [2, 1, 0]
+    }])
+      .then(gd => {
+        gd.on('plotly_restyle', d => {console.log(d); });
+        gd.on('plotly_click', function(event) { console.log(event); } );
+      });
+
+*/
+
+
+
   }
 
   plotGraphAverage(channelName) {

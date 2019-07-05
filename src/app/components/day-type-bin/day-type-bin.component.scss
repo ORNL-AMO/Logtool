@@ -1,7 +1,7 @@
 
 .panel{
   width: 90%;
-  max-width: 360px;
+  max-width: 250px;
   min-width: 200px;
   border: #ddd solid 1px;
   height: 220px;
@@ -35,7 +35,7 @@
 }
 
 .list-box{
-  max-height: 75px;
+  max-height: 125px;
   align-content: center;
   width: 100%;
   background: antiquewhite;
@@ -53,7 +53,6 @@
   margin-bottom:0;
   margin-left: 0;
   white-space: nowrap;
-  border-bottom: 1px solid black;
 }
 
 ul {
