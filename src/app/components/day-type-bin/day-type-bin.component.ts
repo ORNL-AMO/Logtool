@@ -15,7 +15,7 @@ export class DayTypeBinComponent implements OnInit {
 
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
-  @Output() plot_change = new EventEmitter<{ name: string, graph: boolean }>();
+  @Output() toggle_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() addTypeOutput = new EventEmitter<any>();
 
   // Array of dates to pull inside
@@ -25,6 +25,8 @@ export class DayTypeBinComponent implements OnInit {
 
   ngOnInit() {
   }
+
+
 
 
   addSelectedDate(event) {
@@ -60,8 +62,8 @@ export class DayTypeBinComponent implements OnInit {
     // this.addTypeOutput.emit(type);
   }
 
-  plot(event) {
-    this.plot_change.emit({name: this.name, graph: event.target.checked});
+  toggle_bin_plot(event) {
+    this.toggle_change.emit({name: this.name, graph: event.target.checked});
   }
 
 }

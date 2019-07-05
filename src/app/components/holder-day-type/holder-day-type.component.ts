@@ -303,25 +303,6 @@ export class HolderDayTypeComponent implements OnInit {
         }
       };
     }
-
-    PlotlyJS.newPlot("plot_1", this.graphDayAverage );
-
-/*
-
-    PlotlyJS.newPlot('plot_1', [{
-      y: [1, 2, 1]
-    }, {
-      y: [2, 1, 0]
-    }])
-      .then(gd => {
-        gd.on('plotly_restyle', d => {console.log(d); });
-        gd.on('plotly_click', function(event) { console.log(event); } );
-      });
-
-*/
-
-
-
   }
 
   plotGraphAverage(channelName) {
@@ -716,5 +697,25 @@ export class HolderDayTypeComponent implements OnInit {
         return false;
       });
     }*/
+  binToggled(event: { name: string; graph: boolean }) {
+    if (this.graphDayAverage === undefined) {
+    } else {
+      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+      }
+
+      const displayIndex = this.displayBinList.map(d => d.binName).indexOf(event.name);
+      const storeIndex = this.binList.map(d => d.binName).indexOf(event.name);
+      //If yes and not already in
+      if (event.graph && displayIndex < 0) {
+        this.displayBinList.push(this.binList[storeIndex]);
+      } else if (!event.graph && displayIndex >= 0) {
+        this.displayBinList.splice(displayIndex, 1);
+      } else {
+        console.log(event.graph, displayIndex);
+      }
+      this.plotGraph(0);
+    }
+  }
 }
 
