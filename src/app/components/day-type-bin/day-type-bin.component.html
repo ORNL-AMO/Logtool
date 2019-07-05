@@ -9,36 +9,36 @@
 
     <!-- basic box -->
     <div class="row justify-content-center" style="margin-bottom: 5px">
-      <div class="col-10">
+      <div class="col-12">
         <!-- Dates located in bin currently -->
-        <p class="row import-label" style="text-align: center;">Current Contents</p>
+        <p class="row justify-content-center import-label" style="text-align: center;">Current Contents</p>
         <div class="row">
           <ul class="list-box">
-            <li class="row" *ngFor="let selector of activeContents let i= index"
-                (click)="onSelectedRemove($event)" style="margin:0">
-              <p class="col-11 list" >{{selector.day + " " + selector.date}}</p>
-              <p id="{{i}}" class="col-1 align-self-end list"
-                 style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>
+<!--            <li class="row" *ngFor="let selector of activeContents let i= index"
+                (click)="onSelectedRemove($event)" style="margin:0">-->
+            <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index" style="margin:0; border: 1px solid black">
+              <p class=" list" > {{selector.date | date:'EEEE MMMM d '}}</p> <!--{{selector.day + " " + selector.date}}</p>-->
+<!--              <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>-->
             </li>
           </ul>
         </div>
 
 
         <!--Block Title  <p class="import-label">Dates Available </p> -->
-        <div class="row justify-content-center"> <p style="text-align: center; margin: 0;">Add a date</p> </div>
-        <!-- Dates to pull into bin -->
+        <!--<div class="row justify-content-center"> <p style="text-align: center; margin: 0;">Add a date</p> </div>
+        &lt;!&ndash; Dates to pull into bin &ndash;&gt;
         <label class="row">
           <select name="pull_dates" class="import-label" (click)="addSelectedDate($event)">
             <option id="{{i}} + date" *ngFor="let day of dropDownList let i = index" style="text-align: center;">
               {{day.day + " " + day.date}} </option>
           </select>
         </label>
-      </div>
+      </div>-->
     </div>
   </div>
 
 </div>
-<!-- ADD BOX ----------->
+<!-- ADD BOX ----------
 <div class="panel" *ngIf="name=='Add Type'">
   <div class="row ">
     <div class="col justify-content-md-center">
@@ -56,3 +56,4 @@
   </div>
 </div>
 
+-->

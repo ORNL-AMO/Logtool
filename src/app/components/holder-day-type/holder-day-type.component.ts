@@ -303,6 +303,25 @@ export class HolderDayTypeComponent implements OnInit {
         }
       };
     }
+
+    PlotlyJS.newPlot("plot_1", this.graphDayAverage );
+
+/*
+
+    PlotlyJS.newPlot('plot_1', [{
+      y: [1, 2, 1]
+    }, {
+      y: [2, 1, 0]
+    }])
+      .then(gd => {
+        gd.on('plotly_restyle', d => {console.log(d); });
+        gd.on('plotly_click', function(event) { console.log(event); } );
+      });
+
+*/
+
+
+
   }
 
   plotGraphAverage(channelName) {
@@ -357,8 +376,6 @@ export class HolderDayTypeComponent implements OnInit {
 
 
 // **************************************************
-
-
   clicked() {
     d3.select('#grid').selectAll('*').remove();
     const width3 = d3.select('#grid').attr('viewBox');
@@ -378,27 +395,29 @@ export class HolderDayTypeComponent implements OnInit {
       })
       .entries(this.timeSeriesDayType);
 
-
+    const x_offset = 100;
     const svg = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + 40 + ',' + (i * (cell_dimension + 5) + 20) + ')';
+        return 'translate( ' + x_offset + ',' + (i * (cell_dimension + 5) + 20) + ')';
       });
     const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+
+    // Mon-Sun
     const header = d3.select('#grid').append('g')
       .selectAll('g')
       .data(d => weekdays)
-      .attr('transform', 'translate( 40 , 0 )')
+      .attr('transform', 'translate(12 , 0 )')
       .join('text')
       .attr('x', function (d, i) {
-        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + 30;
+        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + x_offset-10;
       })
       .attr('y', 15)
-
       .text(function (d) {
         return d;
       });
+
     // Attach squares to week groups
     const squares = svg.append('g')
       .selectAll('g')
@@ -415,6 +434,7 @@ export class HolderDayTypeComponent implements OnInit {
       .on('click', d => this.changeColor(event.target));
     // Text
 
+    //attach dates to squares
     const dateText = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
@@ -432,6 +452,7 @@ export class HolderDayTypeComponent implements OnInit {
         return d.key;
       });
 
+    // attach toggles to squares
     const checkboxes = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
