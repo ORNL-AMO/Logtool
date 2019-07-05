@@ -2,6 +2,7 @@ import {Component, OnInit, AfterContentInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
+import * as PlotlyJS from 'plotly.js/dist/plotly.js';
 
 @Component({
   selector: 'app-holder-day-type',
@@ -196,7 +197,14 @@ export class HolderDayTypeComponent implements OnInit {
       return 'WEEKEND';
     }
   }
+
   plotGraph(channelId) {
+    console.log('first');
+    if (this.graphDayAverage === undefined) {
+    } else {
+      console.log(PlotlyJS.Plots);
+      console.log(this.graphDayAverage.layout);
+    }
 
     let name = '';
     this.plotData = [];
@@ -204,10 +212,11 @@ export class HolderDayTypeComponent implements OnInit {
       const timeSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
       for (let i = 0; i < this.columnMainArray[channelId].length; i++) {
         const tempHourAverage = [];
-        const thickness = 0;
+        let thickness = 1;
         let color = '';
         for (let bins = 0; bins < this.displayBinList.length; bins++) {
           if (this.days[i].bin === this.displayBinList[bins].binName) {
+            thickness = this.days[i].stroke;
             color = this.displayBinList[bins].binColor;
             if (this.columnMainArray[channelId][i].length < 24) {
               if (i === 0) {
@@ -241,11 +250,13 @@ export class HolderDayTypeComponent implements OnInit {
           mode: 'lines',
           name: this.columnMainArray[channelId][i][0].date + ' ' + 'Day',
           line: {
-            color: color
+            color: color,
+            width: thickness
           }
         });
         name = this.columnMainArray[channelId][i][channelId].channelName;
       }
+
       this.graphDayAverage = {
         data: this.plotData,
         layout: {
@@ -342,6 +353,7 @@ export class HolderDayTypeComponent implements OnInit {
     const daynum = d3.timeFormat('%d');
     const dayindex = d3.timeFormat('%w');
 
+
     const dayList = d3.nest()
       .key(function (d) {
         return week(new Date(d));
@@ -365,7 +377,6 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('transform', 'translate( 40 , 0 )')
       .join('text')
       .attr('x', function (d, i) {
-        console.log(d, i, i * cell_dimension + 5);
         return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + 30;
       })
       .attr('y', 15)
@@ -385,9 +396,8 @@ export class HolderDayTypeComponent implements OnInit {
       })
       .attr('y', 0)
       .attr('fill', d => this.getColor(d.values[0]));
-    console.log(squares);
     svg.selectAll('rect')
-      .on('click', d => this.changeColor(event.target, dayList));
+      .on('click', d => this.changeColor(event.target));
     // Text
 
     const dateText = svg.append('g')
@@ -425,57 +435,58 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   getColor(key) {
-    const dayNum = key;
     // d3.timeFormat('%d')(key);
     const obj = this.days.find(obj1 =>
-      obj1.date.getDate() === dayNum.getDate()
+      obj1.date.getDate() === key.getDate()
     );
     if (obj !== undefined) {
-      return 'blue';
-    } else {
       return this.binList.find(bin => bin.binName === obj.bin).binColor;
     } else {
       return 'purple';
     }
   }
 
-  changeColor(rect, dayList) {
+  changeColor(rect) {
     const active = d3.select(rect);
-    const index = this.binList.find(bin => bin.binColor === active.attr('fill'));
-    if (this.binList.indexOf(index) === this.binList.length - 1) {
+    const currIndex = this.binList.find(bin => bin.binColor === active.attr('fill'));
+    const index = this.binList.indexOf(currIndex);
+
+    const key = active._groups[0][0].__data__.values[0];
+    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
+
+    if (index === this.binList.length - 1) {
+      this.days[this.days.indexOf(found)].bin = this.binList[0].binName;
       active.attr('fill', this.binList[0].binColor);
     } else {
-      active.attr('fill', this.binList[(this.binList.indexOf(index)) + 1].binColor);
+      this.days[this.days.indexOf(found)].bin = this.binList[index + 1].binName;
+      active.attr('fill', this.binList[index + 1].binColor);
     }
-    //update bin in days array
-    /*const key = active._groups[0][0].__data__.key;
-    const found = this.days.find(obj => obj.date.getDate().toString() === key);
-    console.log(found.id);
-    this.addSelectedDate(found.id);*/
+    this.allocateBins();
+    this.plotGraph(0);
+
   }
+
   toggleColor(box) {
     console.log(box);
     const active = d3.select(box);
     const newColor = active.attr('fill') === 'white' ? 'black' : 'white';
     active.attr('fill', newColor);
-    console.log(dayList);
-    console.log(active);
-    /*let foundTemp;
-    const key = active._groups[0][0].__data__.key;
-    for (let y = 0; y < dayList.length; y++) {
-      console.log(dayList[y].values)
-      foundTemp = dayList.find(obj => obj[y].values.key.toString() === key.toString());
-      if (foundTemp !== undefined) {
-        break;
-      }
-    }
-    console.log(foundTemp);*/
 
-    /*
-    const found = this.days.find(obj => obj.date.getDate().toString() === key);
-    console.log(found);*/
-    // this.addSelectedDate(found);
+    const currIndex = this.binList.find(bin => bin.binColor === active.attr('fill'));
+    const key = active._groups[0][0].__data__.values[0];
+    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
+
+    if (active.attr('fill') === 'black') {
+      this.days[this.days.indexOf(found)].stroke = 4;
+    } else {
+      this.days[this.days.indexOf(found)].stroke = 1;
+    }
+    this.allocateBins();
+    this.plotGraph(0);
+
+    console.log(active);
   }
+
   populateSpinner() {
     this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
@@ -486,29 +497,52 @@ export class HolderDayTypeComponent implements OnInit {
       });
     }
   }
+
   dayTypeNavigation() {
+    this.columnMainArray = [];
+    this.valueArray = [];
+    this.dayArray = [];
+    this.dataArrayColumns = [];
+    this.mainArray = [];
+    this.plotData = [];
+    this.days = [];
+    this.dataInput = [];
+    this.dropDownBinList = [];
+    this.selectedBinList = [];
     if (this.columnSelectorList.length === 0) {
       alert('Please select Column');
-    }
-    this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
-    this.value = this.columnSelectorList;
-    console.log(this.timeSeriesFileDayType);
-    const timeSeries = this.timeSeriesFileDayType.split(',');
-    for (let column = 0; column < this.value.length; column++) {
-      this.dataArrayColumns = [];
-      this.mainArray = [];
-      const day = this.value[column].value.split(',');
-      this.dataArrayColumns.push(this.dataInput[parseInt(day[0], 10)].dataArrayColumns[parseInt(day[1], 10)]);
-      this.timeSeriesDayType = this.dataInput[parseInt(timeSeries[0], 10)].dataArrayColumns[parseInt(timeSeries[1], 10)];
-      for (let i = 0; i < this.timeSeriesDayType.length; i++) {
-        if (i === 0) {
-          this.day = this.timeSeriesDayType[i].getDate();
-          this.hour = this.timeSeriesDayType[i].getHours();
-          this.valueArray.push(this.dataArrayColumns[0][i]);
-        } else {
-          if (this.day === this.timeSeriesDayType[i].getDate()) {
-            if (this.hour === this.timeSeriesDayType[i].getHours()) {
-              this.valueArray.push(this.dataArrayColumns[0][i]);
+    } else {
+      this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
+      this.value = this.columnSelectorList;
+      const timeSeries = this.timeSeriesFileDayType.split(',');
+      for (let column = 0; column < this.value.length; column++) {
+        this.dataArrayColumns = [];
+        this.mainArray = [];
+        const day = this.value[column].value.split(',');
+        this.dataArrayColumns.push(this.dataInput[parseInt(day[0], 10)].dataArrayColumns[parseInt(day[1], 10)]);
+        this.timeSeriesDayType = this.dataInput[parseInt(timeSeries[0], 10)].dataArrayColumns[parseInt(timeSeries[1], 10)];
+        for (let i = 0; i < this.timeSeriesDayType.length; i++) {
+          if (i === 0) {
+            this.day = this.timeSeriesDayType[i].getDate();
+            this.hour = this.timeSeriesDayType[i].getHours();
+            this.valueArray.push(this.dataArrayColumns[0][i]);
+          } else {
+            if (this.day === this.timeSeriesDayType[i].getDate()) {
+              if (this.hour === this.timeSeriesDayType[i].getHours()) {
+                this.valueArray.push(this.dataArrayColumns[0][i]);
+              } else {
+                const hourValue = this.timeSeriesDayType[i].getHours() - 1;
+                this.dayArray.push({
+                  valueArray: this.valueArray,
+                  hourAverage: this.averageArray(this.valueArray),
+                  hourValue: hourValue === -1 ? 23 : hourValue,
+                  date: this.day,
+                  channelName: this.value[column].name
+                });
+                this.valueArray = [];
+                this.hour = this.timeSeriesDayType[i].getHours();
+                this.valueArray.push(this.dataArrayColumns[0][i]);
+              }
             } else {
               const hourValue = this.timeSeriesDayType[i].getHours() - 1;
               this.dayArray.push({
@@ -518,18 +552,29 @@ export class HolderDayTypeComponent implements OnInit {
                 date: this.day,
                 channelName: this.value[column].name
               });
+              this.mainArray.push(this.dayArray);
+              if (column === 0) {
+                this.days.push({
+                  date: this.timeSeriesDayType[i - 1],
+                  day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
+                  bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
+                  id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
+                  stroke: 1
+                });
+              }
+              this.dayArray = [];
               this.valueArray = [];
               this.hour = this.timeSeriesDayType[i].getHours();
               this.valueArray.push(this.dataArrayColumns[0][i]);
+              this.day = this.timeSeriesDayType[i].getDate();
             }
-          } else {
+          }
+          if (i === this.timeSeriesDayType.length - 1) {
             const hourValue = this.timeSeriesDayType[i].getHours() - 1;
             this.dayArray.push({
               valueArray: this.valueArray,
               hourAverage: this.averageArray(this.valueArray),
-              hourValue: hourValue === -1 ? 23 : hourValue,
-              date: this.day,
-              channelName: this.value[column].name
+              hourValue: hourValue === -1 ? 23 : hourValue
             });
             this.mainArray.push(this.dayArray);
             if (column === 0) {
@@ -537,42 +582,20 @@ export class HolderDayTypeComponent implements OnInit {
                 date: this.timeSeriesDayType[i - 1],
                 day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
                 bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
-                id: this.days.length
+                id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
+                stroke: 1
               });
             }
-            this.dayArray = [];
-            this.valueArray = [];
-            this.hour = this.timeSeriesDayType[i].getHours();
-            this.valueArray.push(this.dataArrayColumns[0][i]);
-            this.day = this.timeSeriesDayType[i].getDate();
           }
         }
-        if (i === this.timeSeriesDayType.length - 1) {
-          const hourValue = this.timeSeriesDayType[i].getHours() - 1;
-          this.dayArray.push({
-            valueArray: this.valueArray,
-            hourAverage: this.averageArray(this.valueArray),
-            hourValue: hourValue === -1 ? 23 : hourValue
-          });
-          this.mainArray.push(this.dayArray);
-          if (column === 0) {
-            this.days.push({
-              date: this.timeSeriesDayType[i - 1],
-              day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
-              bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
-              id: this.days.length
-            });
-          }
-        }
+        this.columnMainArray.push(this.mainArray);
       }
-      this.columnMainArray.push(this.mainArray);
-    }
-    this.allocateBins();
-    this.plotGraph(0);
-    this.plotGraphAverage(0);
-    // console.log(this.days);
-    this.clicked();
-    // console.log(this.timeSeriesDayType);
+      this.allocateBins();
+      this.plotGraph(0);
+      // this.plotGraphAverage(0);
+      // console.log(this.days);
+      this.clicked();
+    }// console.log(this.timeSeriesDayType);
   }
 
   fileSelectorEvent(event) {
