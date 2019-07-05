@@ -88,24 +88,24 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
       this.populateSpinner();
-      this.plotGraph(0);
+      //this.tempGraphPlot();
     });
   }
 
   // disabled
-  addSelectedDate(event) {
-    console.log(this.days);
-    this.days[event.date.id].bin = event.name;
-    this.allocateBins();
-    this.plotGraph(0);
-  }
+  /*  addSelectedDate(event) {
+      console.log(this.days);
+      this.days[event.date.id].bin = event.name;
+      this.allocateBins();
+      this.plotGraph(0);
+    }
 
-  // disabled
-  onSelectedRemove(event) {
-    this.days[event.date.id].bin = 'EXCLUDED';
-    this.allocateBins();
-    this.plotGraph(0);
-  }
+    // disabled
+    onSelectedRemove(event) {
+      this.days[event.date.id].bin = 'EXCLUDED';
+      this.allocateBins();
+      this.plotGraph(0);
+    }*/
 
   allocateBins() {
     this.selectedBinList = [];
@@ -199,13 +199,10 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   plotGraph(channelId) {
-    console.log('first');
     if (this.graphDayAverage === undefined) {
     } else {
-      console.log(PlotlyJS.Plots);
-      console.log(this.graphDayAverage.layout);
+      console.log(this.graphDayAverage);
     }
-
     let name = '';
     this.plotData = [];
     if (this.columnMainArray.length > 0) {
@@ -252,7 +249,8 @@ export class HolderDayTypeComponent implements OnInit {
           line: {
             color: color,
             width: thickness
-          }
+          },
+          visible: this.days[i].visible
         });
         name = this.columnMainArray[channelId][i][channelId].channelName;
       }
@@ -270,6 +268,14 @@ export class HolderDayTypeComponent implements OnInit {
             autorange: true,
             type: 'linear'
           }
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
         }
       };
     } else {
@@ -286,6 +292,14 @@ export class HolderDayTypeComponent implements OnInit {
             autorange: true,
             type: 'linear'
           }
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
         }
       };
     }
@@ -321,7 +335,8 @@ export class HolderDayTypeComponent implements OnInit {
           y: this.sumArray[0][i].averageValue,
           type: 'linegl',
           mode: 'lines',
-          name: this.sumArray[0][i].binValue
+          name: this.sumArray[0][i].binValue,
+
         });
         name = this.sumArray[0][0].channelName;
       }
@@ -468,6 +483,12 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   changeColor(rect) {
+    if (this.graphDayAverage === undefined) {
+    } else {
+      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+      }
+    }
     const active = d3.select(rect);
     const currIndex = this.binList.find(bin => bin.binColor === active.attr('fill'));
     const index = this.binList.indexOf(currIndex);
@@ -488,7 +509,12 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   toggleColor(box) {
-    console.log(box);
+    if (this.graphDayAverage === undefined) {
+    } else {
+      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+      }
+    }
     const active = d3.select(box);
     const newColor = active.attr('fill') === 'white' ? 'black' : 'white';
     active.attr('fill', newColor);
@@ -504,8 +530,6 @@ export class HolderDayTypeComponent implements OnInit {
     }
     this.allocateBins();
     this.plotGraph(0);
-
-    console.log(active);
   }
 
   populateSpinner() {
@@ -523,9 +547,8 @@ export class HolderDayTypeComponent implements OnInit {
     this.columnMainArray = [];
     this.valueArray = [];
     this.dayArray = [];
-    this.dataArrayColumns = [];
     this.mainArray = [];
-    this.plotData = [];
+    this.dataArrayColumns = [];
     this.days = [];
     this.dataInput = [];
     this.dropDownBinList = [];
@@ -580,7 +603,8 @@ export class HolderDayTypeComponent implements OnInit {
                   day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
                   bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
                   id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
-                  stroke: 1
+                  stroke: 1,
+                  visible: true
                 });
               }
               this.dayArray = [];
@@ -604,7 +628,8 @@ export class HolderDayTypeComponent implements OnInit {
                 day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
                 bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
                 id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
-                stroke: 1
+                stroke: 1,
+                visible: true
               });
             }
           }
@@ -643,5 +668,53 @@ export class HolderDayTypeComponent implements OnInit {
       value: event.target.value
     });
   }
+
+  /*
+    tempGraphPlot() {
+      this.graphDayAverage = document.getElementById('myDiv');
+      const x = [1, 2, 3, 4, 5, 6];
+      const y = [1, 2, 3, 2, 3, 4];
+      const y2 = [1, 4, 7, 6, 1, 5];
+      const colors = [['#5C636E', '#5C636E', '#5C636E', '#5C636E', '#5C636E', '#5C636E'],
+          ['#393e46', '#393e46', '#393e46', '#393e46', '#393e46', '#393e46']],
+        data = [{
+          x: x, y: y, type: 'scatter',
+          mode: 'line', line: {color: '#5C636E'}, marker: {size: 16, color: colors[0]},
+          visible: 'legendonly'
+        },
+          {
+            x: x, y: y2, type: 'scatter',
+            mode: 'line', line: {color: '#393e46'}, marker: {size: 16, color: colors[1]}
+          }],
+        layout = {
+          showlegend: true,
+          hovermode: 'closest',
+          title: 'Andrew'
+        };
+
+      PlotlyJS.newPlot('myDiv', data, layout);
+
+      this.graphDayAverage.on('plotly_click', (data) => {
+        let pn = '';
+        let tn = '';
+        let colors = [];
+        for (let i = 0; i < data.points.length; i++) {
+          pn = data.points[i].pointNumber;
+          tn = data.points[i].curveNumber;
+          colors = data.points[i].data.marker.color;
+        }
+        colors[pn] = '#C54C82';
+        const update = {'marker': {color: colors, size: 16}};
+        PlotlyJS.restyle('myDiv', update, [tn]);
+      });
+
+      PlotlyJS.on('plotly_legendclick',  (data) => {
+        const trColors = [['#5C636E', '#5C636E', '#5C636E', '#5C636E', '#5C636E', '#5C636E'],
+          ['#393e46', '#393e46', '#393e46', '#393e46', '#393e46', '#393e46']];
+        const update = {'marker': {color: trColors[data.curveNumber], size: 16}};
+        PlotlyJS.restyle('myDiv', update, [data.curveNumber]);
+        return false;
+      });
+    }*/
 }
 
