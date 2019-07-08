@@ -3,6 +3,7 @@ import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
+import {createElementCssSelector} from '@angular/compiler';
 
 @Component({
   selector: 'app-holder-day-type',
@@ -75,7 +76,10 @@ export class HolderDayTypeComponent implements OnInit {
   dataFromDialog: any = [];
   tabs = [];
 
+  selectedDates: Set<any>;
+
   ngOnInit() {
+    this.selectedDates = new Set([]);
     this.plotGraph(0);
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
@@ -88,7 +92,7 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
       this.populateSpinner();
-      //this.tempGraphPlot();
+      // this.tempGraphPlot();
     });
   }
 
@@ -201,7 +205,7 @@ export class HolderDayTypeComponent implements OnInit {
   plotGraph(channelId) {
     if (this.graphDayAverage === undefined) {
     } else {
-      console.log(this.graphDayAverage);
+      // console.log(this.graphDayAverage);
     }
     let name = '';
     this.plotData = [];
@@ -357,16 +361,101 @@ export class HolderDayTypeComponent implements OnInit {
 
 
 // **************************************************
-  clicked() {
+  createLegend() {
+    const svg = d3.select('#legend');
+
+    // Legend Title
+    svg.append('text')
+      .text('Legend')
+      .attr('x', 10)
+      .attr('y', 20);
+
+    // Main Legend
+    svg.selectAll('g').append('g')
+      .data(d => this.binList)
+      .join('text')
+      .attr('x', 10)
+      .attr('y', function (d, i) {
+        return i * 20 + 40;
+      })
+      .attr('font-size', ' 12px ')
+      .text(function (d) {
+        return d.binName;
+      });
+    svg.selectAll('g').append('g')
+      .data(this.binList)
+      .join('rect')
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('x', 80)
+      .attr('y', function (d, i) {
+        return i * 20 + 40 - 10;
+      })
+      .attr('fill', function (d) {
+        return d.binColor;
+      });
+
+
+    // Example block --------------------------------------------------------------------
+    const colors = ['red', 'green', 'blue'];
+
+    const examp = svg.append('rect')
+      .data(colors)
+      .attr('width', 30)
+      .attr('height', 30)
+      .attr('x', 30)
+      .attr('y', 110)
+      .attr('fill', 'blue');
+
+
+    const check = svg.append('rect')
+      .attr('width', 10)
+      .attr('height', 10)
+      .attr('x', 48)
+      .attr('y', 112)
+      .attr('fill', 'white');
+
+
+    check.on('click', function() {
+        const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
+        check.attr('fill', newColor);
+        const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
+        boldText.attr('font-weight', bold);
+      });
+    examp.on('click', d => this.exampleClick(d3.event) );
+
+    // instructions
+    const boldText = svg.append('text')
+      .text('Toggle BOLD')
+      .attr('font-size', '9px')
+      .attr('x', 20)
+      .attr('y', 100);
+
+    svg.append('text')
+      .text('Click to cycle bin')
+      .attr('font-size', '9px')
+      .attr('x', 5)
+      .attr('y', 150);
+
+    svg.append('text')
+      .text('Ctl Click to multi-select')
+      .attr('font-size', '9px')
+      .attr('x', 5)
+      .attr('y', 160);
+
+  }
+
+  createCalendar() {
+    this.createLegend();
     d3.select('#grid').selectAll('*').remove();
     const width3 = d3.select('#grid').attr('viewBox');
-    // const cell_dimension = width3.attr('width');
-    const cell_dimension = width3.split(',')[2] * .1;
+    const cell_dimension = width3.split(',')[2] * .075;
+
     const week = d3.timeFormat('%U');
     const daynum = d3.timeFormat('%d');
     const dayindex = d3.timeFormat('%w');
 
-
+    // nest data for grid formation
     const dayList = d3.nest()
       .key(function (d) {
         return week(new Date(d));
@@ -376,7 +465,9 @@ export class HolderDayTypeComponent implements OnInit {
       })
       .entries(this.timeSeriesDayType);
 
-    const x_offset = 100;
+    // set up offsets and transformations
+    const x_offset = 10;
+    const spacing_x = 8;
     const svg = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
@@ -392,7 +483,7 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('transform', 'translate(12 , 0 )')
       .join('text')
       .attr('x', function (d, i) {
-        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + x_offset-10;
+        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + x_offset - 10;
       })
       .attr('y', 15)
       .text(function (d) {
@@ -407,21 +498,22 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('width', cell_dimension)
       .attr('height', cell_dimension)
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + 5);
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x);
       })
       .attr('y', 0)
-      .attr('fill', d => this.getColor(d.values[0]));
+      .attr('fill', d => this.setColor(d.values[0]));
     svg.selectAll('rect')
-      .on('click', d => this.changeColor(event.target));
+      .on('click', d => this.clickHandler(event));
+
     // Text
 
-    //attach dates to squares
+    // attach dates to squares
     const dateText = svg.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('text')
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * (1 / 3);
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * (1 / 4);
       })
       .attr('y', function (d) {
         return cell_dimension - cell_dimension * (1 / 3);
@@ -431,7 +523,9 @@ export class HolderDayTypeComponent implements OnInit {
       .style('user-select', 'none')
       .text(function (d) {
         return d.key;
-      });
+      })
+      .attr('fill', 'white')
+      .attr('font-weight', 'bold');
 
     // attach toggles to squares
     const checkboxes = svg.append('g')
@@ -441,18 +535,36 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('width', cell_dimension * .25)
       .attr('height', cell_dimension * .25)
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + 5) + cell_dimension * .7;
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * .7;
       })
       .attr('y', function (d) {
         return cell_dimension * .05;
       })
       .attr('fill', 'white');
-    squares.on('click', d => this.changeColor(event.target));
-    checkboxes.on('click', d => this.toggleColor(event.target));
+    squares.on('click', d => this.clickHandler(event));
+    checkboxes.on('click', d => this.toggleBold(event.target));
   }
 
-  getColor(key) {
-    // d3.timeFormat('%d')(key);
+
+  // toggle stroke and color for example block
+  exampleClick(event) {
+    const sample = d3.select(event.target);
+    if (event.ctrlKey) {
+      const select = sample.attr('stroke') === 'black' ? 'none' : 'black';
+      sample.attr('stroke', select);
+
+    } else {
+
+      const oldColor = sample.attr('fill');
+      const colorList = this.binList.map(d => d.binColor);
+      let index = colorList.indexOf(oldColor) + 1;
+      if (index >= this.binList.length ) { index = 0; }
+      sample.attr('fill', this.binList[index].binColor);
+    }
+  }
+
+  // get initial color based on default bin, returns purple on unknown
+  setColor(key) {
     const obj = this.days.find(obj1 =>
       obj1.date.getDate() === key.getDate()
     );
@@ -463,33 +575,104 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  changeColor(rect) {
+  // handle clicks and ctrl-clicks on squares Calls cycleBin(), movBins(), and toggleSelect()
+  clickHandler(event) {
+    // const active = d3.select(event.target);
+    // if in select mode toggle selection
+    if (event.ctrlKey) {
+      this.toggleSelect(event.target);
+    } else if (this.selectedDates.has(event.target)) {
+      // if in selection sync and cycle
+      console.log('Inside handler');
+      // sync
+        const syncTarget = d3.select(event.target);
+        let binIndex = this.binList.indexOf(this.binList.find(bin => bin.binColor === syncTarget.attr('fill'))) + 1;
+        if (isNaN(binIndex) || binIndex < 0) {
+          console.log('Error: out of bounds');
+          return;
+        } else if (binIndex >= this.binList.length) {
+          binIndex = 0;
+        }
+        const syncBin = this.binList[binIndex].binName;
+        const itemList = Array.from(this.selectedDates);
+        console.log(itemList, syncBin);
+        for ( let i = 0; i < itemList.length ; i++) {
+            this.movBins(itemList[i], syncBin);
+        }
+
+        // Replot graphs
+        if (this.graphDayAverage === undefined) {
+          } else {
+            for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+                this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+            }
+        }
+
+      // replot
+      this.allocateBins();
+      this.plotGraph(0);
+
+    } else {
+      this.cycleBin(event.target);
+    }
+  }
+
+  // move target from event into next bin in binList, calls movBins()
+  cycleBin(rect) {
+    const active = d3.select(rect);
+    const color = active.attr('fill');
+    const currBin = this.binList.find(bin => bin.binColor === color );
+    let index = this.binList.indexOf(currBin) + 1;
+
+    if (index === this.binList.length) {
+      index = 0;
+    }
+    const nextBin = this.binList[index].binName;
+
+    this.movBins(rect, nextBin);
+
+
+    // replot graphs
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
         this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
       }
     }
-    const active = d3.select(rect);
-    const currIndex = this.binList.find(bin => bin.binColor === active.attr('fill'));
-    const index = this.binList.indexOf(currIndex);
 
-    const key = active._groups[0][0].__data__.values[0];
-    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
-
-    if (index === this.binList.length - 1) {
-      this.days[this.days.indexOf(found)].bin = this.binList[0].binName;
-      active.attr('fill', this.binList[0].binColor);
-    } else {
-      this.days[this.days.indexOf(found)].bin = this.binList[index + 1].binName;
-      active.attr('fill', this.binList[index + 1].binColor);
-    }
     this.allocateBins();
     this.plotGraph(0);
 
   }
 
-  toggleColor(box) {
+  // move element into target bin, updates this.days
+  movBins(element, bin) {
+    // .log('in movBins', target, syncBin);
+    const active =  d3.select(element);
+    const key = active.data()[0].values[0];
+    // find entry in days and update
+    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
+    this.days[this.days.indexOf(found)].bin = bin;
+
+    const binDetails = this.binList.find( obj => obj.binName === bin);
+    active.attr('fill', binDetails.binColor);
+}
+
+  // add/removes item from selectedDates set
+  toggleSelect(rect) {
+    const n = d3.select(rect);
+    if (this.selectedDates.has(rect)) {
+      this.selectedDates.delete(rect);
+      n.attr('stroke', 'none');
+    } else {
+      this.selectedDates.add(rect);
+      n.attr('stroke', 'black');
+      n.attr('stroke-width', '4');
+    }
+    console.log(n.data()[0].values[0]);
+  }
+
+  toggleBold(box) {
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -513,6 +696,13 @@ export class HolderDayTypeComponent implements OnInit {
     this.plotGraph(0);
   }
 
+  clearSelection() {
+      this.selectedDates.clear();
+  }
+
+
+
+  // **************************************************
   populateSpinner() {
     this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
@@ -621,7 +811,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraph(0);
       // this.plotGraphAverage(0);
       // console.log(this.days);
-      this.clicked();
+      this.createCalendar();
     }// console.log(this.timeSeriesDayType);
   }
 
@@ -706,7 +896,7 @@ export class HolderDayTypeComponent implements OnInit {
 
       const displayIndex = this.displayBinList.map(d => d.binName).indexOf(event.name);
       const storeIndex = this.binList.map(d => d.binName).indexOf(event.name);
-      //If yes and not already in
+      // If yes and not already in
       if (event.graph && displayIndex < 0) {
         this.displayBinList.push(this.binList[storeIndex]);
       } else if (!event.graph && displayIndex >= 0) {
