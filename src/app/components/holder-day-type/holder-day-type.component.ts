@@ -1,4 +1,5 @@
-import {Component, OnInit, AfterContentInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
@@ -9,7 +10,7 @@ import {IndexFileStoreService} from '../../providers/index-file-store.service';
   styleUrls: ['./holder-day-type.component.scss']
 })
 export class HolderDayTypeComponent implements OnInit {
-  constructor(private data: DataService, private indexFileStore: IndexFileStoreService) {
+  constructor(private data: DataService, private indexFileStore: IndexFileStoreService, private modalService: BsModalService) {
   }
 
   dropDownBinList = [];
@@ -74,7 +75,15 @@ export class HolderDayTypeComponent implements OnInit {
   dataFromDialog: any = [];
   tabs = [];
 
+  // Used for adding bin types
+  modalRef: BsModalRef;
+  newBinName;
+  newBinColor;
+  // --------------------------
+
+  // Used for multi-Select on Calendar
   selectedDates: Set<any>;
+  // ------------------------------
 
   ngOnInit() {
     this.selectedDates = new Set([]);
@@ -125,10 +134,11 @@ export class HolderDayTypeComponent implements OnInit {
       this.dropDownBinList.push(tempdropDownBinList);
       this.selectedBinList.push(tempSelectedBinList);
     }
+    this.calculateType(0);
   }
 
   // Calculate Day Type
-  calculateType() {
+  calculateType(channelId) {
     let tempArray = [];
     const bigTempArray = [];
     this.sumArray = [];
@@ -358,59 +368,33 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 
-// **************************************************
-  createLegend() {
-    const svg = d3.select('#legend');
+// Calendar Functions **********************************************************************************************************************
 
-    // Legend Title
-    svg.append('text')
-      .text('Legend')
-      .attr('x', 10)
-      .attr('y', 20);
+  // Set up functions only need to run once on import ************************
 
-    // Main Legend
-    svg.selectAll('g').append('g')
-      .data(d => this.binList)
-      .join('text')
-      .attr('x', 10)
-      .attr('y', function (d, i) {
-        return i * 20 + 40;
-      })
-      .attr('font-size', ' 12px ')
-      .text(function (d) {
-        return d.binName;
-      });
-    svg.selectAll('g').append('g')
-      .data(this.binList)
-      .join('rect')
-      .attr('width', 15)
-      .attr('height', 15)
-      .attr('x', 80)
-      .attr('y', function (d, i) {
-        return i * 20 + 40 - 10;
-      })
-      .attr('fill', function (d) {
-        return d.binColor;
-      });
-
-
-    // Example block --------------------------------------------------------------------
+  // Creates example square to explain interations
+  createExample() {
+    const svg = d3.select('#example');
     const colors = ['red', 'green', 'blue'];
+
+    const blockSize = 30;
+    const offset_x = 35;
+    const offset_y = 20;
 
     const examp = svg.append('rect')
       .data(colors)
-      .attr('width', 30)
-      .attr('height', 30)
-      .attr('x', 30)
-      .attr('y', 110)
+      .attr('width', blockSize)
+      .attr('height', blockSize)
+      .attr('x', offset_x)
+      .attr('y', offset_y)
       .attr('fill', 'blue');
 
 
     const check = svg.append('rect')
-      .attr('width', 10)
-      .attr('height', 10)
-      .attr('x', 48)
-      .attr('y', 112)
+      .attr('width', blockSize / 3 )
+      .attr('height', blockSize / 3 )
+      .attr('x', offset_x + 18)
+      .attr('y', offset_y + 2)
       .attr('fill', 'white');
 
 
@@ -426,125 +410,24 @@ export class HolderDayTypeComponent implements OnInit {
     const boldText = svg.append('text')
       .text('Toggle BOLD')
       .attr('font-size', '9px')
-      .attr('x', 20)
-      .attr('y', 100);
+      .attr('x', offset_x - 10)
+      .attr('y', offset_y - 5);
 
     svg.append('text')
-      .text('Click to cycle bin')
+      .text('Click: cycle bin')
       .attr('font-size', '9px')
-      .attr('x', 5)
-      .attr('y', 150);
+      .attr('x', offset_x - 15)
+      .attr('y', offset_y + 40);
 
     svg.append('text')
-      .text('Ctl Click to multi-select')
+      .text('Ctl Click: multi-select')
       .attr('font-size', '9px')
-      .attr('x', 5)
-      .attr('y', 160);
+      .attr('x', offset_x - 28)
+      .attr('y', offset_y + 50);
 
   }
 
-  createCalendar() {
-    this.createLegend();
-    d3.select('#grid').selectAll('*').remove();
-    const width3 = d3.select('#grid').attr('viewBox');
-    const cell_dimension = width3.split(',')[2] * .075;
-
-    const week = d3.timeFormat('%U');
-    const daynum = d3.timeFormat('%d');
-    const dayindex = d3.timeFormat('%w');
-
-    // nest data for grid formation
-    const dayList = d3.nest()
-      .key(function (d) {
-        return week(new Date(d));
-      })
-      .key(function (d) {
-        return daynum(new Date(d));
-      })
-      .entries(this.timeSeriesDayType);
-
-    // set up offsets and transformations
-    const x_offset = 10;
-    const spacing_x = 8;
-    const svg = d3.select('#grid').selectAll('g')
-      .data(dayList)
-      .join('g')
-      .attr('transform', function (d, i) {
-        return 'translate( ' + x_offset + ',' + (i * (cell_dimension + 5) + 20) + ')';
-      });
-    const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-
-    // Mon-Sun
-    const header = d3.select('#grid').append('g')
-      .selectAll('g')
-      .data(d => weekdays)
-      .attr('transform', 'translate(12 , 0 )')
-      .join('text')
-      .attr('x', function (d, i) {
-        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + x_offset - 10;
-      })
-      .attr('y', 15)
-      .text(function (d) {
-        return d;
-      });
-
-    // Attach squares to week groups
-    const squares = svg.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('rect')
-      .attr('width', cell_dimension)
-      .attr('height', cell_dimension)
-      .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x);
-      })
-      .attr('y', 0)
-      .attr('fill', d => this.setColor(d.values[0]));
-    svg.selectAll('rect')
-      .on('click', d => this.clickHandler(event));
-
-    // Text
-
-    // attach dates to squares
-    const dateText = svg.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('text')
-      .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * (1 / 4);
-      })
-      .attr('y', function (d) {
-        return cell_dimension - cell_dimension * (1 / 3);
-      })
-      .classed('bob', true)
-      .style('pointer-events', 'none')
-      .style('user-select', 'none')
-      .text(function (d) {
-        return d.key;
-      })
-      .attr('fill', 'white')
-      .attr('font-weight', 'bold');
-
-    // attach toggles to squares
-    const checkboxes = svg.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('rect')
-      .attr('width', cell_dimension * .25)
-      .attr('height', cell_dimension * .25)
-      .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * .7;
-      })
-      .attr('y', function (d) {
-        return cell_dimension * .05;
-      })
-      .attr('fill', 'white');
-    squares.on('click', d => this.clickHandler(event));
-    checkboxes.on('click', d => this.toggleBold(event.target));
-  }
-
-
-  // toggle stroke and color for example block
+  // toggle stroke and color for example block (DOES NOT EFFECT ARRAYS)
   exampleClick(event) {
     const sample = d3.select(event.target);
     if (event.ctrlKey) {
@@ -573,7 +456,198 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  // handle clicks and ctrl-clicks on squares Calls cycleBin(), movBins(), and toggleSelect()
+  // --------------------------------------------------------------------------
+
+  // Create legend and calendar based on latest data ************************
+
+  // Creates legend based on this.binList
+  // NO event listeners
+  createLegend() {
+    const svg = d3.select('#legend');
+
+    // Legend Title
+    svg.append('text')
+      .text('Legend')
+      .attr('x', 10)
+      .attr('y', 20);
+
+    // Main Legend
+    svg.selectAll('g').append('g')
+      .data(d => this.binList)
+      .join('text')
+      .attr('x', 10)
+      .attr('y', function (d, i) {
+        return i * 20 + 40;
+      })
+      .attr('font-size', ' 12px ')
+      .text(function (d) {
+        return d.binName;
+      });
+
+    svg.selectAll('g').append('g')
+      .data(this.binList)
+      .join('rect')
+      .attr('width', 15)
+      .attr('height', 15)
+      .attr('x', 80)
+      .attr('y', function (d, i) {
+        return i * 20 + 40 - 10;
+      })
+      .attr('fill', function (d) {
+        return d.binColor;
+      });
+  }
+
+  // Creates monday-based calendar using dates in
+  createCalendar() {
+    this.createLegend();
+    this.createExample();
+
+    // remove any items from previous draws
+    d3.select('#grid').selectAll('*').remove();
+
+    // Calculate cell dimensions based on viewbox
+    const width3 = d3.select('#grid').attr('viewBox');
+    const cell_dimension = 20; //width3.split(',')[2] * .075;
+
+    // set up offsets and transformations for squares
+    const y_offset = 10;
+    const spacing_y = 5;
+    const x_offset = 10;
+    const spacing_x = 5;
+
+    //Parsers, used to work with dates
+    const week = d3.timeFormat('%U');     // returns week of year 0-53
+    const daynum = d3.timeFormat('%d');   // returns day of month 01-31
+    const dayindex = d3.timeFormat('%w'); // returns index of the day of the week [0,6]
+    // not currently used
+    const month = d3.timeFormat('%m'); // returns month index 01.12  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    IMPLEMENT
+
+    // nest data for grid formation
+    // Will eventually add in month nest as well
+    const dayList = d3.nest()
+      .key(function (d) {
+        return month(new Date(d));
+      })
+      .key(function (d) {
+        return week(new Date(d));
+      })
+      .key(function (d) {
+        return daynum(new Date(d));
+      })
+      .entries(this.timeSeriesDayType);
+
+    console.log('months', dayList );
+    // Resize svg based on dates needed
+    d3.select('#grid').attr('width', dayList.length * 300);
+
+    // Set up group offset for a month
+    // i is number of months away from first month of data
+    const months = d3.select('#grid').selectAll('g')
+      .data(dayList)
+      .join('g')
+      .attr('transform', function (d, i) {
+        return 'translate( ' + (7 * (cell_dimension + spacing_x) + 20) * i + ',' + 0 + ')';
+      });
+
+
+    // return 'translate( ' + x_offset * 2 + cell_dimension * 7 + ',' + (i * (cell_dimension + spacing_y) + y_offset) + ')';
+/*    const squares = months.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('rect')
+      .attr('width', cell_dimension)
+      .attr('height', cell_dimension)
+      .attr('x', function (d, i) {
+        return i* cell_dimension + 5;
+      })
+      .attr('y', 0)
+      .attr('fill', 'blue');*/
+
+    // Set up group offset for a month
+    // i is the week number
+    // d3.select('#grid').selectAll('g')
+
+
+    // Display headers for Weekdays
+    const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+/*    const header = month.append('g')
+      .selectAll('g')
+      .data(weekdays)
+      .attr('transform', 'translate(12 , 0 )')
+      .join('text')
+      .attr('x', function (d, i) { return i * (cell_dimension + spacing_x) + x_offset; })
+      .attr('y', y_offset - 5)
+      .attr('width', cell_dimension)
+      .text(function (d) { return d; } );*/
+
+    //Create group to hold weeks
+    const weeks = months.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('g')
+      .attr('transform', function (d, i) {
+        return 'translate( ' + x_offset + ',' +  (i * (cell_dimension + spacing_y) + y_offset) + ')';
+      });
+
+    // Attach bin squares to each day in each week
+    const squares = weeks.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('rect')
+      .attr('width', cell_dimension)
+      .attr('height', cell_dimension)
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x);
+      })
+      .attr('y', 0)
+      .attr('fill', d => this.setColor(d.values[0]));
+
+    // Attach toggle to each day in each week
+    const checkboxes = weeks.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('rect')
+      .attr('width', cell_dimension * .25)
+      .attr('height', cell_dimension * .25)
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * .7;
+      })
+      .attr('y', function (d) {
+        return cell_dimension * .05;
+      })
+      .attr('fill', d => this.syncToggles(d));
+    // Text
+
+    // Attach day labels to each day in each week
+    const dateText = weeks.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('text')
+      .attr('x', function (d) {
+        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + 5;
+      })
+      .attr('y', function (d) {
+        return cell_dimension - cell_dimension * (1 / 3);
+      })
+
+      .text(function (d) {  return d.key; })
+      .attr('fill', 'black')
+      .attr('font-weight', 'bold')
+      .attr('font-size', '10px')
+      .style('pointer-events', 'none')
+      .style('user-select', 'none');
+
+      squares.on('click', d => this.clickHandler(event));
+      checkboxes.on('click', d => this.toggleBold(event.target));
+  }
+  // --------------------------------------------------------------------------
+
+
+// General Event Handlers ****************************************************
+
+  // handle clicks and ctrl-clicks on squares
+  // Calls cycleBin(), movBins(), and toggleSelect()
   clickHandler(event) {
     // const active = d3.select(event.target);
     // if in select mode toggle selection
@@ -581,7 +655,6 @@ export class HolderDayTypeComponent implements OnInit {
       this.toggleSelect(event.target);
     } else if (this.selectedDates.has(event.target)) {
       // if in selection sync and cycle
-      console.log('Inside handler');
       // sync
         const syncTarget = d3.select(event.target);
         let binIndex = this.binList.indexOf(this.binList.find(bin => bin.binColor === syncTarget.attr('fill'))) + 1;
@@ -593,7 +666,7 @@ export class HolderDayTypeComponent implements OnInit {
         }
         const syncBin = this.binList[binIndex].binName;
         const itemList = Array.from(this.selectedDates);
-        console.log(itemList, syncBin);
+
         for ( let i = 0; i < itemList.length ; i++) {
             this.movBins(itemList[i], syncBin);
         }
@@ -611,6 +684,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraph(0);
 
     } else {
+
       this.cycleBin(event.target);
     }
   }
@@ -619,14 +693,14 @@ export class HolderDayTypeComponent implements OnInit {
   cycleBin(rect) {
     const active = d3.select(rect);
     const color = active.attr('fill');
-    const currBin = this.binList.find(bin => bin.binColor === color );
-    let index = this.binList.indexOf(currBin) + 1;
 
+    //get index of next bin
+    let index = this.binList.findIndex(bin => bin.binColor === color ) + 1;
     if (index === this.binList.length) {
       index = 0;
     }
-    const nextBin = this.binList[index].binName;
 
+    const nextBin = this.binList[index].binName;
     this.movBins(rect, nextBin);
 
 
@@ -645,16 +719,46 @@ export class HolderDayTypeComponent implements OnInit {
 
   // move element into target bin, updates this.days
   movBins(element, bin) {
-    // .log('in movBins', target, syncBin);
     const active =  d3.select(element);
     const key = active.data()[0].values[0];
+
     // find entry in days and update
-    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
-    this.days[this.days.indexOf(found)].bin = bin;
+    const found = this.days.findIndex(obj =>
+      obj.date.getDate() === key.getDate() && obj.date.getMonth() === key.getMonth() && obj.date.getFullYear() === key.getFullYear()
+    );
+
+    this.days[found].bin = bin;
 
     const binDetails = this.binList.find( obj => obj.binName === bin);
     active.attr('fill', binDetails.binColor);
 }
+
+  // resets selectedDates
+  clearSelection() {
+    this.selectedDates.clear();
+  }
+// --------------------------------------------------------------------------
+
+// Toggle Functions *********************************************************
+  // Sync toggle status on redraw
+  syncToggles(data) {
+    console.log(data); console.log(this.days);
+    const date = data.values[0];
+    if (this.graphDayAverage === undefined) {
+    } else {
+      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+      }
+    }
+    const found = this.days.find(obj => obj.date.getDate() === date.getDate());
+    if ( this.days[this.days.indexOf(found)].stroke === 4 ) {
+      return 'black';
+    } else if ( this.days[this.days.indexOf(found)].stroke === 1 ) {
+      return 'white';
+    } else {
+      return 'yellow';
+    }
+  }
 
   // add/removes item from selectedDates set
   toggleSelect(rect) {
@@ -670,6 +774,7 @@ export class HolderDayTypeComponent implements OnInit {
     console.log(n.data()[0].values[0]);
   }
 
+  // Toggles boldness of line, indicated by checkbox in squares.
   toggleBold(box) {
     if (this.graphDayAverage === undefined) {
     } else {
@@ -693,14 +798,11 @@ export class HolderDayTypeComponent implements OnInit {
     this.allocateBins();
     this.plotGraph(0);
   }
+// --------------------------------------------------------------------------
 
-  clearSelection() {
-      this.selectedDates.clear();
-  }
+// ---------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-  // **************************************************
+// Functions related to File / Column Selection ********************************************************************************************
   populateSpinner() {
     this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
@@ -710,6 +812,31 @@ export class HolderDayTypeComponent implements OnInit {
         identifier: i
       });
     }
+  }
+
+  fileSelectorEvent(event) {
+    this.columnSelectorList = [];
+    this.columnSelector = [];
+    const currentSelectedFile = event.target.value;
+    const tempHeader = this.dataFromDialog[parseInt(currentSelectedFile, 10)].selectedHeader;
+    for (let i = 0; i < tempHeader.length; i++) {
+      if (!(this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
+        this.columnSelector.push({
+          name: tempHeader[i].headerName,
+          identifier: `${currentSelectedFile},${i}`
+        });
+      } else if (this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
+        this.timeSeriesFileDayType = `${currentSelectedFile},${i}`;
+      }
+    }
+  }
+
+  columnSelectorEvent(event) {
+    this.columnSelectorList.pop();
+    this.columnSelectorList.push({
+      name: this.columnSelector[event.target.options.selectedIndex].name,
+      value: event.target.value
+    });
   }
 
   dayTypeNavigation() {
@@ -813,30 +940,7 @@ export class HolderDayTypeComponent implements OnInit {
     }// console.log(this.timeSeriesDayType);
   }
 
-  fileSelectorEvent(event) {
-    this.columnSelectorList = [];
-    this.columnSelector = [];
-    const currentSelectedFile = event.target.value;
-    const tempHeader = this.dataFromDialog[parseInt(currentSelectedFile, 10)].selectedHeader;
-    for (let i = 0; i < tempHeader.length; i++) {
-      if (!(this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
-        this.columnSelector.push({
-          name: tempHeader[i].headerName,
-          identifier: `${currentSelectedFile},${i}`
-        });
-      } else if (this.dataFromDialog[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
-        this.timeSeriesFileDayType = `${currentSelectedFile},${i}`;
-      }
-    }
-  }
-
-  columnSelectorEvent(event) {
-    this.columnSelectorList.pop();
-    this.columnSelectorList.push({
-      name: this.columnSelector[event.target.options.selectedIndex].name,
-      value: event.target.value
-    });
-  }
+// ---------------------------------------------------------------------------------------------------------------------------------------
 
   /*
     tempGraphPlot() {
@@ -886,6 +990,7 @@ export class HolderDayTypeComponent implements OnInit {
       });
     }*/
   binToggled(event: { name: string; graph: boolean }) {
+    // if graph is undefined do nothing.
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -905,5 +1010,67 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraph(0);
     }
   }
+
+  // Sorting Functions *********************************************************************************************************************
+
+  // Currently just calls dayBinNavigation
+  // Better way needed.
+  resetBins() {
+     this.dayTypeNavigation();
+  }
+
+  // Moves everything to 'EXCLUDED' BIN
+  // redraws calendar and graph
+  clearBins() {
+    for (let i = 0 ; i < this.days.length; i++) {
+      this.days[i].bin = 'EXCLUDED';
+    }
+    this.createCalendar();
+    this.allocateBins();
+    this.plotGraph(0);
+  }
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
+
+  // Functions for adding Bin Types*********************************************************************************************************
+  showBinMod(template: TemplateRef<any>) {
+      this.newBinName = '' ;
+      this.newBinColor = '' ;
+      this.modalRef = this.modalService.show(template);
+  }
+
+  addBinType() {
+    if ( this.newBinName === '') {
+      alert('Please Enter a Name for the Bin');
+      return;
+    }
+
+    if (! this.isColor(this.newBinColor.toLowerCase()) ) {
+       alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
+       return;
+    }
+
+    const currentBins = this.binList.map(d => d.binName.toUpperCase());
+    const currentColors = this.binList.map(d => d.binColor.toLowerCase());
+
+    if (currentBins.indexOf(this.newBinName.toUpperCase()) > -1)  { alert('Name Already in Use'); return; }
+    if (currentColors.indexOf(this.newBinColor.toLowerCase()) > -1) { alert('Color Already in Use'); return; }
+
+    this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
+    this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
+
+    console.log('BINS:', this.binList);
+    this.createLegend();
+    this.modalRef.hide();
+
+  }
+
+  isColor(strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color === strColor;
+  }
+
+  // ---------------------------------------------------------------------------------------------------------------------------------------
 }
 
