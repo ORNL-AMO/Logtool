@@ -127,10 +127,11 @@ export class HolderDayTypeComponent implements OnInit {
       this.dropDownBinList.push(tempdropDownBinList);
       this.selectedBinList.push(tempSelectedBinList);
     }
+    this.calculateType(0);
   }
 
   // Calculate Day Type
-  calculateType() {
+  calculateType(channelId) {
     let tempArray = [];
     const bigTempArray = [];
     this.sumArray = [];
