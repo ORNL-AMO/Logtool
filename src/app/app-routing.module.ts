@@ -5,6 +5,7 @@ import {TableDataComponent} from './components/table-data/table-data.component';
 import {PlotGraphComponent} from './components/plot-graph/plot-graph.component';
 import {DayTypeBinComponent} from './components/day-type-bin/day-type-bin.component';
 import {HolderDayTypeComponent} from './components/holder-day-type/holder-day-type.component';
+import {HistogramBinTypeComponent} from './components/histogram-bin-type/histogram-bin-type.component';
 
 const routes: Routes = [
 
@@ -25,6 +26,10 @@ const routes: Routes = [
       component: DayTypeBinComponent,
     }
     ]
+  },
+  {
+    path: 'histogram-day-type',
+    component: HistogramBinTypeComponent
   },
   {
     path: 'plot-graph',
