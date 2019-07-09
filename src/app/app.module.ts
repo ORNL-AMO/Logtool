@@ -33,6 +33,7 @@ import { DayTypeBinComponent } from './components/day-type-bin/day-type-bin.comp
 import { HolderDayTypeComponent } from './components/holder-day-type/holder-day-type.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { HistogramBinTypeComponent } from './components/histogram-bin-type/histogram-bin-type.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -52,7 +53,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     DayTypeBinComponent,
     HolderDayTypeComponent,
     ConfirmationModalComponent,
-    CalendarComponent
+    CalendarComponent,
+    HistogramBinTypeComponent
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent],
   imports: [

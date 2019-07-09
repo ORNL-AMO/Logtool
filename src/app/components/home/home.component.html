@@ -156,6 +156,7 @@
         <p class="panel-title"> Averages by Day Type</p>
       </div>
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
+        <input type="text" name="pageSelection" [(ngModel)] = "formEntry"  value="">
         <div class="row justify-content-center">
           <button class="btn" type="submit">Send</button>
         </div>
