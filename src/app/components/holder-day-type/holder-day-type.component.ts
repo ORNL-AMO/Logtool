@@ -1,4 +1,5 @@
-import {Component, OnInit, AfterContentInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
@@ -11,7 +12,7 @@ import {createElementCssSelector} from '@angular/compiler';
   styleUrls: ['./holder-day-type.component.scss']
 })
 export class HolderDayTypeComponent implements OnInit {
-  constructor(private data: DataService, private indexFileStore: IndexFileStoreService) {
+  constructor(private data: DataService, private indexFileStore: IndexFileStoreService, private modalService: BsModalService) {
   }
 
   dropDownBinList = [];
@@ -76,7 +77,15 @@ export class HolderDayTypeComponent implements OnInit {
   dataFromDialog: any = [];
   tabs = [];
 
+  // Used for adding bin types
+  modalRef: BsModalRef;
+  newBinName;
+  newBinColor;
+  // --------------------------
+
+  // Used for multi-Select on Calendar
   selectedDates: Set<any>;
+  // ------------------------------
 
   ngOnInit() {
     this.selectedDates = new Set([]);
@@ -361,7 +370,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 
-// **************************************************
+// Calendar Functions ***********************************************************************************************
   createLegend() {
     const svg = d3.select('#legend');
 
@@ -383,6 +392,7 @@ export class HolderDayTypeComponent implements OnInit {
       .text(function (d) {
         return d.binName;
       });
+
     svg.selectAll('g').append('g')
       .data(this.binList)
       .join('rect')
@@ -395,25 +405,31 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('fill', function (d) {
         return d.binColor;
       });
-
+  }
 
     // Example block --------------------------------------------------------------------
+  createExample(){
+    const svg = d3.select('#example');
     const colors = ['red', 'green', 'blue'];
+
+    const blockSize = 30;
+    const offset_x = 35;
+    const offset_y = 20;
 
     const examp = svg.append('rect')
       .data(colors)
-      .attr('width', 30)
-      .attr('height', 30)
-      .attr('x', 30)
-      .attr('y', 110)
+      .attr('width', blockSize)
+      .attr('height', blockSize)
+      .attr('x', offset_x)
+      .attr('y', offset_y)
       .attr('fill', 'blue');
 
 
     const check = svg.append('rect')
-      .attr('width', 10)
-      .attr('height', 10)
-      .attr('x', 48)
-      .attr('y', 112)
+      .attr('width', blockSize / 3 )
+      .attr('height', blockSize / 3 )
+      .attr('x', offset_x + 18)
+      .attr('y', offset_y + 2)
       .attr('fill', 'white');
 
 
@@ -429,25 +445,26 @@ export class HolderDayTypeComponent implements OnInit {
     const boldText = svg.append('text')
       .text('Toggle BOLD')
       .attr('font-size', '9px')
-      .attr('x', 20)
-      .attr('y', 100);
+      .attr('x', offset_x-10)
+      .attr('y', offset_y - 5);
 
     svg.append('text')
-      .text('Click to cycle bin')
+      .text('Click: cycle bin')
       .attr('font-size', '9px')
-      .attr('x', 5)
-      .attr('y', 150);
+      .attr('x', offset_x - 15)
+      .attr('y', offset_y + 40);
 
     svg.append('text')
-      .text('Ctl Click to multi-select')
+      .text('Ctl Click: multi-select')
       .attr('font-size', '9px')
-      .attr('x', 5)
-      .attr('y', 160);
+      .attr('x', offset_x - 28)
+      .attr('y', offset_y + 50);
 
   }
 
   createCalendar() {
     this.createLegend();
+    this.createExample();
     d3.select('#grid').selectAll('*').remove();
     const width3 = d3.select('#grid').attr('viewBox');
     const cell_dimension = width3.split(',')[2] * .075;
@@ -484,12 +501,14 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('transform', 'translate(12 , 0 )')
       .join('text')
       .attr('x', function (d, i) {
-        return i * (cell_dimension + 5) + cell_dimension * (1 / 3) + x_offset - 10;
+        return i * (cell_dimension + spacing_x) + x_offset ;
       })
       .attr('y', 15)
+      .attr('width', cell_dimension)
       .text(function (d) {
         return d;
       });
+
 
     // Attach squares to week groups
     const squares = svg.append('g')
@@ -541,13 +560,35 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('y', function (d) {
         return cell_dimension * .05;
       })
-      .attr('fill', 'white');
+      .attr('fill', d => this.syncToggles(d));// 'white');
+
     squares.on('click', d => this.clickHandler(event));
     checkboxes.on('click', d => this.toggleBold(event.target));
   }
 
+  syncToggles(data){
+    console.log(data); console.log(this.days);
+    const date = data.values[0];
+    if (this.graphDayAverage === undefined) {
+    } else {
+      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
+      }
+    }
+    const found = this.days.find(obj => obj.date.getDate() === date.getDate());
+    if( this.days[this.days.indexOf(found)].stroke === 4 ){
+      return 'black';
+    }
+    else if ( this.days[this.days.indexOf(found)].stroke === 1 )
+    {
+      return 'white';
+    }
+    else {
+      return 'yellow';
+    }
+  }
 
-  // toggle stroke and color for example block
+  // toggle stroke and color for example block (DOES NOT EFFECT ARRAYS)
   exampleClick(event) {
     const sample = d3.select(event.target);
     if (event.ctrlKey) {
@@ -673,6 +714,7 @@ export class HolderDayTypeComponent implements OnInit {
     console.log(n.data()[0].values[0]);
   }
 
+  // Toggles boldness of line, indicated by checkbox in squares.
   toggleBold(box) {
     if (this.graphDayAverage === undefined) {
     } else {
@@ -697,13 +739,13 @@ export class HolderDayTypeComponent implements OnInit {
     this.plotGraph(0);
   }
 
+  // resets selectedDates
   clearSelection() {
       this.selectedDates.clear();
   }
 
+  // ----------------------------------------------------------------------------------------------------------------------
 
-
-  // **************************************************
   populateSpinner() {
     this.fileSelector = [];
     for (let i = 0; i < this.tabs.length; i++) {
@@ -889,6 +931,7 @@ export class HolderDayTypeComponent implements OnInit {
       });
     }*/
   binToggled(event: { name: string; graph: boolean }) {
+    // if graph is undefined do nothing.
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -908,5 +951,67 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraph(0);
     }
   }
+
+  // Sorting Functions *****************************************************************************************************
+      resetBins(){
+
+        this.dayTypeNavigation();
+      }
+
+      clearBins() {
+        for (let i = 0 ; i < this.days.length; i++) {
+          this.days[i].bin = 'EXCLUDED';
+        }
+        this.createCalendar();
+        this.allocateBins();
+        this.plotGraph(0);
+      }
+
+
+
+
+
+  // ------------------------------------------------------------------------------------------------------------------------
+
+  // Functions for adding Bin Types******************************************************************************************
+  showBinMod(template: TemplateRef<any>) {
+      this.newBinName = '' ;
+      this.newBinColor = '' ;
+      this.modalRef = this.modalService.show(template);
+  }
+
+  addBinType() {
+    if ( this.newBinName === '') {
+      alert('Please Enter a Name for the Bin');
+      return;
+    }
+
+    if (! this.isColor(this.newBinColor.toLowerCase()) ) {
+       alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
+       return;
+    }
+
+    const currentBins = this.binList.map(d => d.binName.toUpperCase());
+    const currentColors = this.binList.map(d => d.binColor.toLowerCase());
+
+    if (currentBins.indexOf(this.newBinName.toUpperCase()) > -1)  { alert('Name Already in Use'); return; }
+    if (currentColors.indexOf(this.newBinColor.toLowerCase()) > -1) { alert('Color Already in Use'); return; }
+
+    this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
+    this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
+
+    console.log('BINS:', this.binList);
+    this.createLegend();
+    this.modalRef.hide();
+
+  }
+
+  isColor(strColor) {
+    const s = new Option().style;
+    s.color = strColor;
+    return s.color === strColor;
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------------
 }
 

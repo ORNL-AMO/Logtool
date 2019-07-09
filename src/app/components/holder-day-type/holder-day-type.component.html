@@ -1,33 +1,36 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
-  <!-- Control panel, calendar, filler? -->
+  <!-- File Control Panel, calendar -->
   <div class="row" style="min-height: 200px;">
 
     <!-- control panel -->
-    <div class="col-sm-3 panel col1" style="min-height: 150px;  height:100%">
+    <div class="col-sm-3 panel col1" style="min-height: 125px;  height:100%; min-width: 325px;">
       <!-- Title -->
       <div class="row header">
-        <p class="panel-title"> Averages by Day Type</p>
+        <p class="header"> Data Selector</p>
       </div>
 
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
         <!-- File select box --->
         <div class=" row">
-          <div class="col-2">
-            <p class=".dropbox-label">File:</p>
+          <div class="col-1 tight-fit" style="padding:5px; vertical-align: center; min-width:36px;">
+            <p class="dropbox-label"  style="text-align: right">File:</p>
           </div>
-          <div class="col-9">
+          <div class="col-8 tight-fit" style="margin-top: 5px;">
             <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)">
               <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
             </select>
+          </div>
+          <div class="col-2 tight-fit" style="margin-top: 5px;">
+            <button type="submit" style="height: 190%; width: 64px;">Import</button>
           </div>
         </div>
 
         <!-- Column select box -->
         <div class="row">
-          <div class="col-2">
-            <p class=".dropbox-label">Data:</p>
+          <div class="col-1" style="padding:5px;">
+            <p class="dropbox-label" style="text-align: right; margin-bottom: 5px;">Data:</p>
           </div>
-          <div class="col-9">
+          <div class="col-8" style="margin-top: 5px;">
             <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
               <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
             </select>
@@ -38,48 +41,66 @@
           </div>
         </div>
 
-        <!-- submit button -->
-        <div class="row justify-content-center">
-          <button class="btn" type="submit">Send</button>
-        </div>
-
       </form>
 
     </div>
 
     <!-- calendar panel -->
-    <div class="col-4 panel" style="height: 200px;">
+    <div class="col-8 panel" style="height: 200px;">
       <p class="header" style="margin:0; text-align: center;">Calendar</p>
-      <div class="row" style="overflow: auto">
-        <div class="col-3" style="margin:0; padding:0; height: 175px; min-width: 100px; border: 3px solid black">
+      <div class="row" >
+        <!-- Calendar -->
+        <div class="col" style="overflow:auto; margin:0; padding:0; height: 170px; min-width:175px;">
+          <svg id="grid" #grid viewBox=" 0, 0 , 450, 200" style="background: white; height: 95%; overflow: scroll;"></svg>
+        </div>
+        <!-- legend -->
+        <div class="col tight-fit" style="max-width: 200px; min-width: 100px; overflow:auto">
+          <div class="row">
+        <div class="col" style="margin:0; padding:0; height: 170px; width: 100px; border-width: 3px; border-left: solid black; border-top: solid black; border-bottom: solid black;">
           <svg id="legend" style="background: white; height: 100%; width: 100%; overflow:auto;"></svg>
         </div>
-        <div class="col" style="overflow:auto; margin:0; padding:0; height: 175px; min-width:175px;">
-          <svg id="grid" #grid viewBox=" 0, 0 , 450, 200"
-               style="background: white; height: 100%; overflow:auto;"></svg>
+        <div class="col" style="margin:0; padding:0; height: 170px; width: 100px; border-width: 3px; border-right: solid black; border-top: solid black; border-bottom: solid black;">
+          <svg id="example" style="background: white; height: 100%; width: 100%; overflow:auto;"></svg>
         </div>
+          </div>
+          </div>
+
       </div>
     </div>
 
-    <!-- placeholder -->
-    <div class="col-4 panel" style="height:200px;">
-      PlaceHolder
-    </div>
   </div>
 
-  <!-- bin box and graphs -->
-    <div class="row" style="min-height: 400px;">
+  <!-- bin control and graphs -->
+  <div class="row" style="min-height: 400px;">
       <!-- bin control container -->
-      <div class=" col-3 panel" style="min-height: 600px;">
-        <div class="inner-row justify-content-center" style="min-height: 160px;">
-          <div class="col-10 panel" style="width: 100%; height: 150px; margin: 15px auto; text-align:center">
-            <p class="header"> Osptions </p>
-          </div>
+      <div class=" col-3 panel" style="min-height: 600px; ">
+        <!-- header-->
+        <div class="inner-row justify-content-center" style="min-height: 25px;">
+            <p class="header" style="text-align: center"> Options </p>
+        </div>
+
+        <!-- Option buttons -->
+        <div class="row justify-content-center">
+          <button style="width: 85%" (click)="showBinMod(template)">Add Type</button>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-6 tight-fit"><div class="row justify-content-center"><button style="width: 100%" (click)="resetBins()">Reset</button></div></div>
+          <div class="col-6 tight-fit"><div class="row justify-content-center"><button style="width: 100%" (click)="clearBins()">Clear</button></div></div>
+        </div>
+
+        <!-- spacer -->
+        <div class="row justify-content-center tight-fit" style="min-height: 50px"> </div>
+
+
+        <div class="row justify-content-center tight-fit"> <p class="tight-fit header" style="font-size: 18px; font-weight: bold; width: 90%; border-left: 4px solid #000B13;
+ border-right: 4px solid #000B13;  border-top: 4px solid #000B13">Day Type Bins</p>
         </div>
         <!-- bin container- layer 1 -->
-        <div class="inner-row justify-content-center">
+        <div class="row justify-content-center tight-fit">
           <!-- bin container- layer 2 -->
-          <div class="panel" style="max-height: 375px; width:90%; margin: 15px auto 15px auto; overflow-y: auto">
+          <div class="panel" style="max-height: 375px; width:90%; overflow-y: auto; box-shadow: none; margin: 0 auto 15px; border-left: 4px solid #000B13;
+ border-right: 4px solid #000B13;  border-bottom: 4px solid #000B13">
+            <!-- bins -->
             <div class="row justify-content-center" style="margin: 0; max-width: 360px; max-height:300px; background:darkgray;"
                  *ngFor="let bin of binList let i = index ">
               <app-day-type-bin
@@ -93,14 +114,7 @@
               </app-day-type-bin>
 
             </div>
-            <div class="row justify-content-center" style="margin: 0; max-width: 360px; max-height:300px; background:darkgray;">
-              <app-day-type-bin
-                [name] = "'Add_Type'" >
-              </app-day-type-bin>
-
-            </div>
-
-
+          </div>
         </div>
       </div>
 
@@ -109,6 +123,16 @@
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"></plotly-plot>
       </div>
     </div>
+
+<!-- placeholder for table -->
+  <div class ="row" style="min-height: 100px;">
+    <div class="col-sm-3 panel" style="min-height:100px; ">Placeholder</div>
+    <div class="col-sm-8 panel" style="min-height:100px; ">Placeholder</div>
+
+
+
+  </div>
+
 
 
   <!-- <div class="row">
@@ -167,3 +191,33 @@
     </table>
   </div>-->
 <!--<svg id="grid" #grid style="height:500px; width:500px; background: #007bff;"></svg>-->
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add a Type Bin</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row justify-content-center" style="margin-left: 5px;">
+    <div class="col tight-fit" > <p>New Bin Name: </p> </div>
+    <div class="col tight-fit">
+    <label>
+      <input [(ngModel)]="newBinName">
+    </label>
+    </div>
+    <div class="col">
+      <button style="width: 100%; height:100%" (click)="addBinType()"> Add Bin </button>
+    </div>
+  </div>
+
+  <div class="row justify-content-center" style="margin-left: 5px;">
+    <div class="col tight-fit"> <p>New Bin Color: </p> </div>
+    <div class="col tight-fit">
+      <label>
+        <input [(ngModel)]="newBinColor">
+      </label>
+    </div>
+    <div class="col"></div>
+</div>
+
+</ng-template>
