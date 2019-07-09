@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit, DoCheck {
   differ: any;
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
+  formEntry: any;
 
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
@@ -71,9 +72,11 @@ export class HomeComponent implements OnInit, DoCheck {
       console.log(error);
     });
   }
+
   ngDoCheck(): void {
     this.differ.diff(this.tabs);
   }
+
   onImport() {
     this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
@@ -189,7 +192,11 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   dayTypeNavigation() {
-    this.router.navigate(['/holder-day-type']);
+    if (this.formEntry === '1') {
+      this.router.navigate(['/histogram-day-type']);
+    } else {
+      this.router.navigate(['/holder-day-type']);
+    }
   }
 
 // Custom Function
@@ -249,9 +256,7 @@ export class HomeComponent implements OnInit, DoCheck {
         this.indexFileStore.deleteFromDB(id).then(result2 => {
           for (let i = 0; i < this.tabs.length; i++) {
             if (id === 0) {
-              console.log(this.tabs);
               this.tabs.shift();
-              console.log(this.tabs);
             } else if (id === this.tabs.length) {
               this.tabs.pop();
               break;

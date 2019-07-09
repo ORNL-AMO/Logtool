@@ -2,8 +2,6 @@ import {Component, OnInit, AfterContentInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
-import * as PlotlyJS from 'plotly.js/dist/plotly.js';
-import {createElementCssSelector} from '@angular/compiler';
 
 @Component({
   selector: 'app-holder-day-type',
