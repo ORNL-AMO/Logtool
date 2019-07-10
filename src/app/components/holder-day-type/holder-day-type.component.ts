@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
@@ -29,14 +29,15 @@ export class HolderDayTypeComponent implements OnInit {
   columnMainArray = [];
   sumArray = [];
   weekday = [
+    'Sunday',
     'Monday',
     'Tuesday',
     'Wednesday',
     'Thursday',
     'Friday',
     'Saturday',
-    'Sunday'
   ];
+  monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   binList = [
     {
       binName: 'EXCLUDED',
@@ -51,7 +52,8 @@ export class HolderDayTypeComponent implements OnInit {
       binColor: 'blue'
     }
   ];
-  displayBinList = [{
+  displayBinList = [
+    {
     binName: 'EXCLUDED',
     binColor: 'red'
   },
@@ -62,7 +64,8 @@ export class HolderDayTypeComponent implements OnInit {
     {
       binName: 'WEEKEND',
       binColor: 'blue'
-    }];
+    }
+    ];
   graphDayAverage: any;
   graphBinAverage: any;
   plotData = [];
@@ -83,6 +86,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   // Used for multi-Select on Calendar
   selectedDates: Set<any>;
+
   // ------------------------------
 
   ngOnInit() {
@@ -99,6 +103,7 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
       this.populateSpinner();
+      this.createGrid();
       // this.tempGraphPlot();
     });
   }
@@ -211,10 +216,6 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   plotGraph(channelId) {
-    if (this.graphDayAverage === undefined) {
-    } else {
-      // console.log(this.graphDayAverage);
-    }
     let name = '';
     this.plotData = [];
     if (this.columnMainArray.length > 0) {
@@ -252,12 +253,13 @@ export class HolderDayTypeComponent implements OnInit {
             }
           }
         }
+        //console.log(this.columnMainArray[channelId][i][0]);
         this.plotData.push({
           x: timeSeries,
           y: tempHourAverage,
           type: 'linegl',
           mode: 'lines',
-          name: this.columnMainArray[channelId][i][0].date + ' ' + 'Day',
+          name: this.monthList[this.columnMainArray[channelId][i][0].displayDate.getMonth()] + ' ' + this.columnMainArray[channelId][i][0].displayDate.getDate(),
           line: {
             color: color,
             width: thickness
@@ -273,13 +275,8 @@ export class HolderDayTypeComponent implements OnInit {
           hovermode: 'closest',
           autosize: true,
           title: name,
-          xaxis: {
-            autorange: true,
-          },
-          yaxis: {
-            autorange: true,
-            type: 'linear'
-          }
+          xaxis: this.graphDayAverage.layout.xaxis,
+          yaxis: this.graphDayAverage.layout.yaxis
         },
         config: {
           'showLink': false,
@@ -369,10 +366,40 @@ export class HolderDayTypeComponent implements OnInit {
 
 
 // Calendar Functions **********************************************************************************************************************
+// Set up functions only need to run once on import ************************
 
-  // Set up functions only need to run once on import ************************
+  createGrid(){
+      const col = [0,1,2,3,4,5,6];
+      const rows = [0,1,2,3,4];
+      const cell_dimension = 20;
+      d3.select('#grid').attr('width', '200px');
+      d3.select('#calendar_panel').style('width', 400 + 'px');
+      const weeks = d3.select('#grid').append('g')
+         .selectAll('g')
+         .data(rows)
+          .join('g')
+           .attr('transform', function (d, i) {
+            return 'translate( ' + 15 + ',' + (i * (cell_dimension + 5) + cell_dimension) + ')';
+      });
 
-  // Creates example square to explain interations
+    // Attach bin squares to each day in each week
+    const squares = weeks.append('g')
+      .selectAll('g')
+      .data(col)
+      .join('rect')
+      .attr('width', cell_dimension)
+      .attr('height', cell_dimension)
+      .attr('x', function (d) {
+        return (d * (cell_dimension + 5));
+      })
+      .attr('y', 0)
+      .attr('fill', 'lightgrey');
+
+
+
+  }
+
+  // Creates example square to explain integrations
   createExample() {
     const svg = d3.select('#example');
     const colors = ['red', 'green', 'blue'];
@@ -391,27 +418,36 @@ export class HolderDayTypeComponent implements OnInit {
 
 
     const check = svg.append('rect')
-      .attr('width', blockSize / 3 )
-      .attr('height', blockSize / 3 )
+      .attr('width', blockSize / 3)
+      .attr('height', blockSize / 3)
       .attr('x', offset_x + 18)
       .attr('y', offset_y + 2)
-      .attr('fill', 'white');
+      .attr('fill', 'white')
 
 
-    check.on('click', function() {
-        const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
-        check.attr('fill', newColor);
-        const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
-        boldText.attr('font-weight', bold);
-      });
-    examp.on('click', d => this.exampleClick(d3.event) );
+
+    check.on('click', function () {
+      const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
+      check.attr('fill', newColor);
+      const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
+      boldText.attr('font-weight', bold);
+    });
+
+    examp.on('click', d => this.exampleClick(d3.event));
 
     // instructions
     const boldText = svg.append('text')
       .text('Toggle BOLD')
       .attr('font-size', '9px')
-      .attr('x', offset_x - 10)
+      .attr('x', offset_x + 5)
       .attr('y', offset_y - 5);
+
+    boldText.on('click', function () {
+      const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
+      check.attr('fill', newColor);
+      const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
+      boldText.attr('font-weight', bold);
+    });
 
     svg.append('text')
       .text('Click: cycle bin')
@@ -433,13 +469,16 @@ export class HolderDayTypeComponent implements OnInit {
     if (event.ctrlKey) {
       const select = sample.attr('stroke') === 'black' ? 'none' : 'black';
       sample.attr('stroke', select);
+      sample.attr('stroke-width', '4' );
 
     } else {
 
       const oldColor = sample.attr('fill');
       const colorList = this.binList.map(d => d.binColor);
       let index = colorList.indexOf(oldColor) + 1;
-      if (index >= this.binList.length ) { index = 0; }
+      if (index >= this.binList.length) {
+        index = 0;
+      }
       sample.attr('fill', this.binList[index].binColor);
     }
   }
@@ -456,12 +495,12 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-  // Create legend and calendar based on latest data ************************
+// Create legend and calendar based on latest data **************************
 
-  // Creates legend based on this.binList
-  // NO event listeners
+// Creates legend based on this.binList
+// NO event listeners
   createLegend() {
     const svg = d3.select('#legend');
 
@@ -498,7 +537,7 @@ export class HolderDayTypeComponent implements OnInit {
       });
   }
 
-  // Creates monday-based calendar using dates in
+// Creates monday-based calendar using dates in
   createCalendar() {
     this.createLegend();
     this.createExample();
@@ -506,40 +545,77 @@ export class HolderDayTypeComponent implements OnInit {
     // remove any items from previous draws
     d3.select('#grid').selectAll('*').remove();
 
-    // Calculate cell dimensions based on viewbox
-    const width3 = d3.select('#grid').attr('viewBox');
-    const cell_dimension = 20; //width3.split(',')[2] * .075;
-
-    // set up offsets and transformations for squares
-    const y_offset = 10;
-    const spacing_y = 5;
-    const x_offset = 10;
-    const spacing_x = 5;
-
     //Parsers, used to work with dates
-    const week = d3.timeFormat('%U');     // returns week of year 0-53
+    /*const week = d3.timeFormat('%U');     // returns week of year 0-53
     const daynum = d3.timeFormat('%d');   // returns day of month 01-31
-    const dayindex = d3.timeFormat('%w'); // returns index of the day of the week [0,6]
-    // not currently used
+    const dayindex = d3.timeFormat('%w'); // returns index of the day of the week [1,7]
+    const month = d3.timeFormat('%m'); // returns month index 01.12  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    IMPLEMENT*/
+
+    const week = d3.timeFormat('%W');     // returns week of year 0-53
+    const daynum = d3.timeFormat('%d');   // returns day of month 01-31
+    const dayindex = d3.timeFormat('%u'); // returns index of the day of the week [1,7]
     const month = d3.timeFormat('%m'); // returns month index 01.12  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    IMPLEMENT
+
 
     // nest data for grid formation
     // Will eventually add in month nest as well
+    let weekcount = 0;
     const dayList = d3.nest()
       .key(function (d) {
         return month(new Date(d));
       })
       .key(function (d) {
+
         return week(new Date(d));
       })
       .key(function (d) {
+
         return daynum(new Date(d));
       })
       .entries(this.timeSeriesDayType);
 
-    console.log('months', dayList );
-    // Resize svg based on dates needed
-    d3.select('#grid').attr('width', dayList.length * 300);
+    for (let i = 0; i < dayList.length; i++) {
+      if (dayList[i].values.length > weekcount) {
+        weekcount = dayList[i].values.length;
+      }
+    }
+
+    // Calculate cell dimensions based on viewbox
+    let cell_dimension = 100 / (weekcount);
+    if (cell_dimension > 50) {cell_dimension = 50;}
+
+    // set up offsets and transformations for squares
+    const y_offset = 12 + cell_dimension;
+    const spacing_y = 5;
+    const x_offset = 10;
+    const spacing_x = 5;
+    const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
+    d3.select('#grid').attr('width', calSize + 'px');
+
+    if (calSize < 800) {
+      d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
+    } else {
+      d3.select('#calendar_panel').style('max-width', 1000 + 'px');
+    }
+
+
+    const monthindex = dayList.map(d => d.key);
+    const monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const title2 = d3.select('#grid').append('g')
+      .selectAll('text')
+      .data(monthindex)
+      .join('text')
+      .attr('x', function (d, i) {
+        return (7 * (cell_dimension + spacing_x) + 15) * (i + .5) - 20;
+      })
+      .attr('y', 12)
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
+      .text(function (d) {
+        return monthList[d - 1];
+      });
+
+
 
     // Set up group offset for a month
     // i is number of months away from first month of data
@@ -547,47 +623,33 @@ export class HolderDayTypeComponent implements OnInit {
       .data(dayList)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + (7 * (cell_dimension + spacing_x) + 20) * i + ',' + 0 + ')';
+        return 'translate( ' + (7 * (cell_dimension + spacing_x) + 15) * i + ',' + 0 + ')';
       });
 
 
-    // return 'translate( ' + x_offset * 2 + cell_dimension * 7 + ',' + (i * (cell_dimension + spacing_y) + y_offset) + ')';
-/*    const squares = months.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('rect')
-      .attr('width', cell_dimension)
-      .attr('height', cell_dimension)
-      .attr('x', function (d, i) {
-        return i* cell_dimension + 5;
-      })
-      .attr('y', 0)
-      .attr('fill', 'blue');*/
-
-    // Set up group offset for a month
-    // i is the week number
-    // d3.select('#grid').selectAll('g')
-
-
-    // Display headers for Weekdays
+    // Print weekday titles for columns
     const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-/*    const header = month.append('g')
+    const title = months.append('g')
       .selectAll('g')
       .data(weekdays)
-      .attr('transform', 'translate(12 , 0 )')
       .join('text')
-      .attr('x', function (d, i) { return i * (cell_dimension + spacing_x) + x_offset; })
-      .attr('y', y_offset - 5)
-      .attr('width', cell_dimension)
-      .text(function (d) { return d; } );*/
+      .attr('x', function (d, i) {
+        return i * (cell_dimension + spacing_x) + cell_dimension / 4 + 7;
+      })
+      .attr('y', cell_dimension / 3 + 12)
+      .attr('font-size', cell_dimension / 3 + 'px')
+      .text(function (d) {
+        return d;
+      });
 
-    //Create group to hold weeks
+
+    //Create groups of weeks to hold days
     const weeks = months.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + x_offset + ',' +  (i * (cell_dimension + spacing_y) + y_offset) + ')';
+        return 'translate( ' + x_offset + ',' + (i * (cell_dimension + spacing_y) + cell_dimension / 3 + 17) + ')';
       });
 
     // Attach bin squares to each day in each week
@@ -598,7 +660,7 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('width', cell_dimension)
       .attr('height', cell_dimension)
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x);
+        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x);
       })
       .attr('y', 0)
       .attr('fill', d => this.setColor(d.values[0]));
@@ -611,38 +673,40 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('width', cell_dimension * .25)
       .attr('height', cell_dimension * .25)
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + cell_dimension * .7;
+        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension * .7;
       })
       .attr('y', function (d) {
         return cell_dimension * .05;
       })
       .attr('fill', d => this.syncToggles(d));
-    // Text
 
-    // Attach day labels to each day in each week
+
+    // Attach day numbers to each day in each week
     const dateText = weeks.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('text')
       .attr('x', function (d) {
-        return dayindex(d.values[0]) * (cell_dimension + spacing_x) + 5;
+        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension / 4;
       })
       .attr('y', function (d) {
         return cell_dimension - cell_dimension * (1 / 3);
       })
-
-      .text(function (d) {  return d.key; })
+      .text(function (d) {
+        return d.key;
+      })
       .attr('fill', 'black')
       .attr('font-weight', 'bold')
-      .attr('font-size', '10px')
+      .attr('font-size', cell_dimension * .5 + 'px')
       .style('pointer-events', 'none')
       .style('user-select', 'none');
 
-      squares.on('click', d => this.clickHandler(event));
-      checkboxes.on('click', d => this.toggleBold(event.target));
+    // event handlers
+    squares.on('click', d => this.clickHandler(event));
+    checkboxes.on('click', d => this.toggleBold(event.target));
   }
-  // --------------------------------------------------------------------------
 
+// --------------------------------------------------------------------------
 
 // General Event Handlers ****************************************************
 
@@ -656,28 +720,28 @@ export class HolderDayTypeComponent implements OnInit {
     } else if (this.selectedDates.has(event.target)) {
       // if in selection sync and cycle
       // sync
-        const syncTarget = d3.select(event.target);
-        let binIndex = this.binList.indexOf(this.binList.find(bin => bin.binColor === syncTarget.attr('fill'))) + 1;
-        if (isNaN(binIndex) || binIndex < 0) {
-          console.log('Error: out of bounds');
-          return;
-        } else if (binIndex >= this.binList.length) {
-          binIndex = 0;
-        }
-        const syncBin = this.binList[binIndex].binName;
-        const itemList = Array.from(this.selectedDates);
+      const syncTarget = d3.select(event.target);
+      let binIndex = this.binList.indexOf(this.binList.find(bin => bin.binColor === syncTarget.attr('fill'))) + 1;
+      if (isNaN(binIndex) || binIndex < 0) {
+        console.log('Error: out of bounds');
+        return;
+      } else if (binIndex >= this.binList.length) {
+        binIndex = 0;
+      }
+      const syncBin = this.binList[binIndex].binName;
+      const itemList = Array.from(this.selectedDates);
 
-        for ( let i = 0; i < itemList.length ; i++) {
-            this.movBins(itemList[i], syncBin);
-        }
+      for (let i = 0; i < itemList.length; i++) {
+        this.movBins(itemList[i], syncBin);
+      }
 
-        // Replot graphs
-        if (this.graphDayAverage === undefined) {
-          } else {
-            for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
-                this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
-            }
+      // Replot graphs
+      if (this.graphDayAverage === undefined) {
+      } else {
+        for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
+          this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
         }
+      }
 
       // replot
       this.allocateBins();
@@ -685,7 +749,10 @@ export class HolderDayTypeComponent implements OnInit {
 
     } else {
 
+      //console.log(this.timeSeriesDayType);
       this.cycleBin(event.target);
+      console.log(d3.select(event.target).data()[0].values[0]);
+      console.log(this.days);
     }
   }
 
@@ -695,7 +762,7 @@ export class HolderDayTypeComponent implements OnInit {
     const color = active.attr('fill');
 
     //get index of next bin
-    let index = this.binList.findIndex(bin => bin.binColor === color ) + 1;
+    let index = this.binList.findIndex(bin => bin.binColor === color) + 1;
     if (index === this.binList.length) {
       index = 0;
     }
@@ -719,7 +786,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   // move element into target bin, updates this.days
   movBins(element, bin) {
-    const active =  d3.select(element);
+    const active = d3.select(element);
     const key = active.data()[0].values[0];
 
     // find entry in days and update
@@ -729,20 +796,21 @@ export class HolderDayTypeComponent implements OnInit {
 
     this.days[found].bin = bin;
 
-    const binDetails = this.binList.find( obj => obj.binName === bin);
+    const binDetails = this.binList.find(obj => obj.binName === bin);
     active.attr('fill', binDetails.binColor);
-}
+  }
 
   // resets selectedDates
   clearSelection() {
     this.selectedDates.clear();
   }
+
 // --------------------------------------------------------------------------
 
 // Toggle Functions *********************************************************
   // Sync toggle status on redraw
   syncToggles(data) {
-    console.log(data); console.log(this.days);
+    //console.log(data); console.log(this.days);
     const date = data.values[0];
     if (this.graphDayAverage === undefined) {
     } else {
@@ -751,9 +819,9 @@ export class HolderDayTypeComponent implements OnInit {
       }
     }
     const found = this.days.find(obj => obj.date.getDate() === date.getDate());
-    if ( this.days[this.days.indexOf(found)].stroke === 4 ) {
+    if (this.days[this.days.indexOf(found)].stroke === 4) {
       return 'black';
-    } else if ( this.days[this.days.indexOf(found)].stroke === 1 ) {
+    } else if (this.days[this.days.indexOf(found)].stroke === 1) {
       return 'white';
     } else {
       return 'yellow';
@@ -798,6 +866,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.allocateBins();
     this.plotGraph(0);
   }
+
 // --------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
@@ -877,6 +946,7 @@ export class HolderDayTypeComponent implements OnInit {
                   hourAverage: this.averageArray(this.valueArray),
                   hourValue: hourValue === -1 ? 23 : hourValue,
                   date: this.day,
+                  displayDate: this.timeSeriesDayType[i],
                   channelName: this.value[column].name
                 });
                 this.valueArray = [];
@@ -890,6 +960,7 @@ export class HolderDayTypeComponent implements OnInit {
                 hourAverage: this.averageArray(this.valueArray),
                 hourValue: hourValue === -1 ? 23 : hourValue,
                 date: this.day,
+                displayDate: this.timeSeriesDayType[i],
                 channelName: this.value[column].name
               });
               this.mainArray.push(this.dayArray);
@@ -915,7 +986,10 @@ export class HolderDayTypeComponent implements OnInit {
             this.dayArray.push({
               valueArray: this.valueArray,
               hourAverage: this.averageArray(this.valueArray),
-              hourValue: hourValue === -1 ? 23 : hourValue
+              hourValue: hourValue === -1 ? 23 : hourValue,
+              date: this.day,
+              displayDate: this.timeSeriesDayType[i],
+              channelName: this.value[column].name
             });
             this.mainArray.push(this.dayArray);
             if (column === 0) {
@@ -1016,13 +1090,13 @@ export class HolderDayTypeComponent implements OnInit {
   // Currently just calls dayBinNavigation
   // Better way needed.
   resetBins() {
-     this.dayTypeNavigation();
+    this.dayTypeNavigation();
   }
 
   // Moves everything to 'EXCLUDED' BIN
   // redraws calendar and graph
   clearBins() {
-    for (let i = 0 ; i < this.days.length; i++) {
+    for (let i = 0; i < this.days.length; i++) {
       this.days[i].bin = 'EXCLUDED';
     }
     this.createCalendar();
@@ -1034,30 +1108,36 @@ export class HolderDayTypeComponent implements OnInit {
 
   // Functions for adding Bin Types*********************************************************************************************************
   showBinMod(template: TemplateRef<any>) {
-      this.newBinName = '' ;
-      this.newBinColor = '' ;
-      this.modalRef = this.modalService.show(template);
+    this.newBinName = '';
+    this.newBinColor = '';
+    this.modalRef = this.modalService.show(template);
   }
 
   addBinType() {
-    if ( this.newBinName === '') {
+    if (this.newBinName === '') {
       alert('Please Enter a Name for the Bin');
       return;
     }
 
-    if (! this.isColor(this.newBinColor.toLowerCase()) ) {
-       alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
-       return;
+    if (!this.isColor(this.newBinColor.toLowerCase())) {
+      alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
+      return;
     }
 
     const currentBins = this.binList.map(d => d.binName.toUpperCase());
     const currentColors = this.binList.map(d => d.binColor.toLowerCase());
 
-    if (currentBins.indexOf(this.newBinName.toUpperCase()) > -1)  { alert('Name Already in Use'); return; }
-    if (currentColors.indexOf(this.newBinColor.toLowerCase()) > -1) { alert('Color Already in Use'); return; }
+    if (currentBins.indexOf(this.newBinName.toUpperCase()) > -1) {
+      alert('Name Already in Use');
+      return;
+    }
+    if (currentColors.indexOf(this.newBinColor.toLowerCase()) > -1) {
+      alert('Color Already in Use');
+      return;
+    }
 
-    this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
-    this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase() });
+    this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
 
     console.log('BINS:', this.binList);
     this.createLegend();
@@ -1072,5 +1152,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------------------------------------------------------------------------------
+  plotShift(event) {
+    console.log(event.target.value);
+  }
 }
 
