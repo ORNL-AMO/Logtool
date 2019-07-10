@@ -85,7 +85,6 @@ export class HistogramBinTypeComponent implements OnInit {
   plotSecondHistogram(data, numberOfBins) {
     const plotGraph2 = [];
     const plotData2 = stats.histogram(data, numberOfBins);
-    console.log(data);
     plotGraph2.push({
       y: plotData2.values,
       type: 'bar',
