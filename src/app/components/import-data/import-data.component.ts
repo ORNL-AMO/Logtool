@@ -33,8 +33,7 @@ export class ImportDataComponent implements OnInit {
   alias = '';
   fileType = '';
 
-  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {
-  }
+  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef){}
 
   ngOnInit() {
     this.fileName = 'Please select a file to upload';

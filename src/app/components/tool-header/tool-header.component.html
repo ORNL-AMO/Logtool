@@ -1,7 +1,20 @@
 <div class="container">
   <ul class="nav" >
     <li class="nav-items" >
-      <a class="nav-link" routerLink="/" style="background:darkgreen; color: white;">Home</a>
+      <a class="nav-link" routerLink="/"
+         [ngStyle]="{'background-color' :active === 0 ? 'darkblue':''}"
+         (click) = "changeActive(0)">Home</a>
+    </li>
+    <li class="nav-items" >
+      <a class="nav-link" routerLink="/holder-day-type"
+         [ngStyle]="{'background-color' :active === 1 ? 'darkblue':''}"
+         (click) = "changeActive(1)"> Day Type Plots</a>
+    </li>
+    <li class="nav-items" >
+      <a class="nav-link" routerLink="/histogram-day-type"
+         [ngStyle]="{'background-color' :active === 2 ? 'darkblue':''
+                                'color' :active === 2 ? 'white':'}"
+         (click) = "changeActive(2)">Histogram</a>
     </li>
   </ul>
 </div>

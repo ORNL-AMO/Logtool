@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {ImportDataComponent} from '../import-data/import-data.component';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-tool-header',
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ToolHeaderComponent implements OnInit {
 
-  constructor() { }
-
+  active = 0;
+  constructor(private modalService: BsModalService) { }
+  bsModalRef: BsModalRef;
   ngOnInit() {
+
   }
 
+  importClick() {
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
+    this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+
+  changeActive(tab) {
+    this.active = tab;
+  }
 }
