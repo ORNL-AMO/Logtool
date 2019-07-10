@@ -751,8 +751,8 @@ export class HolderDayTypeComponent implements OnInit {
 
       //console.log(this.timeSeriesDayType);
       this.cycleBin(event.target);
-      console.log(d3.select(event.target).data()[0].values[0]);
-      console.log(this.days);
+      /*console.log(d3.select(event.target).data()[0].values[0]);
+      console.log(this.days);*/
     }
   }
 
@@ -839,7 +839,7 @@ export class HolderDayTypeComponent implements OnInit {
       n.attr('stroke', 'black');
       n.attr('stroke-width', '4');
     }
-    console.log(n.data()[0].values[0]);
+    /*console.log(n.data()[0].values[0]);*/
   }
 
   // Toggles boldness of line, indicated by checkbox in squares.
@@ -1079,7 +1079,7 @@ export class HolderDayTypeComponent implements OnInit {
       } else if (!event.graph && displayIndex >= 0) {
         this.displayBinList.splice(displayIndex, 1);
       } else {
-        console.log(event.graph, displayIndex);
+        /*console.log(event.graph, displayIndex);*/
       }
       this.plotGraph(0);
     }
@@ -1139,7 +1139,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
 
-    console.log('BINS:', this.binList);
+    /*console.log('BINS:', this.binList);*/
     this.createLegend();
     this.modalRef.hide();
 
