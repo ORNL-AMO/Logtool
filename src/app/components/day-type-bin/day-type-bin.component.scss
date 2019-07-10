@@ -2,13 +2,13 @@
 .panel{
   width: 90%;
   max-width: 250px;
-  min-width: 200px;
+  min-width: 190px;
   border: #ddd solid 1px;
-  height: 220px;
+  max-height: 170px;
   background: #fff;
   margin-right: 5px;
   margin-left: 5px;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
   border-radius: 4px;
 
   box-shadow: 0px 0px 10px 5px grey;
@@ -35,7 +35,7 @@
 }
 
 .list-box{
-  max-height: 100px;
+  max-height: 80px;
   align-content: center;
   width: 100%;
   background: antiquewhite;

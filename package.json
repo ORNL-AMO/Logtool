@@ -95,6 +95,7 @@
     "ngx-indexed-db": "^2.2.0",
     "plotly.js": "^1.48.2",
     "popper": "^1.0.1",
+    "popper.js": "^1.15.0",
     "rxjs": "^6.4.0",
     "stats-lite": "^2.2.0",
     "xlsx": "^0.14.3"
