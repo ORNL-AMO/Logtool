@@ -131,11 +131,16 @@
       <!-- graph holder -->
       <div class=" col-8 panel" style="height:100%" id="myDiv">
         <select name="plotBox" style="width: 150px;" (click) = plotShift($event);>
-          <option value ="bin">Bin Averages </option>
           <option value ="day">Day Averages</option>
+          <option value ="bin">Bin Averages</option>
           <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
         </select>
+        <div  [hidden]="!showBinMode">
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"></plotly-plot>
+        </div>
+        <div [hidden]="showBinMode">
+          <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout" [config]="graphBinAverage.config"></plotly-plot>
+        </div>
       </div>
     </div>
 
