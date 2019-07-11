@@ -65,6 +65,14 @@ export class PlotGraphComponent implements OnInit {
             type: 'linear'
           }
 
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
         }
       };
     } else if (type === 'scatter_graph') {
@@ -104,6 +112,14 @@ export class PlotGraphComponent implements OnInit {
               }
             }
           }
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
         }
       };
     } else {
@@ -120,6 +136,14 @@ export class PlotGraphComponent implements OnInit {
             autorange: true,
             type: 'linear'
           }
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
         }
       };
     }

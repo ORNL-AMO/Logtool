@@ -16,7 +16,7 @@ export class HistogramBinTypeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data.currentdataInputArray.subscribe(input => this.dataFromDialog = input[5].dataArrayColumns[3]);
+    this.data.currentdataInputArray.subscribe(input => this.dataFromDialog = input[1].dataArrayColumns[2]);
     const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
     const curateDataSecondHist = curateDataFirstHist.slice();
     this.plotFirstHistogram(curateDataFirstHist);
