@@ -30,6 +30,20 @@
   min-width: 100px;
 }
 
+.scrolling-wrapper-flexbox {
+
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1;
+  overflow-x: auto;
+  min-width: 0;
+}
+
+
+
+
+
+
 //Drop boxes ----------------------------------------------------------------------
 
 .list-box{
@@ -64,10 +78,6 @@ ul {
     white-space: nowrap;
   }
 }
-
-
-
-
 select{
   width: 100%;
 }
@@ -173,11 +183,14 @@ input:checked ~ .checkmark {
   font-size: medium;
   border: 2px solid black;
   padding:0;
-  margin: auto;
-  min-height:45px;
+  margin: 1px;
+  min-height:40px;
   color: white;
 }
 
+.nav-item{
+
+}
 
 
 //Set Grid defaults and basic utility **********************************************************************************
