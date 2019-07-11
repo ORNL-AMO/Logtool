@@ -54,6 +54,7 @@ export class HomeComponent implements OnInit, DoCheck {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
+        this.plotGraph.ngOnInit();
         this.tabs = [];
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           // console.log(this.dataFromDialog[i].id);

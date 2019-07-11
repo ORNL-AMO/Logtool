@@ -70,6 +70,8 @@ export class HolderDayTypeComponent implements OnInit {
   graphBinAverage: any;
   plotData = [];
   plotDataBinAverages = [];
+  annotationListDayAverage = [];
+  annotationListBinAverage = [];
   binColor = ['red', 'green', 'blue'];
   temp5: any;
   fileSelector = [];
@@ -204,16 +206,34 @@ export class HolderDayTypeComponent implements OnInit {
         });
         name = this.columnMainArray[channelId][i][channelId].channelName;
       }
-
-      this.graphDayAverage = {
-        data: this.plotData,
-        layout: {
+      let layout;
+      if (this.annotationListDayAverage.length > 0) {
+        layout = {
           hovermode: 'closest',
           autosize: true,
           title: name,
           xaxis: this.graphDayAverage.layout.xaxis,
-          yaxis: this.graphDayAverage.layout.yaxis
-        },
+          yaxis: this.graphDayAverage.layout.yaxis,
+          annotations: this.annotationListDayAverage,
+        };
+      } else {
+        layout = {
+          hovermode: 'closest',
+          autosize: true,
+          title: name,
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          },
+          annotations: this.annotationListDayAverage,
+        };
+      }
+      this.graphDayAverage = {
+        data: this.plotData,
+        layout: layout,
         config: {
           'showLink': false,
           'scrollZoom': true,
@@ -277,6 +297,7 @@ export class HolderDayTypeComponent implements OnInit {
           title: name,
           xaxis: this.graphDayAverage.layout.xaxis,
           yaxis: this.graphDayAverage.layout.yaxis,
+          annotations: this.annotationListBinAverage,
         },
         config: {
           'showLink': false,
@@ -851,6 +872,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   columnSelectorEvent(event) {
+    this.annotationListDayAverage = [];
+    this.annotationListBinAverage = [];
     this.columnSelectorList.pop();
     this.columnSelectorList.push({
       name: this.columnSelector[event.target.options.selectedIndex].name,
@@ -892,6 +915,8 @@ export class HolderDayTypeComponent implements OnInit {
   // Moves everything to 'EXCLUDED' BIN
   // redraws calendar and graph
   clearBins() {
+    this.annotationListDayAverage = [];
+    this.annotationListBinAverage = [];
     for (let i = 0; i < this.days.length; i++) {
       this.days[i].bin = 'EXCLUDED';
     }
@@ -1064,6 +1089,7 @@ export class HolderDayTypeComponent implements OnInit {
   calculateBinAverage(channelId) {
     let tempArray = [];
     const bigTempArray = [];
+    this.annotationListBinAverage = [];
     this.sumArray = [];
     let singleSumArray = [];
     for (let i = 0; i < this.binList.length; i++) {
@@ -1113,8 +1139,73 @@ export class HolderDayTypeComponent implements OnInit {
       }
       this.sumArray.push(tempSumArray);
     }
-    console.log(this.sumArray);
     this.plotGraphBinAverage(0);
+  }
+
+  clickAnnotationDayAverage(data) {
+    if (data.points === undefined) {
+
+    } else {
+      this.annotationListDayAverage = this.graphDayAverage.layout.annotations || [];
+      for (let i = 0; i < data.points.length; i++) {
+        const annotationText = data.points[i].data.name + ', '
+          + this.graphDayAverage.layout.title + ' = ' + data.points[i].y.toPrecision(4);
+        const annotation = {
+          text: annotationText,
+          x: data.points[i].x,
+          y: parseFloat(data.points[i].y.toPrecision(4)),
+          font: {
+            color: 'black',
+            size: 12,
+            family: 'Courier New, monospace',
+          },
+        };
+        if (this.annotationListDayAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+          this.annotationListDayAverage.splice(this.annotationListDayAverage
+            .indexOf(this.annotationListDayAverage
+              .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+        } else {
+          this.annotationListDayAverage.push(annotation);
+        }
+
+      }
+      this.plotGraphDayAverage(0);
+    }
+  }
+
+
+  clickAnnotationBinAverage(data) {
+    if (data.points === undefined) {
+
+    } else {
+      console.log(data);
+      this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
+      for (let i = 0; i < data.points.length; i++) {
+        const annotationText = 'x = ' + data.points[i].x + ' y = ' + data.points[i].y.toPrecision(4);
+        const annotation = {
+          text: annotationText,
+          x: data.points[i].x,
+          y: parseFloat(data.points[i].y.toPrecision(4)),
+          font: {
+            color: 'black',
+            size: 20,
+            family: 'Courier New, monospace',
+          },
+          bordercolor: data.points[i].fullData.line.color,
+          borderwidth: 3,
+          borderpad: 4,
+        };
+        if (this.annotationListBinAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+          this.annotationListBinAverage.splice(this.annotationListBinAverage
+            .indexOf(this.annotationListBinAverage
+              .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+        } else {
+          this.annotationListBinAverage.push(annotation);
+        }
+
+      }
+      this.plotGraphBinAverage(0);
+    }
   }
 }
 
