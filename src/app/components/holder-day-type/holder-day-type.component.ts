@@ -970,6 +970,19 @@ export class HolderDayTypeComponent implements OnInit {
     return s.color === strColor;
   }
 
+  // ------------------------------------------------------------------
+
+  realignGrid() {
+
+    console.log(this.sumArray[0].length);
+    document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
+                                                                    this.sumArray[0].length <= 1 ? '605px' :
+                                                                    this.sumArray[0].length == 2  ?  '625px' : '652px';
+    console.log(document.getElementById('bin-panel').style.minHeight);
+
+  }
+
+
   plotShift(event) {
     console.log();
     if (event.target.value === 'bin') {
@@ -1139,6 +1152,7 @@ export class HolderDayTypeComponent implements OnInit {
       }
       this.sumArray.push(tempSumArray);
     }
+    this.realignGrid();
     this.plotGraphBinAverage(0);
   }
 

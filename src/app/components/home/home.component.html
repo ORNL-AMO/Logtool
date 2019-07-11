@@ -1,4 +1,6 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
+
+  <!-- graph selection, table controls, help panel -->
   <div class="row row1" style="height:300px; margin-bottom: 10px">
     <!-- Graph selection -->
     <div class="col-sm-3 panel" style="min-width: 250px" >
@@ -47,7 +49,7 @@
               <div class="list-box selectable" >
                 <div class="row" *ngFor="let selector of ySelectorListLine let i= index" (click)="removeFromListLine($event)" style="margin:0">
                   <p class="col-11 list">{{selector.name}}</p>
-                  <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>
+                  <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: rgba(150,150,150); border: 1px solid black;">x</p>
                 </div>
               </div>
             </div>
@@ -113,6 +115,8 @@
         </div>
       </form>
     </div>
+
+    <!-- Table formating -->
     <div class="col-sm-7 panel col2" style="min-height: 300px;   height:100%;">
 
       <div>
@@ -124,13 +128,15 @@
           <br>
         </div>
 
-        <div class="row " style="margin-left: 20px">
-          <ul class="nav nav-pills">
+        <!-- tabs -->
+        <div class="row " style="margin-left: 5%; margin-right: 5%; width:90%;">
+          <ul class="scrolling-wrapper-flexbox tight-fit">
             <li class="nav-item" *ngFor="let tab of tabs">
 
               <div class="nav-link" (click)="changeDisplayTable(tab.tabId)"
                    [ngStyle]="{'background-color' :activeTab === tab.tabId ? 'rgba(0,0,255,.5)': 'rgba(0,0,255,.75)',
-                                'border-width'    :activeTab === tab.tabId ? '3px': '2px'}">
+                                'border-width'    :activeTab === tab.tabId ? '3px': '2px',
+                                'width'           : tab.name.length * 10 + 15 + 'px'}">
                 <span style="margin: 10px 5px;">{{tab.name}}</span>
                 <button (click)="removeFile($event, tab.id)"
                         style="padding-top: 0; margin-top:0; float: right; font-size: 8px; ">x
@@ -147,15 +153,17 @@
       </div>
 
     </div>
-    <div class="col-sm panel " style="height: 212.5%; width:100%;">
+
+    <!-- help panel -->
+<!--    <div class="col-sm panel " style="height: 212.5%; width:100%;">
       <p> HELP panel </p>
       Help information, use ngIf to toggle between help items, Toggle visibility as well?
-    </div>
+    </div>-->
   </div>
 
   <div class="row row2">
     <div class="col panel" style="">
-      <app-plot-graph></app-plot-graph>
+      <app-plot-graph style="max-height: 200px;"></app-plot-graph>
     </div>
   </div>
 </div>
