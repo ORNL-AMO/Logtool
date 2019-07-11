@@ -295,8 +295,8 @@ export class HolderDayTypeComponent implements OnInit {
           hovermode: 'closest',
           autosize: true,
           title: name,
-          xaxis: this.graphDayAverage.layout.xaxis,
-          yaxis: this.graphDayAverage.layout.yaxis,
+          xaxis: this.graphBinAverage.layout.xaxis,
+          yaxis: this.graphBinAverage.layout.yaxis,
           annotations: this.annotationListBinAverage,
         },
         config: {
@@ -970,19 +970,6 @@ export class HolderDayTypeComponent implements OnInit {
     return s.color === strColor;
   }
 
-  // ------------------------------------------------------------------
-
-  realignGrid() {
-
-    console.log(this.sumArray[0].length);
-    document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
-                                                                    this.sumArray[0].length <= 1 ? '605px' :
-                                                                    this.sumArray[0].length == 2  ?  '625px' : '652px';
-    console.log(document.getElementById('bin-panel').style.minHeight);
-
-  }
-
-
   plotShift(event) {
     console.log();
     if (event.target.value === 'bin') {
@@ -1095,7 +1082,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.allocateBins();
       this.plotGraphDayAverage(0);
       this.createCalendar();
-
+      this.calculateBinAverage(0);
     }
   }
 
@@ -1220,6 +1207,14 @@ export class HolderDayTypeComponent implements OnInit {
       }
       this.plotGraphBinAverage(0);
     }
+  }
+
+  realignGrid() {
+    document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
+      this.sumArray[0].length <= 1 ? '605px' :
+        this.sumArray[0].length === 2 ? '625px' : '652px';
+    console.log(document.getElementById('bin-panel').style.minHeight);
+
   }
 }
 
