@@ -8,26 +8,26 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 export class DayTypeBinComponent implements OnInit {
   @Input()
   name: string;
+
   @Input()
+  color: string;
+
+  /*  @Input()
   dropDownList: any [];
   @Input()
-  activeContents: any [];
+  activeContents: any [];*/
 
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
+
   @Output() toggle_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() addTypeOutput = new EventEmitter<any>();
 
   // Array of dates to pull inside
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
-
-
+  ngOnInit() {}
 
   addSelectedDate(event) {
     const index = event.target.options.selectedIndex;

@@ -568,9 +568,6 @@ export class HolderDayTypeComponent implements OnInit {
 
     document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
 
-    //console.log(calsize, graphsize, place);
-
-    //d3.select('#placeholder').attr('min-width',
 
     if (calSize < 800) {
       d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');

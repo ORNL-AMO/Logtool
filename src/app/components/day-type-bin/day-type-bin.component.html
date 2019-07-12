@@ -1,68 +1,39 @@
-<div style="width:100%; height:100%;">
+<div>
   <!-- Basic Bin -->
   <div class="panel " *ngIf="name!=='Add Type'">
     <!-- Title -->
-    <div class="row ">
-      <div class="col-9 justify-content-md-center">
-        <h2 class="header">{{name | uppercase}}</h2>
+    <div class="row tight-fit" style="height:25px">
+
+      <!-- bin title -->
+      <div class="col-6 tight-fit">
+        <p style="font-size: 14px; font-weight: bold; margin:auto auto auto 5px;">{{name | uppercase}}</p>
       </div>
-      <div class="col-2 justify-content-md-center" style = "padding: 0; margin-top: 3px;">
-        <label class="switch">
-          <input type="checkbox" (click)= "toggle_bin_plot($event)" checked>
-          <span class="slider round"></span>
-        </label>
-      </div>
-    </div>
 
-    <!-- bin contents -->
-    <div class="row justify-content-center" style="margin-bottom: 5px">
-      <div class="col-12">
-        <!-- Dates located in bin currently -->
-        <p class="row justify-content-center import-label" style="text-align: center;">Current Contents</p>
-        <div class="row">
-          <ul class="list-box">
-<!--            <li class="row" *ngFor="let selector of activeContents let i= index"
-                (click)="onSelectedRemove($event)" style="margin:0">-->
-            <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index" style="margin:0; border: 1px solid black">
-              <p class=" list" > {{selector.date | date:'EEEE MMMM d '}}</p> <!--{{selector.day + " " + selector.date}}</p>-->
-<!--              <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: rgba(0,0,0,.1); border: 1px solid black;">x</p>-->
-            </li>
-          </ul>
-        </div>
-        <div class="row justify-content-center">
-
-        </div>
-
-        <!--Block Title  <p class="import-label">Dates Available </p> -->
-        <!--<div class="row justify-content-center"> <p style="text-align: center; margin: 0;">Add a date</p> </div>
-        &lt;!&ndash; Dates to pull into bin &ndash;&gt;
-        <label class="row">
-          <select name="pull_dates" class="import-label" (click)="addSelectedDate($event)">
-            <option id="{{i}} + date" *ngFor="let day of dropDownList let i = index" style="text-align: center;">
-              {{day.day + " " + day.date}} </option>
-          </select>
-        </label>
+      <div class="col-3" style="background:red;"></div>
+      <!-- Dates located in bin currently -->
+   <!--   <div class="col-7" style="margin: 0px auto 0px auto; padding: 0;" >
+        <ul class="tight-fit" style="height:100%">
+          <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index" style="margin:0; border: 1px solid black">
+            <p class=" list" > {{selector.date | date:'EEEE MMMM d '}}</p>
+          </li>
+        </ul>
       </div>-->
+
+      <div class="col-2 tight-fit" style = "margin-top: 3px;">
+        <label class="switch">
+          <input type="checkbox" style="margin-left: 15px;"(click)= "toggle_bin_plot($event)" checked>
+          <span class="slider round" style="margin-left: auto;"></span>
+        </label>
+      </div>
     </div>
+
   </div>
 
-</div>
 <!-- ADD Bin ---------->
-<!--<div class="panel" *ngIf="name=='Add_Type'">
-  <div class="row ">
-    <div class="col justify-content-md-center">
-      <h2 class="header">{{name | uppercase}}</h2>
-    </div>
+<div class="panel" *ngIf="name=='Add Type'">
+  <div class="row justify-content-center tight-fit" style="height:25px">
+      <p class="tight-fit" style="position:relative; bottom: 8px; font-weight: 'bold'; font-size: 25px;" >+</p>
   </div>
-
-  <div class="row">
-    <form>
-      <label>
-        <input #typeBox keyup="0">
-      </label>
-      <button value="{{typeBox.value}}" (click)="addType($event)"> Press Enter to Confirm</button>
-    </form>
-  </div>
-</div>-->
+</div>
 
 </div>
