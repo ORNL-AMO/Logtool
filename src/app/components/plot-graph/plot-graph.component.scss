@@ -1,0 +1,23 @@
+button:hover {
+  background-color: darkblue;
+}
+
+button:active {
+  box-shadow: none;
+  background-color: #007bff;
+  top: 5px;
+}
+
+.btn {
+  color: #fff;
+  background: #2980b9;
+  border-color: #000B13;
+  font-weight: normal;
+  border-radius: 2px;
+  fon-size: 16px;
+  box-shadow: 4px 4px 0 rgba(20,20,20,.5);
+
+  //position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+}
