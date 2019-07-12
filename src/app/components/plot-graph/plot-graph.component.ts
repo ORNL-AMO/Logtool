@@ -20,6 +20,12 @@ export class PlotGraphComponent implements OnInit {
   graphType = '';
   annotationListLine = [];
   annotationListScatter = [];
+  globalYMin = [];
+  globalYMax = [];
+  globalYAverage = [];
+  globalXMin = [];
+  globalXMax = [];
+  globalXAverage = [];
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
@@ -294,5 +300,36 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
+  }
+
+  calculateStats(event) {
+    this.globalYMin = [];
+    this.globalYMax = [];
+    this.globalYAverage = [];
+    this.globalXMin = [];
+    this.globalXMax = [];
+    this.globalXAverage = [];
+    console.log(event);
+    console.log(this.graph);
+    if (this.graph.data.length > 0) {
+      if (this.graph.layout.title === 'Line Plot') {
+        this.globalYMin.push(this.graph.layout.yaxis.range[0]);
+        this.globalYMax.push(this.graph.layout.yaxis.range[1]);
+        this.globalXMin.push(this.graph.layout.xaxis.range[0]);
+        this.globalXMax.push(this.graph.layout.xaxis.range[1]);
+      } else if (this.graph.layout.title === 'Scatter Plot') {
+        this.globalYMin.push(this.graph.layout.yaxis.range[0]);
+        this.globalYMax.push(this.graph.layout.yaxis.range[1]);
+        this.globalXMin.push(this.graph.layout.xaxis.range[0]);
+        this.globalXMax.push(this.graph.layout.xaxis.range[1]);
+      }
+
+    } else {
+
+    }
+    console.log(this.globalYMin);
+    console.log(this.globalYMax);
+    console.log(this.globalXMin);
+    console.log(this.globalXMax);
   }
 }
