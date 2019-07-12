@@ -6,27 +6,28 @@
     <div class="col-sm-3 panel" >
       <!-- title -->
       <div class="row header">
-           <p class="panel-title"> Graph Selection </p>
+        <p class="panel-title"> Graph Selection </p>
       </div>
 
-      <form #formElement="ngForm"  (ngSubmit)="plotGraphNavigation()">
+      <form #formElement="ngForm" (ngSubmit)="plotGraphNavigation()">
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row justify-content-center">
           <div class="col-6 tight-fit">
             <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
-              <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph" (change)="checkboxSelect($event)">
+              <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
+                     (change)="checkboxSelect($event)">
             </label>
           </div>
 
 
-<!--        <div class="row justify-content-center">-->
+          <!--        <div class="row justify-content-center">-->
           <div class="col-6 tight-fit">
             <label class="selectable radio-label"> &nbsp; &nbsp;Scatter Plot
               <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
             </label>
-           </div>
+          </div>
         </div>
         <!------------------------------------------------------------------------------------------------>
 
@@ -46,10 +47,12 @@
                 </select>
               </label>
 
-              <div class="list-box selectable" >
-                <div class="row" *ngFor="let selector of ySelectorListLine let i= index" (click)="removeFromListLine($event)" style="margin:0">
+              <div class="list-box selectable">
+                <div class="row" *ngFor="let selector of ySelectorListLine let i= index"
+                     (click)="removeFromListLine($event)" style="margin:0">
                   <p class="col-11 list">{{selector.name}}</p>
-                  <p id="{{i}}" class="col-1 align-self-end list" style="padding:0; margin:0; background-color: rgba(150,150,150); border: 1px solid black;">x</p>
+                  <p id="{{i}}" class="col-1 align-self-end list"
+                     style="padding:0; margin:0; background-color: rgba(150,150,150,100); border: 1px solid black;">x</p>
                 </div>
               </div>
             </div>
@@ -59,7 +62,7 @@
           <!-- X select -->
           <div class="row label-row">
             <div class="col-2 expand-horizontal" style="min-width: 50px; text-align: center;">
-              <p class="tight-fit" >Time <br> Series:</p>
+              <p class="tight-fit">Time <br> Series:</p>
             </div>
             <div class="col-9 expand-horizontal" style="margin-left: 5px;">
 
