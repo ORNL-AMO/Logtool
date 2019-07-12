@@ -563,6 +563,14 @@ export class HolderDayTypeComponent implements OnInit {
     const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
     d3.select('#grid').attr('width', calSize + 'px');
 
+    const graphsize = document.getElementById('myDiv').offsetWidth;
+
+    document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
+
+    //console.log(calsize, graphsize, place);
+
+    //d3.select('#placeholder').attr('min-width',
+
     if (calSize < 800) {
       d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
     } else {
@@ -1210,8 +1218,9 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   realignGrid() {
+
     document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
-      this.sumArray[0].length <= 1 ? '605px' :
+        this.sumArray[0].length <= 1 ? '600px' :
         this.sumArray[0].length === 2 ? '625px' : '652px';
     console.log(document.getElementById('bin-panel').style.minHeight);
 

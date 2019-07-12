@@ -76,6 +76,7 @@ export class HomeComponent implements OnInit, DoCheck {
 
   ngDoCheck(): void {
     this.differ.diff(this.tabs);
+    //console.log(this.differ);
   }
 
   onImport() {
@@ -249,25 +250,29 @@ export class HomeComponent implements OnInit, DoCheck {
     }
   }
 
-  removeFile(event, id) {
-    console.log(event);
+  removeFile(event, id, tabId) {
+
     this.bsModalRef = this.modalService.show(ConfirmationModalComponent);
     this.bsModalRef.content.onClose.subscribe(result => {
+      console.log(result);
       if (result) {
         this.indexFileStore.deleteFromDB(id).then(result2 => {
-          for (let i = 0; i < this.tabs.length; i++) {
+/*          for (let i = 0; i < this.tabs.length; i++) {
             if (id === 0) {
               this.tabs.shift();
             } else if (id === this.tabs.length) {
               this.tabs.pop();
               break;
-            } else {
-              this.tabs.splice(1, i);
-              break;
-            }
-          }
+            } else {*/
+              //console.log('result2', result2);
+              console.log('before', this.tabs);
+              this.tabs.splice(tabId, 1);
+/*              break;
+            }*/
+          //}
         });
       }
+
       console.log('after', this.tabs);
     });
   }

@@ -170,8 +170,7 @@ input:checked ~ .checkmark {
 .table-display {
   display: block;
   position: relative;
-  padding-left: 25px;
-  margin-bottom: 12px;
+  margin: auto 2% 12px 2%;
   cursor: pointer;
   font-size: 18px;
   -webkit-user-select: none;
