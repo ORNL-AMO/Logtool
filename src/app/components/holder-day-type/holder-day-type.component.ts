@@ -2,6 +2,7 @@ import {Component, OnInit, TemplateRef} from '@angular/core';
 import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
+import * as XLSX from 'xlsx';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 
 @Component({
@@ -1118,37 +1119,40 @@ export class HolderDayTypeComponent implements OnInit {
       }
       tempArray = [];
     }
-
-    for (let column = 0; column < this.value.length; column++) {
-      const tempSumArray = [];
-      for (let i = 0; i < bigTempArray.length; i++) {
-        singleSumArray = [];
-        for (let j = 0; j < bigTempArray[i].binArray.length; j++) {
-          const binArray = bigTempArray[i].binArray;
-          const mainTemp = this.columnMainArray[column][binArray[j]];
-          for (let l = 0; l < mainTemp.length; l++) {
-            let sum = 0;
-            const value = singleSumArray[mainTemp[l].hourValue] === undefined
-            || singleSumArray[mainTemp[l].hourValue] === null ? 0 : singleSumArray[mainTemp[l].hourValue];
-            sum = sum + value + mainTemp[l].hourAverage;
-            singleSumArray[mainTemp[l].hourValue] = sum;
+    if (this.value !== undefined) {
+      for (let column = 0; column < this.value.length; column++) {
+        const tempSumArray = [];
+        for (let i = 0; i < bigTempArray.length; i++) {
+          singleSumArray = [];
+          for (let j = 0; j < bigTempArray[i].binArray.length; j++) {
+            const binArray = bigTempArray[i].binArray;
+            const mainTemp = this.columnMainArray[column][binArray[j]];
+            for (let l = 0; l < mainTemp.length; l++) {
+              let sum = 0;
+              const value = singleSumArray[mainTemp[l].hourValue] === undefined
+              || singleSumArray[mainTemp[l].hourValue] === null ? 0 : singleSumArray[mainTemp[l].hourValue];
+              sum = sum + value + mainTemp[l].hourAverage;
+              singleSumArray[mainTemp[l].hourValue] = sum;
+            }
           }
+          singleSumArray = singleSumArray.map((element) => {
+            return (element / bigTempArray[i].binArray.length).toFixed(2);
+          });
+          tempSumArray.push({
+            averageValue: singleSumArray,
+            binValue: bigTempArray[i].binValue,
+            entries: bigTempArray[i].binArray.length,
+            channelName: this.value[column].name,
+            binColor: bigTempArray[i].binColor
+          });
         }
-        singleSumArray = singleSumArray.map((element) => {
-          return (element / bigTempArray[i].binArray.length).toFixed(2);
-        });
-        tempSumArray.push({
-          averageValue: singleSumArray,
-          binValue: bigTempArray[i].binValue,
-          entries: bigTempArray[i].binArray.length,
-          channelName: this.value[column].name,
-          binColor: bigTempArray[i].binColor
-        });
+        this.sumArray.push(tempSumArray);
       }
-      this.sumArray.push(tempSumArray);
+      this.realignGrid();
+      this.plotGraphBinAverage(0);
+    } else {
+
     }
-    this.realignGrid();
-    this.plotGraphBinAverage(0);
   }
 
   clickAnnotationDayAverage(data) {
@@ -1223,6 +1227,63 @@ export class HolderDayTypeComponent implements OnInit {
         this.sumArray[0].length <= 1 ? '600px' :
         this.sumArray[0].length === 2 ? '625px' : '652px';
     console.log(document.getElementById('bin-panel').style.minHeight);
+
+  }
+
+  exportDayAverageData() {
+    if (this.graphDayAverage.data.length < 1) {
+      alert('Please import Data first');
+    } else {
+      const workbook = XLSX.utils.book_new();
+      workbook.Props = {
+        Title: 'Trial',
+        Subject: 'Test File',
+        Author: 'ORNL AirMaster',
+        CreatedDate: new Date(2019, 7, 12)
+      };
+      const datajson = [];
+      for (let i = 0; i < this.graphDayAverage.data.length; i++) {
+        if (this.graphDayAverage.data[i].line.color !== '') {
+          if (this.graphDayAverage.data[i].visible === true) {
+            console.log();
+            const bin = this.displayBinList.find(obj => obj.binColor === this.graphDayAverage.data[i].line.color);
+            datajson.push({
+              Date: this.graphDayAverage.data[i].name,
+              1: this.graphDayAverage.data[i].y[0],
+              2: this.graphDayAverage.data[i].y[1],
+              3: this.graphDayAverage.data[i].y[2],
+              4: this.graphDayAverage.data[i].y[3],
+              5: this.graphDayAverage.data[i].y[4],
+              6: this.graphDayAverage.data[i].y[5],
+              7: this.graphDayAverage.data[i].y[6],
+              8: this.graphDayAverage.data[i].y[7],
+              9: this.graphDayAverage.data[i].y[8],
+              10: this.graphDayAverage.data[i].y[9],
+              11: this.graphDayAverage.data[i].y[10],
+              12: this.graphDayAverage.data[i].y[11],
+              13: this.graphDayAverage.data[i].y[12],
+              14: this.graphDayAverage.data[i].y[13],
+              15: this.graphDayAverage.data[i].y[14],
+              16: this.graphDayAverage.data[i].y[15],
+              17: this.graphDayAverage.data[i].y[16],
+              18: this.graphDayAverage.data[i].y[17],
+              19: this.graphDayAverage.data[i].y[18],
+              20: this.graphDayAverage.data[i].y[19],
+              21: this.graphDayAverage.data[i].y[20],
+              22: this.graphDayAverage.data[i].y[21],
+              23: this.graphDayAverage.data[i].y[22],
+              24: this.graphDayAverage.data[i].y[23],
+              DayType: bin.binName
+            });
+          }
+        } else {
+          continue;
+        }
+      }
+      const worksheet = XLSX.utils.json_to_sheet(datajson);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'ChannelName');
+      XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
+    }
 
   }
 }

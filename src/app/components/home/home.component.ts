@@ -193,14 +193,6 @@ export class HomeComponent implements OnInit, DoCheck {
     }
   }
 
-  dayTypeNavigation() {
-    if (this.formEntry === '1') {
-      this.router.navigate(['/histogram-day-type']);
-    } else {
-      this.router.navigate(['/holder-day-type']);
-    }
-  }
-
 // Custom Function
   populateSpinner() {
     this.lineListY = [];
