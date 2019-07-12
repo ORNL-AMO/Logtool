@@ -471,7 +471,8 @@ export class HolderDayTypeComponent implements OnInit {
 
 // Creates legend based on this.binList
 // NO event listeners
-  createLegend() {
+/*  createLegend() {
+    this.createExample();
     const svg = d3.select('#legend');
 
     // Legend Title
@@ -505,12 +506,12 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('fill', function (d) {
         return d.binColor;
       });
-  }
+  }*/
 
 // Creates monday-based calendar using dates in
   createCalendar() {
-    this.createLegend();
     this.createExample();
+
 
     // remove any items from previous draws
     d3.select('#grid').selectAll('*').remove();
@@ -564,16 +565,16 @@ export class HolderDayTypeComponent implements OnInit {
     const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
     d3.select('#grid').attr('width', calSize + 'px');
 
-    const graphsize = document.getElementById('myDiv').offsetWidth;
+    //const graphsize = document.getElementById('myDiv').offsetWidth;
 
-    document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
+    //document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
 
 
-    if (calSize < 800) {
+/*    if (calSize < 800) {
       d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
     } else {
       d3.select('#calendar_panel').style('max-width', 1000 + 'px');
-    }
+    }*/
 
 
     const monthindex = dayList.map(d => d.key);
@@ -682,11 +683,9 @@ export class HolderDayTypeComponent implements OnInit {
     squares.on('click', d => this.clickHandler(event));
     checkboxes.on('click', d => this.toggleBold(event.target));
   }
-
 // --------------------------------------------------------------------------
 
 // General Event Handlers ****************************************************
-
   // handle clicks and ctrl-clicks on squares
   // Calls cycleBin(), movBins(), and toggleSelect()
   clickHandler(event) {
@@ -781,7 +780,6 @@ export class HolderDayTypeComponent implements OnInit {
   clearSelection() {
     this.selectedDates.clear();
   }
-
 // --------------------------------------------------------------------------
 
 // Toggle Functions *********************************************************
@@ -843,7 +841,6 @@ export class HolderDayTypeComponent implements OnInit {
     this.allocateBins();
     this.plotGraphDayAverage(0);
   }
-
 // --------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
@@ -965,7 +962,7 @@ export class HolderDayTypeComponent implements OnInit {
 
     this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
-    this.createLegend();
+
     this.modalRef.hide();
 
   }
@@ -976,6 +973,7 @@ export class HolderDayTypeComponent implements OnInit {
     return s.color === strColor;
   }
 
+  // -----------------------------------------------------------------
   plotShift(event) {
     console.log();
     if (event.target.value === 'bin') {
@@ -1145,7 +1143,7 @@ export class HolderDayTypeComponent implements OnInit {
         }
         this.sumArray.push(tempSumArray);
       }
-      this.realignGrid();
+
       this.plotGraphBinAverage(0);
     } else {
 
@@ -1218,14 +1216,14 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-  realignGrid() {
+/*  realignGrid() {
 
     document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
         this.sumArray[0].length <= 1 ? '600px' :
         this.sumArray[0].length === 2 ? '625px' : '652px';
     console.log(document.getElementById('bin-panel').style.minHeight);
 
-  }
+  }*/
 
   exportDayAverageData() {
     if (this.graphDayAverage.data.length < 1) {

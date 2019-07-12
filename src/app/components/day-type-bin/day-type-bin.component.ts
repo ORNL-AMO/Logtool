@@ -12,10 +12,11 @@ export class DayTypeBinComponent implements OnInit {
   @Input()
   color: string;
 
-  /*  @Input()
-  dropDownList: any [];
   @Input()
-  activeContents: any [];*/
+  dropDownList: any [];
+
+  @Input()
+  activeContents: any [];
 
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
@@ -29,7 +30,7 @@ export class DayTypeBinComponent implements OnInit {
 
   ngOnInit() {}
 
-  addSelectedDate(event) {
+/*  addSelectedDate(event) {
     const index = event.target.options.selectedIndex;
     if (index > -1) {
       this.addSelectedDateOutput.emit({name: this.name, date: this.dropDownList[index]});
@@ -46,20 +47,10 @@ export class DayTypeBinComponent implements OnInit {
       }
     }
 
-  }
+  }*/
 
   addType(event) {
-    // test string vs. regular expression;
-    console.log(event);
-    const type = event.target.value;
-    const acceptable = RegExp('^[a-z]');
-    console.log('pass');
-    if (acceptable.test(type)) {
-      console.log('pass');
-    } else {
-      console.log('false');
-    }
-    // this.addTypeOutput.emit(type);
+     this.addTypeOutput.emit();
   }
 
   toggle_bin_plot(event) {
