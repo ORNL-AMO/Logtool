@@ -141,10 +141,13 @@
         <option value="bin">Bin Averages</option>
         <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
       </select>
+
       <div [hidden]="!showBinMode">
+        <button  class="bnt float-right"(click)="exportDayAverageData()">Export</button>
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
                      (click)="clickAnnotationDayAverage($event)"></plotly-plot>
       </div>
+
       <div [hidden]="showBinMode">
         <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout" [config]="graphBinAverage.config"
                      (click)="clickAnnotationBinAverage($event)"></plotly-plot>
