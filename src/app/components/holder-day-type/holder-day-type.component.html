@@ -139,14 +139,18 @@
 
     <!-- graph holder -->
     <div class=" col-7 panel" style="height:100%" id="myDiv">
-      <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
-        <option value="day">Day Averages</option>
-        <option value="bin">Bin Averages</option>
-        <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
-      </select>
+      <div class="row">
+          <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
+          <option value="day">Day Averages</option>
+          <option value="bin">Bin Averages</option>
+          <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
+        </select>
+
+          <button  class="btn pull-right" (click)="exportDayAverageData()">Export</button>
+      </div>
 
       <div [hidden]="!showBinMode">
-        <button  class="bnt float-right"(click)="exportDayAverageData()">Export</button>
+
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
                      (click)="clickAnnotationDayAverage($event)"></plotly-plot>
       </div>
