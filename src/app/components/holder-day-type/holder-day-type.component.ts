@@ -73,6 +73,8 @@ export class HolderDayTypeComponent implements OnInit {
   plotDataBinAverages = [];
   annotationListDayAverage = [];
   annotationListBinAverage = [];
+  globalYMin;
+  globalYMax;
   binColor = ['red', 'green', 'blue'];
   temp5: any;
   fileSelector = [];
@@ -248,6 +250,7 @@ export class HolderDayTypeComponent implements OnInit {
           'displaylogo': false
         }
       };
+      this.calculatePlotStats();
     } else {
       this.graphDayAverage = {
         data: this.plotData,
@@ -319,7 +322,7 @@ export class HolderDayTypeComponent implements OnInit {
         layout: {
           hovermode: 'closest',
           autosize: true,
-          title: 'Average Bin Graph',
+          title: 'Average Bin graphDayAverage',
           xaxis: {
             autorange: true,
           },
@@ -816,24 +819,24 @@ export class HolderDayTypeComponent implements OnInit {
 
   // add/removes item from selectedDates set
   toggleSelect(rect) {
-    const active = d3.select(rect);
-    const key = active._groups[0][0].__data__.values[0];
-    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
         this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
       }
-    }
-    if (this.selectedDates.has(rect)) {
-      this.selectedDates.delete(rect);
-      active.attr('stroke', 'none');
-      this.days[this.days.indexOf(found)].stroke = 1;
-    } else {
-      this.selectedDates.add(rect);
-      active.attr('stroke', 'black');
-      active.attr('stroke-width', '4');
-      this.days[this.days.indexOf(found)].stroke = 5;
+      const active = d3.select(rect);
+      const key = active._groups[0][0].__data__.values[0];
+      const found = this.days.find(obj => obj.date.getDate() === key.getDate());
+      if (this.selectedDates.has(rect)) {
+        this.selectedDates.delete(rect);
+        active.attr('stroke', 'none');
+        this.days[this.days.indexOf(found)].stroke = 1;
+      } else {
+        this.selectedDates.add(rect);
+        active.attr('stroke', 'black');
+        active.attr('stroke-width', '4');
+        this.days[this.days.indexOf(found)].stroke = 5;
+      }
     }
     this.plotGraphDayAverage(0);
     /*console.log(n.data()[0].values[0]);*/
@@ -884,8 +887,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
-  binToggled(event: { name: string; graph: boolean }) {
-    // if graph is undefined do nothing.
+  binToggled(event: { name: string; graphDayAverage: boolean }) {
+    // if graphDayAverage is undefined do nothing.
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -895,12 +898,12 @@ export class HolderDayTypeComponent implements OnInit {
       const displayIndex = this.displayBinList.map(d => d.binName).indexOf(event.name);
       const storeIndex = this.binList.map(d => d.binName).indexOf(event.name);
       // If yes and not already in
-      if (event.graph && displayIndex < 0) {
+      if (event.graphDayAverage && displayIndex < 0) {
         this.displayBinList.push(this.binList[storeIndex]);
-      } else if (!event.graph && displayIndex >= 0) {
+      } else if (!event.graphDayAverage && displayIndex >= 0) {
         this.displayBinList.splice(displayIndex, 1);
       } else {
-        /*console.log(event.graph, displayIndex);*/
+        /*console.log(event.graphDayAverage, displayIndex);*/
       }
       this.plotGraphDayAverage(0);
     }
@@ -915,7 +918,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   // Moves everything to 'EXCLUDED' BIN
-  // redraws calendar and graph
+  // redraws calendar and graphDayAverage
   clearBins() {
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
@@ -1284,6 +1287,21 @@ export class HolderDayTypeComponent implements OnInit {
       XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
     }
 
+  }
+
+  calculatePlotStats() {
+    if (this.graphDayAverage.data.length > 0) {
+      console.log(this.graphDayAverage);
+        if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
+          this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
+          this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
+        } else {
+          this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
+          this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
+        }
+    }
+    console.log(this.globalYMin + ' Data');
+    console.log(this.globalYMax + ' Data');
   }
 }
 

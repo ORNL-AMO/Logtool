@@ -155,7 +155,7 @@
       <div [hidden]="!showBinMode">
 
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
-                     (click)="clickAnnotationDayAverage($event)"></plotly-plot>
+                     (click)="clickAnnotationDayAverage($event)" (relayout)="calculatePlotStats()"></plotly-plot>
       </div>
 
       <div [hidden]="showBinMode">

@@ -20,7 +20,7 @@ export class HistogramBinTypeComponent implements OnInit {
     const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
     const curateDataSecondHist = curateDataFirstHist.slice();
     this.plotFirstHistogram(curateDataFirstHist);
-    this.plotSecondHistogram(curateDataSecondHist, 25);
+    this.plotSecondHistogram(curateDataSecondHist, 7);
   }
 
   plotFirstHistogram(calculationArray) {
@@ -71,9 +71,12 @@ export class HistogramBinTypeComponent implements OnInit {
       }
     }
     plotGraph.push({
-      x: plotName,
+      /*x: plotName,
       y: plotData,
       type: 'bar',
+      mode: 'markers'*/
+      x: plotData,
+      type: 'histogram',
       mode: 'markers'
     });
 
@@ -86,8 +89,8 @@ export class HistogramBinTypeComponent implements OnInit {
     const plotGraph2 = [];
     const plotData2 = stats.histogram(data, numberOfBins);
     plotGraph2.push({
-      y: plotData2.values,
-      type: 'bar',
+      x: plotData2.values,
+      type: 'histogram',
       mode: 'markers'
     });
     this.graph2 = {
