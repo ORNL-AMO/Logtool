@@ -95,10 +95,10 @@
   </div>
 
   <!-- bin control and graphs -->
-  <div id="row2" class="row" >
+  <div id="row2" class="row row2" >
 
     <!-- bin control container -->
-    <div id="bin-panel" class=" col-3 panel" style="max-width:250px; ">
+    <div id="bin-panel" class=" col-2 panel" style="max-width:250px; max-height: 540px ">
       <!-- header-->
       <div class="inner-row justify-content-center" style="min-height: 25px;">
         <p class="header" style="text-align: center"> Day Types </p>
@@ -106,7 +106,8 @@
 
     <!-- bins -->
       <!-- Normal Bins -->
-      <div style="max-height: 300px; width:90%; overflow-y: auto; box-shadow: none; margin: 0 auto 0px auto;">
+      <div class="row" style="max-height: 400px; width:80%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
+      <div class="tight-fit" style="height: 100px; width:100%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
         <div class="row justify-content-center" style=" background:darkgray;" *ngFor="let bin of binList let i = index ">
           <app-day-type-bin
             [name]=bin.binName
@@ -114,27 +115,25 @@
             [dropDownList]="dropDownBinList[i]"
             [activeContents]="selectedBinList[i]"
             (toggle_change)="binToggled($event)"
-            style="width:95%; height:95%; margin: 1.5% 2.5% 1% 2.5%">>
+            style="width:95%; height:90%; margin: 1.5% 2.5% 1% 2.5%">>
           </app-day-type-bin>
         </div>
       </div>
+      </div>
       <!-- Add Type -->
-      <div style="width:90%; margin: auto;">
+      <div class="row" style="width:80%; margin: auto;">
         <div class="row justify-content-center" style="background:darkgray; width:100%;">
           <app-day-type-bin
-          [name]='"Add Type"'
+          [name]='"add"'
           [color]='"black"'
           (addTypeOutput)="showBinMod(template)"
-          style="width:95%; height:95%; margin: 2.5%;">
+          style="width:95%; margin: 2.5%;">
           </app-day-type-bin>
         </div>
       </div>
 
 
     <!-- Option buttons -->
-<!--    <div class="row justify-content-center">
-      <button class="btn" style="width: 80%" (click)="showBinMod(template)">Add Type</button>
-    </div>-->
     <div class="row justify-content-center tight-fit">
       <div class="col-4 tight-fit">
         <div class="row justify-content-center tight-fit">

@@ -1,44 +1,51 @@
 <div>
   <!-- Basic Bin -->
-  <div class="panel " *ngIf="name!=='Add Type'">
+  <div class="panel " *ngIf="name!=='add'" style="height:26px;">
     <!-- Title -->
-    <div class="row tight-fit" style="height:25px">
+    <div class="row tight-fit" style="margin-top:1px;" >
 
       <!-- bin title -->
-      <div class="col-6 tight-fit">
-        <p style="font-size: 14px; font-weight: bold; margin:auto auto auto 5px;">{{name | uppercase}}</p>
+      <div class="col-7 tight-fit">
+
+          <p class="tight-fit" style="font-size: 14px; height: 22px; background: lightblue; font-weight: bold; margin:auto; text-align: center;">{{name | uppercase}}</p>
+
       </div>
-
-      <div class="col-3" [style.background]="color" ></div>
-
-      <div class="col-2 tight-fit" style = "margin-top: 3px;">
+      <!--toggle switch -->
+      <div class="col-4 tight-fit" style="padding-left: 10px;">
         <label class="switch">
-          <input type="checkbox" style="margin-left: 15px;"(click)= "toggle_bin_plot($event)" checked>
-          <span class="slider round" style="margin-left: auto;"></span>
-        </label>
+          <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
+          <span class="slider round"></span></label>
       </div>
+      <div class="col-1 tight-fit" >
+        <div style="margin:auto;">d</div>
+      </div>
+
     </div>
 
-    <div class="row tight-fit">
-      <!-- Dates located in bin currently -->
-      <div class="col-12" style="margin: 0px auto 0px auto; padding: 0; border: 1px solid black" >
-        <ul class="tight-fit" style="height:100%; max-height: 40px">
+    <!-- contents -->
+    <div class="row" Style="max-height: 60px;">
+      <div class="col-12" style="margin: 0 auto 0 auto; padding: 0; "
+           [style.border]="activeContents !== undefined && activeContents.length > 0 ? '1px solid black': 'none' ">
+        <ul class="tight-fit" style="height:100%; max-height: 100%">
           <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index"
               style="margin:0; border: 1px solid black; background: antiquewhite">
-            <p class=" list" > {{selector.date | date:'EEEE MMMM d '}}</p>
+            <p class=" list"> {{selector.date | date:'EEEE MMMM d '}}</p>
           </li>
         </ul>
       </div>
     </div>
-
   </div>
+
+
+
 
 <!-- ADD Bin ---------->
-<div class="panel" *ngIf="name=='Add Type'">
+<div class="panel" *ngIf="name=='add'">
   <div class="row justify-content-center tight-fit" (click)="addType($event)" style="height:25px">
 
-      <p class="tight-fit" style="position:relative; bottom: 8px; font-weight: 'bold'; font-size: 25px;" >+</p>
+    <p class="tight-fit" style="position:relative; bottom: 8px; font-weight: 'bold'; font-size: 25px;">+</p>
   </div>
 </div>
+
 
 </div>

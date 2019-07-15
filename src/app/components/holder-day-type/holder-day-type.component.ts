@@ -471,7 +471,7 @@ export class HolderDayTypeComponent implements OnInit {
 
 // Creates legend based on this.binList
 // NO event listeners
-/*  createLegend() {
+  createLegend() {
     this.createExample();
     const svg = d3.select('#legend');
 
@@ -506,10 +506,11 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('fill', function (d) {
         return d.binColor;
       });
-  }*/
+  }
 
 // Creates monday-based calendar using dates in
   createCalendar() {
+    this.createLegend();
     this.createExample();
 
 
