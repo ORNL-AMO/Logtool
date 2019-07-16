@@ -75,6 +75,10 @@ export class HolderDayTypeComponent implements OnInit {
   annotationListBinAverage = [];
   globalYMin;
   globalYMax;
+  globalXMin;
+  globalXMax;
+  globalYAverage = [];
+  toggleRelayout = false;
   binColor = ['red', 'green', 'blue'];
   temp5: any;
   fileSelector = [];
@@ -210,7 +214,7 @@ export class HolderDayTypeComponent implements OnInit {
         name = this.columnMainArray[channelId][i][channelId].channelName;
       }
       let layout;
-      if (this.annotationListDayAverage.length > 0) {
+      if (this.annotationListDayAverage.length > 0 || this.toggleRelayout) {
         layout = {
           hovermode: 'closest',
           autosize: true,
@@ -253,7 +257,7 @@ export class HolderDayTypeComponent implements OnInit {
         layout: {
           hovermode: 'closest',
           autosize: true,
-          title: 'Plot',
+          title: 'Average Day',
           xaxis: {
             autorange: true,
           },
@@ -284,7 +288,7 @@ export class HolderDayTypeComponent implements OnInit {
           x: timeSeries,
           y: this.sumArray[0][i].averageValue,
           type: 'linegl',
-          mode: 'lines',
+          mode: 'lines+markers',
           name: this.sumArray[0][i].binValue,
           line: {
             color: this.sumArray[0][i].binColor,
@@ -318,7 +322,7 @@ export class HolderDayTypeComponent implements OnInit {
         layout: {
           hovermode: 'closest',
           autosize: true,
-          title: 'Average Bin graphDayAverage',
+          title: 'Average Bin',
           xaxis: {
             autorange: true,
           },
@@ -372,89 +376,6 @@ export class HolderDayTypeComponent implements OnInit {
 
   }
 
-  // Creates example square to explain integrations
-  createExample() {
-    const svg = d3.select('#example');
-    const colors = ['red', 'green', 'blue'];
-
-    const blockSize = 30;
-    const offset_x = 35;
-    const offset_y = 20;
-
-    const examp = svg.append('rect')
-      .data(colors)
-      .attr('width', blockSize)
-      .attr('height', blockSize)
-      .attr('x', offset_x)
-      .attr('y', offset_y)
-      .attr('fill', 'blue');
-
-
-    const check = svg.append('rect')
-      .attr('width', blockSize / 3)
-      .attr('height', blockSize / 3)
-      .attr('x', offset_x + 18)
-      .attr('y', offset_y + 2)
-      .attr('fill', 'white');
-
-
-    check.on('click', function () {
-      const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
-      check.attr('fill', newColor);
-      const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
-      boldText.attr('font-weight', bold);
-    });
-
-    examp.on('click', d => this.exampleClick(d3.event));
-
-    // instructions
-    const boldText = svg.append('text')
-      .text('Toggle BOLD')
-      .attr('font-size', '9px')
-      .attr('x', offset_x + 5)
-      .attr('y', offset_y - 5);
-
-    boldText.on('click', function () {
-      const newColor = check.attr('fill') === 'white' ? 'black' : 'white';
-      check.attr('fill', newColor);
-      const bold = check.attr('fill') === 'white' ? 'normal' : 'bold';
-      boldText.attr('font-weight', bold);
-    });
-
-    svg.append('text')
-      .text('Click: cycle bin')
-      .attr('font-size', '9px')
-      .attr('x', offset_x - 15)
-      .attr('y', offset_y + 40);
-
-    svg.append('text')
-      .text('Ctl Click: multi-select')
-      .attr('font-size', '9px')
-      .attr('x', offset_x - 28)
-      .attr('y', offset_y + 50);
-
-  }
-
-  // toggle stroke and color for example block (DOES NOT EFFECT ARRAYS)
-  exampleClick(event) {
-    const sample = d3.select(event.target);
-    if (event.ctrlKey) {
-      const select = sample.attr('stroke') === 'black' ? 'none' : 'black';
-      sample.attr('stroke', select);
-      sample.attr('stroke-width', '4');
-
-    } else {
-
-      const oldColor = sample.attr('fill');
-      const colorList = this.binList.map(d => d.binColor);
-      let index = colorList.indexOf(oldColor) + 1;
-      if (index >= this.binList.length) {
-        index = 0;
-      }
-      sample.attr('fill', this.binList[index].binColor);
-    }
-  }
-
   // get initial color based on default bin, returns purple on unknown
   setColor(key) {
     const obj = this.days.find(obj1 =>
@@ -473,11 +394,10 @@ export class HolderDayTypeComponent implements OnInit {
 // Creates legend based on this.binList
 // NO event listeners
   createLegend() {
-    //this.createExample();
     const svg = d3.select('#legend');
     const instruct = d3.select('#instructions');
-    svg.selectAll("*").remove();
-    instruct.selectAll("*").remove();
+    svg.selectAll('*').remove();
+    instruct.selectAll('*').remove();
 
     svg.attr('height', (this.binList.length * 20) + 'px');
 
@@ -537,7 +457,6 @@ export class HolderDayTypeComponent implements OnInit {
 // Creates monday-based calendar using dates in
   createCalendar() {
     this.createLegend();
-    //this.createExample();
 
 
     // remove any items from previous draws
@@ -591,10 +510,6 @@ export class HolderDayTypeComponent implements OnInit {
     const spacing_x = 5;
     const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
     d3.select('#grid').attr('width', calSize + 'px');
-
-    //const graphsize = document.getElementById('myDiv').offsetWidth;
-
-    //document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
 
 /*    if (calSize < 800) {
       d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
@@ -797,25 +712,6 @@ export class HolderDayTypeComponent implements OnInit {
 // --------------------------------------------------------------------------
 
 // Toggle Functions *********************************************************
-  // Sync toggle status on redraw
-  syncToggles(data) {
-    // console.log(data); console.log(this.days);
-    const date = data.values[0];
-    if (this.graphDayAverage === undefined) {
-    } else {
-      for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
-        this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
-      }
-    }
-    const found = this.days.find(obj => obj.date.getDate() === date.getDate());
-    if (this.days[this.days.indexOf(found)].stroke === 4) {
-      return 'black';
-    } else if (this.days[this.days.indexOf(found)].stroke === 1) {
-      return 'white';
-    } else {
-      return 'yellow';
-    }
-  }
 
   // add/removes item from selectedDates set
   toggleSelect(rect) {
@@ -961,8 +857,8 @@ export class HolderDayTypeComponent implements OnInit {
     }
 
     this.binList.splice(0, 0 , {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
-    this.displayBinList.splice(0,0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
-    this.selectedBinList.splice(0,0, []);
+    this.displayBinList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    this.selectedBinList.splice(0, 0, []);
     this.createLegend();
     this.modalRef.hide();
 
@@ -1146,11 +1042,8 @@ export class HolderDayTypeComponent implements OnInit {
         }
         this.sumArray.push(tempSumArray);
       }
-
-      this.plotGraphBinAverage(0);
-    } else {
-
     }
+    this.plotGraphBinAverage(0);
   }
 
   clickAnnotationDayAverage(data) {
@@ -1194,7 +1087,6 @@ export class HolderDayTypeComponent implements OnInit {
     if (data.points === undefined) {
 
     } else {
-      //Modal
       console.log(data);
       this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
@@ -1224,15 +1116,6 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphBinAverage(0);
     }
   }
-
-/*  realignGrid() {
-
-    document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
-      this.sumArray[0].length <= 1 ? '600px' :
-        this.sumArray[0].length === 2 ? '625px' : '652px';
-    console.log(document.getElementById('bin-panel').style.minHeight);
-
-  }*/
 
   exportDayAverageData() {
     if (this.graphDayAverage.data.length < 1) {
@@ -1280,8 +1163,6 @@ export class HolderDayTypeComponent implements OnInit {
               DayType: bin.binName
             });
           }
-        } else {
-          continue;
         }
       }
       const worksheet = XLSX.utils.json_to_sheet(datajson);
@@ -1292,18 +1173,58 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   calculatePlotStats() {
-    /*if (this.graphDayAverage.data.length > 0) {
-      console.log(this.graphDayAverage);
-      if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
-        this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
-        this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
-      } else {
-        this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
-        this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
+    this.toggleRelayout = true;
+    if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
+      console.log(this.graphDayAverage.data);
+      this.globalXMin = this.data.getMin(this.graphDayAverage.data[0].x);
+      this.globalXMax = this.data.getMax(this.graphDayAverage.data[0].x);
+      this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
+      this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
+      console.log(this.data.getMin(this.graphDayAverage.data[0].y));
+      console.log(this.data.getMax(this.graphDayAverage.data[0].y));
+      this.globalYAverage = [];
+      for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
+        const len = this.graphDayAverage.data[dataLength].y.length;
+        let sumAverage = 0;
+        for (let i = 0; i < len; i++) {
+          const y = this.graphDayAverage.data[dataLength].y[i];
+          if (y > this.globalYMin && y < this.globalYMax) {
+            sumAverage = sumAverage + y;
+          }
+        }
+        this.globalYAverage.push({
+          value: sumAverage / len,
+          name: this.graphDayAverage.data[dataLength].name
+        });
+      }
+    } else {
+      this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
+      this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
+      this.globalXMin = this.graphDayAverage.layout.xaxis.range[0];
+      this.globalXMax = this.graphDayAverage.layout.xaxis.range[1];
+      console.log(this.graphDayAverage.layout.yaxis.range[0]);
+      console.log(this.graphDayAverage.layout.yaxis.range[1]);
+      this.globalYAverage = [];
+      for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
+        const len = this.graphDayAverage.data[dataLength].y.length;
+        let sumAverage = 0;
+        for (let i = 0; i < len; i++) {
+          const y = this.graphDayAverage.data[dataLength].y[i];
+          if (y > this.globalYMin && y < this.globalYMax) {
+            sumAverage = sumAverage + y;
+          }
+        }
+        this.globalYAverage.push({
+          value: sumAverage / len,
+          name: this.graphDayAverage.data[dataLength].name
+        });
       }
     }
-    console.log(this.globalYMin + ' Data');
-    console.log(this.globalYMax + ' Data');*/
+    console.log(this.globalYAverage);
+    console.log(this.globalYMin);
+    console.log(this.globalYMax);
+    console.log(this.globalXMin);
+    console.log(this.globalXMax);
   }
 }
 
