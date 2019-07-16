@@ -73,6 +73,8 @@ export class HolderDayTypeComponent implements OnInit {
   plotDataBinAverages = [];
   annotationListDayAverage = [];
   annotationListBinAverage = [];
+  globalYMin;
+  globalYMax;
   binColor = ['red', 'green', 'blue'];
   temp5: any;
   fileSelector = [];
@@ -187,17 +189,21 @@ export class HolderDayTypeComponent implements OnInit {
             }
           }
         }
-        // console.log(this.columnMainArray[channelId][i][0]);
         this.plotData.push({
           x: timeSeries,
           y: tempHourAverage,
           type: 'linegl',
-          mode: 'lines',
+          mode: 'lines+markers',
+          connectgaps: true,
           name: this.monthList[this.columnMainArray[channelId][i][0].displayDate.getMonth()] + ' '
             + this.columnMainArray[channelId][i][0].displayDate.getDate(),
           line: {
             color: color,
             width: thickness
+          },
+          marker: {
+            color: color,
+            size: 6 + thickness
           },
           visible: this.days[i].visible
         });
@@ -240,6 +246,7 @@ export class HolderDayTypeComponent implements OnInit {
           'displaylogo': false
         }
       };
+      this.calculatePlotStats();
     } else {
       this.graphDayAverage = {
         data: this.plotData,
@@ -311,7 +318,7 @@ export class HolderDayTypeComponent implements OnInit {
         layout: {
           hovermode: 'closest',
           autosize: true,
-          title: 'Average Bin Graph',
+          title: 'Average Bin graphDayAverage',
           xaxis: {
             autorange: true,
           },
@@ -589,7 +596,6 @@ export class HolderDayTypeComponent implements OnInit {
 
     //document.getElementById('placeholder').style.width = dayList.length === 1 ? (graphsize - 503) + 'px': (graphsize - 560) + 'px';
 
-
 /*    if (calSize < 800) {
       d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
     } else {
@@ -661,22 +667,11 @@ export class HolderDayTypeComponent implements OnInit {
         return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x);
       })
       .attr('y', 0)
-      .attr('fill', d => this.setColor(d.values[0]));
-
-    // Attach toggle to each day in each week
-   /* const checkboxes = weeks.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('rect')
-      .attr('width', cell_dimension * .25)
-      .attr('height', cell_dimension * .25)
-      .attr('x', function (d) {
-        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension * .7;
-      })
-      .attr('y', function (d) {
-        return cell_dimension * .05;
-      })
-      .attr('fill', d => this.syncToggles(d));*/
+      .attr('fill', d => this.setColor(d.values[0]))
+      .attr('id', function (d) {
+        return d.values[0].getDate() + '' + d.values[0].getMonth() +
+          '' + d.values[0].getFullYear();
+      });
 
 
     // Attach day numbers to each day in each week
@@ -701,7 +696,6 @@ export class HolderDayTypeComponent implements OnInit {
 
     // event handlers
     squares.on('click', d => this.clickHandler(event));
-    //checkboxes.on('click', d => this.toggleBold(event.target));
   }
 // --------------------------------------------------------------------------
 
@@ -825,41 +819,27 @@ export class HolderDayTypeComponent implements OnInit {
 
   // add/removes item from selectedDates set
   toggleSelect(rect) {
-    const n = d3.select(rect);
-    if (this.selectedDates.has(rect)) {
-      this.selectedDates.delete(rect);
-      n.attr('stroke', 'none');
-    } else {
-      this.selectedDates.add(rect);
-      n.attr('stroke', 'black');
-      n.attr('stroke-width', '4');
-    }
-    /*console.log(n.data()[0].values[0]);*/
-  }
-
-  // Toggles boldness of line, indicated by checkbox in squares.
-  toggleBold(box) {
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
         this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
       }
+      const active = d3.select(rect);
+      const key = active._groups[0][0].__data__.values[0];
+      const found = this.days.find(obj => obj.date.getDate() === key.getDate());
+      if (this.selectedDates.has(rect)) {
+        this.selectedDates.delete(rect);
+        active.attr('stroke', 'none');
+        this.days[this.days.indexOf(found)].stroke = 1;
+      } else {
+        this.selectedDates.add(rect);
+        active.attr('stroke', 'black');
+        active.attr('stroke-width', '4');
+        this.days[this.days.indexOf(found)].stroke = 5;
+      }
     }
-    const active = d3.select(box);
-    const newColor = active.attr('fill') === 'white' ? 'black' : 'white';
-    active.attr('fill', newColor);
-
-    const currIndex = this.binList.find(bin => bin.binColor === active.attr('fill'));
-    const key = active._groups[0][0].__data__.values[0];
-    const found = this.days.find(obj => obj.date.getDate() === key.getDate());
-
-    if (active.attr('fill') === 'black') {
-      this.days[this.days.indexOf(found)].stroke = 5;
-    } else {
-      this.days[this.days.indexOf(found)].stroke = 1;
-    }
-    this.allocateBins();
     this.plotGraphDayAverage(0);
+    /*console.log(n.data()[0].values[0]);*/
   }
 // --------------------------------------------------------------------------
 
@@ -905,8 +885,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
-  binToggled(event: { name: string; graph: boolean }) {
-    // if graph is undefined do nothing.
+  binToggled(event: { name: string; graphDayAverage: boolean }) {
+    // if graphDayAverage is undefined do nothing.
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -916,12 +896,12 @@ export class HolderDayTypeComponent implements OnInit {
       const displayIndex = this.displayBinList.map(d => d.binName).indexOf(event.name);
       const storeIndex = this.binList.map(d => d.binName).indexOf(event.name);
       // If yes and not already in
-      if (event.graph && displayIndex < 0) {
+      if (event.graphDayAverage && displayIndex < 0) {
         this.displayBinList.push(this.binList[storeIndex]);
-      } else if (!event.graph && displayIndex >= 0) {
+      } else if (!event.graphDayAverage && displayIndex >= 0) {
         this.displayBinList.splice(displayIndex, 1);
       } else {
-        /*console.log(event.graph, displayIndex);*/
+        /*console.log(event.graphDayAverage, displayIndex);*/
       }
       this.plotGraphDayAverage(0);
     }
@@ -936,7 +916,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   // Moves everything to 'EXCLUDED' BIN
-  // redraws calendar and graph
+  // redraws calendar and graphDayAverage
   clearBins() {
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
@@ -1067,7 +1047,8 @@ export class HolderDayTypeComponent implements OnInit {
                   date: this.timeSeriesDayType[i - 1],
                   day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
                   bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
-                  id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
+                  id: this.timeSeriesDayType[i - 1].getDate() + '' + this.timeSeriesDayType[i - 1].getMonth() +
+                    '' + this.timeSeriesDayType[i - 1].getFullYear(),
                   stroke: 1,
                   visible: true
                 });
@@ -1095,7 +1076,8 @@ export class HolderDayTypeComponent implements OnInit {
                 date: this.timeSeriesDayType[i - 1],
                 day: this.weekday[this.timeSeriesDayType[i - 1].getDay()],
                 bin: this.binAllocation(this.dayArray, this.timeSeriesDayType[i - 1].getDay()),
-                id: this.timeSeriesDayType[i - 1].getDate() + '' + this.days.length,
+                id: this.timeSeriesDayType[i - 1].getDate() + '' + this.timeSeriesDayType[i - 1].getMonth() +
+                  '' + this.timeSeriesDayType[i - 1].getFullYear(),
                 stroke: 1,
                 visible: true
               });
@@ -1174,7 +1156,12 @@ export class HolderDayTypeComponent implements OnInit {
   clickAnnotationDayAverage(data) {
     if (data.points === undefined) {
 
+    } else if (data.event.ctrlKey) {
+      const selectedTrace = document.getElementById(this.days[data.points[0].curveNumber].id);
+      this.toggleSelect(selectedTrace);
+
     } else {
+      // Modal
       this.annotationListDayAverage = this.graphDayAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
         const annotationText = data.points[i].data.name + ', '
@@ -1207,6 +1194,7 @@ export class HolderDayTypeComponent implements OnInit {
     if (data.points === undefined) {
 
     } else {
+      //Modal
       console.log(data);
       this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
@@ -1240,7 +1228,7 @@ export class HolderDayTypeComponent implements OnInit {
 /*  realignGrid() {
 
     document.getElementById('bin-panel').style.minHeight = this.sumArray === undefined ? '605px' :
-        this.sumArray[0].length <= 1 ? '600px' :
+      this.sumArray[0].length <= 1 ? '600px' :
         this.sumArray[0].length === 2 ? '625px' : '652px';
     console.log(document.getElementById('bin-panel').style.minHeight);
 
@@ -1301,6 +1289,21 @@ export class HolderDayTypeComponent implements OnInit {
       XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
     }
 
+  }
+
+  calculatePlotStats() {
+    if (this.graphDayAverage.data.length > 0) {
+      console.log(this.graphDayAverage);
+      if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
+        this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
+        this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
+      } else {
+        this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
+        this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
+      }
+    }
+    console.log(this.globalYMin + ' Data');
+    console.log(this.globalYMax + ' Data');
   }
 }
 

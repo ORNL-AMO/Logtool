@@ -20,6 +20,12 @@ export class PlotGraphComponent implements OnInit {
   graphType = '';
   annotationListLine = [];
   annotationListScatter = [];
+  globalYMin;
+  globalYMax;
+  globalYAverage = [];
+  globalXMin;
+  globalXMax;
+  globalXAverage = [];
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
@@ -147,6 +153,7 @@ export class PlotGraphComponent implements OnInit {
           'displaylogo': false
         }
       };
+      this.calculatePlotStats();
     } else if (type === 'scatter_graph') {
       this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
       this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
@@ -201,6 +208,7 @@ export class PlotGraphComponent implements OnInit {
           'displaylogo': false
         }
       };
+      this.calculatePlotStats();
     } else {
       this.graph = {
         data: this.plotGraph,
@@ -294,5 +302,124 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
+  }
+
+  calculatePlotStats() {
+    if (this.graph.data.length > 0) {
+      if (this.graph.layout.title === 'Line Plot') {
+        if (this.graph.layout.yaxis.range === undefined || this.graph.layout.xaxis.range === undefined) {
+          this.globalXMin = this.data.getMin(this.graph.data[0].x);
+          this.globalXMax = this.data.getMax(this.graph.data[0].x);
+          this.globalYMin = this.data.getMin(this.graph.data[0].y);
+          this.globalYMax = this.data.getMax(this.graph.data[0].y);
+          this.globalYAverage = [];
+          for (let dataLength = 0; dataLength < this.graph.data.length; dataLength++) {
+            const len = this.graph.data[dataLength].y.length;
+            let sumAverage = 0;
+            for (let i = 0; i < len; i++) {
+              const y = this.graph.data[dataLength].y[i];
+              if (y > this.globalYMin && y < this.globalYMax) {
+                sumAverage = sumAverage + y;
+              }
+            }
+            this.globalYAverage.push({
+              value: sumAverage / len,
+              name: this.graph.data[dataLength].name
+            });
+          }
+        } else {
+          this.globalYMin = this.graph.layout.yaxis.range[0];
+          this.globalYMax = this.graph.layout.yaxis.range[1];
+          this.globalXMin = new Date(this.graph.layout.xaxis.range[0]);
+          this.globalXMax = new Date(this.graph.layout.xaxis.range[1]);
+          this.globalYAverage = [];
+          console.log(this.graph);
+          for (let dataLength = 0; dataLength < this.graph.data.length; dataLength++) {
+            const len = this.graph.data[dataLength].y.length;
+            let sumAverage = 0;
+            for (let i = 0; i < len; i++) {
+              const y = this.graph.data[dataLength].y[i];
+              if (y > this.globalYMin && y < this.globalYMax) {
+                sumAverage = sumAverage + y;
+              }
+            }
+            this.globalYAverage.push({
+              value: sumAverage / len,
+              name: this.graph.data[dataLength].name
+            });
+          }
+        }
+      } else if (this.graph.layout.title === 'Scatter Plot') {
+        if (this.graph.layout.yaxis.range === undefined || this.graph.layout.xaxis.range === undefined) {
+          this.globalXMin = this.data.getMin(this.graph.data[0].x);
+          this.globalXMax = this.data.getMax(this.graph.data[0].x);
+          this.globalYMin = this.data.getMin(this.graph.data[0].y);
+          this.globalYMax = this.data.getMax(this.graph.data[0].y);
+          this.globalYAverage = [];
+          const lenY = this.graph.data[0].y.length;
+          let sumAverageY = 0;
+          for (let i = 0; i < lenY; i++) {
+            const y = this.graph.data[0].y[i];
+            if (y > this.globalYMin && y < this.globalYMax) {
+              sumAverageY = sumAverageY + y;
+            }
+          }
+          this.globalYAverage.push({
+            value: sumAverageY / lenY,
+            name: this.graph.layout.yaxis.title.text
+          });
+          this.globalXAverage = [];
+          const lenX = this.graph.data[0].x.length;
+          let sumAverageX = 0;
+          for (let i = 0; i < lenX; i++) {
+            const x = this.graph.data[0].x[i];
+            if (x > this.globalXMin && x < this.globalXMax) {
+              sumAverageX = sumAverageX + x;
+            }
+          }
+          this.globalXAverage.push({
+            value: sumAverageX / lenX,
+            name: this.graph.layout.xaxis.title.text
+          });
+        } else {
+          this.globalYMin = this.graph.layout.yaxis.range[0];
+          this.globalYMax = this.graph.layout.yaxis.range[1];
+          this.globalXMin = this.graph.layout.xaxis.range[0];
+          this.globalXMax = this.graph.layout.xaxis.range[1];
+          this.globalYAverage = [];
+          const lenY = this.graph.data[0].y.length;
+          let sumAverageY = 0;
+          for (let i = 0; i < lenY; i++) {
+            const y = this.graph.data[0].y[i];
+            if (y > this.globalYMin && y < this.globalYMax) {
+              sumAverageY = sumAverageY + y;
+            }
+          }
+          this.globalYAverage.push({
+            value: sumAverageY / lenY,
+            name: this.graph.layout.yaxis.title.text
+          });
+          this.globalXAverage = [];
+          const lenX = this.graph.data[0].x.length;
+          let sumAverageX = 0;
+          for (let i = 0; i < lenX; i++) {
+            const x = this.graph.data[0].x[i];
+            if (x > this.globalXMin && x < this.globalXMax) {
+              sumAverageX = sumAverageX + x;
+            }
+          }
+          this.globalXAverage.push({
+            value: sumAverageX / lenX,
+            name: this.graph.layout.xaxis.title.text
+          });
+        }
+      }
+    }
+    console.log(this.globalYMin);
+    console.log(this.globalYMax);
+    console.log(this.globalXMin);
+    console.log(this.globalXMax);
+    console.log(this.globalYAverage);
+    console.log(this.globalXAverage);
   }
 }
