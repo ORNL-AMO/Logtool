@@ -87,7 +87,33 @@
       </div>
     </div>
 
-    <div id="placeholder" class="col-4 panel tight-fit" style="height:200px; margin:5px 10px 5px 5px;"></div>
+    <div id="placeholder" class="col-4 panel tight-fit" style="height:200px; margin:5px 10px 5px 5px;">
+      <div class="row">
+        <p class="header"> Day Averages</p>
+      </div>
+      <div class="row">
+        <div class="col">
+           <p class="tight-fit" style="text-align: center">Graph Ranges:</p>
+           <p class="tight-fit" style="text-align: center;border: 1px solid black">x-max: {{globalXMax | number:'1.0-2' }}</p>
+           <p class="tight-fit" style="text-align: center; border: 1px solid black">y-max: {{globalYMax | number:'1.0-2'}}</p>
+           <p class="tight-fit" style="text-align: center;border: 1px solid black">x-min: {{globalXMin | number:'1.0-2'}}</p>
+           <p class="tight-fit" style="text-align: center; border: 1px solid black">y-min: {{globalXMin | number:'1.0-2'}}</p>
+        </div>
+        <div class="col">
+          <p class="tight-fit" style="text-align: center">Daily Averages:</p>
+        <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0" style="overflow: auto; max-height: 135px; border: 1px solid black">
+
+          <ul class="tight-fit">
+            <li class="tight-fit" *ngFor ="let day of globalYAverage" style="border: 1px solid black">
+              <p class="list tight-fit">{{day.name}} - {{day.value|number:'1.0-2'}}</p>
+            </li>
+          </ul>
+        </div>
+
+
+        </div>
+      </div>
+    </div>
 
      <div class="col panel tight-fit" style="height: 200px; max-width:100%;margin-right: 25px; margin-top:5px">
         <p> HELP panel </p>
