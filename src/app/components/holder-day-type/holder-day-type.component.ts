@@ -885,7 +885,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
-  binToggled(event: { name: string; graphDayAverage: boolean }) {
+  binToggled(event) {
     // if graphDayAverage is undefined do nothing.
     if (this.graphDayAverage === undefined) {
     } else {
@@ -896,9 +896,9 @@ export class HolderDayTypeComponent implements OnInit {
       const displayIndex = this.displayBinList.map(d => d.binName).indexOf(event.name);
       const storeIndex = this.binList.map(d => d.binName).indexOf(event.name);
       // If yes and not already in
-      if (event.graphDayAverage && displayIndex < 0) {
+      if (event.graph && displayIndex < 0) {
         this.displayBinList.push(this.binList[storeIndex]);
-      } else if (!event.graphDayAverage && displayIndex >= 0) {
+      } else if (!event.graph && displayIndex >= 0) {
         this.displayBinList.splice(displayIndex, 1);
       } else {
         /*console.log(event.graphDayAverage, displayIndex);*/
@@ -1292,7 +1292,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   calculatePlotStats() {
-    if (this.graphDayAverage.data.length > 0) {
+    /*if (this.graphDayAverage.data.length > 0) {
       console.log(this.graphDayAverage);
       if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
         this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
@@ -1303,7 +1303,7 @@ export class HolderDayTypeComponent implements OnInit {
       }
     }
     console.log(this.globalYMin + ' Data');
-    console.log(this.globalYMax + ' Data');
+    console.log(this.globalYMax + ' Data');*/
   }
 }
 
