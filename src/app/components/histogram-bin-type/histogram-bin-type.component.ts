@@ -60,26 +60,28 @@ export class HistogramBinTypeComponent implements OnInit {
       if (smallerSD[small].length === 0) {
       } else {
         plotData.push(smallerSD[small].length);
-        plotName.push(((this.data.getMax(smallerSD[small]) + this.data.getMin(smallerSD[small])) / 2) + ' File Name');
+        plotName.push(smallerSD[small][0] + ' - ' + smallerSD[small][smallerSD[small].length - 1]);
       }
     }
     for (let big = 0; big < biggerSD.length; big++) {
       if (biggerSD[big].length === 0) {
       } else {
         plotData.push(biggerSD[big].length);
-        plotName.push(((this.data.getMax(biggerSD[big]) + this.data.getMin(biggerSD[big])) / 2) + ' File Name');
+        plotName.push(biggerSD[big][0] + ' - ' + biggerSD[big][biggerSD[big].length - 1]);
       }
     }
     plotGraph.push({
-      /*x: plotName,
+      x: plotName,
       y: plotData,
       type: 'bar',
-      mode: 'markers'*/
-      x: plotData,
-      type: 'histogram',
       mode: 'markers'
+      /*x: plotData,
+      type: 'bar',
+      mode: 'markers'*/
     });
-
+    console.log(median);
+    console.log(stdDeviation);
+    console.log(plotGraph);
     this.graph = {
       data: plotGraph
     };
@@ -88,11 +90,13 @@ export class HistogramBinTypeComponent implements OnInit {
   plotSecondHistogram(data, numberOfBins) {
     const plotGraph2 = [];
     const plotData2 = stats.histogram(data, numberOfBins);
+    console.log(plotData2);
     plotGraph2.push({
-      x: plotData2.values,
-      type: 'histogram',
+      y: plotData2.values,
+      type: 'bar',
       mode: 'markers'
     });
+    console.log(plotGraph2);
     this.graph2 = {
       data: plotGraph2
     };
