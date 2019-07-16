@@ -113,18 +113,14 @@ export class HolderDayTypeComponent implements OnInit {
 
   allocateBins() {
     this.selectedBinList = [];
-    this.dropDownBinList = [];
+
     for (let i = 0; i < this.binList.length; i++) {
       const tempSelectedBinList = [];
-      const tempdropDownBinList = [];
       for (let j = 0; j < this.days.length; j++) {
         if (this.days[j].bin === this.binList[i].binName) {
           tempSelectedBinList.push(this.days[j]);
-        } else {
-          tempdropDownBinList.push(this.days[j]);
         }
       }
-      this.dropDownBinList.push(tempdropDownBinList);
       this.selectedBinList.push(tempSelectedBinList);
     }
     this.calculateBinAverage(0);
@@ -338,8 +334,7 @@ export class HolderDayTypeComponent implements OnInit {
 
 
 // Calendar Functions **********************************************************************************************************************
-// Set up functions only need to run once on import ************************
-
+// Set up functions only need to run once on import **********************************
   createGrid() {
     const col = [0, 1, 2, 3, 4, 5, 6];
     const rows = [0, 1, 2, 3, 4];
@@ -464,30 +459,54 @@ export class HolderDayTypeComponent implements OnInit {
       return 'purple';
     }
   }
-
-// --------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
 
 // Create legend and calendar based on latest data **************************
 
 // Creates legend based on this.binList
 // NO event listeners
   createLegend() {
-    this.createExample();
+    //this.createExample();
     const svg = d3.select('#legend');
+    const instruct = d3.select('#instructions');
+    svg.selectAll("*").remove();
+    instruct.selectAll("*").remove();
+
+    svg.attr('height', (this.binList.length * 20) + 'px');
+
+    instruct.append('text')
+      .text('Calendar Controls')
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
+      .attr('x', 3)
+      .attr('y', 15);
+
+    instruct.append('text')
+      .text('(Click) change bin')
+      .attr('font-size', '12px')
+      .attr('x', 5)
+      .attr('y', 30);
+
+    instruct.append('text')
+      .text('(Ctl-Click) Select')
+      .attr('font-size', '12px')
+      .attr('x', 5)
+      .attr('y', 45);
+
 
     // Legend Title
-    svg.append('text')
+/*    svg.append('text')
       .text('Legend')
-      .attr('x', 10)
-      .attr('y', 20);
+      .attr('x', 5)
+      .attr('y', 20);*/
 
     // Main Legend
     svg.selectAll('g').append('g')
       .data(d => this.binList)
       .join('text')
-      .attr('x', 10)
+      .attr('x', 5)
       .attr('y', function (d, i) {
-        return i * 20 + 40;
+        return i * 20 + 12;
       })
       .attr('font-size', ' 12px ')
       .text(function (d) {
@@ -499,9 +518,9 @@ export class HolderDayTypeComponent implements OnInit {
       .join('rect')
       .attr('width', 15)
       .attr('height', 15)
-      .attr('x', 80)
+      .attr('x', 75)
       .attr('y', function (d, i) {
-        return i * 20 + 40 - 10;
+        return i * 20 + 12 - 12;
       })
       .attr('fill', function (d) {
         return d.binColor;
@@ -511,7 +530,7 @@ export class HolderDayTypeComponent implements OnInit {
 // Creates monday-based calendar using dates in
   createCalendar() {
     this.createLegend();
-    this.createExample();
+    //this.createExample();
 
 
     // remove any items from previous draws
@@ -645,7 +664,7 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('fill', d => this.setColor(d.values[0]));
 
     // Attach toggle to each day in each week
-    const checkboxes = weeks.append('g')
+   /* const checkboxes = weeks.append('g')
       .selectAll('g')
       .data(d => d.values)
       .join('rect')
@@ -657,7 +676,7 @@ export class HolderDayTypeComponent implements OnInit {
       .attr('y', function (d) {
         return cell_dimension * .05;
       })
-      .attr('fill', d => this.syncToggles(d));
+      .attr('fill', d => this.syncToggles(d));*/
 
 
     // Attach day numbers to each day in each week
@@ -682,7 +701,7 @@ export class HolderDayTypeComponent implements OnInit {
 
     // event handlers
     squares.on('click', d => this.clickHandler(event));
-    checkboxes.on('click', d => this.toggleBold(event.target));
+    //checkboxes.on('click', d => this.toggleBold(event.target));
   }
 // --------------------------------------------------------------------------
 
@@ -961,9 +980,10 @@ export class HolderDayTypeComponent implements OnInit {
       return;
     }
 
-    this.binList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
-    this.displayBinList.push({binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
-
+    this.binList.splice(0, 0 , {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    this.displayBinList.splice(0,0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    this.selectedBinList.splice(0,0, []);
+    this.createLegend();
     this.modalRef.hide();
 
   }

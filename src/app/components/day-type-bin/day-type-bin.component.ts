@@ -1,4 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {getElementDepthCount} from '@angular/core/src/render3/state';
 
 @Component({
   selector: 'app-day-type-bin',
@@ -13,9 +14,6 @@ export class DayTypeBinComponent implements OnInit {
   color: string;
 
   @Input()
-  dropDownList: any [];
-
-  @Input()
   activeContents: any [];
 
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
@@ -24,11 +22,32 @@ export class DayTypeBinComponent implements OnInit {
   @Output() toggle_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() addTypeOutput = new EventEmitter<any>();
 
-  // Array of dates to pull inside
+  show: boolean;
+  fontColor: string;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.show = false;
+    //this.getTextColor();
+  }
+
+/*  getTextColor() {
+    // Create fake div
+    const fakeDiv = document.createElement('div');
+    fakeDiv.style.color = this.color;
+    document.body.appendChild(fakeDiv);
+
+    // Get color of div
+    const cs = window.getComputedStyle(fakeDiv),
+      pv = cs.getPropertyValue('color');
+
+    // Remove div after obtaining desired color value
+    document.body.removeChild(fakeDiv);
+    console.log(pv);
+    return pv;
+  }*/
+
 
 /*  addSelectedDate(event) {
     const index = event.target.options.selectedIndex;

@@ -1,42 +1,54 @@
 <div>
   <!-- Basic Bin -->
-  <div class="panel " *ngIf="name!=='add'" style="height:26px;">
-    <!-- Title -->
-    <div class="row tight-fit" style="margin-top:1px;" >
+  <div class="panel tight-fit" *ngIf="name!=='add'" style="">
+    <!-- Title  Toggle and drop switch-->
+    <div class="row tight-fit" style="height:26px;">
 
       <!-- bin title -->
-      <div class="col-7 tight-fit">
-
-          <p class="tight-fit" style="font-size: 14px; height: 22px; background: lightblue; font-weight: bold; margin:auto; text-align: center;">{{name | uppercase}}</p>
-
-      </div>
-      <!--toggle switch -->
-      <div class="col-4 tight-fit" style="padding-left: 10px;">
-        <label class="switch">
-          <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
-          <span class="slider round"></span></label>
-      </div>
-      <div class="col-1 tight-fit" >
-        <div style="margin:auto;">d</div>
-      </div>
-
-    </div>
-
-    <!-- contents -->
-    <div class="row" Style="max-height: 60px;">
-      <div class="col-12" style="margin: 0 auto 0 auto; padding: 0; "
-           [style.border]="activeContents !== undefined && activeContents.length > 0 ? '1px solid black': 'none' ">
-        <ul class="tight-fit" style="height:100%; max-height: 100%">
-          <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index"
-              style="margin:0; border: 1px solid black; background: antiquewhite">
-            <p class=" list"> {{selector.date | date:'EEEE MMMM d '}}</p>
-          </li>
-        </ul>
+      <div id='bin-title' class="col-7 tight-fit">
+        <div class="row justify-content-center">
+        <p style=" position: absolute; top: 7%; margin: auto; font-size: 14px;font-weight: bold; text-align: center; color: white; padding-right: 10%;padding-left: 10%"
+           [style.background]=color>{{name | uppercase}}</p>
       </div>
     </div>
+
+    <!--toggle switch -->
+    <div class="col-3 tight-fit" style="padding-left: 10px;">
+      <label class="switch">
+        <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
+        <span class="slider round"></span></label>
+    </div>
+
+    <!-- dropdown button -->
+    <div class="col-1 tight-fit">
+      <img src="/assets/triangle.png" title="Click to show/hide bin contents" alt="dropbox icon" style="position: absolute; left:-10px; top: -15px;"
+           [ngStyle]="{'transform': show == false ? 'scale(.2,.2) rotate(90deg) ' : 'scale(.2,.2) translateX(10px)'}"
+           (click)="show = !show">
+    </div>
+
+
   </div>
 
-
+  <!-- contents -->
+  <div *ngIf="show" class="row" style="max-height: 70px;">
+    <div class="col-12" style="margin: 0 auto 0 auto; padding: 0; "
+         [style.border]="activeContents !== undefined && activeContents.length > 0 ? '1px solid black': 'none' ">
+      <ul *ngIf="activeContents !== undefined && activeContents.length > 0" class="tight-fit"
+          style="height:100%; max-height: 100%">
+        <li class="row justify-content-center" *ngFor="let selector of activeContents let i= index"
+            style="margin:0; border: 1px solid black; background: antiquewhite">
+          <p class=" list"> {{selector.date | date:'EEEE MMMM d '}}</p>
+        </li>
+      </ul>
+      <ul *ngIf="activeContents == undefined || activeContents.length <= 0" class="tight-fit"
+          style="height:100%; max-height: 100%">
+        <li class="row justify-content-center" style="margin:0; border: 1px solid black; background: antiquewhite">
+          <p class=" list"> Empty </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 
 <!-- ADD Bin ---------->

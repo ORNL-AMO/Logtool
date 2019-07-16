@@ -183,7 +183,8 @@ input:hover{
 
 .my-modal {
   border: solid 4px black;
-  max-width: 75%;
+  //max-width: 75%;
+  width: 1000px;
   background-color:white;
 
   border-radius:32px 32px 32px 32px;

@@ -65,26 +65,25 @@
       <p class="header" style="margin:0; text-align: center;">Calendar</p>
       <div class="row">
         <!-- Calendar -->
-        <div class="col" style="overflow-x: scroll; overflow-y: auto; margin:0; padding:0; height: 170px; width:200px;">
-
-          <svg id="grid" style="height: 155px; background: White; overflow:auto;"></svg>
-
+        <div class="col" style="overflow-x: auto; overflow-y: auto; margin:0; padding:0; height: 170px; width:200px;">
+          <svg id="grid" style="height: 155px;"></svg>
         </div>
+
         <!-- legend -->
-        <div class="col tight-fit" style="max-width: 200px; min-width: 200px; overflow:auto;">
-          <div class="row">
-            <!-- bin Names/colors -->
-            <div class="col"
-                 style="margin:0; padding:0; height: 170px; min-width: 100px; border-width: 3px; border-left: solid black; border-top: solid black; border-bottom: solid black;">
-              <svg id="legend" style="background: white; height: 100%; width: 100px; overflow:auto;"></svg>
-            </div>
-            <!-- example block -->
-            <div class="col"
-                 style="margin:0; padding:0; height: 170px; width: 100px; border-width: 3px; border-right: solid black; border-top: solid black; border-bottom: solid black;">
-              <svg id="example" style="background: white; height: 100%; width: 100%; overflow:auto;"></svg>
-            </div>
+        <div class="col tight-fit" style="max-width: 116px; height: 170px; border: 3px solid black;">
+          <div class="row" style="height: 55px">
+            <svg id="instructions" style="width: 110px;"></svg>
+          </div>
+          <div class="row" style="height: 115px; overflow:auto;">
+              <svg id="legend" style="width: 110px;"></svg>
           </div>
         </div>
+            <!-- example block -->
+            <!--     <div class="col" style="margin:0; padding:0; height: 170px; width: 100px; border-width: 3px; border-right: solid black; border-top: solid black; border-bottom: solid black;">
+              <svg id="example" style="background: white; height: 100%; width: 100%; overflow:auto;"></svg>
+            </div>-->
+
+
 
       </div>
     </div>
@@ -95,141 +94,137 @@
   </div>
 
   <!-- bin control and graphs -->
-  <div id="row2" class="row row2" >
+  <div id="row2" class="row">
 
     <!-- bin control container -->
-    <div id="bin-panel" class=" col-2 panel" style="max-width:250px; max-height: 540px ">
+    <div id="bin-panel" class=" col-3 panel" style="max-width:250px; min-width:250px; max-height: 600px;">
       <!-- header-->
       <div class="inner-row justify-content-center" style="min-height: 25px;">
         <p class="header" style="text-align: center"> Day Types </p>
       </div>
 
-    <!-- bins -->
+      <!-- bins -->
       <!-- Normal Bins -->
-      <div class="row" style="max-height: 400px; width:80%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
-      <div class="tight-fit" style="height: 100px; width:100%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
-        <div class="row justify-content-center" style=" background:darkgray;" *ngFor="let bin of binList let i = index ">
-          <app-day-type-bin
-            [name]=bin.binName
-            [color]="bin.binColor"
-            [dropDownList]="dropDownBinList[i]"
-            [activeContents]="selectedBinList[i]"
-            (toggle_change)="binToggled($event)"
-            style="width:95%; height:90%; margin: 1.5% 2.5% 1% 2.5%">>
-          </app-day-type-bin>
+      <div class="row" style="max-height: 380px; width:90%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
+        <div class="tight-fit"
+             style="max-height: 500px; width:100%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
+          <div class="row justify-content-center" style=" background:darkgray;"
+               *ngFor="let bin of binList let i = index ">
+            <app-day-type-bin
+              [name]=bin.binName
+              [color]="bin.binColor"
+              [activeContents]="selectedBinList[i]"
+              (toggle_change)="binToggled($event)"
+              style="width:95%; height:90%; margin: 1.5% 2.5% 1% 2.5%">>
+            </app-day-type-bin>
+          </div>
         </div>
-      </div>
       </div>
       <!-- Add Type -->
-      <div class="row" style="width:80%; margin: auto;">
+      <div class="row" style="width:90%; margin: auto;">
         <div class="row justify-content-center" style="background:darkgray; width:100%;">
           <app-day-type-bin
-          [name]='"add"'
-          [color]='"black"'
-          (addTypeOutput)="showBinMod(template)"
-          style="width:95%; margin: 2.5%;">
+            [name]='"add"'
+            [color]='"black"'
+            (addTypeOutput)="showBinMod(template)"
+            style="width:95%; margin: 2.5%;">
           </app-day-type-bin>
         </div>
       </div>
 
 
-    <!-- Option buttons -->
-    <div class="row justify-content-center tight-fit">
-      <div class="col-4 tight-fit">
-        <div class="row justify-content-center tight-fit">
-          <button class="btn" style="width: 100%" (click)="resetBins()">Reset</button>
+      <!-- Option buttons -->
+      <div class="row justify-content-center tight-fit">
+        <div class="col-4 tight-fit">
+          <div class="row justify-content-center tight-fit">
+            <button class="btn" style="width: 100%" (click)="resetBins()">Reset</button>
+          </div>
+        </div>
+        <div class="col-4 tight-fit">
+          <div class="row justify-content-center tight-fit">
+            <button class="btn" style="width: 100%" (click)="clearBins()">Clear</button>
+          </div>
+        </div>
+        <div class="col-4 tight-fit">
+          <div class="row justify-content-center tight-fit">
+            <button class="btn" style="width: 100%">Export</button>
+          </div>
         </div>
       </div>
-      <div class="col-4 tight-fit">
-        <div class="row justify-content-center tight-fit">
-          <button class="btn" style="width: 100%" (click)="clearBins()">Clear</button>
-        </div>
-      </div>
-      <div class="col-4 tight-fit">
-        <div class="row justify-content-center tight-fit">
-          <button class="btn" style="width: 100%">Export</button>
-        </div>
-      </div>
-    </div>
-
-
-
-
     </div>
     <!-- graph holder -->
-    <div class=" col-7 panel"  id="myDiv">
-        <div class="row">
-            <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
-              <option value="day">Day Averages</option>
-              <option value="bin">Bin Averages</option>
-            <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
-            </select>
+    <div class=" col-7 panel" id="myDiv">
+      <div class="row">
+        <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
+          <option value="day">Day Averages</option>
+          <option value="bin">Bin Averages</option>
+          <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
+        </select>
 
-            <button class="btn pull-right" (click)="exportDayAverageData()">Export</button>
-        </div>
+        <button class="btn pull-right" (click)="exportDayAverageData()">Export</button>
+      </div>
 
-        <div [hidden]="!showBinMode">
+      <div [hidden]="!showBinMode">
 
-            <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
-                 (click)="clickAnnotationDayAverage($event)"></plotly-plot>
-         </div>
+        <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
+                     (click)="clickAnnotationDayAverage($event)"></plotly-plot>
+      </div>
 
-        <div [hidden]="showBinMode">
-            <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout" [config]="graphBinAverage.config"
-                 (click)="clickAnnotationBinAverage($event)"></plotly-plot>
-        </div>
+      <div [hidden]="showBinMode">
+        <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout" [config]="graphBinAverage.config"
+                     (click)="clickAnnotationBinAverage($event)"></plotly-plot>
+      </div>
 
     </div>
   </div>
 
-<!-- table panel-->
-<!--<div class="row" style="margin-top:10px">
-  <div class="col-sm-3 panel" style=" visibility: hidden;  min-width:264px;">Placeholder</div>
+  <!-- table panel-->
+  <!--<div class="row" style="margin-top:10px">
+    <div class="col-sm-3 panel" style=" visibility: hidden;  min-width:264px;">Placeholder</div>
 
-  &lt;!&ndash; table container&ndash;&gt;
-  <div id="table" class="col-sm-7 panel" style="min-height: 105px;">
+    &lt;!&ndash; table container&ndash;&gt;
+    <div id="table" class="col-sm-7 panel" style="min-height: 105px;">
 
-    &lt;!&ndash; channel name &ndash;&gt;
-    <div style="width: 96% ;  margin:5px auto 0 auto ;">
+      &lt;!&ndash; channel name &ndash;&gt;
+      <div style="width: 96% ;  margin:5px auto 0 auto ;">
 
-      <div style="min-width: 96%; margin:auto;">
-        <p *ngIf="sumArray.length < 1;" class="tight-fit"
-           style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">Channel Name</p>
+        <div style="min-width: 96%; margin:auto;">
+          <p *ngIf="sumArray.length < 1;" class="tight-fit"
+             style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">Channel Name</p>
+        </div>
+
+        <div *ngFor="let thing of sumArray" style="min-width: 96%; margin:auto;">
+          <p *ngIf="thing.length > 0;" class="tight-fit"
+             style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">{{thing[0].channelName}}</p>
+
+        </div>
       </div>
 
-      <div *ngFor="let thing of sumArray" style="min-width: 96%; margin:auto;">
-        <p *ngIf="thing.length > 0;" class="tight-fit"
-           style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">{{thing[0].channelName}}</p>
+      &lt;!&ndash; table &ndash;&gt;
+      <div style="width: 96% ; overflow: auto; margin: auto; max-height: 125px">
 
+        &lt;!&ndash; Populated table &ndash;&gt;
+        <table style="width: 100%; margin:auto;">
+          <tr>
+            <th style="min-width: 14%; border: 1px solid black; text-align: center">Entries</th>
+            <th style="min-width: 14%; border: 1px solid black; text-align: center">Day Type</th>
+            <th *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]"
+                style=" min-height: 25px; width: 3%; border: 1px solid black; text-align: center;"
+                class="tight-fit">{{item}}</th>
+          </tr>
+          <tr *ngFor="let entry of sumArray[0] let i= index">
+            <td style="min-width: 12%; border: 1px solid black; text-align: center">{{entry.entries}}</td>
+            <td [ngStyle]="{'background': entry.binColor}"
+                style="min-width: 12%; border: 1px solid black; color: white; text-align: center">{{entry.binValue}}</td>
+            <td class="table-item" *ngFor="let item of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]"
+                style=" min-height: 25px; width: 3%; border: 1px solid black; text-align: center; font-size: 8pt;"
+            >{{entry.averageValue[item]}} </td>
+          </tr>
+        </table>
       </div>
     </div>
-
-    &lt;!&ndash; table &ndash;&gt;
-    <div style="width: 96% ; overflow: auto; margin: auto; max-height: 125px">
-
-      &lt;!&ndash; Populated table &ndash;&gt;
-      <table style="width: 100%; margin:auto;">
-        <tr>
-          <th style="min-width: 14%; border: 1px solid black; text-align: center">Entries</th>
-          <th style="min-width: 14%; border: 1px solid black; text-align: center">Day Type</th>
-          <th *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]"
-              style=" min-height: 25px; width: 3%; border: 1px solid black; text-align: center;"
-              class="tight-fit">{{item}}</th>
-        </tr>
-        <tr *ngFor="let entry of sumArray[0] let i= index">
-          <td style="min-width: 12%; border: 1px solid black; text-align: center">{{entry.entries}}</td>
-          <td [ngStyle]="{'background': entry.binColor}"
-              style="min-width: 12%; border: 1px solid black; color: white; text-align: center">{{entry.binValue}}</td>
-          <td class="table-item" *ngFor="let item of [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]"
-              style=" min-height: 25px; width: 3%; border: 1px solid black; text-align: center; font-size: 8pt;"
-          >{{entry.averageValue[item]}} </td>
-        </tr>
-      </table>
-    </div>
-  </div>
-</div>-->
+  </div>-->
 </div>
-
 
 
 <!-- Add Bin Module -->

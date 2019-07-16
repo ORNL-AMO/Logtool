@@ -80,13 +80,13 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   onImport() {
-    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal modal-lg', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
     this.dataFromDialog = [];
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
-    this.modalService.onHide.subscribe(() => {
+    this.modalService.onHidden.subscribe(() => {
       this.indexFileStore.viewDataDB().then(result => {
         this.dataFromDialog = result;
         this.tabs = [];
@@ -99,9 +99,11 @@ export class HomeComponent implements OnInit, DoCheck {
         }
         this.populateSpinner();
         this.populateGraph();
-        this.changeDisplayTable(this.dataFromDialog.length - 1);
       });
     });
+    this.modalService.onHidden.subscribe = null;
+    this.changeDisplayTable(this.dataFromDialog.length - 1);
+
   }
 
   plotGraphNavigation() {
