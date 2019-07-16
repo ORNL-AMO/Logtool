@@ -1,9 +1,9 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
-  <!-- File Control Panel, calendar -->
-  <div class="row" style="min-height: 200px;">
+  <!-- File Control Panel, calendar, placeholder, help panel -->
+  <div class="row" style="height: 210px;">
 
     <!-- control panel -->
-    <div class="col-3 panel col1" style="min-height: 125px;  height:150px; min-width:250px; ">
+    <div class="col-3 panel col1" style="min-height: 200px;  height:200px; min-width:250px; ">
       <!-- Title -->
       <div class="row">
         <p class="header"> Data Selector</p>
@@ -11,7 +11,7 @@
 
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
         <!-- File select box --->
-        <div class=" row" style="height: 30px; margin:auto">
+        <div class=" row" style="height: 30px; margin: 5px auto 5px auto;">
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
             <p class="dropbox-label tight-fit" style="text-align: right">File:</p>
           </div>
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Column select box -->
-        <div class="row" style="height: 30px; margin:auto">
+        <div class="row " style="height: 30px; margin: 5px auto 15px auto;">
 
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
             <p class="dropbox-label tight-fit" style="text-align: right">Data:</p>
@@ -49,11 +49,10 @@
         </div>-->
 
         <!-- button-->
-        <div class="row" style="height:45px;">
-          <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;"></div>
-          <div class="col-9 tight-fit" style="height:100%;">
-            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; font-size: 10px;">Import
-            </button>
+        <div class="row justify-content-center" style="height:45px;">
+
+          <div class="col-8 tight-fit" style="height:100%;">
+            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%;">Import</button>
           </div>
         </div>
       </form>
@@ -61,7 +60,7 @@
     </div>
 
     <!-- calendar panel -->
-    <div id="calendar_panel" class="col-4 panel" style="height: 200px; ">
+    <div id="calendar_panel" class="col-4 panel" style="height: 200px; max-width: 530px ">
       <p class="header" style="margin:0; text-align: center;">Calendar</p>
       <div class="row">
         <!-- Calendar -->
@@ -70,12 +69,12 @@
         </div>
 
         <!-- legend -->
-        <div class="col tight-fit" style="max-width: 116px; height: 170px; border: 3px solid black;">
+        <div class="col tight-fit" style="max-width: 125px; height: 170px; border: 3px solid black;">
           <div class="row" style="height: 55px">
-            <svg id="instructions" style="width: 110px;"></svg>
+            <svg id="instructions" style="width: 125px;"></svg>
           </div>
-          <div class="row" style="height: 115px; overflow:auto;">
-              <svg id="legend" style="width: 110px;"></svg>
+          <div class="row" style="height: 105px; overflow:auto;">
+              <svg id="legend" style="width: 125px;"></svg>
           </div>
         </div>
             <!-- example block -->
@@ -88,16 +87,21 @@
       </div>
     </div>
 
-    <div id="placeholder" class="col-3 panel " style="height:200px;"></div>
+    <div id="placeholder" class="col-4 panel tight-fit" style="height:200px; margin:5px 10px 5px 5px;"></div>
+
+     <div class="col panel tight-fit" style="height: 200px; max-width:100%;margin-right: 25px; margin-top:5px">
+        <p> HELP panel </p>
+        Help information, use ngIf to toggle between help items, Toggle visibility as well?
+      </div>
 
 
   </div>
 
   <!-- bin control and graphs -->
-  <div id="row2" class="row">
+  <div id="row2" class="row row2" >
 
     <!-- bin control container -->
-    <div id="bin-panel" class=" col-3 panel" style="max-width:250px; min-width:250px; max-height: 600px;">
+    <div id="bin-panel" class=" col-3 panel" style="max-width:250px; min-width:250px;">
       <!-- header-->
       <div class="inner-row justify-content-center" style="min-height: 25px;">
         <p class="header" style="text-align: center"> Day Types </p>
@@ -153,7 +157,7 @@
       </div>
     </div>
     <!-- graph holder -->
-    <div class=" col-7 panel row2" id="myDiv">
+    <div class=" col panel"  id="myDiv" style="height:490px; margin-right:25px;">
       <div class="row">
         <div class="col">
           <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
@@ -180,14 +184,14 @@
   </div>
 
   <!-- table panel-->
-  <!--<div class="row" style="margin-top:10px">
-    <div class="col-sm-3 panel" style=" visibility: hidden;  min-width:264px;">Placeholder</div>
+  <div class="row" style="margin-top:10px">
+    <div class="col-sm-3 panel" style=" visibility: hidden; max-width:250px; min-height: 50px">Placeholder</div>
 
-    &lt;!&ndash; table container&ndash;&gt;
-    <div id="table" class="col-sm-7 panel" style="min-height: 105px;">
+    <!-- table container-->
+    <div id="table" class="col panel" style="min-height: 50px; margin-right:25px" >
 
-      &lt;!&ndash; channel name &ndash;&gt;
-      <div style="width: 96% ;  margin:5px auto 0 auto ;">
+      <!-- channel name -->
+      <div style="width: 96% ;  margin:5px auto 0px auto ;">
 
         <div style="min-width: 96%; margin:auto;">
           <p *ngIf="sumArray.length < 1;" class="tight-fit"
@@ -201,10 +205,10 @@
         </div>
       </div>
 
-      &lt;!&ndash; table &ndash;&gt;
-      <div style="width: 96% ; overflow: auto; margin: auto; max-height: 125px">
+      <!-- table -->
+      <div style="width: 96% ; overflow: auto; margin: 0 auto 10px auto; max-height: 125px">
 
-        &lt;!&ndash; Populated table &ndash;&gt;
+        <!-- Populated table -->
         <table style="width: 100%; margin:auto;">
           <tr>
             <th style="min-width: 14%; border: 1px solid black; text-align: center">Entries</th>
@@ -224,7 +228,7 @@
         </table>
       </div>
     </div>
-  </div>-->
+  </div>
 </div>
 
 

@@ -525,7 +525,7 @@ export class HolderDayTypeComponent implements OnInit {
       .join('rect')
       .attr('width', 15)
       .attr('height', 15)
-      .attr('x', 75)
+      .attr('x', 90)
       .attr('y', function (d, i) {
         return i * 20 + 12 - 12;
       })
@@ -938,13 +938,31 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   addBinType() {
+
     if (this.newBinName === '') {
       alert('Please Enter a Name for the Bin');
       return;
     }
 
+    if (this.newBinColor === '') {
+      alert('Please Enter a Color for the Bin');
+      return;
+    }
+
     if (!this.isColor(this.newBinColor.toLowerCase())) {
       alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
+      return;
+    }
+
+    //check for correct length
+    if (this.newBinName.length > 10) {
+      alert('Character Limit Reached. Please Enter a name with 10 characters or less');
+      return;
+    }
+
+    //check for reserved names
+    if (this.newBinName.toLowerCase() === 'add') {
+      alert('Name Reserved');
       return;
     }
 
@@ -1304,6 +1322,13 @@ export class HolderDayTypeComponent implements OnInit {
     }
     console.log(this.globalYMin + ' Data');
     console.log(this.globalYMax + ' Data');*/
+  }
+
+  calcWidth() {
+    const graph = document.getElementById('myDiv').offsetWidth;
+    const bins = document.getElementById('bin-panel').offsetWidth;
+    //console.log((graph + bins + 10)+'px');
+    return (graph + bins + 10)+'px';
   }
 }
 

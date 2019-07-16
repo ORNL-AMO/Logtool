@@ -120,8 +120,8 @@
     </div>
 
     <!-- Table formating -->
-    <div class="col-sm-7 panel col2" style="min-height: 300px;   height:100%;">
-
+    <div class="col-sm-8 panel col2" style="min-height: 300px;   height:100%;">
+      <!-- labels and nav tabs -->
       <div>
         <!--Label and Import Button ------------------------------------------------------------------------------->
         <div class="row justify-content-between header" style="height:50%; min-height:40px;">
@@ -139,10 +139,11 @@
               <div class="nav-link" (click)="changeDisplayTable(tab.tabId)"
                    [ngStyle]="{'background-color' :activeTab === tab.tabId ? 'rgba(0,0,255,.75)': 'rgba(0,0,255,.5)',
                                 'border-width'    :activeTab === tab.tabId ? '3px': '2px',
-                                'width'           : tab.name.length * 10 + 15 + 'px'}">
-                <span style="margin: 10px 5px;">{{tab.name}}</span>
+                                'width'           : getTabWidth(tab) }">
+                                <!--tab.name.length * 12 + 10 + 'px' }">-->
+                <span id={{tab.tabId}} style="margin: 10px 5px;">{{tab.name}}</span>
                 <button (click)="removeFile($event, tab.id, tab.tabId)"
-                        style="padding-top: 0; margin-top:0; float: right; font-size: 8px; ">x
+                        style="padding-top: 0; margin-top:0; float: right; font-size: 10px; ">x
                 </button>
 
               </div>
@@ -152,20 +153,21 @@
       </div>
 
       <div class="table-display" >
-        <router-outlet style="max-height: 100px"></router-outlet>
+        <router-outlet></router-outlet>
+        <!--[style.max-width] = getTableWidth()-->
       </div>
 
     </div>
 
     <!-- help panel -->
-    <div class="col-sm panel " style="min-height: 822px; width:100%;">
+   <!-- <div class="col-sm panel " style="min-height: 822px; width:100%;">
       <p> HELP panel </p>
       Help information, use ngIf to toggle between help items, Toggle visibility as well?
-    </div>
+    </div>-->
   </div>
 
-  <div class="row ">
-    <div class="col-10 panel">
+  <div class="row" style="margin-left: 7px">
+    <div class="col-11 panel">
       <app-plot-graph style="max-height: 200px;"></app-plot-graph>
     </div>
   </div>
