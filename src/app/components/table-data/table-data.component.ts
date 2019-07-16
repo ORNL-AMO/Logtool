@@ -29,4 +29,8 @@ export class TableDataComponent implements OnInit {
       });
   }
 
+  calculateWidth() {
+    //console.log(this.columnDefs.length);
+    return 200 * this.columnDefs.length + 'px';
+  }
 }

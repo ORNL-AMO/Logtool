@@ -270,4 +270,25 @@ export class HomeComponent implements OnInit, DoCheck {
       console.log('after', this.tabs);
     });
   }
+
+  getTableWidth() {
+    if (this.activeTab !== undefined && this.tabs !== undefined) {
+      return 200 * this.dataFromDialog[this.activeTab].dataArrayColumns.length + 'px';
+    }
+  }
+
+  getTabWidth(tab) {
+    // Create fake div
+    const fakeDiv = document.createElement('span');
+    fakeDiv.innerHTML = tab.name;
+    fakeDiv.id = 'testbed';
+    document.body.appendChild(fakeDiv);
+
+    const pv = document.getElementById('testbed').offsetWidth;
+    // Remove div after obtaining desired color value
+    document.body.removeChild(fakeDiv);
+
+    return pv + 40 + 'px';
+
+  }
 }
