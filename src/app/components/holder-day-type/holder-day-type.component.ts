@@ -387,6 +387,7 @@ export class HolderDayTypeComponent implements OnInit {
       return 'purple';
     }
   }
+
 // -------------------------------------------------------------------------------------
 
 // Create legend and calendar based on latest data **************************
@@ -422,10 +423,10 @@ export class HolderDayTypeComponent implements OnInit {
 
 
     // Legend Title
-/*    svg.append('text')
-      .text('Legend')
-      .attr('x', 5)
-      .attr('y', 20);*/
+    /*    svg.append('text')
+          .text('Legend')
+          .attr('x', 5)
+          .attr('y', 20);*/
 
     // Main Legend
     svg.selectAll('g').append('g')
@@ -511,11 +512,11 @@ export class HolderDayTypeComponent implements OnInit {
     const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
     d3.select('#grid').attr('width', calSize + 'px');
 
-/*    if (calSize < 800) {
-      d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
-    } else {
-      d3.select('#calendar_panel').style('max-width', 1000 + 'px');
-    }*/
+    /*    if (calSize < 800) {
+          d3.select('#calendar_panel').style('max-width', calSize + 200 + 'px');
+        } else {
+          d3.select('#calendar_panel').style('max-width', 1000 + 'px');
+        }*/
 
 
     const monthindex = dayList.map(d => d.key);
@@ -612,6 +613,7 @@ export class HolderDayTypeComponent implements OnInit {
     // event handlers
     squares.on('click', d => this.clickHandler(event));
   }
+
 // --------------------------------------------------------------------------
 
 // General Event Handlers ****************************************************
@@ -709,6 +711,7 @@ export class HolderDayTypeComponent implements OnInit {
   clearSelection() {
     this.selectedDates.clear();
   }
+
 // --------------------------------------------------------------------------
 
 // Toggle Functions *********************************************************
@@ -737,6 +740,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.plotGraphDayAverage(0);
     /*console.log(n.data()[0].values[0]);*/
   }
+
 // --------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
@@ -874,7 +878,7 @@ export class HolderDayTypeComponent implements OnInit {
       return;
     }
 
-    this.binList.splice(0, 0 , {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    this.binList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.displayBinList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.selectedBinList.splice(0, 0, []);
     this.createLegend();
@@ -1061,6 +1065,7 @@ export class HolderDayTypeComponent implements OnInit {
         this.sumArray.push(tempSumArray);
       }
     }
+    console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 
@@ -1193,13 +1198,10 @@ export class HolderDayTypeComponent implements OnInit {
   calculatePlotStats() {
     this.toggleRelayout = true;
     if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
-      console.log(this.graphDayAverage.data);
       this.globalXMin = this.data.getMin(this.graphDayAverage.data[0].x);
       this.globalXMax = this.data.getMax(this.graphDayAverage.data[0].x);
       this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
       this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
-      console.log(this.data.getMin(this.graphDayAverage.data[0].y));
-      console.log(this.data.getMax(this.graphDayAverage.data[0].y));
       this.globalYAverage = [];
       for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
         const len = this.graphDayAverage.data[dataLength].y.length;
@@ -1220,8 +1222,6 @@ export class HolderDayTypeComponent implements OnInit {
       this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
       this.globalXMin = this.graphDayAverage.layout.xaxis.range[0];
       this.globalXMax = this.graphDayAverage.layout.xaxis.range[1];
-      console.log(this.graphDayAverage.layout.yaxis.range[0]);
-      console.log(this.graphDayAverage.layout.yaxis.range[1]);
       this.globalYAverage = [];
       for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
         const len = this.graphDayAverage.data[dataLength].y.length;
@@ -1238,18 +1238,13 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
     }
-    console.log(this.globalYAverage);
-    console.log(this.globalYMin);
-    console.log(this.globalYMax);
-    console.log(this.globalXMin);
-    console.log(this.globalXMax);
   }
 
   calcWidth() {
     const graph = document.getElementById('myDiv').offsetWidth;
     const bins = document.getElementById('bin-panel').offsetWidth;
-    //console.log((graph + bins + 10)+'px');
-    return (graph + bins + 10)+'px';
+    // console.log((graph + bins + 10)+'px');
+    return (graph + bins + 10) + 'px';
   }
 }
 
