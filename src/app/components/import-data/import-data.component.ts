@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
-import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
 import * as d3 from 'd3';
 import {isAbsolute} from 'path';
@@ -12,7 +12,7 @@ import {checkAndUpdateBinding} from '@angular/core/src/view/util';
   selector: 'app-import-data',
   templateUrl: './import-data.component.html',
   styleUrls: ['./import-data.component.scss'],
-  encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
+  //encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
 })
 
 export class ImportDataComponent implements OnInit {
@@ -139,4 +139,12 @@ export class ImportDataComponent implements OnInit {
     this.alias = event.target.value;
   }
 
+  public handler(type: string, $event: ModalDirective )
+  {
+    console.log(
+      `event ${type} is fired${$event.dismissReason
+        ? ', dismissed by ' + $event.dismissReason
+        : ''}`
+    );
+  }
 }

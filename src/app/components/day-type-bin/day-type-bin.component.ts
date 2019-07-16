@@ -1,4 +1,5 @@
 import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import {getElementDepthCount} from '@angular/core/src/render3/state';
 
 @Component({
   selector: 'app-day-type-bin',
@@ -8,28 +9,47 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 export class DayTypeBinComponent implements OnInit {
   @Input()
   name: string;
+
   @Input()
-  dropDownList: any [];
+  color: string;
+
   @Input()
   activeContents: any [];
 
   @Output() addSelectedDateOutput = new EventEmitter<{ name: string, date: string }>();
   @Output() onSelectedRemoveOutput = new EventEmitter<{ name: string, date: string }>();
+
   @Output() toggle_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() addTypeOutput = new EventEmitter<any>();
 
-  // Array of dates to pull inside
+  show: boolean;
+  fontColor: string;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
+    this.show = false;
+    //this.getTextColor();
   }
 
+/*  getTextColor() {
+    // Create fake div
+    const fakeDiv = document.createElement('div');
+    fakeDiv.style.color = this.color;
+    document.body.appendChild(fakeDiv);
+
+    // Get color of div
+    const cs = window.getComputedStyle(fakeDiv),
+      pv = cs.getPropertyValue('color');
+
+    // Remove div after obtaining desired color value
+    document.body.removeChild(fakeDiv);
+    console.log(pv);
+    return pv;
+  }*/
 
 
-
-  addSelectedDate(event) {
+/*  addSelectedDate(event) {
     const index = event.target.options.selectedIndex;
     if (index > -1) {
       this.addSelectedDateOutput.emit({name: this.name, date: this.dropDownList[index]});
@@ -46,20 +66,10 @@ export class DayTypeBinComponent implements OnInit {
       }
     }
 
-  }
+  }*/
 
   addType(event) {
-    // test string vs. regular expression;
-    console.log(event);
-    const type = event.target.value;
-    const acceptable = RegExp('^[a-z]');
-    console.log('pass');
-    if (acceptable.test(type)) {
-      console.log('pass');
-    } else {
-      console.log('false');
-    }
-    // this.addTypeOutput.emit(type);
+     this.addTypeOutput.emit();
   }
 
   toggle_bin_plot(event) {

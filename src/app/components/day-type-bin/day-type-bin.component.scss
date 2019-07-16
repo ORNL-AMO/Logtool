@@ -1,17 +1,23 @@
+.test{
+  transform-origin: top left;
+  transform: rotate(-90deg);
+  position:relative;
+  left: 0px;
+  top: 87px;
+}
+
 
 .panel{
-  width: 90%;
-  max-width: 250px;
-  min-width: 190px;
+  width: 100%;
   border: #ddd solid 1px;
-  max-height: 170px;
-  background: #fff;
-  margin-right: 5px;
-  margin-left: 5px;
-  margin-bottom: 15px;
   border-radius: 4px;
+  background: white;
+  //box-shadow: 0 0 10px 5px grey;
+  padding:0;
+}
 
-  box-shadow: 0px 0px 10px 5px grey;
+.tight-fit{
+  margin: 0;
   padding:0;
 }
 
@@ -19,7 +25,7 @@
   text-align: center;
   border: 2px solid black;
   background-color: lightskyblue;
-  font-size: 18px;
+  font-size: px;
 }
 
 .import-label{
@@ -47,7 +53,7 @@
 }
 
 .list{
-  font-size: 100%;
+  font-size: 10px;
   text-align: center;
   margin-top: 0;
   margin-bottom:0;
@@ -67,6 +73,7 @@ ul li {
   width:100%;
   margin: 1.5px;
 }
+
 
 .add-panel{
   border: 1vw dashed black;
