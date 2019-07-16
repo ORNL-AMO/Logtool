@@ -653,21 +653,21 @@ export class HolderDayTypeComponent implements OnInit {
       });
 
     // Attach toggle to each day in each week
-/*
-    const checkboxes = weeks.append('g')
-      .selectAll('g')
-      .data(d => d.values)
-      .join('rect')
-      .attr('width', cell_dimension * .25)
-      .attr('height', cell_dimension * .25)
-      .attr('x', function (d) {
-        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension * .7;
-      })
-      .attr('y', function (d) {
-        return cell_dimension * .05;
-      })
-      .attr('fill', d => this.syncToggles(d));
-*/
+    /*
+        const checkboxes = weeks.append('g')
+          .selectAll('g')
+          .data(d => d.values)
+          .join('rect')
+          .attr('width', cell_dimension * .25)
+          .attr('height', cell_dimension * .25)
+          .attr('x', function (d) {
+            return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension * .7;
+          })
+          .attr('y', function (d) {
+            return cell_dimension * .05;
+          })
+          .attr('fill', d => this.syncToggles(d));
+    */
 
 
     // Attach day numbers to each day in each week
@@ -692,7 +692,7 @@ export class HolderDayTypeComponent implements OnInit {
 
     // event handlers
     squares.on('click', d => this.clickHandler(event));
-   // checkboxes.on('click', d => this.toggleBold(event.target));
+    // checkboxes.on('click', d => this.toggleBold(event.target));
   }
 
 // --------------------------------------------------------------------------
@@ -1161,6 +1161,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.toggleSelect(selectedTrace);
 
     } else {
+      // Modal
       this.annotationListDayAverage = this.graphDayAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
         const annotationText = data.points[i].data.name + ', '
@@ -1193,6 +1194,7 @@ export class HolderDayTypeComponent implements OnInit {
     if (data.points === undefined) {
 
     } else {
+      //Modal
       console.log(data);
       this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
@@ -1292,13 +1294,13 @@ export class HolderDayTypeComponent implements OnInit {
   calculatePlotStats() {
     if (this.graphDayAverage.data.length > 0) {
       console.log(this.graphDayAverage);
-        if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
-          this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
-          this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
-        } else {
-          this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
-          this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
-        }
+      if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
+        this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
+        this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
+      } else {
+        this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
+        this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
+      }
     }
     console.log(this.globalYMin + ' Data');
     console.log(this.globalYMax + ' Data');
