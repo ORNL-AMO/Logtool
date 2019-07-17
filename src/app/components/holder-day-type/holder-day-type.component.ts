@@ -499,7 +499,7 @@ export class HolderDayTypeComponent implements OnInit {
     }
 
     // Calculate cell dimensions based on viewbox
-    let cell_dimension = 100 / (weekcount);
+    let cell_dimension = 150 / (weekcount);
     if (cell_dimension > 50) {
       cell_dimension = 50;
     }
@@ -709,6 +709,10 @@ export class HolderDayTypeComponent implements OnInit {
 
   // resets selectedDates
   clearSelection() {
+    const dates = Array.from(this.selectedDates);
+    for (let i = 0; i < dates.length; i++){
+      this.toggleSelect(dates[i]);
+    }
     this.selectedDates.clear();
   }
 
