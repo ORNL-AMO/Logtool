@@ -1205,12 +1205,20 @@ export class HolderDayTypeComponent implements OnInit {
       this.globalYAverage = [];
       for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
         const len = this.graphDayAverage.data[dataLength].y.length;
+        const ymax = this.data.getMax(this.graphDayAverage.data[dataLength].y);
+        const ymin = this.data.getMin(this.graphDayAverage.data[dataLength].y);
+        if (ymax >= this.globalYMax) {
+          this.globalYMax = ymax;
+        }
+        if (this.globalYMin === 0) {
+          this.globalYMin = ymin;
+        } else if (ymin < this.globalYMin) {
+          this.globalYMin = ymin;
+        }
         let sumAverage = 0;
         for (let i = 0; i < len; i++) {
           const y = this.graphDayAverage.data[dataLength].y[i];
-          if (y > this.globalYMin && y < this.globalYMax) {
-            sumAverage = sumAverage + y;
-          }
+          sumAverage = sumAverage + y;
         }
         this.globalYAverage.push({
           value: sumAverage / len,
@@ -1228,7 +1236,7 @@ export class HolderDayTypeComponent implements OnInit {
         let sumAverage = 0;
         for (let i = 0; i < len; i++) {
           const y = this.graphDayAverage.data[dataLength].y[i];
-          if (y > this.globalYMin && y < this.globalYMax) {
+          if (y >= this.globalYMin && y < this.globalYMax && i >= this.globalXMin && i < this.globalYMax) {
             sumAverage = sumAverage + y;
           }
         }
@@ -1238,6 +1246,12 @@ export class HolderDayTypeComponent implements OnInit {
         });
       }
     }
+    console.log(this.globalYMin);
+    console.log(this.globalYMax);
+    console.log(this.globalXMin);
+    console.log(this.globalXMax);
+    console.log(this.globalYAverage);
+
   }
 
   calcWidth() {
@@ -1246,5 +1260,6 @@ export class HolderDayTypeComponent implements OnInit {
     // console.log((graph + bins + 10)+'px');
     return (graph + bins + 10) + 'px';
   }
+
 }
 
