@@ -96,11 +96,10 @@
       <div class="row" *ngIf="showBinMode">
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
+          <div *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
                style="overflow: auto; max-height: 135px; border: 1px solid black">
-
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black">
+              <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
@@ -116,11 +115,10 @@
       <div class="row" *ngIf="!showBinMode">
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
+          <div *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
                style="overflow: auto; max-height: 135px; border: 1px solid black">
-
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black; background:blanchedalmond;" >
+              <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black; background:blanchedalmond;" >
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
@@ -217,12 +215,12 @@
       <div [hidden]="!showBinMode">
 
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
-                     (click)="clickAnnotationDayAverage($event)" (relayout)="calculatePlotStats()"></plotly-plot>
+                     (click)="clickAnnotationDayAverage($event)" (relayout)="calculatePlotStatsDay()"></plotly-plot>
       </div>
 
       <div [hidden]="showBinMode">
         <plotly-plot [data]="graphBinAverage.data" [layout]="graphBinAverage.layout" [config]="graphBinAverage.config"
-                     (click)="clickAnnotationBinAverage($event)"></plotly-plot>
+                     (click)="clickAnnotationBinAverage($event)" (relayout)="calculatePlotStatsBin()"></plotly-plot>
       </div>
     </div>
   </div>
