@@ -87,29 +87,13 @@
       </div>
     </div>
 
-    <div id="averages" class="col-2 panel tight-fit" style="height:240px; margin:5px 10px 5px 5px;">
+    <!-- averages -->
+    <div id="averages" class="col-2 panel tight-fit" style="height:250px; margin:5px 10px 5px 5px;">
       <div class="row">
-        <p class="header"> Day Averages</p>
+        <p class="header"> Averages</p>
       </div>
-      <div class="row">
-        <!--<div class="col">
-          <p class="tight-fit" style="text-align: center">Graph Ranges:</p>
-          <div class="row">
-          <div class="col-6 tight-fit" style="border-right: 1px solid black;">
-            <p class="tight-fit" style="text-align: center;border: 1px solid black">y-max:</p>
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">y-max:</p>
-            <p class="tight-fit" style="text-align: center;border: 1px solid black">x-min:</p>
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">x-max:</p>
-
-          </div>
-          <div class="col-6 tight-fit" *ngIf="globalYMin !== undefined" >
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">{{globalYMin | number:'1.0-2' }}</p>
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">{{globalYMax | number:'1.0-2'}}</p>
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">{{globalXMin | number:'1.0-2'}}</p>
-            <p class="tight-fit" style="text-align: center; border: 1px solid black">{{globalXMax | number:'1.0-2'}}</p>
-          </div>
-        </div>
-        </div>-->
+      <!-- day averages -->
+      <div class="row" *ngIf="showBinMode">
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
           <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
@@ -126,15 +110,34 @@
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+      <!-- bin averages-->
+      <div class="row" *ngIf="!showBinMode">
+        <div class="col">
+          <p class="tight-fit" style="text-align: center">Daily Averages:</p>
+          <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
+               style="overflow: auto; max-height: 135px; border: 1px solid black">
 
-
+            <ul class="tight-fit">
+              <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black; background:blanchedalmond;" >
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="list tight-fit">{{day.name}}</p>
+                </div>
+                <div class="col-6">
+                  <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col panel tight-fit" style="height: 240px; max-width:100%;margin-right: 25px; margin-top:5px">
-      <p> HELP panel </p>
-      Help information, use ngIf to toggle between help items, Toggle visibility as well?
+    <!-- help -->
+    <div class="col panel tight-fit" style="height: 250px; max-width:100%;margin-right: 25px; margin-top:5px">
+      <p class="header"> Help panel </p>
+        Currently a Placeholder
     </div>
 
 
@@ -194,7 +197,7 @@
         </div>
         <div class="col-4 tight-fit">
           <div class="row justify-content-center tight-fit">
-            <button class="btn" style="width: 100%">Export</button>
+            <button class="btn" [popover]="pop" [popoverContext]="'home'" style="width: 100%">Export</button>
           </div>
         </div>
       </div>
@@ -272,6 +275,11 @@
   </div>
 </div>
 
+<ng-template #pop id="bob">
+  <div class="panel" style="width:300px; height:40px">
+    <input type="text" [(ngModel)]="ammo" >
+  </div>
+</ng-template>
 
 <!-- Add Bin Module -->
 <ng-template #template>

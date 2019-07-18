@@ -3,7 +3,7 @@
   <!-- graph selection, table controls, help panel -->
   <div class="row row1" style="height:300px; margin-bottom: 10px">
     <!-- Graph selection -->
-    <div class="col-sm-3 panel" >
+    <div class="col-sm-3 panel" style="min-width: 300px" >
       <!-- title -->
       <div class="row header">
         <p class="panel-title"> Graph Selection </p>
@@ -13,7 +13,7 @@
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row justify-content-center">
-          <div class="col-6 tight-fit">
+          <div class="col-4 tight-fit">
             <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
@@ -22,12 +22,22 @@
 
 
           <!--        <div class="row justify-content-center">-->
-          <div class="col-6 tight-fit">
+          <div class="col-4 tight-fit">
             <label class="selectable radio-label"> &nbsp; &nbsp;Scatter Plot
               <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
             </label>
           </div>
+
+          <div class="col-4 tight-fit">
+            <label class="selectable radio-label"> &nbsp; &nbsp;Histogram
+              <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
+                     (change)="checkboxSelect($event)">
+            </label>
+          </div>
+
+
+
         </div>
         <!------------------------------------------------------------------------------------------------>
 
@@ -120,7 +130,7 @@
     </div>
 
     <!-- Table formating -->
-    <div class="col-sm-8 panel col2" style="min-height: 300px;   height:100%;">
+    <div class="col-sm-5 panel col2" style="min-height: 300px;   height:100%;">
       <!-- labels and nav tabs -->
       <div>
         <!--Label and Import Button ------------------------------------------------------------------------------->
@@ -159,11 +169,141 @@
 
     </div>
 
-    <!-- help panel -->
-   <!-- <div class="col-sm panel " style="min-height: 822px; width:100%;">
-      <p> HELP panel </p>
-      Help information, use ngIf to toggle between help items, Toggle visibility as well?
-    </div>-->
+ <!--    help panel -->
+    <div class="col-3 panel " style="width:100%;">
+      <p class="header"> Averages </p>
+      <!-- day averages -->
+      <div class="row">
+        <!-- xmax - ymax -->
+        <div class="col-5">
+          <p class="tight-fit" style="text-align: center">Plot Limits:</p>
+          <!--<div *ngIf="globalYAverage!==undefined && globalYAverage.length >"-->
+          <div style="overflow: auto; max-height: 135px;">
+            <ul class="tight-fit">
+              <!-- Xmin for scatter/histogram-->
+              <li class="row tight-fit" *ngIf="show" style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">xMin</p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+
+              <!-- Xmax for scatter/histogram-->
+              <li class="row tight-fit" *ngIf="show" style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">xMax</p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+
+              <!-- Start for linegraph-->
+              <li class="row tight-fit" *ngIf="!show" style="border: 1px solid black">
+                <div class="col-6 tight-fit"  style="border-right: 1px solid black;">
+                  <p class="tight-fit" style="text-align: center">Start Time</p>
+                </div>
+                <div class="col-6 tight-fit">
+                  <p class="tight-fit">"DATE:TIME"</p>
+                </div>
+              </li>
+
+              <!-- End for linegraph-->
+              <li class="row tight-fit"  *ngIf="!show" style="border: 1px solid black">
+                <div class="col-6 tight-fit" style="border-right: 1px solid black;">
+                  <p class="tight-fit">End Time</p>
+                </div>
+                <div class="col-6 tight-fit">
+                  <p class="tight-fit">"DATE:TIME"</p>
+                </div>
+              </li>
+
+              <!-- Ymin -->
+              <li class="row tight-fit"  style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">Ymin</p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+
+              <!-- Ymax -->
+              <li class="row tight-fit"  style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">YMax</p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- grab averages for each line on graph -->
+        <div class="col-6"  *ngIf="!show">
+          <p class="tight-fit" style="text-align: center">Line Averages:</p>
+          <div style="overflow: auto; max-height: 135px;">
+            <ul class="tight-fit" >
+                <li class="row tight-fit" *ngFor="let line of show" style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">line.name</p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- Calculate R^2 for scatter -->
+        <div class="col-6"  *ngIf="show">
+          <p class="tight-fit" style="text-align: center">Correlation</p>
+          <div style="overflow: auto; max-height: 135px;">
+            <ul class="tight-fit" >
+              <li class="row tight-fit" style="border: 1px solid black">
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="tight-fit">R<sup>2</sup></p>
+                </div>
+                <div class="col-6">
+                  <p class="tight-fit">"number:'1.0-2'"</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+
+
+
+      </div>
+      <!-- bin averages-->
+<!--      <div class="row" *ngIf="!showBinMode">
+        <div class="col">
+          <p class="tight-fit" style="text-align: center">Daily Averages:</p>
+          <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
+               style="overflow: auto; max-height: 135px; border: 1px solid black">
+
+            <ul class="tight-fit">
+              <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black; background:blanchedalmond;" >
+                <div class="col-6" style="border-right: 1px solid black;">
+                  <p class="list tight-fit">{{day.name}}</p>
+                </div>
+                <div class="col-6">
+                  <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>-->
+    </div>
   </div>
 
   <div class="row" style="margin-left: 7px">
