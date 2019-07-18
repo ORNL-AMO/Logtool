@@ -1278,7 +1278,7 @@ export class HolderDayTypeComponent implements OnInit {
           stroke: 1
         });
       }
-      console.log(this.globalYAverageBin);
+      //console.log(this.globalYAverageBin);
     }
   }
 
@@ -1311,9 +1311,10 @@ export class HolderDayTypeComponent implements OnInit {
          const contents = this.selectedBinList[binIndex];
          if (contents !== undefined && contents.length > 0 ) {
            for (let i = 0; i < contents.length; i++) {
-             const entry = this.days.indexOf(contents[i]);
-             this.days[entry].bin = 'EXCLUDED';
-             document.getElementById(this.days[entry].id).style.fill = 'red';
+             const entry =  this.days[ this.days.indexOf(contents[i]) ];
+              const rect = document.getElementById(entry.id);
+              this.movBins(rect,'EXCLUDED');
+
            }
          }
          console.log('before', this.selectedDates);
@@ -1327,6 +1328,7 @@ export class HolderDayTypeComponent implements OnInit {
          this.plotGraphDayAverage(0);
 
          console.log('after', this.selectedDates);
+         console.log('after', this.days);
 
 
        }});
