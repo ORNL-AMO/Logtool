@@ -14,6 +14,7 @@ export class TableDataComponent implements OnInit {
   rowData: any;
   rowCount: any;
   show = false;
+  displayData = [];
 
   constructor(private route: ActivatedRoute, private data: DataService) {
   }
@@ -28,27 +29,26 @@ export class TableDataComponent implements OnInit {
           this.show = true;
           this.columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
           this.rowCount = this.inputDataArray[this.arrayPointer].countOfRow;
-          this.rowData = this.inputDataArray[this.arrayPointer].dataArrayColumns;
-          this.displayTable();
+          this.rowData = this.inputDataArray[this.arrayPointer].content;
+          //this.displayTable();
         }
       });
   }
 
   displayTable() {
+    this.displayData = [];
     for (let count = -1; count < this.rowCount; count++) {
+      const rowContent = [];
       for (let i = 0; i < this.columnDefs.length; i++) {
         if (count === -1) {
-          //console.log(this.columnDefs[i].headerName);
-          count = count + 1;
+          rowContent.push(this.columnDefs[i].headerName);
         } else {
-          //console.log(this.rowData[i][count]);
-          count = count + 1;
+          rowContent.push(this.rowData[i][count]);
         }
       }
+      this.displayData.push(rowContent);
     }
-    console.log('colDefs', this.columnDefs);
-    console.log('rowData', this.rowData);
-
+      console.log(this.displayData);
   }
 
   calculateWidth() {
