@@ -62,7 +62,7 @@
     <!-- calendar panel -->
     <div id="calendar_panel" class="col-6 panel" style="height: 250px; max-width: 700px ">
       <p class="header" style="margin:0; text-align: center;">Calendar</p>
-      <button class=" btn pull-right" style="position: absolute; right:0; top:0;" (click)="clearSelection()"> Clear Selection </button>
+      <button class=" btn pull-right" style="position: absolute; right:0; top:0; height:30px; width:127 px; box-shadow: none; font-size: 10px;" (click)="clearSelection()"> Clear Selection </button>
       <div class="row">
         <!-- Calendar -->
         <div class="col" style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;">
@@ -100,10 +100,16 @@
                style="overflow: auto; max-height: 135px; border: 1px solid black">
             <ul class="tight-fit">
               <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black">
-                <div class="col-6" style="border-right: 1px solid black;">
+                <div class="col-6" style="border-right: 1px solid black;"
+                     [style.background] = "day.stroke !== 1 ? day.color: 'white' "
+                     [style.color] = "day.stroke !== 1 ? 'white': 'black' "
+                >
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
-                <div class="col-6">
+                <div class="col-6"
+                     [style.background] = "day.stroke !== 1 ? day.color: 'white' "
+                     [style.color] = "day.stroke !== 1 ? 'white': 'black' "
+                >
                   <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
                 </div>
               </li>
