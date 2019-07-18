@@ -1,17 +1,23 @@
 <div *ngIf="show">
-  <!--<ag-grid-angular
+  <ag-grid-angular
     style="height: 200px;"
     class="ag-theme-balham"
     [ngStyle]="{'max-width': calculateWidth()}"
     [rowData]="rowData"
     [columnDefs]="columnDefs">
-  </ag-grid-angular>-->
-  <table>
-    <tr  *ngFor="let column of columnDefs; let i=index">
-      <th *ngIf="i === 0">{{column.headerName}}</th>
+  </ag-grid-angular>
+  <!--<table>
+    <tr>
+      <th *ngFor="let column of columnDefs; let i=index">{{column.headerName}}</th>
     </tr>
-    <tr *ngFor="let row of rowData">
-      <td *ngFor="let data of row"></td>
+
+    <tr *ngFor="let row of rowData[maxlength()], let i=index">
+      <td *ngFor="let column of columnDefs, let j=index"> {{rowData[j][i]}} </td>
     </tr>
-  </table>
+  </table>-->
+  <!--<table>
+    <tr *ngFor="let row of displayData; let i=index">
+      <td *ngFor="let data of row">{{data}}</td>
+    </tr>
+  </table>-->
 </div>
