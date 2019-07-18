@@ -163,6 +163,7 @@
               [color]="bin.binColor"
               [activeContents]="selectedBinList[i]"
               (toggle_change)="binToggled($event)"
+              (removeTypeOutput)="removeBin($event)"
               style="width:95%; height:90%; margin: 1.5% 2.5% 1% 2.5%">>
             </app-day-type-bin>
           </div>

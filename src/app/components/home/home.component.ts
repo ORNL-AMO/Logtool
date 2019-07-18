@@ -246,7 +246,9 @@ export class HomeComponent implements OnInit, DoCheck {
 
   removeFile(event, id, tabId) {
 
-    this.bsModalRef = this.modalService.show(ConfirmationModalComponent);
+    const initialState = {message: 'Are you sure you want to delete this record'}
+
+    this.bsModalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
     this.bsModalRef.content.onClose.subscribe(result => {
       console.log(result);
       if (result) {

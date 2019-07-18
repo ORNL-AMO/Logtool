@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 import * as XLSX from 'xlsx';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {isNumber} from 'util';
+import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-holder-day-type',
@@ -1292,6 +1293,49 @@ export class HolderDayTypeComponent implements OnInit {
 
   printout() {
     console.log(this.ammo);
+  }
+
+  removeBin(event: string) {
+   if (event === 'EXCLUDED') {
+     alert('EXCLUDED is the default bin, and cannot be deleted at this time');
+     return;
+   }
+
+   else{
+     const initialState = {message : ' Are you sure you want to delete the ' + event + ' bin?' };
+     this.modalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
+     this.modalRef.content.onClose.subscribe(result => {
+       console.log(this.days);
+       if (result) {
+         const binIndex = this.binList.findIndex(obj => obj.binName === event);
+         const contents = this.selectedBinList[binIndex];
+         if (contents !== undefined && contents.length > 0 ) {
+           for (let i = 0; i < contents.length; i++) {
+             const entry = this.days.indexOf(contents[i]);
+             this.days[entry].bin = 'EXCLUDED';
+             document.getElementById(this.days[entry].id).style.fill = 'red';
+           }
+         }
+         console.log('before', this.selectedDates);
+
+         this.binList.splice(binIndex,1 );
+         this.displayBinList.splice(binIndex,1 );
+
+         this.allocateBins();
+         this.createLegend();
+
+         this.plotGraphDayAverage(0);
+
+         console.log('after', this.selectedDates);
+
+
+       }});
+   }
+
+
+
+
+
   }
 }
 
