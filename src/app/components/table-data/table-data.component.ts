@@ -38,19 +38,33 @@ export class TableDataComponent implements OnInit {
     for (let count = -1; count < this.rowCount; count++) {
       for (let i = 0; i < this.columnDefs.length; i++) {
         if (count === -1) {
-          console.log(this.columnDefs[i].headerName);
+          //console.log(this.columnDefs[i].headerName);
           count = count + 1;
         } else {
-          console.log(this.rowData[i][count]);
+          //console.log(this.rowData[i][count]);
           count = count + 1;
         }
       }
     }
+    console.log('colDefs', this.columnDefs);
+    console.log('rowData', this.rowData);
 
   }
 
   calculateWidth() {
     // console.log(this.columnDefs.length);
     return 200 * this.columnDefs.length + 'px';
+  }
+
+  maxlength() {
+    let max = 0;
+    let max_index;
+    for (let i = 0; i < this.rowData.length; i++) {
+      if (this.rowData[i].length > max) {
+        max_index = i;
+        max = this.rowData[i].length;
+      }
+    }
+    return max_index;
   }
 }
