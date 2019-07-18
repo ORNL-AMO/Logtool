@@ -9,7 +9,7 @@
         <p class="header"> Data Selector</p>
       </div>
 
-      <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation()">
+      <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation(false)">
         <!-- File select box --->
         <div class=" row" style="height: 30px; margin: 5px auto 5px auto;">
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
@@ -62,7 +62,7 @@
     <!-- calendar panel -->
     <div id="calendar_panel" class="col-6 panel" style="height: 250px; max-width: 700px ">
       <p class="header" style="margin:0; text-align: center;">Calendar</p>
-      <button class="pull-right" style="position: absolute; right:0; top:0;" (click)="clearSelection()"> Clear Selection </button>
+      <button class=" btn pull-right" style="position: absolute; right:0; top:0;" (click)="clearSelection()"> Clear Selection </button>
       <div class="row">
         <!-- Calendar -->
         <div class="col" style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;">
@@ -115,11 +115,11 @@
       <div class="row" *ngIf="!showBinMode">
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
+          <div *ngIf="globalYAverageDay!==undefined && globalYAverageBin.length > 0"
                style="overflow: auto; max-height: 135px; border: 1px solid black">
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black; background:blanchedalmond;" >
-                <div class="col-6" style="border-right: 1px solid black;">
+              <li class="row tight-fit" *ngFor="let day of globalYAverageBin" style="border: 1px solid black; background:blanchedalmond;" >
+                <div class="col-6" *ngIf="day.value != 0" style="border-right: 1px solid black;">
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
                 <div class="col-6">

@@ -176,9 +176,8 @@ input:hover{
   }
 }
 
-.modal{
-  display:flex;
-  top:5%;
+.modal{;
+  border-radius:32px 32px 32px 32px;
 }
 
 .my-modal {
@@ -191,12 +190,12 @@ input:hover{
   min-height: 30px;
 }
 
-.my-modal .modal-content {
+.modal-content {
   //background-color:darkseagreen;
   background: white;
   background-size: cover;
   border-radius:32px 32px 32px 32px;
-  box-shadow: 0px 0px 10px 5px grey;
+  //box-shadow: 0px 0px 10px 5px grey;
 }
 
 input[type=checkbox] {

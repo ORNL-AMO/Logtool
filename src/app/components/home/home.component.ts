@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   onImport() {
-    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal modal-lg', ignoreBackdropClick: true});
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal' , ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
     this.dataFromDialog = [];
     this.lineListY = [];

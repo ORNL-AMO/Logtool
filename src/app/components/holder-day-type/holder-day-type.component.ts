@@ -41,21 +41,9 @@ export class HolderDayTypeComponent implements OnInit {
     'Saturday'
   ];
   monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  binList = [
-    {
-      binName: 'EXCLUDED',
-      binColor: 'red'
-    },
-    {
-      binName: 'WEEKDAY',
-      binColor: 'green'
-    },
-    {
-      binName: 'WEEKEND',
-      binColor: 'blue'
-    }
-  ];
-  displayBinList = [
+  binList = [];
+  displayBinList = [];
+  defaultBinList = [
     {
       binName: 'EXCLUDED',
       binColor: 'red'
@@ -107,6 +95,7 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMode = true;
 
   ngOnInit() {
+    //this.binList = this.defaultBinList;
     this.selectedDates = new Set([]);
     this.plotGraphDayAverage(0);
     this.plotGraphBinAverage(0);
@@ -716,7 +705,7 @@ export class HolderDayTypeComponent implements OnInit {
   // resets selectedDates
   clearSelection() {
     const dates = Array.from(this.selectedDates);
-    for (let i = 0; i < dates.length; i++){
+    for (let i = 0; i < dates.length; i++) {
       this.toggleSelect(dates[i]);
     }
     this.selectedDates.clear();
@@ -818,8 +807,28 @@ export class HolderDayTypeComponent implements OnInit {
 
   // Currently just calls dayBinNavigation
   // Better way needed.
+  restartBins() {
+
+  }
+
+
   resetBins() {
-    this.dayTypeNavigation();
+    /*    console.log('before', this.binList);
+        console.log('before', this.displayBinList);
+        for (const i in this.defaultBinList) {
+          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+            if (index < 0) {
+              this.binList.push(this.defaultBinList[i]);
+              this.displayBinList.push(this.defaultBinList[i]);
+            }
+          }
+        }*/
+    /*    console.log('after', this.binList);
+        console.log('after', this.displayBinList);*/
+    this.clearSelection();
+    this.dayTypeNavigation(true); //shorter version only for reset
+
   }
 
   // Moves everything to 'EXCLUDED' BIN
@@ -882,6 +891,7 @@ export class HolderDayTypeComponent implements OnInit {
     }
 
     this.binList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
+    console.log(this.binList);
     this.displayBinList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.selectedBinList.splice(0, 0, []);
     this.createLegend();
@@ -906,7 +916,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   }
 
-  dayTypeNavigation() {
+  dayTypeNavigation(reset) {
     this.columnMainArray = [];
     this.valueArray = [];
     this.dayArray = [];
@@ -919,6 +929,29 @@ export class HolderDayTypeComponent implements OnInit {
     if (this.columnSelectorList.length === 0) {
       alert('Please select Column');
     } else {
+      if (reset) {
+        for (const i in this.defaultBinList) {
+          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+            if (index < 0) {
+              this.binList.push(this.defaultBinList[i]);
+              this.displayBinList.push(this.defaultBinList[i]);
+            }
+          }
+        }
+      } else {
+        this.binList = [];
+        this.displayBinList = [];
+        for (const i in this.defaultBinList) {
+          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+            if (index < 0) {
+              this.binList.push(this.defaultBinList[i]);
+              this.displayBinList.push(this.defaultBinList[i]);
+            }
+          }
+        }
+      }
       this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
       this.value = this.columnSelectorList;
       const timeSeries = this.timeSeriesFileDayType.split(',');
@@ -1278,64 +1311,47 @@ export class HolderDayTypeComponent implements OnInit {
           stroke: 1
         });
       }
-      //console.log(this.globalYAverageBin);
+      // console.log(this.globalYAverageBin);
     }
   }
 
-  calcWidth() {
-    const graph = document.getElementById('myDiv').offsetWidth;
-    const bins = document.getElementById('bin-panel').offsetWidth;
-    // console.log((graph + bins + 10)+'px');
-    return (graph + bins + 10) + 'px';
-
-  }
-
-
-  printout() {
-    console.log(this.ammo);
-  }
-
   removeBin(event: string) {
-   if (event === 'EXCLUDED') {
-     alert('EXCLUDED is the default bin, and cannot be deleted at this time');
-     return;
-   }
-
-   else{
-     const initialState = {message : ' Are you sure you want to delete the ' + event + ' bin?' };
-     this.modalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
-     this.modalRef.content.onClose.subscribe(result => {
-       console.log(this.days);
-       if (result) {
-         const binIndex = this.binList.findIndex(obj => obj.binName === event);
-         const contents = this.selectedBinList[binIndex];
-         if (contents !== undefined && contents.length > 0 ) {
-           for (let i = 0; i < contents.length; i++) {
-             const entry =  this.days[ this.days.indexOf(contents[i]) ];
+    if (event === 'EXCLUDED') {
+      alert('EXCLUDED is the default bin, and cannot be deleted at this time');
+      return;
+    } else {
+      const initialState = {message: ' Are you sure you want to delete the ' + event + ' bin?'};
+      this.modalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
+      this.modalRef.content.onClose.subscribe(result => {
+        console.log(this.days);
+        if (result) {
+          const binIndex = this.binList.findIndex(obj => obj.binName === event);
+          const contents = this.selectedBinList[binIndex];
+          if (contents !== undefined && contents.length > 0) {
+            for (let i = 0; i < contents.length; i++) {
+              const entry = this.days[this.days.indexOf(contents[i])];
               const rect = document.getElementById(entry.id);
-              this.movBins(rect,'EXCLUDED');
+              this.movBins(rect, 'EXCLUDED');
 
-           }
-         }
-         console.log('before', this.selectedDates);
+            }
+          }
+          console.log('before', this.selectedDates);
 
-         this.binList.splice(binIndex,1 );
-         this.displayBinList.splice(binIndex,1 );
+          this.binList.splice(binIndex, 1);
+          this.displayBinList.splice(binIndex, 1);
 
-         this.allocateBins();
-         this.createLegend();
+          this.allocateBins();
+          this.createLegend();
 
-         this.plotGraphDayAverage(0);
+          this.plotGraphDayAverage(0);
 
-         console.log('after', this.selectedDates);
-         console.log('after', this.days);
-
-
-       }});
-   }
+          console.log('after', this.selectedDates);
+          console.log('after', this.days);
 
 
-
+        }
+      });
+    }
 
 
   }
