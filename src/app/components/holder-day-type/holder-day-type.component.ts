@@ -715,7 +715,7 @@ export class HolderDayTypeComponent implements OnInit {
   // resets selectedDates
   clearSelection() {
     const dates = Array.from(this.selectedDates);
-    for (let i = 0; i < dates.length; i++){
+    for (let i = 0; i < dates.length; i++) {
       this.toggleSelect(dates[i]);
     }
     this.selectedDates.clear();
