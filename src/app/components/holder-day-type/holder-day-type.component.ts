@@ -88,6 +88,8 @@ export class HolderDayTypeComponent implements OnInit {
   dataFromDialog: any = [];
   tabs = [];
 
+  ammo = '';
+
   // Used for adding bin types
   modalRef: BsModalRef;
   newBinName;
@@ -499,7 +501,7 @@ export class HolderDayTypeComponent implements OnInit {
     }
 
     // Calculate cell dimensions based on viewbox
-    let cell_dimension = 100 / (weekcount);
+    let cell_dimension = 150 / (weekcount);
     if (cell_dimension > 50) {
       cell_dimension = 50;
     }
@@ -709,6 +711,10 @@ export class HolderDayTypeComponent implements OnInit {
 
   // resets selectedDates
   clearSelection() {
+    const dates = Array.from(this.selectedDates);
+    for (let i = 0; i < dates.length; i++){
+      this.toggleSelect(dates[i]);
+    }
     this.selectedDates.clear();
   }
 
@@ -1108,9 +1114,12 @@ export class HolderDayTypeComponent implements OnInit {
 
   clickAnnotationBinAverage(data) {
     if (data.points === undefined) {
-
     } else {
       console.log(data);
+
+
+
+
       this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
         const annotationText = 'x = ' + data.points[i].x + ' y = ' + data.points[i].y.toPrecision(4);
@@ -1119,7 +1128,7 @@ export class HolderDayTypeComponent implements OnInit {
           x: data.points[i].x,
           y: parseFloat(data.points[i].y.toPrecision(4)),
           font: {
-            color: 'black',
+            color: 'blue',
             size: 20,
             family: 'Courier New, monospace',
           },
@@ -1259,6 +1268,12 @@ export class HolderDayTypeComponent implements OnInit {
     const bins = document.getElementById('bin-panel').offsetWidth;
     // console.log((graph + bins + 10)+'px');
     return (graph + bins + 10) + 'px';
+
+  }
+
+
+  printout() {
+    console.log(this.ammo);
   }
 
 }

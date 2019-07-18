@@ -26,6 +26,7 @@ export class PlotGraphComponent implements OnInit {
   globalXMin;
   globalXMax;
   globalXAverage = [];
+  type:string
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
@@ -106,6 +107,7 @@ export class PlotGraphComponent implements OnInit {
   }
 
   displayGraph(type) {
+    this.type = type;
     this.xValue = [];
     this.yValue = [];
     this.timeSeries = [];
