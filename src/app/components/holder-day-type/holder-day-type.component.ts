@@ -1139,7 +1139,6 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-
   clickAnnotationBinAverage(data) {
     if (data.points === undefined) {
     } else {
@@ -1274,15 +1273,18 @@ export class HolderDayTypeComponent implements OnInit {
             sumAverage = sumAverage + y;
           }
         }
-        this.globalYAverageDay.push({
-          value: sumAverage / len,
-          name: this.graphDayAverage.data[dataLength].name,
-          color: this.graphDayAverage.data[dataLength].line.color,
-          stroke: this.graphDayAverage.data[dataLength].line.width
-        });
+        if (isNaN(sumAverage / len)) {
+        } else {
+          this.globalYAverageDay.push({
+            value: sumAverage / len,
+            name: this.graphDayAverage.data[dataLength].name,
+            color: this.graphDayAverage.data[dataLength].line.color,
+            stroke: this.graphDayAverage.data[dataLength].line.width
+          });
+        }
       }
     }
-
+    console.log(this.globalYAverageDay);
   }
 
   calculatePlotStatsBin() {
