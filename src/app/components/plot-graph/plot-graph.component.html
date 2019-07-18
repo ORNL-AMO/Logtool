@@ -1,6 +1,34 @@
 <div>
+
   <plotly-plot [data]="graph.data" [layout]="graph.layout" [config]="graph.config"
                (click)="clickAnnotation($event)" (relayout)="calculatePlotStats()"></plotly-plot>
-  <br>
+
+
   <button class="btn" name="Export" (click)="onCreateCsv()">Export Data</button>
+
+<!--  <ul style="min-width:60%;" *ngIf="globalYMin!==undefined">
+    &lt;!&ndash; Y &ndash;&gt;
+    <li>
+      <div class="row">
+        <div class="col-4" *ngIf="isDate()">YMin: {{globalYMin}}</div>
+        <div class="col-4" *ngIf="isDate()">YMax: {{globalYMax}}</div>
+
+        <div class="col-4">Y Average: {{globalYAverage[0].value }}</div>
+      </div>
+    </li>
+    &lt;!&ndash; X &ndash;&gt;
+    <li>
+      &lt;!&ndash; if line graph &ndash;&gt;
+      <div class="row">
+        <div class="col-4" *ngIf="isDate()">XMin: {{globalXMin}}</div>
+        <div class="col-4" *ngIf="isDate()">XMax: {{globalXMax}}</div>
+        <div class="col-4" *ngIf="!isDate()">XMin: {{globalXMin | number: '1.0-2'}}</div>
+        <div class="col-4" *ngIf="!isDate()">XMax: {{globalXMax | number: '1.0-2'}}</div>
+        <div class="col-4" *ngIf="type !== 'line_graph'">X Average: {{globalXAverage[0].value }}</div>
+      </div>
+
+    </li>
+  </ul>-->
+
 </div>
+
