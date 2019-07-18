@@ -4,6 +4,14 @@
     <!-- Title  Toggle and drop switch-->
     <div class="row tight-fit" style="height:26px;">
 
+      <!--toggle switch -->
+      <div class="col-3 tight-fit" style="padding-left: 10px;">
+        <label class="switch">
+          <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
       <!-- bin title -->
       <div id='bin-title' class="col-7 tight-fit">
         <div class="row justify-content-center">
@@ -12,20 +20,15 @@
       </div>
     </div>
 
-    <!--toggle switch -->
-    <div class="col-3 tight-fit" style="padding-left: 10px;">
-      <label class="switch">
-        <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
-        <span class="slider round"></span></label>
-    </div>
-
     <!-- dropdown button -->
-    <div class="col-1 tight-fit">
-      <img src="/assets/triangle.png" title="Click to show/hide bin contents" alt="dropbox icon" style="position: absolute; left:-10px; top: -15px;"
-           [ngStyle]="{'transform': show == false ? 'scale(.2,.2) rotate(90deg) ' : 'scale(.2,.2) translateX(10px)'}"
+      <div class="col-1 tight-fit">
+        <img src="/assets/triangle.png" title="Click to show/hide bin contents" alt="dropbox icon" style="position: absolute; left:-10px; top: -15px;"
+           [ngStyle]="{'transform': show == false ? 'scale(.2,.2) rotate(90deg) translateY(50px) ' : 'scale(.2,.2) translateX(-50px)'}"
            (click)="show = !show">
-    </div>
+      </div>
 
+      <!-- remove bin  ngIf="name != 'EXCLUDED'"-->
+      <div class="col-1 tight-fit" (click)="removeTypeTrigger()"> x </div>
 
   </div>
 

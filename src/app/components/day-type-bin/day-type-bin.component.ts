@@ -21,7 +21,7 @@ export class DayTypeBinComponent implements OnInit {
 
   @Output() toggle_change = new EventEmitter<{ name: string, graph: boolean }>();
   @Output() addTypeOutput = new EventEmitter<any>();
-
+  @Output() removeTypeOutput = new EventEmitter<string>();
   show: boolean;
   fontColor: string;
 
@@ -32,41 +32,6 @@ export class DayTypeBinComponent implements OnInit {
     //this.getTextColor();
   }
 
-/*  getTextColor() {
-    // Create fake div
-    const fakeDiv = document.createElement('div');
-    fakeDiv.style.color = this.color;
-    document.body.appendChild(fakeDiv);
-
-    // Get color of div
-    const cs = window.getComputedStyle(fakeDiv),
-      pv = cs.getPropertyValue('color');
-
-    // Remove div after obtaining desired color value
-    document.body.removeChild(fakeDiv);
-    console.log(pv);
-    return pv;
-  }*/
-
-
-/*  addSelectedDate(event) {
-    const index = event.target.options.selectedIndex;
-    if (index > -1) {
-      this.addSelectedDateOutput.emit({name: this.name, date: this.dropDownList[index]});
-    }
-  }
-
-  onSelectedRemove(event) {
-    let index = -1;
-    if (event.target.id === undefined || event.target.id === '' || event.target.id === null) {
-    } else {
-      index = event.target.id;
-      if (index > -1) {
-        this.onSelectedRemoveOutput.emit({name: this.name, date: this.activeContents[index]});
-      }
-    }
-
-  }*/
 
   addType(event) {
      this.addTypeOutput.emit();
@@ -74,6 +39,10 @@ export class DayTypeBinComponent implements OnInit {
 
   toggle_bin_plot(event) {
     this.toggle_change.emit({name: this.name, graph: event.target.checked});
+  }
+
+  removeTypeTrigger() {
+    this.removeTypeOutput.emit(this.name);
   }
 
 }
