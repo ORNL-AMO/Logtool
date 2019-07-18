@@ -4,6 +4,7 @@ import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import * as XLSX from 'xlsx';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
+import {isNumber} from 'util';
 
 @Component({
   selector: 'app-holder-day-type',
@@ -73,12 +74,17 @@ export class HolderDayTypeComponent implements OnInit {
   plotDataBinAverages = [];
   annotationListDayAverage = [];
   annotationListBinAverage = [];
-  globalYMin;
-  globalYMax;
-  globalXMin;
-  globalXMax;
-  globalYAverage = [];
-  toggleRelayout = false;
+  globalYMinDay;
+  globalYMaxDay;
+  globalXMinDay;
+  globalXMaxDay;
+  globalYAverageDay = [];
+  globalYMinBin;
+  globalYMaxBin;
+  globalXMinBin;
+  globalXMaxBin;
+  globalYAverageBin = [];
+  toggleRelayoutDay = false;
   binColor = ['red', 'green', 'blue'];
   temp5: any;
   fileSelector = [];
@@ -214,7 +220,7 @@ export class HolderDayTypeComponent implements OnInit {
         name = this.columnMainArray[channelId][i][channelId].channelName;
       }
       let layout;
-      if (this.annotationListDayAverage.length > 0 || this.toggleRelayout) {
+      if (this.annotationListDayAverage.length > 0 || this.toggleRelayoutDay) {
         layout = {
           hovermode: 'closest',
           autosize: true,
@@ -250,7 +256,7 @@ export class HolderDayTypeComponent implements OnInit {
           'displaylogo': false
         }
       };
-      this.calculatePlotStats();
+      this.calculatePlotStatsDay();
     } else {
       this.graphDayAverage = {
         data: this.plotData,
@@ -316,6 +322,7 @@ export class HolderDayTypeComponent implements OnInit {
           'displaylogo': false
         }
       };
+      this.calculatePlotStatsBin();
     } else {
       this.graphBinAverage = {
         data: this.plotDataBinAverages,
@@ -655,11 +662,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphDayAverage(0);
 
     } else {
-
-      // console.log(this.timeSeriesDayType);
       this.cycleBin(event.target);
-      /*console.log(d3.select(event.target).data()[0].values[0]);
-      console.log(this.days);*/
     }
   }
 
@@ -738,7 +741,6 @@ export class HolderDayTypeComponent implements OnInit {
       }
     }
     this.plotGraphDayAverage(0);
-    /*console.log(n.data()[0].values[0]);*/
   }
 
 // --------------------------------------------------------------------------
@@ -800,8 +802,6 @@ export class HolderDayTypeComponent implements OnInit {
         this.displayBinList.push(this.binList[storeIndex]);
       } else if (!event.graph && displayIndex >= 0) {
         this.displayBinList.splice(displayIndex, 1);
-      } else {
-        /*console.log(event.graphDayAverage, displayIndex);*/
       }
       this.plotGraphDayAverage(0);
     }
@@ -853,14 +853,10 @@ export class HolderDayTypeComponent implements OnInit {
       alert('NOT A KNOWN COLOR. Please Enter a Valid Color');
       return;
     }
-
-    //check for correct length
     if (this.newBinName.length > 10) {
       alert('Character Limit Reached. Please Enter a name with 10 characters or less');
       return;
     }
-
-    //check for reserved names
     if (this.newBinName.toLowerCase() === 'add') {
       alert('Name Reserved');
       return;
@@ -894,7 +890,6 @@ export class HolderDayTypeComponent implements OnInit {
 
   // -----------------------------------------------------------------
   plotShift(event) {
-    console.log();
     if (event.target.value === 'bin') {
       this.showBinMode = false;
       this.calculateBinAverage(0);
@@ -1065,7 +1060,6 @@ export class HolderDayTypeComponent implements OnInit {
         this.sumArray.push(tempSumArray);
       }
     }
-    console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 
@@ -1073,10 +1067,6 @@ export class HolderDayTypeComponent implements OnInit {
     if (data.points === undefined) {
 
     } else if (data.event.ctrlKey) {
-      const selectedTrace = document.getElementById(this.days[data.points[0].curveNumber].id);
-      this.toggleSelect(selectedTrace);
-
-    } else {
       // Modal
       this.annotationListDayAverage = this.graphDayAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
@@ -1102,6 +1092,10 @@ export class HolderDayTypeComponent implements OnInit {
 
       }
       this.plotGraphDayAverage(0);
+
+    } else {
+      const selectedTrace = document.getElementById(this.days[data.points[0].curveNumber].id);
+      this.toggleSelect(selectedTrace);
     }
   }
 
@@ -1110,7 +1104,6 @@ export class HolderDayTypeComponent implements OnInit {
     if (data.points === undefined) {
 
     } else {
-      console.log(data);
       this.annotationListBinAverage = this.graphBinAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
         const annotationText = 'x = ' + data.points[i].x + ' y = ' + data.points[i].y.toPrecision(4);
@@ -1155,7 +1148,6 @@ export class HolderDayTypeComponent implements OnInit {
       for (let i = 0; i < this.graphDayAverage.data.length; i++) {
         if (this.graphDayAverage.data[i].line.color !== '') {
           if (this.graphDayAverage.data[i].visible === true) {
-            console.log();
             const bin = this.displayBinList.find(obj => obj.binColor === this.graphDayAverage.data[i].line.color);
             datajson.push({
               Date: this.graphDayAverage.data[i].name,
@@ -1195,63 +1187,92 @@ export class HolderDayTypeComponent implements OnInit {
 
   }
 
-  calculatePlotStats() {
-    this.toggleRelayout = true;
+  calculatePlotStatsDay() {
+    this.toggleRelayoutDay = true;
     if (this.graphDayAverage.layout.yaxis.range === undefined || this.graphDayAverage.layout.xaxis.range === undefined) {
-      this.globalXMin = this.data.getMin(this.graphDayAverage.data[0].x);
-      this.globalXMax = this.data.getMax(this.graphDayAverage.data[0].x);
-      this.globalYMin = this.data.getMin(this.graphDayAverage.data[0].y);
-      this.globalYMax = this.data.getMax(this.graphDayAverage.data[0].y);
-      this.globalYAverage = [];
+      this.globalXMinDay = this.data.getMin(this.graphDayAverage.data[0].x);
+      this.globalXMaxDay = this.data.getMax(this.graphDayAverage.data[0].x);
+      this.globalYMinDay = this.data.getMin(this.graphDayAverage.data[0].y);
+      this.globalYMaxDay = this.data.getMax(this.graphDayAverage.data[0].y);
+      this.globalYAverageDay = [];
       for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
         const len = this.graphDayAverage.data[dataLength].y.length;
         const ymax = this.data.getMax(this.graphDayAverage.data[dataLength].y);
         const ymin = this.data.getMin(this.graphDayAverage.data[dataLength].y);
-        if (ymax >= this.globalYMax) {
-          this.globalYMax = ymax;
+        if (ymax >= this.globalYMaxDay) {
+          this.globalYMaxDay = ymax;
         }
-        if (this.globalYMin === 0) {
-          this.globalYMin = ymin;
-        } else if (ymin < this.globalYMin) {
-          this.globalYMin = ymin;
+        if (this.globalYMinDay === 0) {
+          this.globalYMinDay = ymin;
+        } else if (ymin < this.globalYMinDay) {
+          this.globalYMinDay = ymin;
         }
         let sumAverage = 0;
         for (let i = 0; i < len; i++) {
           const y = this.graphDayAverage.data[dataLength].y[i];
           sumAverage = sumAverage + y;
         }
-        this.globalYAverage.push({
+        this.globalYAverageDay.push({
           value: sumAverage / len,
-          name: this.graphDayAverage.data[dataLength].name
+          name: this.graphDayAverage.data[dataLength].name,
+          color: this.graphDayAverage.data[dataLength].line.color,
+          stroke: this.graphDayAverage.data[dataLength].line.width
         });
       }
     } else {
-      this.globalYMin = this.graphDayAverage.layout.yaxis.range[0];
-      this.globalYMax = this.graphDayAverage.layout.yaxis.range[1];
-      this.globalXMin = this.graphDayAverage.layout.xaxis.range[0];
-      this.globalXMax = this.graphDayAverage.layout.xaxis.range[1];
-      this.globalYAverage = [];
+      this.globalYMinDay = this.graphDayAverage.layout.yaxis.range[0];
+      this.globalYMaxDay = this.graphDayAverage.layout.yaxis.range[1];
+      this.globalXMinDay = this.graphDayAverage.layout.xaxis.range[0];
+      this.globalXMaxDay = this.graphDayAverage.layout.xaxis.range[1];
+      this.globalYAverageDay = [];
       for (let dataLength = 0; dataLength < this.graphDayAverage.data.length; dataLength++) {
         const len = this.graphDayAverage.data[dataLength].y.length;
         let sumAverage = 0;
         for (let i = 0; i < len; i++) {
           const y = this.graphDayAverage.data[dataLength].y[i];
-          if (y >= this.globalYMin && y < this.globalYMax && i >= this.globalXMin && i < this.globalYMax) {
+          if (y >= this.globalYMinDay && y < this.globalYMaxDay && i >= this.globalXMinDay && i < this.globalYMaxDay) {
             sumAverage = sumAverage + y;
           }
         }
-        this.globalYAverage.push({
+        this.globalYAverageDay.push({
           value: sumAverage / len,
-          name: this.graphDayAverage.data[dataLength].name
+          name: this.graphDayAverage.data[dataLength].name,
+          color: this.graphDayAverage.data[dataLength].line.color,
+          stroke: this.graphDayAverage.data[dataLength].line.width
         });
       }
     }
-    console.log(this.globalYMin);
-    console.log(this.globalYMax);
-    console.log(this.globalXMin);
-    console.log(this.globalXMax);
-    console.log(this.globalYAverage);
 
+  }
+
+  calculatePlotStatsBin() {
+    if (this.graphBinAverage.layout.yaxis.range === undefined || this.graphBinAverage.layout.xaxis.range === undefined) {
+    } else {
+      this.globalYMinBin = this.graphBinAverage.layout.yaxis.range[0];
+      this.globalYMaxBin = this.graphBinAverage.layout.yaxis.range[1];
+      this.globalXMinBin = this.graphBinAverage.layout.xaxis.range[0];
+      this.globalXMaxBin = this.graphBinAverage.layout.xaxis.range[1];
+      this.globalYAverageBin = [];
+      for (let dataLength = 0; dataLength < this.graphBinAverage.data.length; dataLength++) {
+        const len = this.graphBinAverage.data[dataLength].y.length;
+        let sumAverage = 0;
+        let y = 0;
+        for (let i = 0; i < len; i++) {
+          y = parseFloat(this.graphBinAverage.data[dataLength].y[i]);
+          if (y >= this.globalYMinBin && y < this.globalYMaxBin && i >= this.globalXMinBin && i < this.globalYMaxBin) {
+            sumAverage = sumAverage + y;
+          }
+
+        }
+        this.globalYAverageBin.push({
+          value: sumAverage / len,
+          name: this.graphBinAverage.data[dataLength].name,
+          color: this.graphBinAverage.data[dataLength].line.color,
+          stroke: 1
+        });
+      }
+      console.log(this.globalYAverageBin);
+    }
   }
 
   calcWidth() {
@@ -1260,6 +1281,5 @@ export class HolderDayTypeComponent implements OnInit {
     // console.log((graph + bins + 10)+'px');
     return (graph + bins + 10) + 'px';
   }
-
 }
 
