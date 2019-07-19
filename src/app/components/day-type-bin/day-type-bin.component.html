@@ -7,7 +7,7 @@
       <!--toggle switch -->
       <div class="col-3 tight-fit" style="padding-left: 10px;">
         <label class="switch">
-          <input type="checkbox" (click)="toggle_bin_plot($event)" checked>
+          <input type="checkbox" (click)="$event.stopPropagation(); toggle_bin_plot($event) " checked>
           <span class="slider round"></span>
         </label>
       </div>
@@ -28,7 +28,7 @@
       </div>
 
       <!-- remove bin  ngIf="name != 'EXCLUDED'"-->
-      <div class="col-1 tight-fit" (click)="removeTypeTrigger()"> x </div>
+      <div class="col-1 tight-fit" (click)=" $event.stopPropagation(); removeTypeTrigger($event);"> x </div>
 
   </div>
 

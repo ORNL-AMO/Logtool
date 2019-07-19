@@ -19,6 +19,9 @@
   width:100%;
 }
 
+
+
+
 .list-box{
   max-height: 80px;
   align-content: center;
@@ -116,10 +119,12 @@ ul {
   list-style-type: none;
   overflow-x: auto;
   white-space: nowrap;
+  user-select: none;
 
   li {
     text-align: center;
     white-space: nowrap;
+    user-select: none;
   }
 }
 
@@ -164,3 +169,12 @@ button:active {
   background: antiquewhite;
 
 }
+
+.list-items{
+  cursor: pointer;
+  }
+
+.active{
+  cursor: grabbing;
+}
+

@@ -34,15 +34,22 @@ export class DayTypeBinComponent implements OnInit {
 
 
   addType(event) {
+
      this.addTypeOutput.emit();
   }
 
   toggle_bin_plot(event) {
+
     this.toggle_change.emit({name: this.name, graph: event.target.checked});
+    event.stopPropagation();
+    return;
   }
 
-  removeTypeTrigger() {
+  removeTypeTrigger(event) {
+
     this.removeTypeOutput.emit(this.name);
+    event.stopPropagation();
+    return;
   }
 
 }
