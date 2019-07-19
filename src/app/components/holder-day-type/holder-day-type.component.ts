@@ -15,6 +15,11 @@ import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-mod
 export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private indexFileStore: IndexFileStoreService, private modalService: BsModalService) {
   }
+  scrollActive = false;
+  target: any;
+  start_X = 0;
+  start_Y = 0;
+
 
   dropDownBinList = [];
   selectedBinList = [];
@@ -84,7 +89,7 @@ export class HolderDayTypeComponent implements OnInit {
   tabs = [];
 
   ammo = '';
-
+  mac: boolean;
   // Used for adding bin types
   modalRef: BsModalRef;
   newBinName;
@@ -95,7 +100,8 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMode = true;
 
   ngOnInit() {
-    //this.binList = this.defaultBinList;
+    // this.binList = this.defaultBinList;
+    this.mac =  window.navigator.platform.includes('Mac') || window.navigator.platform.includes('mac');
     this.selectedDates = new Set([]);
     this.plotGraphDayAverage(0);
     this.plotGraphBinAverage(0);
@@ -621,7 +627,7 @@ export class HolderDayTypeComponent implements OnInit {
   clickHandler(event) {
     // const active = d3.select(event.target);
     // if in select mode toggle selection
-    if (event.ctrlKey) {
+    if ((!this.mac && event.ctrlKey) || (this.mac && event.metaKey)) {
       this.toggleSelect(event.target);
     } else if (this.selectedDates.has(event.target)) {
       // if in selection sync and cycle
@@ -770,6 +776,8 @@ export class HolderDayTypeComponent implements OnInit {
         this.timeSeriesFileDayType = `${currentSelectedFile},${i}`;
       }
     }
+   // this.columnSelectorList.push({name: this.columnSelector[0].name, value: this.columnSelector[0].identifier});
+   //console.log(this.columnSelector);
   }
 
   columnSelectorEvent(event) {
@@ -780,6 +788,7 @@ export class HolderDayTypeComponent implements OnInit {
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
+    //console.log(this.columnSelectorList);
   }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
@@ -827,7 +836,7 @@ export class HolderDayTypeComponent implements OnInit {
     /*    console.log('after', this.binList);
         console.log('after', this.displayBinList);*/
     this.clearSelection();
-    this.dayTypeNavigation(true); //shorter version only for reset
+    this.dayTypeNavigation(true); // shorter version only for reset
 
   }
 
@@ -1106,7 +1115,8 @@ export class HolderDayTypeComponent implements OnInit {
   clickAnnotationDayAverage(data) {
     if (data.points === undefined) {
 
-    } else if (data.event.ctrlKey) {
+    } else if ( (!this.mac && data.event.ctrlKey) || (this.mac && data.event.metaKey) ) {
+
       // Modal
       this.annotationListDayAverage = this.graphDayAverage.layout.annotations || [];
       for (let i = 0; i < data.points.length; i++) {
@@ -1284,7 +1294,7 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
     }
-    console.log(this.globalYAverageDay);
+    // console.log(this.globalYAverageDay);
   }
 
   calculatePlotStatsBin() {
@@ -1337,7 +1347,7 @@ export class HolderDayTypeComponent implements OnInit {
 
             }
           }
-          console.log('before', this.selectedDates);
+          // console.log('before', this.selectedDates);
 
           this.binList.splice(binIndex, 1);
           this.displayBinList.splice(binIndex, 1);
@@ -1347,8 +1357,8 @@ export class HolderDayTypeComponent implements OnInit {
 
           this.plotGraphDayAverage(0);
 
-          console.log('after', this.selectedDates);
-          console.log('after', this.days);
+          // console.log('after', this.selectedDates);
+          // console.log('after', this.days);
 
 
         }
@@ -1357,5 +1367,59 @@ export class HolderDayTypeComponent implements OnInit {
 
 
   }
+
+  startDrag(event, id: string) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.scrollActive = true;
+    this.target = document.getElementById(id);
+    console.log(id, this.target);
+    this.start_Y = event.pageY - this.target.offsetTop;
+    this.start_X = event.pageX - this.target.offsetLeft;
+    this.target.classList.add('active');
+
+    //console.log(window.navigator.platform);
+  }
+
+  enddrag(event) {
+    if (!this.scrollActive) {
+      return false;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+    this.scrollActive = false;
+    this.target.classList.remove('active');
+    this.target = null;
+  }
+
+  drag(event: MouseEvent, direction: string) {
+    if (!this.scrollActive) {
+      return false;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+    // console.log(this.scrollActive);
+    let start;
+    let walk;
+    let old;
+    if (direction === 'X') {
+      start = event.pageX - this.target.offsetLeft;
+      walk = (start - this.start_X) / 5;
+      old = this.target.scrollLeft;
+      this.target.scrollLeft = old + walk;
+      // console.log(start, old, walk, this.start_X);
+
+    } else {
+      start = event.pageY - this.target.offsetTop;
+      walk = (start - this.start_Y);
+      old = this.target.scrollTop;
+      this.target.scrollTop = old + walk;
+      // console.log(start, old, walk, this.start_Y);
+    }
+    // console.log(this.target.id);
+  }
+
+
+
 }
 

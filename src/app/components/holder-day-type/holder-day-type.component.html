@@ -16,7 +16,8 @@
             <p class="dropbox-label tight-fit" style="text-align: right">File:</p>
           </div>
           <div class="col-9 tight-fit" style="margin-top: 5px; margin-right: 5px">
-            <select name="fileSelector" [(ngModel)]="temp5" (change)="fileSelectorEvent($event)" style="width: 100%; ">
+            <select name="fileSelector" [(ngModel)]="temp5" (click)="fileSelectorEvent($event)" style="width: 100%; ">
+
               <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
             </select>
           </div>
@@ -28,9 +29,9 @@
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
             <p class="dropbox-label tight-fit" style="text-align: right">Data:</p>
           </div>
-
+<!--   -->
           <div class="col-9 tight-fit" style="margin-top: 5px;">
-            <select name="columnSelector" [(ngModel)]="temp6" (change)="columnSelectorEvent($event)">
+            <select name="columnSelector" [(ngModel)]="temp6" (click)="columnSelectorEvent($event)">
               <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
             </select>
           </div>
@@ -65,7 +66,13 @@
       <button class=" btn pull-right" style="position: absolute; right:0; top:0; height:30px; width:127 px; box-shadow: none; font-size: 10px;" (click)="clearSelection()"> Clear Selection </button>
       <div class="row">
         <!-- Calendar -->
-        <div class="col" style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;">
+        <div id="cal" class="col" style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;"
+             (mousedown)="$event.stopPropagation(); startDrag($event, 'cal');"
+             (mouseup)="$event.stopPropagation(); enddrag($event);"
+             (mouseleave)="$event.stopPropagation(); enddrag($event);"
+             (mousemove)="$event.stopPropagation(); drag($event, 'X')"
+
+        >
           <svg id="grid" style="height: 204px;"></svg>
         </div>
 
@@ -74,7 +81,11 @@
           <div class="row" style="height: 55px">
             <svg id="instructions" style="width: 125px;"></svg>
           </div>
-          <div class="row" style="height: 150px; overflow:auto;">
+          <div id="leg" class="row" style="height: 150px; overflow:auto;"
+               (mousedown)="$event.stopPropagation(); startDrag($event, 'leg');"
+               (mouseup)="$event.stopPropagation(); enddrag($event);"
+               (mouseleave)="$event.stopPropagation(); enddrag($event);"
+               (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
             <svg id="legend" style="width: 125px;"></svg>
           </div>
         </div>
@@ -96,9 +107,15 @@
       <div class="row" *ngIf="showBinMode">
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
-               style="overflow: auto; max-height: 135px; border: 1px solid black">
-            <ul class="tight-fit">
+          <div id='avg' *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
+               style="overflow: auto; max-height: 135px; border: 1px solid black"
+                (mousedown)="$event.stopPropagation(); startDrag($event, 'avg');"
+                (mouseup)="$event.stopPropagation(); enddrag($event);"
+                (mouseleave)="$event.stopPropagation(); enddrag($event);"
+                (mousemove)="$event.stopPropagation(); drag($event, 'Y')"
+           >
+            <ul class="tight-fit"
+           >
               <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;"
                      [style.background] = "day.stroke !== 1 ? day.color: 'white' "
@@ -120,9 +137,13 @@
       <!-- bin averages-->
       <div class="row" *ngIf="!showBinMode">
         <div class="col">
-          <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverageDay!==undefined && globalYAverageBin.length > 0"
-               style="overflow: auto; max-height: 135px; border: 1px solid black">
+          <p class="tight-fit" style="text-align: center">Day Type Averages:</p>
+          <div id='avg2' *ngIf="globalYAverageDay!==undefined && globalYAverageBin.length > 0"
+               style="overflow: auto; max-height: 135px; border: 1px solid black"
+               (mousedown)="$event.stopPropagation(); startDrag($event, 'avg2');"
+               (mouseup)="$event.stopPropagation(); enddrag($event);"
+               (mouseleave)="$event.stopPropagation(); enddrag($event);"
+               (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
             <ul class="tight-fit">
               <li class="row tight-fit" *ngFor="let day of globalYAverageBin" style="border: 1px solid black; background:blanchedalmond;" >
                 <div class="col-6" *ngIf="day.value != 0" style="border-right: 1px solid black;">
@@ -159,9 +180,14 @@
 
       <!-- bins -->
       <!-- Normal Bins -->
-      <div class="row" style="max-height: 650px; width:90%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
-        <div class="tight-fit"
-             style="max-height: 555px; width:100%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
+      <div class="row list-items"
+
+           style="max-height: 650px; width:90%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;">
+        <div id="types" class="tight-fit"  style="max-height: 555px; width:100%; overflow-y: auto; box-shadow: none; margin: 0 auto 0 auto;"
+             (mousedown)="$event.stopPropagation(); startDrag($event,'types');"
+             (mouseup)="$event.stopPropagation(); enddrag($event);"
+             (mouseleave)="$event.stopPropagation(); enddrag($event);"
+             (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
           <div class="row justify-content-center" style=" background:darkgray;"
                *ngFor="let bin of binList let i = index ">
             <app-day-type-bin
@@ -255,8 +281,11 @@
       </div>
 
       <!-- table -->
-      <div style="width: 96% ; overflow: auto; margin: 0 auto 10px auto; max-height: 125px">
-
+      <div id="tablescroll" style="width: 96% ; overflow: auto; margin: 0 auto 10px auto; max-height: 125px"
+        (mousedown)="$event.stopPropagation(); startDrag($event, 'tablescroll');"
+        (mouseup)="$event.stopPropagation(); enddrag($event);"
+        (mouseleave)="$event.stopPropagation(); enddrag($event);"
+        (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
         <!-- Populated table -->
         <table style="width: 100%; margin:auto;">
           <tr>
