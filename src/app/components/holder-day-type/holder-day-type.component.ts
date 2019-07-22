@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {isNumber} from 'util';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
-import {AwesompleteModule} from 'ng2-awesomplete';
+
 
 @Component({
   selector: 'app-holder-day-type',
