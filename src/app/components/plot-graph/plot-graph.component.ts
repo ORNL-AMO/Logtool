@@ -215,13 +215,19 @@ export class PlotGraphComponent implements OnInit {
       this.calculatePlotStats();
     } else if (type === 'histogram') {
       this.histValue = [];
-      console.log(this.routeDataTransfer.storage.value);
+      console.log(this.routeDataTransfer.storage);
       this.histValue = this.routeDataTransfer.storage.value[0].value.split(',');
+      const number = this.routeDataTransfer.storage.number;
       console.log(this.histValue);
       const dataToPlot = this.dataInput[this.histValue[0]].dataArrayColumns[this.histValue[1]];
       const curateDataFirstHist = this.data.curateData(dataToPlot);
-      this.plotGraph = this.plotFirstHistogram(curateDataFirstHist);
-      console.log(this.plotGraph);
+      if (number === 0) {
+        this.plotGraph = this.plotFirstHistogram(curateDataFirstHist);
+        console.log(this.plotGraph);
+      } else {
+        this.plotGraph = this.plotSecondHistogram(curateDataFirstHist, number);
+        console.log(this.plotGraph);
+      }
       this.graph = {
         data: this.plotGraph,
         layout: {
@@ -521,12 +527,13 @@ export class PlotGraphComponent implements OnInit {
   plotSecondHistogram(data, numberOfBins) {
     const plotGraph2 = [];
     const plotData2 = stats.histogram(data, numberOfBins);
-    console.log(plotData2);
+    console.log(numberOfBins);
     plotGraph2.push({
       y: plotData2.values,
       type: 'bar',
       mode: 'markers'
     });
     console.log(plotGraph2);
+    return plotGraph2;
   }
 }
