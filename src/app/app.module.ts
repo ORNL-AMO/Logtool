@@ -35,6 +35,7 @@ import { ConfirmationModalComponent } from './components/confirmation-modal/conf
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { HistogramBinTypeComponent } from './components/histogram-bin-type/histogram-bin-type.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import {AwesompleteModule} from 'ng2-awesomplete';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

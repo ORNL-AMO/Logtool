@@ -13,8 +13,11 @@
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row justify-content-center">
-          <div class="col-4 tight-fit">
-            <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
+          <div class="col-4">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Line</p>
+            </div>
+            <label class="selectable radio-label">
               <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
                      (change)="checkboxSelect($event)">
             </label>

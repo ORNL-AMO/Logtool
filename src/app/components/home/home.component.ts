@@ -7,6 +7,7 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
