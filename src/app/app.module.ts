@@ -36,6 +36,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { HistogramBinTypeComponent } from './components/histogram-bin-type/histogram-bin-type.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -55,7 +56,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     HolderDayTypeComponent,
     ConfirmationModalComponent,
     CalendarComponent,
-    HistogramBinTypeComponent
+    HistogramBinTypeComponent,
+
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent],
   imports: [

@@ -7,6 +7,7 @@ import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {isNumber} from 'util';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 
+
 @Component({
   selector: 'app-holder-day-type',
   templateUrl: './holder-day-type.component.html',
