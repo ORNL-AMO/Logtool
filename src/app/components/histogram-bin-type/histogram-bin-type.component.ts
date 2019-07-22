@@ -14,7 +14,7 @@ export class HistogramBinTypeComponent implements OnInit {
   dataList = [];
   columnSelectorList = [];
   temp1: any;
-
+  graphType: number;
   constructor(private data: DataService) {
   }
 
@@ -134,4 +134,16 @@ export class HistogramBinTypeComponent implements OnInit {
       value: event.target.value
     });
   }
+
+  checkboxSelect(event) {
+    if (event.target.value.trim() === 'stdev') {
+      this.graphType = 1;
+    } else if (event.target.value.trim() === 'numBins') {
+      this.graphType = 2;
+    } else if (event.target.value.trim() === 'range') {
+      this.graphType = 3;
+    }
+  }
+
+
 }
