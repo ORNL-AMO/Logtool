@@ -11,16 +11,21 @@ export class HistogramBinTypeComponent implements OnInit {
   dataFromDialog: any = [];
   graph: any;
   graph2: any;
+  dataList = [];
+  columnSelectorList = [];
+  temp1: any;
 
   constructor(private data: DataService) {
   }
 
   ngOnInit() {
-    this.data.currentdataInputArray.subscribe(input => this.dataFromDialog = input[1].dataArrayColumns[2]);
-    const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
+    this.data.currentdataInputArray.subscribe(input => this.dataFromDialog = input);
+    console.log(this.dataFromDialog);
+    this.populateSpinner();
+    /*const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
     const curateDataSecondHist = curateDataFirstHist.slice();
     this.plotFirstHistogram(curateDataFirstHist);
-    this.plotSecondHistogram(curateDataSecondHist, 7);
+    this.plotSecondHistogram(curateDataSecondHist, 7);*/
   }
 
   plotFirstHistogram(calculationArray) {
@@ -102,4 +107,31 @@ export class HistogramBinTypeComponent implements OnInit {
     };
   }
 
+  populateSpinner() {
+    this.dataList = [];
+    for (let i = 0; i < this.dataFromDialog.length; i++) {
+      const fileName = this.dataFromDialog[i].name;
+      for (let j = 0; j < this.dataFromDialog[i].selectedHeader.length; j++) {
+        const columnName = this.dataFromDialog[i].selectedHeader[j].headerName;
+        if (!(this.dataFromDialog[i].dataArrayColumns[j][0] instanceof Date)) {
+          this.dataList.push({
+            name: fileName + '-' + columnName,
+            identifier: `${i},${j}`
+          });
+        }
+      }
+    }
+    console.log(this.dataList);
+  }
+
+  plotHistoGram() {
+    console.log(this.columnSelectorList);
+  }
+  columnSelectorEvent(event) {
+    this.columnSelectorList.pop();
+    this.columnSelectorList.push({
+      name: this.dataList[event.target.options.selectedIndex].name,
+      value: event.target.value
+    });
+  }
 }
