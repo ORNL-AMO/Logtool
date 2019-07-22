@@ -788,7 +788,6 @@ export class HolderDayTypeComponent implements OnInit {
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
-    //console.log(this.columnSelectorList);
   }
 
 // ---------------------------------------------------------------------------------------------------------------------------------------

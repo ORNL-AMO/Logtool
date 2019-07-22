@@ -1,4 +1,28 @@
 <div>
-  <plotly-plot [data]="graph.data"></plotly-plot>
-  <plotly-plot [data]="graph2.data"></plotly-plot>
+  <div class="col-3 panel col1" style="min-height: 250px;  height:200px; min-width:250px; ">
+    <div class="row">
+      <p class="header"> Data Selector</p>
+    </div>
+    <form #formElement="ngForm" (ngSubmit)="plotHistoGram()">
+      <div class="row " style="height: 30px; margin: 5px auto 15px auto;">
+        <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
+          <p class="dropbox-label tight-fit" style="text-align: right">Data:</p>
+        </div>
+        <div class="col-9 tight-fit" style="margin-top: 5px;">
+          <select name="columnSelector" [(ngModel)]="temp1" (click)="columnSelectorEvent($event)">
+            <option *ngFor="let column of dataList" value="{{column.identifier}}">{{column.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row justify-content-center" style="height:45px;">
+        <div class="col-8 tight-fit" style="height:100%;">
+          <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%;">Import</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div>
+    <!--<plotly-plot [data]="graph.data"></plotly-plot>
+    <plotly-plot [data]="graph2.data"></plotly-plot>-->
+  </div>
 </div>
