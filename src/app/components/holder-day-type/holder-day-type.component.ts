@@ -778,7 +778,7 @@ export class HolderDayTypeComponent implements OnInit {
       }
     }
    // this.columnSelectorList.push({name: this.columnSelector[0].name, value: this.columnSelector[0].identifier});
-   //console.log(this.columnSelector);
+   // console.log(this.columnSelector);
   }
 
   columnSelectorEvent(event) {
@@ -1378,7 +1378,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.start_X = event.pageX - this.target.offsetLeft;
     this.target.classList.add('active');
 
-    //console.log(window.navigator.platform);
+    // console.log(window.navigator.platform);
   }
 
   enddrag(event) {

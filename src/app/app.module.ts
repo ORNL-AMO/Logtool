@@ -33,7 +33,6 @@ import { DayTypeBinComponent } from './components/day-type-bin/day-type-bin.comp
 import { HolderDayTypeComponent } from './components/holder-day-type/holder-day-type.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
-import { HistogramBinTypeComponent } from './components/histogram-bin-type/histogram-bin-type.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 
 
@@ -56,7 +55,6 @@ PlotlyModule.plotlyjs = PlotlyJS;
     HolderDayTypeComponent,
     ConfirmationModalComponent,
     CalendarComponent,
-    HistogramBinTypeComponent,
 
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent],
