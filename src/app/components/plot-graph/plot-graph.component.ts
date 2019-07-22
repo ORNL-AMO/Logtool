@@ -49,7 +49,6 @@ export class PlotGraphComponent implements OnInit {
 
 
   onCreateCsv() {
-    console.log(this.routeDataTransfer.storage);
     // set up workbook and sheet to catch data
     const wb = XLSX.utils.book_new();
 
@@ -58,9 +57,7 @@ export class PlotGraphComponent implements OnInit {
 
     // Get header data
     // Get time series or X value based on graph type
-    console.log(this.routeDataTransfer.storage.graphType);
     if (this.routeDataTransfer.storage.graphType === 'scatter_graph') {
-      console.log(this.routeDataTransfer.storage.x.name);
       input[0].push(this.routeDataTransfer.storage.x.name);
     } else {
       input[0].push(this.routeDataTransfer.storage.timeSeries[0].name);
@@ -68,7 +65,6 @@ export class PlotGraphComponent implements OnInit {
 
     let max_sample = 0;
     // get Y-headers & calculate how many data samples
-    console.log(this.plotGraph[0].name);
     for (let i = 0; i < this.plotGraph.length; i++) {
       input[0].push(this.plotGraph[i].name);
       if (max_sample < this.plotGraph[i].x.length) {
@@ -78,7 +74,6 @@ export class PlotGraphComponent implements OnInit {
         max_sample = this.plotGraph[i].y.length;
       }
     }
-    console.log(input, max_sample);
     const data: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(input);
     XLSX.utils.book_append_sheet(wb, data, 'test');
 
@@ -100,7 +95,6 @@ export class PlotGraphComponent implements OnInit {
           cell.z = 'dd/mm/yy hh:mm:ss';
           delete cell.w;
           XLSX.utils.format_cell(cell);
-          console.log(cell.z, cell.v, cell.w);
         }
 
       }
@@ -215,18 +209,14 @@ export class PlotGraphComponent implements OnInit {
       this.calculatePlotStats();
     } else if (type === 'histogram') {
       this.histValue = [];
-      console.log(this.routeDataTransfer.storage);
       this.histValue = this.routeDataTransfer.storage.value[0].value.split(',');
       const number = this.routeDataTransfer.storage.number;
-      console.log(this.histValue);
       const dataToPlot = this.dataInput[this.histValue[0]].dataArrayColumns[this.histValue[1]];
       const curateDataFirstHist = this.data.curateData(dataToPlot);
       if (number === 0) {
         this.plotGraph = this.plotFirstHistogram(curateDataFirstHist);
-        console.log(this.plotGraph);
       } else {
         this.plotGraph = this.plotSecondHistogram(curateDataFirstHist, number);
-        console.log(this.plotGraph);
       }
       this.graph = {
         data: this.plotGraph,
@@ -236,6 +226,7 @@ export class PlotGraphComponent implements OnInit {
           title: 'Standard Deviation Histogram',
           xaxis: {
             autorange: true,
+            type: 'category'
           },
           yaxis: {
             autorange: true,
@@ -375,7 +366,6 @@ export class PlotGraphComponent implements OnInit {
           this.globalXMin = new Date(this.graph.layout.xaxis.range[0]);
           this.globalXMax = new Date(this.graph.layout.xaxis.range[1]);
           this.globalYAverage = [];
-          console.log(this.graph);
           for (let dataLength = 0; dataLength < this.graph.data.length; dataLength++) {
             const len = this.graph.data[dataLength].y.length;
             let sumAverage = 0;
@@ -457,12 +447,6 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
-    console.log(this.globalYMin);
-    console.log(this.globalYMax);
-    console.log(this.globalXMin);
-    console.log(this.globalXMax);
-    console.log(this.globalYAverage);
-    console.log(this.globalXAverage);
   }
 
   plotFirstHistogram(calculationArray) {
@@ -518,22 +502,34 @@ export class PlotGraphComponent implements OnInit {
       type: 'bar',
       mode: 'markers'
     });
-    console.log(median);
-    console.log(stdDeviation);
-    console.log(plotGraph);
     return plotGraph;
   }
 
   plotSecondHistogram(data, numberOfBins) {
-    const plotGraph2 = [];
-    const plotData2 = stats.histogram(data, numberOfBins);
-    console.log(numberOfBins);
-    plotGraph2.push({
-      y: plotData2.values,
+    const plotGraph = [];
+    const plotName = [];
+    const plotData = stats.histogram(data, numberOfBins);
+    console.log(plotData);
+    console.log(plotData.bins);
+    console.log(plotData.binWidth);
+    console.log(plotData.binLimits);
+    const binWidth = plotData.binWidth;
+    let initialValue = plotData.binLimits[0];
+    for (let i = 0; i < plotData.bins; i++) {
+      if (i === 0) {
+        plotName.push(initialValue.toFixed(2));
+      } else {
+        initialValue = initialValue + binWidth;
+        plotName.push(initialValue.toFixed(2));
+      }
+    }
+    console.log(plotName);
+    plotGraph.push({
+      y: plotData.values,
+      x: plotName,
       type: 'bar',
       mode: 'markers'
     });
-    console.log(plotGraph2);
-    return plotGraph2;
+    return plotGraph;
   }
 }
