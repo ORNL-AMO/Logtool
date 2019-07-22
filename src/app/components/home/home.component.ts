@@ -30,6 +30,9 @@ export class HomeComponent implements OnInit, DoCheck {
   scatterList: any = [];
   xSelectorListScatter: any = [];
   ySelectorListScatter: any = [];
+// Histogram
+  dataListHistogram: any = [];
+  columnSelectorListHistogram: any = [];
 // Day Types
   timeSeriesDayType = '';
   // Modal Ref
@@ -121,6 +124,12 @@ export class HomeComponent implements OnInit, DoCheck {
         graphType: 'scatter_graph'
       };
       this.plotGraph.ngOnInit();
+    } else if (this.graph === 'histogram') {
+      this.routeDataTransfer.storage = {
+        value: this.columnSelectorListHistogram,
+        graphType: 'histogram'
+      };
+      this.plotGraph.ngOnInit();
     }
 
   }
@@ -138,9 +147,11 @@ export class HomeComponent implements OnInit, DoCheck {
 
   checkboxSelect(event) {
     if (event.target.value.trim() === 'line_graph') {
-      this.show = false;
+      this.show = 0;
     } else if (event.target.value.trim() === 'scatter_graph') {
-      this.show = true;
+      this.show = 1;
+    } else if (event.target.value.trim() === 'histogram'){
+      this.show = 2;
     }
   }
 
@@ -192,6 +203,14 @@ export class HomeComponent implements OnInit, DoCheck {
     }
   }
 
+  columnSelectorEventHistogram(event) {
+    this.columnSelectorListHistogram.pop();
+    this.columnSelectorListHistogram.push({
+      name: this.dataListHistogram[event.target.options.selectedIndex].name,
+      value: event.target.value
+    });
+  }
+
 // Custom Function
   populateSpinner() {
     this.lineListY = [];
@@ -207,6 +226,10 @@ export class HomeComponent implements OnInit, DoCheck {
         });
         if (!(this.dataFromDialog[i].dataArrayColumns[j][0] instanceof Date)) {
           this.lineListY.push({
+            name: filename + '-' + columnName,
+            identifier: `${i},${j}`
+          });
+          this.dataListHistogram.push({
             name: filename + '-' + columnName,
             identifier: `${i},${j}`
           });
