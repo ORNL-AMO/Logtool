@@ -11,8 +11,8 @@ export class HistogramBinTypeComponent implements OnInit {
   dataFromDialog: any = [];
   graph: any;
   graph2: any;
-  dataList = [];
-  columnSelectorList = [];
+  dataListHistogram = [];
+  columnSelectorListHistogram = [];
   temp1: any;
   graphType: number;
   constructor(private data: DataService) {
@@ -102,35 +102,35 @@ export class HistogramBinTypeComponent implements OnInit {
   }
 
   populateSpinner() {
-    this.dataList = [];
+    this.dataListHistogram = [];
     for (let i = 0; i < this.dataFromDialog.length; i++) {
       const fileName = this.dataFromDialog[i].name;
       for (let j = 0; j < this.dataFromDialog[i].selectedHeader.length; j++) {
         const columnName = this.dataFromDialog[i].selectedHeader[j].headerName;
         if (!(this.dataFromDialog[i].dataArrayColumns[j][0] instanceof Date)) {
-          this.dataList.push({
+          this.dataListHistogram.push({
             name: fileName + '-' + columnName,
             identifier: `${i},${j}`
           });
         }
       }
     }
-    console.log(this.dataList);
+    console.log(this.dataListHistogram);
   }
 
   plotHistoGram() {
-    console.log(this.columnSelectorList);
-    const input = this.columnSelectorList[0].value.split(',');
+    console.log(this.columnSelectorListHistogram);
+    const input = this.columnSelectorListHistogram[0].value.split(',');
     console.log(input);
-    this.dataFromDialog = this.dataFromDialog[input[0]].dataArrayColumns[input[1]];
-    const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
+    const dataToPlot = this.dataFromDialog[input[0]].dataArrayColumns[input[1]];
+    const curateDataFirstHist = this.data.curateData(dataToPlot);
     this.plotFirstHistogram(curateDataFirstHist);
   }
 
-  columnSelectorEvent(event) {
-    this.columnSelectorList.pop();
-    this.columnSelectorList.push({
-      name: this.dataList[event.target.options.selectedIndex].name,
+  columnSelectorEventHistogram(event) {
+    this.columnSelectorListHistogram.pop();
+    this.columnSelectorListHistogram.push({
+      name: this.dataListHistogram[event.target.options.selectedIndex].name,
       value: event.target.value
     });
   }

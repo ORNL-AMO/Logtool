@@ -31,6 +31,10 @@ export class HomeComponent implements OnInit, DoCheck {
   scatterList: any = [];
   xSelectorListScatter: any = [];
   ySelectorListScatter: any = [];
+// Histogram
+  dataListHistogram: any = [];
+  columnSelectorListHistogram: any = [];
+  numberOfBin;
 // Day Types
   timeSeriesDayType = '';
   // Modal Ref
@@ -38,7 +42,10 @@ export class HomeComponent implements OnInit, DoCheck {
   activeTab;
   differ: any;
 
+  binType = -1;
+
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
+
   constructor(private router: Router, private indexFileStore: IndexFileStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
     this.differ = differs.find([]).create(null);
@@ -78,7 +85,7 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   onImport() {
-    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal' , ignoreBackdropClick: true});
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
     this.dataFromDialog = [];
     this.lineListY = [];
@@ -122,6 +129,22 @@ export class HomeComponent implements OnInit, DoCheck {
         graphType: 'scatter_graph'
       };
       this.plotGraph.ngOnInit();
+    } else if (this.graph === 'histogram') {
+      if (this.binType === -1) {
+        alert('Please Select Bin Generation Scheme');
+        return;
+      }
+      if (this.numberOfBin === undefined || this.numberOfBin === '' ||
+        this.numberOfBin === null || (parseInt(this.numberOfBin, 10) === 0 && this.binType === 1)) {
+        alert('Please Select Bin Generation Scheme');
+        return;
+      }
+      this.routeDataTransfer.storage = {
+        value: this.columnSelectorListHistogram,
+        number: this.numberOfBin,
+        graphType: 'histogram'
+      };
+      this.plotGraph.ngOnInit();
     }
 
   }
@@ -139,9 +162,11 @@ export class HomeComponent implements OnInit, DoCheck {
 
   checkboxSelect(event) {
     if (event.target.value.trim() === 'line_graph') {
-      this.show = false;
+      this.show = 0;
     } else if (event.target.value.trim() === 'scatter_graph') {
-      this.show = true;
+      this.show = 1;
+    } else if (event.target.value.trim() === 'histogram') {
+      this.show = 2;
     }
   }
 
@@ -193,6 +218,14 @@ export class HomeComponent implements OnInit, DoCheck {
     }
   }
 
+  columnSelectorEventHistogram(event) {
+    this.columnSelectorListHistogram.pop();
+    this.columnSelectorListHistogram.push({
+      name: this.dataListHistogram[event.target.options.selectedIndex].name,
+      value: event.target.value
+    });
+  }
+
 // Custom Function
   populateSpinner() {
     this.lineListY = [];
@@ -208,6 +241,10 @@ export class HomeComponent implements OnInit, DoCheck {
         });
         if (!(this.dataFromDialog[i].dataArrayColumns[j][0] instanceof Date)) {
           this.lineListY.push({
+            name: filename + '-' + columnName,
+            identifier: `${i},${j}`
+          });
+          this.dataListHistogram.push({
             name: filename + '-' + columnName,
             identifier: `${i},${j}`
           });
@@ -251,8 +288,8 @@ export class HomeComponent implements OnInit, DoCheck {
       console.log(result);
       if (result) {
         this.indexFileStore.deleteFromDB(id).then(result2 => {
-              console.log('before', this.tabs);
-              this.tabs.splice(tabId, 1);
+          console.log('before', this.tabs);
+          this.tabs.splice(tabId, 1);
         });
       }
 
@@ -279,5 +316,19 @@ export class HomeComponent implements OnInit, DoCheck {
 
     return pv + 40 + 'px';
 
+  }
+
+  checkboxSelectHistogram(event) {
+    if (event.target.value.trim() === 'stdev') {
+      this.binType = 0;
+      this.numberOfBin = 0;
+    } else if (event.target.value.trim() === 'numBins') {
+      this.binType = 1;
+    }
+    console.log(event.target.value.trim());
+  }
+
+  numberBin(event) {
+    this.numberOfBin = event.target.value;
   }
 }

@@ -13,10 +13,8 @@
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row justify-content-center">
-          <div class="col-4" style="border: 1px solid black">
-            <div class="row justify-content-center">
-              <p class="tight-fit">Line</p>
-            </div>
+          <div class="col-4">
+            <div class="row justify-content-center"><p class="tight-fit"> Line </p></div>
             <div class="row justify-content-center">
               <label>
                 <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
@@ -24,16 +22,22 @@
               </label>
             </div>
           </div>
-
-
-
-          <div class="col-4" style="border: 1px solid black">
+          <!--        <div class="row justify-content-center">-->
+          <div class="col-4 ">
+            <div class="row justify-content-center"><p class="tight-fit">Scatter</p></div>
             <div class="row justify-content-center">
-              <p class="tight-fit">Scatter</p>
-            </div>
-            <div class="row justify-content-center">
-              <label >
+              <label>
                 <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
+                       (change)="checkboxSelect($event)">
+              </label>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="row justify-content-center"><p class="tight-fit">Histogram</p></div>
+            <div class="row justify-content-center">
+              <label>
+                <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
                        (change)="checkboxSelect($event)">
               </label>
             </div>
@@ -51,12 +55,11 @@
             </div>
           </div>
 
-
         </div>
         <!------------------------------------------------------------------------------------------------>
 
         <!-- Line graph-------------------------------->
-        <div style="padding-left:0;" *ngIf="!show">
+        <div style="padding-left:0;" *ngIf="show === 0">
 
           <!-- Y select -->
           <div class="row">
@@ -102,9 +105,7 @@
         </div>
 
         <!-- Scatter graph----------------------------->
-        <div style="padding-left:0;" *ngIf="show">
-
-          <!-- Y selection -->
+        <div style="padding-left:0;" *ngIf="show === 1">
           <div class="row">
             <div class="col-1">
               <p class="tight-fit">Y:</p>
@@ -135,7 +136,68 @@
               </div>
             </div>
           </div>
+        </div>
 
+        <!-- Histogram -------------------------------->
+        <div style="padding-left:0;" *ngIf="show === 2">
+          <div class="row justify-content-center">
+            <p class=" panel-title header tight-fit">Histogram Type Selection</p>
+          </div>
+
+
+          <div class="row justify-content-center" style="margin: auto; border: 1px solid black">
+
+            <!-- stdev radio -->
+            <div class="col-6 ">
+              <div class="row justify-content-center">
+                <p class="tight-fit">Stdev</p>
+              </div>
+
+              <div class="row justify-content-center" style="max-height: 25px;">
+                <label> &nbsp;
+                  <input type="radio"  name="bin" value="stdev" style="transform: scale(1)"
+                          (change)="checkboxSelectHistogram($event)">
+                </label>
+              </div>
+
+            </div>
+
+            <!-- # radio -->
+            <div class="col-6 ">
+              <div class="row justify-content-center">
+                <p class="tight-fit">Number</p>
+              </div>
+              <div class="row justify-content-center" style="max-height: 25px;">
+                <label>
+                  <input type="radio" name="bin" value="numBins" style="transform: scale(1)"
+                         (change)="checkboxSelectHistogram($event)">
+                </label>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="row">
+            <div class="col-1">
+              <p class="tight-fit">X:</p>
+            </div>
+            <div class="col-10">
+              <select name="histogramDataSelector" [(ngModel)]="temp1" (click)="columnSelectorEventHistogram($event)"
+                      style="max-width: 175px">
+                <option *ngFor="let column of dataListHistogram" value="{{column.identifier}}">{{column.name}}</option>
+              </select>
+              <div class="list-box">
+                <p class="list" *ngFor="let selector of columnSelectorListHistogram"
+                   title="columnHistogram">{{selector.name}}</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="binType==1" class="row justify-content-center">
+            <input type="text" (change)="numberBin($event)" name="numBin" placeholder="Number of bins">
+          </div>
+
+          <div>
+          </div>
         </div>
         <!--Button-------------------------------------------------------------------->
         <div class="row">
