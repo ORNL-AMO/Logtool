@@ -56,7 +56,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     HolderDayTypeComponent,
     ConfirmationModalComponent,
     CalendarComponent,
-    HistogramBinTypeComponent
+    HistogramBinTypeComponent,
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent],
   imports: [
