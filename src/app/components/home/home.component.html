@@ -3,7 +3,7 @@
   <!-- graph selection, table controls, help panel -->
   <div class="row row1" style="height:300px; margin-bottom: 10px">
     <!-- Graph selection -->
-    <div class="col-sm-3 panel" style="min-width: 300px" >
+    <div class="col-sm-3 panel" style="min-width: 300px">
       <!-- title -->
       <div class="row header">
         <p class="panel-title"> Graph Selection </p>
@@ -13,29 +13,43 @@
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
         <div class="row justify-content-center">
-          <div class="col-4 tight-fit">
-            <label class="selectable radio-label"> &nbsp; &nbsp;Line Graph
-              <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
-                     (change)="checkboxSelect($event)">
-            </label>
+          <div class="col-4" style="border: 1px solid black">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Line</p>
+            </div>
+            <div class="row justify-content-center">
+              <label>
+                <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
+                       (change)="checkboxSelect($event)">
+              </label>
+            </div>
           </div>
 
 
-          <!--        <div class="row justify-content-center">-->
-          <div class="col-4 tight-fit">
-            <label class="selectable radio-label"> &nbsp; &nbsp;Scatter Plot
-              <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
-                     (change)="checkboxSelect($event)">
-            </label>
+
+          <div class="col-4" style="border: 1px solid black">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Scatter</p>
+            </div>
+            <div class="row justify-content-center">
+              <label >
+                <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
+                       (change)="checkboxSelect($event)">
+              </label>
+            </div>
           </div>
 
-          <div class="col-4 tight-fit">
-            <label class="selectable radio-label"> &nbsp; &nbsp;Histogram
-              <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
-                     (change)="checkboxSelect($event)">
-            </label>
+          <div class="col-4 tight-fit" style="border: 1px solid black">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Histogram</p>
+            </div>
+            <div class="row justify-content-center">
+              <label >
+                <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
+                       (change)="checkboxSelect($event)">
+              </label>
+            </div>
           </div>
-
 
 
         </div>
@@ -62,7 +76,8 @@
                      (click)="removeFromListLine($event)" style="margin:0">
                   <p class="col-11 list">{{selector.name}}</p>
                   <p id="{{i}}" class="col-1 align-self-end list"
-                     style="padding:0; margin:0; background-color: rgba(150,150,150,100); border: 1px solid black;">x</p>
+                     style="padding:0; margin:0; background-color: rgba(150,150,150,100); border: 1px solid black;">
+                    x</p>
                 </div>
               </div>
             </div>
@@ -150,7 +165,7 @@
                    [ngStyle]="{'background-color' :activeTab === tab.tabId ? 'rgba(0,0,255,.75)': 'rgba(0,0,255,.5)',
                                 'border-width'    :activeTab === tab.tabId ? '3px': '2px',
                                 'width'           : getTabWidth(tab) }">
-                                <!--tab.name.length * 12 + 10 + 'px' }">-->
+                <!--tab.name.length * 12 + 10 + 'px' }">-->
                 <span id={{tab.tabId}} style="margin: 10px 5px;">{{tab.name}}</span>
                 <button (click)="removeFile($event, tab.id, tab.tabId)"
                         style="padding-top: 0; margin-top:0; float: right; font-size: 10px; ">x
@@ -162,14 +177,14 @@
         </div>
       </div>
 
-      <div class="table-display" >
+      <div class="table-display">
         <router-outlet></router-outlet>
         <!--[style.max-width] = getTableWidth()-->
       </div>
 
     </div>
 
- <!--    Averages panel -->
+    <!--    Averages panel -->
     <div class="col-3 panel " style="width:100%;">
       <p class="header"> Averages </p>
       <!-- day averages -->
@@ -202,7 +217,7 @@
 
               <!-- Start for linegraph-->
               <li class="row tight-fit" *ngIf="!show" style="border: 1px solid black">
-                <div class="col-6 tight-fit"  style="border-right: 1px solid black;">
+                <div class="col-6 tight-fit" style="border-right: 1px solid black;">
                   <p class="tight-fit" style="text-align: center">Start Time</p>
                 </div>
                 <div class="col-6 tight-fit">
@@ -211,7 +226,7 @@
               </li>
 
               <!-- End for linegraph-->
-              <li class="row tight-fit"  *ngIf="!show" style="border: 1px solid black">
+              <li class="row tight-fit" *ngIf="!show" style="border: 1px solid black">
                 <div class="col-6 tight-fit" style="border-right: 1px solid black;">
                   <p class="tight-fit">End Time</p>
                 </div>
@@ -221,7 +236,7 @@
               </li>
 
               <!-- Ymin -->
-              <li class="row tight-fit"  style="border: 1px solid black">
+              <li class="row tight-fit" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">Ymin</p>
                 </div>
@@ -231,7 +246,7 @@
               </li>
 
               <!-- Ymax -->
-              <li class="row tight-fit"  style="border: 1px solid black">
+              <li class="row tight-fit" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">YMax</p>
                 </div>
@@ -244,11 +259,11 @@
         </div>
 
         <!-- grab averages for each line on graph -->
-        <div class="col-6"  *ngIf="!show">
+        <div class="col-6" *ngIf="!show">
           <p class="tight-fit" style="text-align: center">Line Averages:</p>
           <div style="overflow: auto; max-height: 135px;">
-            <ul class="tight-fit" >
-                <li class="row tight-fit" *ngFor="let line of show" style="border: 1px solid black">
+            <ul class="tight-fit">
+              <li class="row tight-fit" *ngFor="let line of show" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">line.name</p>
                 </div>
@@ -262,10 +277,10 @@
 
 
         <!-- Calculate R^2 for scatter -->
-        <div class="col-6"  *ngIf="show">
+        <div class="col-6" *ngIf="show">
           <p class="tight-fit" style="text-align: center">Correlation</p>
           <div style="overflow: auto; max-height: 135px;">
-            <ul class="tight-fit" >
+            <ul class="tight-fit">
               <li class="row tight-fit" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">R<sup>2</sup></p>
@@ -279,30 +294,27 @@
         </div>
 
 
-
-
-
       </div>
       <!-- bin averages-->
-<!--      <div class="row" *ngIf="!showBinMode">
-        <div class="col">
-          <p class="tight-fit" style="text-align: center">Daily Averages:</p>
-          <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
-               style="overflow: auto; max-height: 135px; border: 1px solid black">
+      <!--      <div class="row" *ngIf="!showBinMode">
+              <div class="col">
+                <p class="tight-fit" style="text-align: center">Daily Averages:</p>
+                <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
+                     style="overflow: auto; max-height: 135px; border: 1px solid black">
 
-            <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black; background:blanchedalmond;" >
-                <div class="col-6" style="border-right: 1px solid black;">
-                  <p class="list tight-fit">{{day.name}}</p>
+                  <ul class="tight-fit">
+                    <li class="row tight-fit" *ngFor="let day of globalYAverage" style="border: 1px solid black; background:blanchedalmond;" >
+                      <div class="col-6" style="border-right: 1px solid black;">
+                        <p class="list tight-fit">{{day.name}}</p>
+                      </div>
+                      <div class="col-6">
+                        <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-                <div class="col-6">
-                  <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>-->
+              </div>
+            </div>-->
     </div>
   </div>
 
