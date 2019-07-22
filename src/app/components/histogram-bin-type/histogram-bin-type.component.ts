@@ -22,9 +22,8 @@ export class HistogramBinTypeComponent implements OnInit {
     this.data.currentdataInputArray.subscribe(input => this.dataFromDialog = input);
     console.log(this.dataFromDialog);
     this.populateSpinner();
-    /*const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
-    const curateDataSecondHist = curateDataFirstHist.slice();
-    this.plotFirstHistogram(curateDataFirstHist);
+    this.plotGraph([]);
+    /*
     this.plotSecondHistogram(curateDataSecondHist, 7);*/
   }
 
@@ -65,14 +64,14 @@ export class HistogramBinTypeComponent implements OnInit {
       if (smallerSD[small].length === 0) {
       } else {
         plotData.push(smallerSD[small].length);
-        plotName.push(smallerSD[small][0] + ' - ' + smallerSD[small][smallerSD[small].length - 1]);
+        plotName.push(this.data.getMin(smallerSD[small]) + ' - ' + this.data.getMax(smallerSD[small]));
       }
     }
     for (let big = 0; big < biggerSD.length; big++) {
       if (biggerSD[big].length === 0) {
       } else {
         plotData.push(biggerSD[big].length);
-        plotName.push(biggerSD[big][0] + ' - ' + biggerSD[big][biggerSD[big].length - 1]);
+        plotName.push(this.data.getMin(biggerSD[big]) + ' - ' + this.data.getMax(biggerSD[big]));
       }
     }
     plotGraph.push({
@@ -80,16 +79,11 @@ export class HistogramBinTypeComponent implements OnInit {
       y: plotData,
       type: 'bar',
       mode: 'markers'
-      /*x: plotData,
-      type: 'bar',
-      mode: 'markers'*/
     });
     console.log(median);
     console.log(stdDeviation);
     console.log(plotGraph);
-    this.graph = {
-      data: plotGraph
-    };
+    this.plotGraph(plotGraph);
   }
 
   plotSecondHistogram(data, numberOfBins) {
@@ -126,7 +120,13 @@ export class HistogramBinTypeComponent implements OnInit {
 
   plotHistoGram() {
     console.log(this.columnSelectorList);
+    const input = this.columnSelectorList[0].value.split(',');
+    console.log(input);
+    this.dataFromDialog = this.dataFromDialog[input[0]].dataArrayColumns[input[1]];
+    const curateDataFirstHist = this.data.curateData(this.dataFromDialog);
+    this.plotFirstHistogram(curateDataFirstHist);
   }
+
   columnSelectorEvent(event) {
     this.columnSelectorList.pop();
     this.columnSelectorList.push({
@@ -134,7 +134,37 @@ export class HistogramBinTypeComponent implements OnInit {
       value: event.target.value
     });
   }
-
+  plotGraph(plotGraph) {
+    if (plotGraph.length > 0) {
+      this.graph = {
+        data: plotGraph
+      };
+    } else {
+      this.graph = {
+        data: plotGraph,
+        layout: {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Plot',
+          xaxis: {
+            autorange: true,
+          },
+          yaxis: {
+            autorange: true,
+            type: 'linear'
+          }
+        },
+        config: {
+          'showLink': false,
+          'scrollZoom': true,
+          'displayModeBar': true,
+          'editable': false,
+          'responsive': true,
+          'displaylogo': false
+        }
+      };
+    }
+  }
   checkboxSelect(event) {
     if (event.target.value.trim() === 'stdev') {
       this.graphType = 1;
@@ -144,6 +174,4 @@ export class HistogramBinTypeComponent implements OnInit {
       this.graphType = 3;
     }
   }
-
-
 }
