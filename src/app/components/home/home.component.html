@@ -1,7 +1,7 @@
 <div style="margin: 0; border: 0; padding:0; width:100%">
 
   <!-- graph selection, table controls, help panel -->
-  <div class="row row1" style="height:300px; margin-bottom: 10px">
+  <div class="row row1" style="height:315px; margin-bottom: 10px">
     <!-- Graph selection -->
     <div class="col-sm-3 panel" style="min-width: 300px">
       <!-- title -->
@@ -42,19 +42,6 @@
               </label>
             </div>
           </div>
-
-          <div class="col-4 tight-fit" style="border: 1px solid black">
-            <div class="row justify-content-center">
-              <p class="tight-fit">Histogram</p>
-            </div>
-            <div class="row justify-content-center">
-              <label >
-                <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
-                       (change)="checkboxSelect($event)">
-              </label>
-            </div>
-          </div>
-
         </div>
         <!------------------------------------------------------------------------------------------------>
 
@@ -177,11 +164,12 @@
 
 
           </div>
-          <div class="row">
-            <div class="col-1">
-              <p class="tight-fit">X:</p>
+          <div class="row " >
+            <div class="col-2"></div>
+            <div class="col-2">
+              <p class="tight-fit">Data:</p>
             </div>
-            <div class="col-10">
+            <div class="col-6">
               <select name="histogramDataSelector" [(ngModel)]="temp1" (click)="columnSelectorEventHistogram($event)"
                       style="max-width: 175px">
                 <option *ngFor="let column of dataListHistogram" value="{{column.identifier}}">{{column.name}}</option>
@@ -190,6 +178,7 @@
                 <p class="list" *ngFor="let selector of columnSelectorListHistogram"
                    title="columnHistogram">{{selector.name}}</p>
               </div>
+              <div class="col-2"></div>
             </div>
           </div>
           <div *ngIf="binType==1" class="row justify-content-center">
