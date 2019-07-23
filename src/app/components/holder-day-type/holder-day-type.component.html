@@ -47,38 +47,10 @@
     </div>
 
     <!-- calendar panel -->
-    <div id="calendar_panel" class="col-6 panel" style="height: 250px; max-width: 700px ">
-      <p class="header" style="margin:0; text-align: center;">Calendar</p>
-      <button class=" btn pull-right"
-              style="position: absolute; right:0; top:0; height:30px; width:127px; box-shadow: none; font-size: 10px;"
-              (click)="clearSelection()"> Clear Selection
-      </button>
-      <div class="row">
-        <!-- Calendar -->
-        <div id="cal" class="col"
-             style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;"
-             (mousedown)="$event.stopPropagation(); startDrag($event, 'cal');"
-             (mouseup)="$event.stopPropagation(); endDrag($event);"
-             (mouseleave)="$event.stopPropagation(); endDrag($event);"
-             (mousemove)="$event.stopPropagation(); drag($event, 'X')">
-          <svg id="grid" style="height: 204px;"></svg>
-        </div>
-
-        <!-- legend -->
-        <div class="col tight-fit" style="max-width: 125px; height: 217px; border: 3px solid black;">
-          <div class="row" style="height: 55px">
-            <svg id="instructions" style="width: 125px;"></svg>
-          </div>
-          <div id="leg" class="row" style="height: 150px; overflow:auto;"
-               (mousedown)="$event.stopPropagation(); startDrag($event, 'leg');"
-               (mouseup)="$event.stopPropagation(); endDrag($event);"
-               (mouseleave)="$event.stopPropagation(); endDrag($event);"
-               (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
-            <svg id="legend" style="width: 125px;"></svg>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-calendar
+      (selectionToggle) = "selectionToggle($event)"
+      (binShift) = "shiftBins($event)"
+      (clearSelection)="clearSelection()" ></app-calendar>
 
     <!-- averages -->
     <div id="averages" class="col-2 panel tight-fit" style="height:250px; margin:5px 10px 5px 5px;">
@@ -217,7 +189,6 @@
           <select name="plotBox" style="width: 150px;" (click)=plotShift($event);>
             <option value="day">Day Averages</option>
             <option value="bin">Bin Averages</option>
-            <!--<option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>-->
           </select>
         </div>
         <button class="btn pull-right" (click)="exportDayAverageData()">Export</button>
