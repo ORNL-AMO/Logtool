@@ -70,7 +70,6 @@ export class CalendarComponent implements OnInit {
 
   generateLegend() {
     // remove old legend
-    console.log('binList', this.binList);
     if (this.binList === undefined) {
       return;
     }
@@ -304,10 +303,11 @@ export class CalendarComponent implements OnInit {
   // ------------------------------------
 
   clickHandler(event) {
+    console.log(this.selectedDates);
     // Check for single selection
     if ((!this.mac && event.ctrlKey) || (this.mac && event.metaKey)) {
 
-      let target = [];
+      const target = [];
       target.push(event.target.id);
 
       this.selectionToggle.emit({items: target, selected: this.selectedDates.has(event.target)});
@@ -362,29 +362,26 @@ export class CalendarComponent implements OnInit {
     // find entry in days and update
     const found = this.days.findIndex(obj => obj.id === id);
     this.days[found].bin = bin;
-    console.log(this.days[found]);
-
-
     // update color
     const active = d3.select(document.getElementById(id));
     active.attr('fill', this.binList.find(obj => obj.binName === bin).binColor);
   }
 
   private getDatesBetween(date: Date) {
-    let contents = [];
+    const contents = [];
     let year = date.getFullYear();
     let month = date.getMonth();
     let day = date.getDate();
     let length = 0;
     let start;
     // console.log('date:', date);
-    //console.log('last:', this.lastclick);
+    // console.log('last:', this.lastclick);
     if (date > this.lastclick) {
       start = this.lastclick;
     } else {
       start = date;
     }
-    //console.log('start:', start);
+    // console.log('start:', start);
     // console.log('Months:', month, this.lastclick.getMonth());
     // cycle through months in the year that matches
     while (month !== this.lastclick.getMonth()) {
@@ -440,11 +437,11 @@ export class CalendarComponent implements OnInit {
         day--;
       }
     }
-    //console.log('Day matched', length);
-    //console.log(start);
+    // console.log('Day matched', length);
+    // console.log(start);
     const id = start.getDate().toString() + start.getMonth().toString() + start.getFullYear().toString();
     const range = {start: id, length: length};
-    //console.log('Final', range);
+    // console.log('Final', range);
     return contents;
   }
 

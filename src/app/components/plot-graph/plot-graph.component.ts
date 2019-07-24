@@ -41,7 +41,7 @@ export class PlotGraphComponent implements OnInit {
     } else {
       this.annotationListLine = [];
       this.annotationListScatter = [];
-      this.data.currentdataInputArray.subscribe(input => this.dataInput = input);
+      this.data.currentDataInputArray.subscribe(input => this.dataInput = input);
       this.graphType = this.routeDataTransfer.storage.graphType;
       this.displayGraph(this.graphType);
     }

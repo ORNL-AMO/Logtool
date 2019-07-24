@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NgxIndexedDB} from 'ngx-indexed-db';
 import {DataService} from './data.service';
+import {LoadList} from '../types/load-list';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,32 @@ export class IndexFileStoreService {
       objectStore.createIndex('countOfRow', 'countOfRow', {unique: false});
       objectStore.createIndex('countOfColumn', 'countOfColumn', {unique: false});
       objectStore.createIndex('fileType', 'fileType', {unique: false});
-
+      const transactionSaveInput = evt.currentTarget.result;
+      const objectStoreLoad = transactionSaveInput.createObjectStore('saveInput', {keyPath: 'id', unique: true});
+      objectStoreLoad.createIndex('id', 'id', {unique: true});
+      objectStoreLoad.createIndex('name', 'name', {unique: false});
+      objectStoreLoad.createIndex('displayName', 'displayName', {unique: true});
+      objectStoreLoad.createIndex('loadDataFromFile', 'loadDataFromFile', {unique: false});
+      objectStoreLoad.createIndex('loadTimeSeriesDayType', 'loadTimeSeriesDayType', {unique: false});
+      objectStoreLoad.createIndex('loadValueColumnCount', 'loadValueColumnCount', {unique: false});
+      objectStoreLoad.createIndex('columnMainArray', 'columnMainArray', {unique: false});
+      objectStoreLoad.createIndex('sumArray', 'sumArray', {unique: false});
+      objectStoreLoad.createIndex('binList', 'binList', {unique: false});
+      objectStoreLoad.createIndex('displayBinList', 'displayBinList', {unique: false});
+      objectStoreLoad.createIndex('days', 'days', {unique: false});
+      objectStoreLoad.createIndex('displayBinList', 'displayBinList', {unique: false});
+      objectStoreLoad.createIndex('days', 'days', {unique: false});
+      objectStoreLoad.createIndex('selectedDates', 'selectedDates', {unique: false});
+      objectStoreLoad.createIndex('graphDayAverage', 'graphDayAverage', {unique: false});
+      objectStoreLoad.createIndex('graphBinAverage', 'graphBinAverage', {unique: false});
+      objectStoreLoad.createIndex('mac', 'mac', {unique: false});
+      objectStoreLoad.createIndex('showBinMode', 'showBinMode', {unique: false});
+      objectStoreLoad.createIndex('toggleRelayoutDay', 'toggleRelayoutDay', {unique: false});
+      objectStoreLoad.createIndex('annotationListDayAverage', 'annotationListDayAverage', {unique: false});
+      objectStoreLoad.createIndex('annotationListBinAverage', 'annotationListBinAverage', {unique: false});
+      objectStoreLoad.createIndex('globalYAverageDay', 'globalYAverageDay', {unique: false});
+      objectStoreLoad.createIndex('globalYAverageBin', 'globalYAverageBin', {unique: false});
+      objectStoreLoad.createIndex('saveLoadMode', 'saveLoadMode', {unique: false});
     }).then(() => {
       },
       error => {
@@ -65,6 +91,44 @@ export class IndexFileStoreService {
     });
   }
 
+  addIntoDBSaveInput(loadSessionData: LoadList) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('saveInput',
+        {
+          id: loadSessionData.id,
+          name: loadSessionData.name,
+          displayName: loadSessionData.displayName,
+          loadDataFromFile: loadSessionData.loadDataFromFile,
+          loadTimeSeriesDayType: loadSessionData.loadTimeSeriesDayType,
+          loadValueColumnCount: loadSessionData.loadValueColumnCount,
+          columnMainArray: loadSessionData.columnMainArray,
+          sumArray: loadSessionData.sumArray,
+          binList: loadSessionData.binList,
+          displayBinList: loadSessionData.displayBinList,
+          days: loadSessionData.days,
+          selectedDates: loadSessionData.selectedDates,
+          graphDayAverage: loadSessionData.graphDayAverage,
+          graphBinAverage: loadSessionData.graphBinAverage,
+          mac: loadSessionData.mac,
+          showBinMode: loadSessionData.showBinMode,
+          toggleRelayoutDay: loadSessionData.toggleRelayoutDay,
+          annotationListDayAverage: loadSessionData.annotationListDayAverage,
+          annotationListBinAverage: loadSessionData.annotationListBinAverage,
+          globalYAverageDay: loadSessionData.globalYAverageDay,
+          globalYAverageBin: loadSessionData.globalYAverageBin,
+          saveLoadMode: loadSessionData.saveLoadMode
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
   viewDataDB() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
@@ -81,12 +145,79 @@ export class IndexFileStoreService {
     });
   }
 
+  viewDataDBSaveInput() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('saveInput').then(saveInput => {
+            resolve(saveInput);
+            this.data.changeInputSaveLoadArray(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewDataDBSaveInputId() {
+    const id = [];
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('saveInput').then(saveInput => {
+            for (let i = 0; i < saveInput.length; i++) {
+              id.push(saveInput[i].id);
+            }
+            resolve(id);
+            this.data.changeInputSaveLoadIdArray(id);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewSingleDataDBSaveInput(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getByIndex('saveInput', 'id', id).then(saveInput => {
+            resolve(saveInput);
+            this.data.changeSingleInputSaveLoad(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
   deleteFromDB(index) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
         db.delete('fileInput', index).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
+  deleteFromDBSaveLoad(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('saveInput', id).then(() => {
             console.log('Deleted');
           },
           error => {

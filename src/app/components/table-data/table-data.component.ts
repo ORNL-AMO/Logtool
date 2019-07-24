@@ -20,7 +20,7 @@ export class TableDataComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data.currentdataInputArray.subscribe(input => this.inputDataArray = input);
+    this.data.currentDataInputArray.subscribe(input => this.inputDataArray = input);
     this.route.queryParams
       .subscribe(params => {
         this.arrayPointer = params.value;
@@ -30,7 +30,7 @@ export class TableDataComponent implements OnInit {
           this.columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
           this.rowCount = this.inputDataArray[this.arrayPointer].countOfRow;
           this.rowData = this.inputDataArray[this.arrayPointer].content;
-          //this.displayTable();
+          // this.displayTable();
         }
       });
   }
