@@ -9,6 +9,8 @@
         <p class="header"> Data Selector</p>
       </div>
 
+
+
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation(false)">
         <!-- File select box --->
         <div class=" row" style="height: 30px; margin: 5px auto 5px auto;">
@@ -16,10 +18,23 @@
             <p class="dropbox-label tight-fit" style="text-align: right">File:</p>
           </div>
           <div class="col-9 tight-fit" style="margin-top: 5px; margin-right: 5px">
-            <select name="fileSelector" [(ngModel)]="temp5" (click)="fileSelectorEvent($event)" style="width: 100%; ">
 
-              <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
-            </select>
+            <div class="row" id="selected" style="height: 20px; width: 100px; background-image: linear-gradient(to bottom right, white, rgb(221,221,221));; border: 1px solid rgb(169,169,169);" (click)="toggledd('dropdown')" >
+              <h1></h1>
+              <span style="height: 20px; width: 100%"> {{currentfile}} </span>
+
+            </div>
+            <div id="dropdown" style="position:absolute; height: 100px; width: 100px; background: antiquewhite; display: none;
+             z-index: 6; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+              <div  class="row" *ngFor="let file of fileSelector" >
+                <p class="tight-fit"(click)="fileEvent(file.identifier)" style="height: 20px; width: 80px;">{{file.identifier}}</p>
+                <span class="tight-fit" (click)="fireEvent(file.identifier)" style="height: 20px; width: 20px; text-align: center">X</span>
+              </div>
+            </div>
+<!--            <select name="fileSelector" [(ngModel)]="temp5" (click)="fileSelectorEvent($event)" style="width: 100%; ">
+
+              <option *ngFor="let file of fileSelector" value="{{file.identifier}}"></option>
+            </select>-->
           </div>
         </div>
 
@@ -30,7 +45,7 @@
             <p class="dropbox-label tight-fit" style="text-align: right">Data:</p>
           </div>
 <!--   -->
-          <div class="col-9 tight-fit" style="margin-top: 5px;">
+          <div class="col-9 tight-fit" style="margin-top: 5px; z-index:0;">
             <select name="columnSelector" [(ngModel)]="temp6" (click)="columnSelectorEvent($event)">
               <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
             </select>
@@ -50,10 +65,10 @@
         </div>-->
 
         <!-- button-->
-        <div class="row justify-content-center" style="height:45px;">
+        <div class="row justify-content-center " style="height:45px; z-index:-1;">
 
           <div class="col-8 tight-fit" style="height:100%;">
-            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%;">Import</button>
+            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; z-index:0;">Import</button>
           </div>
         </div>
       </form>
@@ -61,42 +76,11 @@
     </div>
 
     <!-- calendar panel -->
-    <div id="calendar_panel" class="col-6 panel" style="height: 250px; max-width: 700px ">
-      <p class="header" style="margin:0; text-align: center;">Calendar</p>
-      <button class=" btn pull-right" style="position: absolute; right:0; top:0; height:30px; width:127 px; box-shadow: none; font-size: 10px;" (click)="clearSelection()"> Clear Selection </button>
-      <div class="row">
-        <!-- Calendar -->
-        <div id="cal" class="col" style="overflow-x: auto; overflow-y: hidden; margin:0; padding:0; height: 217px; width:200px;"
-             (mousedown)="$event.stopPropagation(); startDrag($event, 'cal');"
-             (mouseup)="$event.stopPropagation(); enddrag($event);"
-             (mouseleave)="$event.stopPropagation(); enddrag($event);"
-             (mousemove)="$event.stopPropagation(); drag($event, 'X')"
+    <app-calendar
+       (selectionToggle) = "selectionToggle($event)"
+       (binShift) = "shiftBins($event)"
+      ></app-calendar>
 
-        >
-          <svg id="grid" style="height: 204px;"></svg>
-        </div>
-
-        <!-- legend -->
-        <div class="col tight-fit" style="max-width: 125px; height: 217px; border: 3px solid black;">
-          <div class="row" style="height: 55px">
-            <svg id="instructions" style="width: 125px;"></svg>
-          </div>
-          <div id="leg" class="row" style="height: 150px; overflow:auto;"
-               (mousedown)="$event.stopPropagation(); startDrag($event, 'leg');"
-               (mouseup)="$event.stopPropagation(); enddrag($event);"
-               (mouseleave)="$event.stopPropagation(); enddrag($event);"
-               (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
-            <svg id="legend" style="width: 125px;"></svg>
-          </div>
-        </div>
-        <!-- example block -->
-        <!--     <div class="col" style="margin:0; padding:0; height: 170px; width: 100px; border-width: 3px; border-right: solid black; border-top: solid black; border-bottom: solid black;">
-          <svg id="example" style="background: white; height: 100%; width: 100%; overflow:auto;"></svg>
-        </div>-->
-
-
-      </div>
-    </div>
 
     <!-- averages -->
     <div id="averages" class="col-2 panel tight-fit" style="height:250px; margin:5px 10px 5px 5px;">

@@ -178,3 +178,14 @@ button:active {
   cursor: grabbing;
 }
 
+h1 {
+  position: absolute;
+  top:25%;
+  left: 85px;
+  height: 0;
+  width: 0;
+  border-width: 6px 3px 0px 3px;
+  border-style: solid;
+  border-color: transparent;
+  border-top-color: rgb(20, 20, 20);
+}
