@@ -239,7 +239,8 @@
     <div class="col-3 panel " style="width:100%;">
       <p class="header"> Averages </p>
       <!-- day averages -->
-      <div class="row">
+      <div class="row" *ngIf="">
+
         <!-- xmax - ymax -->
         <div class="col-5">
           <p class="tight-fit" style="text-align: center">Plot Limits:</p>
@@ -252,7 +253,7 @@
                   <p class="tight-fit">xMin</p>
                 </div>
                 <div class="col-6">
-                  <p class="tight-fit">"number:'1.0-2'"</p>
+                  <p class="tight-fit"> {{plotGraph.stats.xmin| number:'1.0-2'}}</p>
                 </div>
               </li>
 
@@ -262,7 +263,7 @@
                   <p class="tight-fit">xMax</p>
                 </div>
                 <div class="col-6">
-                  <p class="tight-fit">"number:'1.0-2'"</p>
+                  <p class="tight-fit">{{plotGraph.stats.xmax| number:'1.0-2'}}</p>
                 </div>
               </li>
 
@@ -292,7 +293,7 @@
                   <p class="tight-fit">Ymin</p>
                 </div>
                 <div class="col-6">
-                  <p class="tight-fit">"number:'1.0-2'"</p>
+                  <p class="tight-fit">{{plotGraph.stats.ymin| number:'1.0-2'}}</p>
                 </div>
               </li>
 
@@ -319,7 +320,7 @@
                   <p class="tight-fit">line.name</p>
                 </div>
                 <div class="col-6">
-                  <p class="tight-fit">"number:'1.0-2'"</p>
+                  <p class="tight-fit">{{plotGraph.stats.xavg[0]| number:'1.0-2'}}</p>
                 </div>
               </li>
             </ul>
@@ -337,7 +338,7 @@
                   <p class="tight-fit">R<sup>2</sup></p>
                 </div>
                 <div class="col-6">
-                  <p class="tight-fit">"number:'1.0-2'"</p>
+                  <p class="tight-fit">{{plotGraph.stats.yavg[0]| json}}</p>
                 </div>
               </li>
             </ul>

@@ -106,7 +106,7 @@ export class HomeComponent implements OnInit, DoCheck {
         this.populateGraph();
       });
     });
-    this.modalService.onHidden.subscribe = null;
+    //this.modalService.onHidden.unsubscribe() ;
     this.changeDisplayTable(this.dataFromDialog.length - 1);
 
   }
@@ -146,7 +146,7 @@ export class HomeComponent implements OnInit, DoCheck {
       };
       this.plotGraph.ngOnInit();
     }
-
+    console.log(this.plotGraph.stats);
   }
 
   changeDisplayTable(value) {

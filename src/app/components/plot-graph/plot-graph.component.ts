@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import { GraphStats } from '../../types/graph-stats';
 import * as XLSX from 'xlsx';
 import * as stats from 'stats-lite';
 
@@ -32,7 +33,7 @@ export class PlotGraphComponent implements OnInit {
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
   }
-
+  public stats: GraphStats;
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
       this.annotationListLine = [];
@@ -447,6 +448,7 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
+    this.stats = new GraphStats(this.globalYMin,this.globalXMax,this.globalYMin,this.globalYMax, this.globalXAverage,this.globalYAverage);
   }
 
   plotFirstHistogram(calculationArray) {
