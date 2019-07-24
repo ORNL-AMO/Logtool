@@ -9,6 +9,8 @@
         <p class="header"> Data Selector</p>
       </div>
 
+
+
       <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation(false)">
         <!-- File select box --->
         <div class=" row" style="height: 30px; margin: 5px auto 5px auto;">
@@ -29,18 +31,20 @@
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
             <p class="dropbox-label tight-fit" style="text-align: right">Data:</p>
           </div>
+
           <!--   -->
           <div class="col-9 tight-fit" style="margin-top: 5px;">
+
             <select name="columnSelector" [(ngModel)]="temp6" (click)="columnSelectorEvent($event)">
               <option *ngFor="let column of columnSelector" value="{{column.identifier}}">{{column.name}}</option>
             </select>
           </div>
         </div>
         <!-- button-->
-        <div class="row justify-content-center" style="height:45px;">
+        <div class="row justify-content-center " style="height:45px; z-index:-1;">
 
           <div class="col-8 tight-fit" style="height:100%;">
-            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%;">Import</button>
+            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; z-index:0;">Import</button>
           </div>
         </div>
       </form>
@@ -48,9 +52,11 @@
 
     <!-- calendar panel -->
     <app-calendar
+
       (selectionToggle) = "selectionToggle($event)"
       (binShift) = "shiftBins($event)"
       (clearSelection)="clearSelection()" ></app-calendar>
+
 
     <!-- averages -->
     <div id="averages" class="col-2 panel tight-fit" style="height:250px; margin:5px 10px 5px 5px;">
@@ -136,7 +142,7 @@
              (mousedown)="$event.stopPropagation(); startDrag($event,'types');"
              (mouseup)="$event.stopPropagation(); endDrag($event);"
              (mouseleave)="$event.stopPropagation(); endDrag($event);"
-             (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
+             (mousemove)="$event.stopPropagation(); drag($event, 'Y');">
           <div class="row justify-content-center" style=" background:darkgray;"
                *ngFor="let bin of binList let i = index ">
             <app-day-type-bin

@@ -131,9 +131,8 @@
             <p class=" panel-title header tight-fit">Histogram Type Selection</p>
           </div>
 
-
+          <!-- bin type radio -->
           <div class="row justify-content-center" style="margin: auto; border: 1px solid black">
-
             <!-- stdev radio -->
             <div class="col-6 ">
               <div class="row justify-content-center">
@@ -161,28 +160,29 @@
                 </label>
               </div>
             </div>
-
-
           </div>
-          <div class="row " >
+          <!--histogram column selector-->
+          <div class="row" >
             <div class="col-2"></div>
             <div class="col-2">
               <p class="tight-fit">Data:</p>
             </div>
-            <div class="col-6">
+            <div class="col">
               <select name="histogramDataSelector" [(ngModel)]="temp1" (click)="columnSelectorEventHistogram($event)"
                       style="max-width: 175px">
                 <option *ngFor="let column of dataListHistogram" value="{{column.identifier}}">{{column.name}}</option>
               </select>
-              <div class="list-box">
-                <p class="list" *ngFor="let selector of columnSelectorListHistogram"
-                   title="columnHistogram">{{selector.name}}</p>
-              </div>
               <div class="col-2"></div>
             </div>
           </div>
+
+          <div class="row justify-content-center">
+            <div class="list-box" style="width:80%;">
+                <p class="list" style="overflow: hidden" *ngFor="let selector of columnSelectorListHistogram">{{selector.name}}</p>
+            </div>
+          </div>
           <div *ngIf="binType==1" class="row justify-content-center">
-            <input type="text" (change)="numberBin($event)" name="numBin" placeholder="Number of bins">
+            <input type="text" style="text-align: center" (change)="numberBin($event)" name="numBin" placeholder="Number of bins">
           </div>
 
           <div>

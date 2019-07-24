@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output, OnInit, DoCheck} from '@angular/core';
+
 import * as d3 from 'd3';
 
 
@@ -21,6 +22,7 @@ export class CalendarComponent implements OnInit {
   @Output() selectionToggle = new EventEmitter<{ items: any[], selected: boolean }>();
   @Output() binShift = new EventEmitter<any[]>();
   @Output() clearSelection = new EventEmitter();
+
 
   lastclick: any;
 

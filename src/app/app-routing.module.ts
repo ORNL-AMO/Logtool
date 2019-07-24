@@ -6,6 +6,10 @@ import {PlotGraphComponent} from './components/plot-graph/plot-graph.component';
 import {DayTypeBinComponent} from './components/day-type-bin/day-type-bin.component';
 import {HolderDayTypeComponent} from './components/holder-day-type/holder-day-type.component';
 
+import {CalendarComponent} from './components/calendar/calendar.component';
+
+
+
 const routes: Routes = [
 
   {
@@ -21,10 +25,15 @@ const routes: Routes = [
   {
     path: 'holder-day-type',
     component: HolderDayTypeComponent,
-    children: [{
+    children: [
+      {
       path: 'day-type-bin',
       component: DayTypeBinComponent,
-    }
+      },
+      {
+        path: 'calendar',
+        component: CalendarComponent,
+      }
     ]
   },
   {

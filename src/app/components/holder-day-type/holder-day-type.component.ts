@@ -1,12 +1,16 @@
+
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+
 import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 import {DataService} from '../../providers/data.service';
 import * as d3 from 'd3';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
+
 import {GraphCreationService} from '../../providers/graph-creation.service';
 import {GraphCalculationService} from '../../providers/graph-calculation.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
+
 import {CalendarComponent} from '../calendar/calendar.component';
 
 
@@ -15,6 +19,7 @@ import {CalendarComponent} from '../calendar/calendar.component';
   templateUrl: './holder-day-type.component.html',
   styleUrls: ['./holder-day-type.component.scss']
 })
+
 export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
               private graphCreation: GraphCreationService, private indexFileStore: IndexFileStoreService,
@@ -40,6 +45,7 @@ export class HolderDayTypeComponent implements OnInit {
   days = [];
   columnMainArray = [];
   sumArray = [];
+
   binList = [];
   displayBinList = [];
   defaultBinList = [
@@ -111,6 +117,7 @@ export class HolderDayTypeComponent implements OnInit {
     }
     this.calculateBinAverage(0);
   }
+
   // resets selectedDates
   clearSelection() {
     const dates = Array.from(this.selectedDates);
@@ -122,6 +129,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   // add/removes item from selectedDates set
   toggleSelect(rect) {
+    console.log(rect);
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -224,6 +232,7 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMod(template: TemplateRef<any>) {
     this.newBinName = '';
     this.newBinColor = '';
+    //console.log(this.fileSelector);
     this.modalRef = this.modalService.show(template);
   }
 
@@ -262,7 +271,9 @@ export class HolderDayTypeComponent implements OnInit {
     console.log(this.binList);
     this.displayBinList.splice(0, 0, {binName: this.newBinName.toUpperCase(), binColor: this.newBinColor.toLowerCase()});
     this.selectedBinList.splice(0, 0, []);
+
     this.modalRef.hide();
+    this.update();
   }
 
   isColor(strColor) {
@@ -283,6 +294,7 @@ export class HolderDayTypeComponent implements OnInit {
   update() {
     this.calendar.update();
   }
+
 
   removeBin(event: string) {
     if (event === 'EXCLUDED') {
