@@ -133,22 +133,22 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   // add/removes item from selectedDates set
-  toggleSelect(rect) {
-    console.log(rect);
+  toggleSelect(id) {
+    console.log(id);
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
         this.days[graphDay].visible = this.graphDayAverage.data[graphDay].visible;
       }
-      const active = d3.select(rect);
+      const active = d3.select(document.getElementById(id));
       const key = active._groups[0][0].__data__.values[0];
       const found = this.days.find(obj => obj.date.getDate() === key.getDate());
-      if (this.selectedDates.has(rect)) {
-        this.selectedDates.delete(rect);
+      if (this.selectedDates.has(id)) {
+        this.selectedDates.delete(id);
         active.attr('stroke', 'none');
         this.days[this.days.indexOf(found)].stroke = 1;
       } else {
-        this.selectedDates.add(rect);
+        this.selectedDates.add(id);
         active.attr('stroke', 'black');
         active.attr('stroke-width', '4');
         this.days[this.days.indexOf(found)].stroke = 5;
@@ -237,7 +237,7 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMod(template: TemplateRef<any>) {
     this.newBinName = '';
     this.newBinColor = '';
-    //console.log(this.fileSelector);
+    // console.log(this.fileSelector);
     this.modalRef = this.modalService.show(template);
   }
 
@@ -373,8 +373,9 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   selectionToggle(event) {
+    console.log(event);
     for (let i = 0; i < event.items.length; i++) {
-      this.toggleSelect(document.getElementById(event.items[i]));
+      this.toggleSelect(event.items[i]);
     }
   }
 

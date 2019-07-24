@@ -311,7 +311,7 @@ export class CalendarComponent implements OnInit {
 
       const target = [];
       target.push(event.target.id);
-
+      console.log(target);
       this.selectionToggle.emit({items: target, selected: this.selectedDates.has(event.target)});
       this.lastclick = d3.select(event.target).data()[0].values[0];
 
@@ -325,12 +325,12 @@ export class CalendarComponent implements OnInit {
       }
 
       // on normal click on selected cell, shift all selected
-    } else if (this.selectedDates.has(event.target)) {
+    } else if (this.selectedDates.has(event.target.id)) {
+      console.log('found');
       const newBin = this.cycleBin(event.target.id);
       const items = Array.from(this.selectedDates);
       for (let i = 0; i < items.length; i++) {
-        const id = d3.select(items[i]).attr('id');
-        this.movBins(id, newBin);
+        this.movBins(items[i], newBin);
       }
 
       // emit changes to days
@@ -338,6 +338,7 @@ export class CalendarComponent implements OnInit {
 
       // else shift target cell
     } else {
+      console.log(this.selectedDates);
       this.cycleBin(event.target.id);
       this.binShift.emit(this.days);
     }
@@ -364,6 +365,7 @@ export class CalendarComponent implements OnInit {
     // find entry in days and update
     const found = this.days.findIndex(obj => obj.id === id);
     this.days[found].bin = bin;
+
     // update color
     const active = d3.select(document.getElementById(id));
     active.attr('fill', this.binList.find(obj => obj.binName === bin).binColor);
@@ -447,6 +449,73 @@ export class CalendarComponent implements OnInit {
     return contents;
   }
 
+  getAll(date1: Date, date2: Date){
+    let startDate = date1;
+    let endDate = date2;
+    if (date1 > date2) {
+      startDate = date2;
+      endDate = date1;
+    }
+
+    const yearEnd = endDate.getFullYear();
+    let yearCurr = startDate.getFullYear();
+
+    const monthEnd = endDate.getMonth();
+    let currMonth = startDate.getMonth();
+
+    const dayEnd = endDate.getDate();
+    let currDay = startDate.getDate();
+
+    const list = new Set();
+
+    // move to the correct year
+    while (yearCurr !== yearEnd) {
+      while (currMonth < 12) {
+        let end = this.monthDays[currMonth];
+        // check for leap year
+        if (currMonth === 1) { if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) { end = 29; } }
+        this.mergeSets(list , this.getDaysBetween(currDay, end, currMonth, yearCurr));
+        currDay = 1;
+        currMonth++;
+      }
+      yearCurr++;
+      currMonth = 0;
+    }
+    //move to the correct month in the year
+    while (currMonth !== monthEnd) {
+      let end = this.monthDays[currMonth];
+      // check for leap year
+      if (currMonth === 1) { if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) { end = 29; } }
+      this.mergeSets(list , this.getDaysBetween(currDay, end, currMonth, yearCurr));
+
+      currDay = 1;
+      currMonth++;
+    }
+    //Add remaining days from last month
+    this.mergeSets(list , this.getDaysBetween(currDay, dayEnd, currMonth, yearCurr));
+    list.delete(this.lastclick.getDate().toString(10) + this.lastclick.getMonth().toString(10) + this.lastclick.getFullYear().toString(10));
+    const content = Array.from(list);
+    return content;
+  }
+  getDaysBetween(start, end, month, year){
+    let currentday = start;
+    const content = new Set();
+    const step = end - start > 0 ? 1 : -1;
+    while (currentday <= end) {
+      content.add(currentday.toString() + month + year);
+      currentday = currentday + step;
+    }
+
+    return content;
+  }
+  mergeSets(set1, set2){
+    let n = Array.from(set2);
+    for (let i = 0; i < n.length; i++) {
+      set1.add(n[i]);
+    }
+
+
+  }
 
   clear() {
     this.clearSelection.emit();
