@@ -12,7 +12,7 @@ import {checkAndUpdateBinding} from '@angular/core/src/view/util';
   selector: 'app-import-data',
   templateUrl: './import-data.component.html',
   styleUrls: ['./import-data.component.scss'],
-  //encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
+  // encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
 })
 
 export class ImportDataComponent implements OnInit {
@@ -33,7 +33,7 @@ export class ImportDataComponent implements OnInit {
   alias = '';
   fileType = '';
 
-  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef){}
+  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {}
 
   ngOnInit() {
     this.fileName = 'Please select a file to upload';
@@ -139,8 +139,7 @@ export class ImportDataComponent implements OnInit {
     this.alias = event.target.value;
   }
 
-  public handler(type: string, $event: ModalDirective )
-  {
+  public handler(type: string, $event: ModalDirective ) {
     console.log(
       `event ${type} is fired${$event.dismissReason
         ? ', dismissed by ' + $event.dismissReason

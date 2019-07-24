@@ -1,21 +1,41 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { DataList } from '../types/data-list';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject} from 'rxjs';
+import {DataList} from '../types/data-list';
+import {LoadList} from '../types/load-list';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
   private inputDataArray: DataList[] = [];
+  private inputDataSaveLoadArray: LoadList[] = [];
+  private inputDataSaveLoadIdArray: Number[] = [];
+  private inputSingleDataSaveLoad: LoadList;
   private dataInputArray = new BehaviorSubject(this.inputDataArray);
-  currentdataInputArray = this.dataInputArray.asObservable();
+  private dataInputSaveLoadArray = new BehaviorSubject(this.inputDataSaveLoadArray);
+  private dataInputSaveLoadIdArray = new BehaviorSubject(this.inputDataSaveLoadIdArray);
+  private dataSingleInputSaveLoad = new BehaviorSubject(this.inputSingleDataSaveLoad);
+  currentDataInputArray = this.dataInputArray.asObservable();
+  currentDataInputSaveLoadArray = this.dataInputSaveLoadArray.asObservable();
+  currentDataInputSaveLoadIdArray = this.dataInputSaveLoadIdArray.asObservable();
+  currentSingleDataInputSaveLoad = this.dataSingleInputSaveLoad.asObservable();
 
-  constructor() { }
+  constructor() {
+  }
+
   changeInputArray(input: DataList[]) {
     this.dataInputArray.next(input);
   }
 
-
+  changeInputSaveLoadArray(input: LoadList[]) {
+    this.dataInputSaveLoadArray.next(input);
+  }
+  changeInputSaveLoadIdArray(input: Number[]) {
+    this.dataInputSaveLoadIdArray.next(input);
+  }
+  changeSingleInputSaveLoad(input: LoadList) {
+    this.dataSingleInputSaveLoad.next(input);
+  }
   getMax(data) {
     let max = data[0];
     for (let i = 0; i <= data.length; i++) {
@@ -60,5 +80,4 @@ export class DataService {
     }
     return returnData;
   }
-
 }

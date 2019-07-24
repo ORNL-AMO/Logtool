@@ -115,7 +115,10 @@ export class GraphCalculationService {
     }
     const returnObject = {
       columnMainArray: columnMainArray,
-      days: days
+      days: days,
+      loadDataFromFile: dataFromFileColumn,
+      loadTimeSeriesDayType: timeSeriesDayType,
+      loadValueColumnCount: valueColumnCount
     };
     return returnObject;
   }

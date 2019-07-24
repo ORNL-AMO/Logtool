@@ -12,6 +12,8 @@ import {GraphCalculationService} from '../../providers/graph-calculation.service
 import {ExportCSVService} from '../../providers/export-csv.service';
 
 import {CalendarComponent} from '../calendar/calendar.component';
+import {SaveLoadService} from '../../providers/save-load.service';
+import {LoadList} from '../../types/load-list';
 
 
 @Component({
@@ -23,7 +25,8 @@ import {CalendarComponent} from '../calendar/calendar.component';
 export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
               private graphCreation: GraphCreationService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService,
+              private saveLoad: SaveLoadService) {
   }
 
   @ViewChild(CalendarComponent)
@@ -43,6 +46,9 @@ export class HolderDayTypeComponent implements OnInit {
   timeSeriesDayType;
   timeSeriesFileDayType;
   days = [];
+  loadDataFromFile = [];
+  loadTimeSeriesDayType = [];
+  loadValueColumnCount = [];
   columnMainArray = [];
   sumArray = [];
 
@@ -75,14 +81,13 @@ export class HolderDayTypeComponent implements OnInit {
   dataFromInput: any = [];
   tabs = [];
   mac: boolean;
-  // Used for adding bin types
   modalRef: BsModalRef;
   newBinName;
   newBinColor;
-
-  // Used for multi-Select on Calendar
   selectedDates: Set<any>;
   showBinMode = true;
+  saveLoadMode = false;
+  loadSessionData: LoadList;
 
   ngOnInit() {
     this.mac = window.navigator.platform.includes('Mac') || window.navigator.platform.includes('mac');
@@ -213,7 +218,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   resetBins() {
     this.clearSelection();
-    this.dayTypeNavigation(true); // shorter version only for reset
+    this.dayTypeNavigation(true, false); // shorter version only for reset
   }
 
   // Moves everything to 'EXCLUDED' BIN
@@ -379,51 +384,83 @@ export class HolderDayTypeComponent implements OnInit {
     this.plotGraphDayAverage(0);
   }
 
-  dayTypeNavigation(reset) {
-    this.columnMainArray = [];
-    this.days = [];
-    const dataFromFile = this.dataFromInput;
-    if (this.columnSelectorList.length === 0) {
-      alert('Please select Column');
-    } else {
-      if (reset) {
-        for (const i in this.defaultBinList) {
-          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
-            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
-            if (index < 0) {
-              this.binList.push(this.defaultBinList[i]);
-              this.displayBinList.push(this.defaultBinList[i]);
-            }
-          }
-        }
-      } else {
-        this.binList = [];
-        this.displayBinList = [];
-        for (const i in this.defaultBinList) {
-          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
-            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
-            if (index < 0) {
-              this.binList.push(this.defaultBinList[i]);
-              this.displayBinList.push(this.defaultBinList[i]);
-            }
-          }
-        }
-      }
-      this.selectedColumnPointer = this.columnSelectorList;
-      const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
-      this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
-        10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
-      const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType, this.selectedColumnPointer);
-      this.days = returnObject.days;
-      this.columnMainArray = returnObject.columnMainArray;
-      this.allocateBins();
-      this.plotGraphDayAverage(0);
-      this.calculateBinAverage(0);
+  dayTypeNavigation(reset, loadSession) {
+    if (loadSession) {
+      this.columnMainArray = this.loadSessionData.columnMainArray;
+      this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
+      this.days = this.loadSessionData.days;
+      this.selectedDates = new Set<any>(this.loadSessionData.selectedDates);
+      console.log(this.selectedDates);
+      this.annotationListDayAverage = this.loadSessionData.annotationListDayAverage;
+      this.annotationListBinAverage = this.loadSessionData.annotationListBinAverage;
+      const dataFromFile = this.loadSessionData.loadDataFromFile;
+      this.binList = this.loadSessionData.binList;
+      this.displayBinList = this.loadSessionData.displayBinList;
+      this.sumArray = this.loadSessionData.sumArray;
+      this.graphDayAverage = this.loadSessionData.graphDayAverage;
+      this.graphBinAverage = this.loadSessionData.graphBinAverage;
       this.calendar.binList = this.binList;
       this.calendar.days = this.days;
       this.calendar.daysToNest = this.timeSeriesDayType;
+      this.calendar.selectedDates = this.selectedDates;
+      this.toggleRelayoutDay = this.loadSessionData.toggleRelayoutDay;
+      this.mac = this.loadSessionData.mac;
+      this.globalYAverageDay = this.loadSessionData.globalYAverageDay;
+      this.globalYAverageBin = this.loadSessionData.globalYAverageBin;
       this.update();
+    } else {
+      this.columnMainArray = [];
+      this.days = [];
+      this.selectedDates.clear();
+      this.annotationListDayAverage = [];
+      this.annotationListBinAverage = [];
+      const dataFromFile = this.dataFromInput;
+      if (this.columnSelectorList.length === 0) {
+        alert('Please select Column');
+      } else {
+        if (reset) {
+          for (const i in this.defaultBinList) {
+            if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+              const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+              if (index < 0) {
+                this.binList.push(this.defaultBinList[i]);
+                this.displayBinList.push(this.defaultBinList[i]);
+              }
+            }
+          }
+        } else {
+          this.binList = [];
+          this.displayBinList = [];
+          for (const i in this.defaultBinList) {
+            if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+              const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+              if (index < 0) {
+                this.binList.push(this.defaultBinList[i]);
+                this.displayBinList.push(this.defaultBinList[i]);
+              }
+            }
+          }
+        }
+        this.selectedColumnPointer = this.columnSelectorList;
+        const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
+        this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
+          10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
+        const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType, this.selectedColumnPointer);
+        this.days = returnObject.days;
+        this.columnMainArray = returnObject.columnMainArray;
+        this.loadDataFromFile = returnObject.loadDataFromFile;
+        this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
+        this.loadValueColumnCount = returnObject.loadValueColumnCount;
+        this.allocateBins();
+        this.plotGraphDayAverage(0);
+        this.calculateBinAverage(0);
+        this.calendar.binList = this.binList;
+        this.calendar.days = this.days;
+        this.calendar.daysToNest = this.timeSeriesDayType;
+        this.update();
+      }
     }
+
   }
 
   calculateBinAverage(channelId) {
@@ -486,6 +523,45 @@ export class HolderDayTypeComponent implements OnInit {
     } else {
       this.exportCsv.exportDayAverageData(this.graphDayAverage, this.displayBinList);
     }
+  }
+
+// 1748763, 4996927
+  saveSession() {
+    this.saveLoad.saveSession(this.columnSelectorList[0].name, this.columnSelectorList[0].name, this.loadDataFromFile,
+      this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
+      this.displayBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
+      this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
+      this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+  }
+
+  deleteSession() {
+    this.indexFileStore.viewDataDBSaveInputId().then(data => {
+      this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
+        console.log(result);
+        this.indexFileStore.deleteFromDBSaveLoad(5162673).then(deleteResult => {
+          console.log(deleteResult);
+        });
+      });
+    });
+  }
+
+  loadSession() {
+    this.indexFileStore.viewSingleDataDBSaveInput(1728621).then(data => {
+      this.data.currentSingleDataInputSaveLoad.subscribe(result => {
+        this.loadSessionData = result;
+        console.log(this.loadSessionData);
+        this.saveLoadMode = this.loadSessionData.saveLoadMode;
+        this.dayTypeNavigation(false, this.saveLoadMode);
+      });
+    });
+  }
+
+  viewSession() {
+    this.indexFileStore.viewDataDBSaveInput().then(data => {
+      this.data.currentDataInputSaveLoadArray.subscribe(result => {
+        console.log(result);
+      });
+    });
   }
 }
 
