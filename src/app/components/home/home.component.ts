@@ -106,7 +106,7 @@ export class HomeComponent implements OnInit, DoCheck {
         this.populateGraph();
       });
     });
-    //this.modalService.onHidden.unsubscribe() ;
+    // this.modalService.onHidden.unsubscribe() ;
     this.changeDisplayTable(this.dataFromDialog.length - 1);
 
   }
