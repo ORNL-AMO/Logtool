@@ -134,7 +134,6 @@ export class HolderDayTypeComponent implements OnInit {
 
   // add/removes item from selectedDates set
   toggleSelect(id) {
-    console.log(id);
     if (this.graphDayAverage === undefined) {
     } else {
       for (let graphDay = 0; graphDay < this.graphDayAverage.data.length; graphDay++) {
@@ -218,7 +217,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   resetBins() {
     this.clearSelection();
-    this.dayTypeNavigation(true, false); // shorter version only for reset
+    this.dayTypeNavigation(true); // shorter version only for reset
   }
 
   // Moves everything to 'EXCLUDED' BIN
@@ -237,7 +236,6 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMod(template: TemplateRef<any>) {
     this.newBinName = '';
     this.newBinColor = '';
-    // console.log(this.fileSelector);
     this.modalRef = this.modalService.show(template);
   }
 
@@ -385,16 +383,15 @@ export class HolderDayTypeComponent implements OnInit {
     this.plotGraphDayAverage(0);
   }
 
-  dayTypeNavigation(reset, loadSession) {
-    if (loadSession) {
+  dayTypeNavigation(reset) {
+    if (this.saveLoadMode) {
+      const dataFromFile = this.loadSessionData.loadDataFromFile;
       this.columnMainArray = this.loadSessionData.columnMainArray;
       this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
       this.days = this.loadSessionData.days;
       this.selectedDates = new Set<any>(this.loadSessionData.selectedDates);
-      console.log(this.selectedDates);
       this.annotationListDayAverage = this.loadSessionData.annotationListDayAverage;
       this.annotationListBinAverage = this.loadSessionData.annotationListBinAverage;
-      const dataFromFile = this.loadSessionData.loadDataFromFile;
       this.binList = this.loadSessionData.binList;
       this.displayBinList = this.loadSessionData.displayBinList;
       this.sumArray = this.loadSessionData.sumArray;
@@ -409,6 +406,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.globalYAverageDay = this.loadSessionData.globalYAverageDay;
       this.globalYAverageBin = this.loadSessionData.globalYAverageBin;
       this.update();
+      this.saveLoadMode = !this.saveLoadMode;
     } else {
       this.columnMainArray = [];
       this.days = [];
@@ -552,7 +550,7 @@ export class HolderDayTypeComponent implements OnInit {
         this.loadSessionData = result;
         console.log(this.loadSessionData);
         this.saveLoadMode = this.loadSessionData.saveLoadMode;
-        this.dayTypeNavigation(false, this.saveLoadMode);
+        this.dayTypeNavigation(false);
       });
     });
   }
