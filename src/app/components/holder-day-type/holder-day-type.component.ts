@@ -232,6 +232,7 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMod(template: TemplateRef<any>) {
     this.newBinName = '';
     this.newBinColor = '';
+    //console.log(this.fileSelector);
     this.modalRef = this.modalService.show(template);
   }
 
@@ -372,16 +373,6 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-
-//NEW STUFF ---------------------------
-  selectionToggle(event) {
-    for (let i = 0; i < event.items.length; i++) {
-      this.toggleSelect(document.getElementById(event.items[i]));
-    }
-  }
-
-
-master
   shiftBins(event) {
     this.days = event;
     this.allocateBins();

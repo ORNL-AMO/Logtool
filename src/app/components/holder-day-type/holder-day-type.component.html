@@ -18,23 +18,10 @@
             <p class="dropbox-label tight-fit" style="text-align: right">File:</p>
           </div>
           <div class="col-9 tight-fit" style="margin-top: 5px; margin-right: 5px">
+            <select name="fileSelector" [(ngModel)]="temp5" (click)="fileSelectorEvent($event)" style="width: 100%; ">
 
-            <div class="row" id="selected" style="height: 20px; width: 100px; background-image: linear-gradient(to bottom right, white, rgb(221,221,221));; border: 1px solid rgb(169,169,169);" (click)="toggledd('dropdown')" >
-              <h1></h1>
-              <span style="height: 20px; width: 100%"> {{currentfile}} </span>
-
-            </div>
-            <div id="dropdown" style="position:absolute; height: 100px; width: 100px; background: antiquewhite; display: none;
-             z-index: 6; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-              <div  class="row" *ngFor="let file of fileSelector" >
-                <p class="tight-fit"(click)="fileEvent(file.identifier)" style="height: 20px; width: 80px;">{{file.identifier}}</p>
-                <span class="tight-fit" (click)="fireEvent(file.identifier)" style="height: 20px; width: 20px; text-align: center">X</span>
-              </div>
-            </div>
-<!--            <select name="fileSelector" [(ngModel)]="temp5" (click)="fileSelectorEvent($event)" style="width: 100%; ">
-
-              <option *ngFor="let file of fileSelector" value="{{file.identifier}}"></option>
-            </select>-->
+              <option *ngFor="let file of fileSelector" value="{{file.identifier}}">{{file.name}}</option>
+            </select>
           </div>
         </div>
 
@@ -155,7 +142,7 @@
              (mousedown)="$event.stopPropagation(); startDrag($event,'types');"
              (mouseup)="$event.stopPropagation(); endDrag($event);"
              (mouseleave)="$event.stopPropagation(); endDrag($event);"
-             (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
+             (mousemove)="$event.stopPropagation(); drag($event, 'Y');">
           <div class="row justify-content-center" style=" background:darkgray;"
                *ngFor="let bin of binList let i = index ">
             <app-day-type-bin
