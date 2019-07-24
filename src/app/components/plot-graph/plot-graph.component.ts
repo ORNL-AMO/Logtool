@@ -448,7 +448,7 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
-    this.stats = new GraphStats(this.globalYMin,this.globalXMax,this.globalYMin,this.globalYMax, this.globalXAverage,this.globalYAverage);
+    this.stats = new GraphStats(this.globalXMin,this.globalXMax,this.globalYMin,this.globalYMax, this.globalXAverage,this.globalYAverage);
   }
 
   plotFirstHistogram(calculationArray) {
