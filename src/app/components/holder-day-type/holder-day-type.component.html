@@ -51,11 +51,12 @@
     </div>
 
     <!-- calendar panel -->
-    <app-calendar
-
+    <div class="col-5">
+    <app-calendar style="width: 100%"
       (selectionToggle) = "selectionToggle($event)"
       (binShift) = "shiftBins($event)"
       (clearSelection)="clearSelection()" ></app-calendar>
+    </div>
 
 
     <!-- averages -->
@@ -74,14 +75,15 @@
                (mouseleave)="$event.stopPropagation(); endDrag($event);"
                (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black">
+
+              <li class="row tight-fit" *ngFor="let day of globalYAverageDay" style="border: 1px solid black;">
                 <div class="col-6" style="border-right: 1px solid black;"
-                     [style.background]="day.stroke !== 1 ? day.color: 'white' "
+                     [style.background]="day.stroke !== 1 ? day.color: 'blanchedalmond' "
                      [style.color]="day.stroke !== 1 ? 'white': 'black' ">
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
                 <div class="col-6"
-                     [style.background]="day.stroke !== 1 ? day.color: 'white' "
+                     [style.background]="day.stroke !== 1 ? day.color: 'blanchedalmond' "
                      [style.color]="day.stroke !== 1 ? 'white': 'black' ">
                   <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
                 </div>
@@ -101,15 +103,16 @@
                (mouseleave)="$event.stopPropagation(); endDrag($event);"
                (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverageBin"
-                  style="border: 1px solid black; background:blanchedalmond;">
+              <li class="row tight-fit" *ngFor="let day of globalYAverageBin" style="border: 1px solid black; background:blanchedalmond;"
+                  [ngStyle]="{'border':day.value != 0 ? '1px solid black' : 'none' }">
                 <div class="col-6" *ngIf="day.value != 0" style="border-right: 1px solid black;">
                   <p class="list tight-fit">{{day.name}}</p>
                 </div>
-                <div class="col-6">
+                <div class="col-6" *ngIf="day.value != 0">
                   <p class="list tight-fit">{{day.value|number:'1.0-2'}}</p>
                 </div>
               </li>
+
             </ul>
           </div>
         </div>
