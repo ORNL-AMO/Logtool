@@ -447,6 +447,8 @@ export class HolderDayTypeComponent implements OnInit {
     this.selectedColumnPointer = this.loadSessionData.loadValueColumnCount;
     this.binList = this.loadSessionData.loadBinList;
     this.displayBinList = this.loadSessionData.loadDisplayBinList;
+    this.selectedBinList = this.loadSessionData.loadSelectedBinList;
+    this.showBinMode = this.loadSessionData.loadShowBinMode;
     if (reset) {
       this.annotationListDayAverage = [];
       this.annotationListBinAverage = [];
@@ -469,6 +471,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphDayAverage(0);
       this.calculateBinAverage(0);
     } else {
+      console.log(this.loadSessionData.loadSelectedDates);
       this.columnMainArray = this.loadSessionData.loadColumnMainArray;
       this.selectedDates = new Set<any>(this.loadSessionData.loadSelectedDates);
       this.sumArray = this.loadSessionData.loadSumArray;
@@ -552,6 +555,7 @@ export class HolderDayTypeComponent implements OnInit {
 
 // 1748763, 4996927
   saveSession() {
+    console.log(this.selectedDates);
     this.saveLoad.saveSession(this.columnSelectorList[0].name, this.columnSelectorList[0].name, this.loadDataFromFile,
       this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
       this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
@@ -571,7 +575,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   loadSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(3346113).then(data => {
+    this.indexFileStore.viewSingleDataDBSaveInput(9162397).then(data => {
+      console.log(data);
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
         this.loadSessionData = result;
         console.log(this.loadSessionData);
@@ -588,6 +593,7 @@ export class HolderDayTypeComponent implements OnInit {
       });
     });
   }
+
   viewSessionId() {
     this.indexFileStore.viewDataDBSaveInputId().then(data => {
       this.data.currentDataInputSaveLoadIdArray.subscribe(result => {

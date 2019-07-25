@@ -19,7 +19,7 @@ export class SaveLoadService {
     const id = this.getRandomInt(9999999);
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
-      selectedDatesValue.push(value.id);
+      selectedDatesValue.push(value);
     });
     const saveSessionData: LoadList = {
       id: id,
