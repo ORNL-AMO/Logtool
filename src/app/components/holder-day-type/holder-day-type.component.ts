@@ -32,7 +32,11 @@ export class HolderDayTypeComponent implements OnInit {
 
   @ViewChild(CalendarComponent)
   private calendar: CalendarComponent;
-  shift = 'false';
+
+  shift="false";
+  currentFile: string;
+  currentId: string;
+
 
   scrollActive = false;
   target: any;
@@ -40,7 +44,7 @@ export class HolderDayTypeComponent implements OnInit {
   start_Y = 0;
 
   temp6;
-  ammo = '';
+  sesName = '';
   temp5: any;
 
   selectedBinList = [];
@@ -90,7 +94,6 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMode = true;
   saveLoadMode = false;
   loadSaveLoadId;
-  loadDisplayName;
   loadSessionData: LoadList;
   snapShotStash: any[];
   bsModalRef;
@@ -450,7 +453,7 @@ export class HolderDayTypeComponent implements OnInit {
   loadDayTypeNavigation(reset) {
     this.saveLoadMode = true;
     this.loadSaveLoadId = this.loadSessionData.id;
-    this.loadDisplayName = this.loadSessionData.displayName;
+    this.sesName = = this.loadSessionData.displayName;
     const dataFromFile = this.loadSessionData.loadDataFromFile;
     this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
     this.selectedColumnPointer = this.loadSessionData.loadValueColumnCount;
@@ -565,35 +568,52 @@ export class HolderDayTypeComponent implements OnInit {
 // 3438957
   saveSession() {
     if (this.saveLoadMode) {
-      this.saveLoad.updateSession(this.loadSaveLoadId, this.columnSelectorList[0].name, this.loadDisplayName, this.loadDataFromFile,
+      this.saveLoad.updateSession(this.loadSaveLoadId, this.sesName, this.loadDisplayName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
         this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.saveLoadMode);
     } else {
-      this.saveLoad.saveSession(this.columnSelectorList[0].name, this.columnSelectorList[0].name, this.loadDataFromFile,
-        this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
-        this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
-        this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
-        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+      if (this.sesName === '' || this.sesName === undefined) {
+      alert('Invalid name. Please try again');
+      return;
+    }
+    console.log(this.selectedDates);
+    this.saveLoad.saveSession(this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+      this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
+      this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
+      this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
+      this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+    this.updateStash();
+    document.getElementById('save_btn').click();
     }
   }
 
-  deleteSession() {
+  deleteSession(id) {
+    console.log('id: ', id);
     this.indexFileStore.viewDataDBSaveInputId().then(data => {
       this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
-        this.indexFileStore.deleteFromDBSaveLoad(3346113).then(deleteResult => {
+        this.indexFileStore.deleteFromDBSaveLoad(id).then(deleteResult => {
+          this.updateStash();
         });
       });
     });
+    this.showDropDown(false);
   }
 
-  loadSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(3438957).then(data => {
+  loadSession(id) {
+    this.indexFileStore.viewSingleDataDBSaveInput(id).then(data => {
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
         this.loadSessionData = result;
         this.saveLoadMode = this.loadSessionData.saveLoadMode;
         this.loadDayTypeNavigation(false);
+      });
+    });
+  }
+  
+    viewSession() {
+    this.indexFileStore.viewSingleDataDBSaveInput(3438957).then(data => {
+      this.data.currentSingleDataInputSaveLoad.subscribe(result => {
       });
     });
   }
@@ -614,34 +634,38 @@ export class HolderDayTypeComponent implements OnInit {
     this.bsModalRef = this.modalService.show(ImportJsonFileComponent, {class: 'my-modal', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
     this.modalService.onHidden.subscribe(() => {
-
-    });
-  }
-
-  viewSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(3438957).then(data => {
-      this.data.currentSingleDataInputSaveLoad.subscribe(result => {
       });
-    });
   }
-
-  updateStash() {
-    this.indexFileStore.viewDataDBSaveInput().then(data => {
-      this.data.currentDataInputSaveLoadArray.subscribe(result => {
-        this.snapShotStash = result;
+  
+    updateStash() {
+      this.indexFileStore.viewDataDBSaveInput().then(data => {
+        this.data.currentDataInputSaveLoadArray.subscribe(result => {
+          this.snapShotStash = result;
+        });
       });
-    });
+    }
+
+  showDropDown(flag) {
+    this.updateStash();
+    const target = document.getElementById('dropdown');
+    console.log(this.snapShotStash);
+    if (target.style.display === 'none' && flag) {
+      target.style.display = 'block';
+      document.getElementById('selected').style.border = '1px solid rgba(255,165,0,.75)';
+    } else {
+      target.style.display = 'none';
+      document.getElementById('selected').style.border = '1px solid black';
+    }
   }
 
-  /*  showDropDown() {
-      const target = document.getElementById('dropdown');
-      if (target.style.display === 'none') {
-        target.style.display = 'block';
-      } else {
-        target.style.display = 'none';
-      }
-    }*/
+  idEvent(file: any) {
+    this.currentFile = file.name + " : " + file.id;
+    this.currentId = file.id;
+    this.showDropDown(false);
+  }
 
-
+  hideSave() {
+    document.getElementById('save_btn').click();
+  }
 }
 
