@@ -2,10 +2,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
-import * as d3 from 'd3';
-import {isAbsolute} from 'path';
-import {error} from 'util';
-import {checkAndUpdateBinding} from '@angular/core/src/view/util';
+
 
 
 @Component({

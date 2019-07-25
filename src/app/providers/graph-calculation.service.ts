@@ -18,7 +18,7 @@ export class GraphCalculationService {
   constructor(private data: DataService) {
   }
 
-  averageCalculation(dataFromFile, timeSeriesDayType, valueColumnCount) {
+  averageCalculation(dataFromFile, timeSeriesDayType, valueColumnCount, saveLoadMode) {
     let valueArray = [];
     let dayArray = [];
     let mainArray = [];
@@ -33,8 +33,12 @@ export class GraphCalculationService {
       dataFromFileColumn = [];
       mainArray = [];
       const columnPointer = valueColumnCount[column].value.split(',');
-      dataFromFileColumn.push(this.data.curateData(dataFromFile[parseInt(columnPointer[0],
-        10)].dataArrayColumns[parseInt(columnPointer[1], 10)]));
+      if (saveLoadMode) {
+        dataFromFileColumn = dataFromFile;
+      } else {
+        dataFromFileColumn.push(this.data.curateData(dataFromFile[parseInt(columnPointer[0],
+          10)].dataArrayColumns[parseInt(columnPointer[1], 10)]));
+      }
       for (let i = 0; i < timeSeriesDayType.length; i++) {
         if (i === 0) {
           particularDay = timeSeriesDayType[i].getDate();

@@ -131,6 +131,102 @@ export class IndexFileStoreService {
     });
   }
 
+  addIntoDBSaveInputFromFile(loadSessionData: LoadList) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      for (let i = 0; i < loadSessionData.loadTimeSeriesDayType.length; i++) {
+        loadSessionData.loadTimeSeriesDayType[i] = new Date(loadSessionData.loadTimeSeriesDayType[i]);
+      }
+      for (let i = 0; i < loadSessionData.loadColumnMainArray.length; i++) {
+        for (let j = 0; j < loadSessionData.loadColumnMainArray[i].length; j++) {
+          for (let k = 0; k < loadSessionData.loadColumnMainArray[i][j].length; k++) {
+            loadSessionData.loadColumnMainArray[i][j][k].displayDate = new Date(loadSessionData.loadColumnMainArray[i][j][k].displayDate);
+          }
+        }
+      }
+      for (let i = 0; i < loadSessionData.loadDays.length; i++) {
+        loadSessionData.loadDays[i].date = new Date(loadSessionData.loadDays[i].date);
+      }
+      for (let i = 0; i < loadSessionData.loadSelectedBinList.length; i++) {
+        for (let j = 0; j < loadSessionData.loadSelectedBinList[i].length; j++) {
+          loadSessionData.loadSelectedBinList[i][j].date = new Date(loadSessionData.loadSelectedBinList[i][j]);
+        }
+      }
+      db.add('saveInput',
+        {
+          id: loadSessionData.id,
+          name: loadSessionData.name,
+          displayName: loadSessionData.displayName,
+          loadDataFromFile: loadSessionData.loadDataFromFile,
+          loadTimeSeriesDayType: loadSessionData.loadTimeSeriesDayType,
+          loadValueColumnCount: loadSessionData.loadValueColumnCount,
+          loadColumnMainArray: loadSessionData.loadColumnMainArray,
+          loadSumArray: loadSessionData.loadSumArray,
+          loadBinList: loadSessionData.loadBinList,
+          loadDisplayBinList: loadSessionData.loadDisplayBinList,
+          loadSelectedBinList: loadSessionData.loadSelectedBinList,
+          loadDays: loadSessionData.loadDays,
+          loadSelectedDates: loadSessionData.loadSelectedDates,
+          loadGraphDayAverage: loadSessionData.loadGraphDayAverage,
+          loadGraphBinAverage: loadSessionData.loadGraphBinAverage,
+          loadMac: loadSessionData.loadMac,
+          loadShowBinMode: loadSessionData.loadShowBinMode,
+          loadToggleRelayoutDay: loadSessionData.loadToggleRelayoutDay,
+          loadAnnotationListDayAverage: loadSessionData.loadAnnotationListDayAverage,
+          loadAnnotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
+          loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
+          loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
+          saveLoadMode: loadSessionData.saveLoadMode
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateIntoDBSaveInput(loadSessionData: LoadList) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('saveInput',
+        {
+          id: loadSessionData.id,
+          name: loadSessionData.name,
+          displayName: loadSessionData.displayName,
+          loadDataFromFile: loadSessionData.loadDataFromFile,
+          loadTimeSeriesDayType: loadSessionData.loadTimeSeriesDayType,
+          loadValueColumnCount: loadSessionData.loadValueColumnCount,
+          loadColumnMainArray: loadSessionData.loadColumnMainArray,
+          loadSumArray: loadSessionData.loadSumArray,
+          loadBinList: loadSessionData.loadBinList,
+          loadDisplayBinList: loadSessionData.loadDisplayBinList,
+          loadSelectedBinList: loadSessionData.loadSelectedBinList,
+          loadDays: loadSessionData.loadDays,
+          loadSelectedDates: loadSessionData.loadSelectedDates,
+          loadGraphDayAverage: loadSessionData.loadGraphDayAverage,
+          loadGraphBinAverage: loadSessionData.loadGraphBinAverage,
+          loadMac: loadSessionData.loadMac,
+          loadShowBinMode: loadSessionData.loadShowBinMode,
+          loadToggleRelayoutDay: loadSessionData.loadToggleRelayoutDay,
+          loadAnnotationListDayAverage: loadSessionData.loadAnnotationListDayAverage,
+          loadAnnotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
+          loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
+          loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
+          saveLoadMode: loadSessionData.saveLoadMode
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
   viewDataDB() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
