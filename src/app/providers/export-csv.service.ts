@@ -1,5 +1,8 @@
 import {Injectable} from '@angular/core';
 import * as XLSX from 'xlsx';
+import {LoadList} from '../types/load-list';
+import * as fs from 'fs';
+import {IndexFileStoreService} from './index-file-store.service';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -9,7 +12,7 @@ const EXCEL_EXTENSION = '.xlsx';
 })
 export class ExportCSVService {
 
-  constructor() {
+  constructor(private indexFileStore: IndexFileStoreService) {
   }
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
@@ -69,5 +72,16 @@ export class ExportCSVService {
     const worksheet = XLSX.utils.json_to_sheet(datajson);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'ChannelName');
     XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
+  }
+
+  createJsonFile(dataArray: LoadList[]) {
+    const dataString = JSON.stringify(dataArray, null, 2);
+    fs.writeFileSync('JSON.json', dataString);
+  }
+
+  readJsonFile(data) {
+    for (let i = 0; i < data.length; i++) {
+      this.indexFileStore.addIntoDBSaveInputFromFile(data[i]);
+    }
   }
 }
