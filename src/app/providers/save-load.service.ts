@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {IndexFileStoreService} from './index-file-store.service';
 import {log} from 'util';
+import {LoadList} from '../types/load-list';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class SaveLoadService {
   }
 
   saveSession(name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[], loadValueColumnCount: any[],
-              columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[], days: any[],
+              columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[], selectedBinList: any[], days: any[],
               selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any, showBinMode: boolean, mac: boolean,
               toggleRelayoutDay: boolean, annotationListDayAverage: any[], annotationListBinAverage: any[],
               globalYAverageDay: any[], globalYAverageBin: any[], saveLoadMode: boolean) {
@@ -20,28 +21,29 @@ export class SaveLoadService {
     selectedDates.forEach((value) => {
       selectedDatesValue.push(value.id);
     });
-    const saveSessionData = {
+    const saveSessionData: LoadList = {
       id: id,
       name: name,
       displayName: displayName,
       loadDataFromFile: loadDataFromFile,
       loadTimeSeriesDayType: loadTimeSeriesDayType,
       loadValueColumnCount: loadValueColumnCount,
-      columnMainArray: columnMainArray,
-      sumArray: sumArray,
-      binList: binList,
-      displayBinList: displayBinList,
-      days: days,
-      selectedDates: selectedDatesValue,
-      graphDayAverage: graphDayAverage,
-      graphBinAverage: graphBinAverage,
-      mac: mac,
-      showBinMode: showBinMode,
-      toggleRelayoutDay: toggleRelayoutDay,
-      annotationListDayAverage: annotationListDayAverage,
-      annotationListBinAverage: annotationListBinAverage,
-      globalYAverageDay: globalYAverageDay,
-      globalYAverageBin: globalYAverageBin,
+      loadColumnMainArray: columnMainArray,
+      loadSumArray: sumArray,
+      loadBinList: binList,
+      loadDisplayBinList: displayBinList,
+      loadSelectedBinList: selectedBinList,
+      loadDays: days,
+      loadSelectedDates: selectedDatesValue,
+      loadGraphDayAverage: graphDayAverage,
+      loadGraphBinAverage: graphBinAverage,
+      loadMac: mac,
+      loadShowBinMode: showBinMode,
+      loadToggleRelayoutDay: toggleRelayoutDay,
+      loadAnnotationListDayAverage: annotationListDayAverage,
+      loadAnnotationListBinAverage: annotationListBinAverage,
+      loadGlobalYAverageDay: globalYAverageDay,
+      loadGlobalYAverageBin: globalYAverageBin,
       saveLoadMode: saveLoadMode
     };
     console.log(saveSessionData);

@@ -1,4 +1,3 @@
-
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 
 import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
@@ -217,7 +216,11 @@ export class HolderDayTypeComponent implements OnInit {
 
   resetBins() {
     this.clearSelection();
-    this.dayTypeNavigation(true); // shorter version only for reset
+    if (this.saveLoadMode) {
+      this.loadDayTypeNavigation(true);
+    } else {
+      this.dayTypeNavigation(true);
+    }
   }
 
   // Moves everything to 'EXCLUDED' BIN
@@ -384,82 +387,105 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   dayTypeNavigation(reset) {
-    if (this.saveLoadMode) {
-      const dataFromFile = this.loadSessionData.loadDataFromFile;
-      this.columnMainArray = this.loadSessionData.columnMainArray;
-      this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
-      this.days = this.loadSessionData.days;
-      this.selectedDates = new Set<any>(this.loadSessionData.selectedDates);
-      this.annotationListDayAverage = this.loadSessionData.annotationListDayAverage;
-      this.annotationListBinAverage = this.loadSessionData.annotationListBinAverage;
-      this.binList = this.loadSessionData.binList;
-      this.displayBinList = this.loadSessionData.displayBinList;
-      this.sumArray = this.loadSessionData.sumArray;
-      this.graphDayAverage = this.loadSessionData.graphDayAverage;
-      this.graphBinAverage = this.loadSessionData.graphBinAverage;
-      this.calendar.binList = this.binList;
-      this.calendar.days = this.days;
-      this.calendar.daysToNest = this.timeSeriesDayType;
-      this.calendar.selectedDates = this.selectedDates;
-      this.toggleRelayoutDay = this.loadSessionData.toggleRelayoutDay;
-      this.mac = this.loadSessionData.mac;
-      this.globalYAverageDay = this.loadSessionData.globalYAverageDay;
-      this.globalYAverageBin = this.loadSessionData.globalYAverageBin;
-      this.update();
-      this.saveLoadMode = !this.saveLoadMode;
+    this.saveLoadMode = false;
+    this.columnMainArray = [];
+    this.days = [];
+    this.selectedDates.clear();
+    this.annotationListDayAverage = [];
+    this.annotationListBinAverage = [];
+    const dataFromFile = this.dataFromInput;
+    if (this.columnSelectorList.length === 0) {
+      alert('Please select Column');
     } else {
-      this.columnMainArray = [];
-      this.days = [];
-      this.selectedDates.clear();
-      this.annotationListDayAverage = [];
-      this.annotationListBinAverage = [];
-      const dataFromFile = this.dataFromInput;
-      if (this.columnSelectorList.length === 0) {
-        alert('Please select Column');
-      } else {
-        if (reset) {
-          for (const i in this.defaultBinList) {
-            if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
-              const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
-              if (index < 0) {
-                this.binList.push(this.defaultBinList[i]);
-                this.displayBinList.push(this.defaultBinList[i]);
-              }
-            }
-          }
-        } else {
-          this.binList = [];
-          this.displayBinList = [];
-          for (const i in this.defaultBinList) {
-            if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
-              const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
-              if (index < 0) {
-                this.binList.push(this.defaultBinList[i]);
-                this.displayBinList.push(this.defaultBinList[i]);
-              }
+      if (reset) {
+        for (const i in this.defaultBinList) {
+          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+            if (index < 0) {
+              this.binList.push(this.defaultBinList[i]);
+              this.displayBinList.push(this.defaultBinList[i]);
             }
           }
         }
-        this.selectedColumnPointer = this.columnSelectorList;
-        const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
-        this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
-          10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
-        const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType, this.selectedColumnPointer);
-        this.days = returnObject.days;
-        this.columnMainArray = returnObject.columnMainArray;
-        this.loadDataFromFile = returnObject.loadDataFromFile;
-        this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
-        this.loadValueColumnCount = returnObject.loadValueColumnCount;
-        this.allocateBins();
-        this.plotGraphDayAverage(0);
-        this.calculateBinAverage(0);
-        this.calendar.binList = this.binList;
-        this.calendar.days = this.days;
-        this.calendar.daysToNest = this.timeSeriesDayType;
-        this.update();
+      } else {
+        this.binList = [];
+        this.displayBinList = [];
+        for (const i in this.defaultBinList) {
+          if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+            const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+            if (index < 0) {
+              this.binList.push(this.defaultBinList[i]);
+              this.displayBinList.push(this.defaultBinList[i]);
+            }
+          }
+        }
       }
+      this.selectedColumnPointer = this.columnSelectorList;
+      const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
+      this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
+        10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
+      const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType, this.selectedColumnPointer);
+      this.days = returnObject.days;
+      this.columnMainArray = returnObject.columnMainArray;
+      this.loadDataFromFile = returnObject.loadDataFromFile;
+      this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
+      this.loadValueColumnCount = returnObject.loadValueColumnCount;
+      this.allocateBins();
+      this.plotGraphDayAverage(0);
+      this.calculateBinAverage(0);
+      this.calendar.binList = this.binList;
+      this.calendar.days = this.days;
+      this.calendar.daysToNest = this.timeSeriesDayType;
+      this.update();
     }
+  }
 
+  loadDayTypeNavigation(reset) {
+    this.saveLoadMode = true;
+    const dataFromFile = this.loadSessionData.loadDataFromFile;
+    this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
+    this.selectedColumnPointer = this.loadSessionData.loadValueColumnCount;
+    this.binList = this.loadSessionData.loadBinList;
+    this.displayBinList = this.loadSessionData.loadDisplayBinList;
+    if (reset) {
+      this.annotationListDayAverage = [];
+      this.annotationListBinAverage = [];
+      for (const i in this.defaultBinList) {
+        if (this.binList.indexOf(this.defaultBinList[i]) < 0) {
+          const index = this.binList.findIndex(obj => obj.binName === this.defaultBinList[i].binName);
+          if (index < 0) {
+            this.binList.push(this.defaultBinList[i]);
+            this.displayBinList.push(this.defaultBinList[i]);
+          }
+        }
+      }
+      const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType, this.selectedColumnPointer);
+      this.days = returnObject.days;
+      this.columnMainArray = returnObject.columnMainArray;
+      this.loadDataFromFile = returnObject.loadDataFromFile;
+      this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
+      this.loadValueColumnCount = returnObject.loadValueColumnCount;
+      this.allocateBins();
+      this.plotGraphDayAverage(0);
+      this.calculateBinAverage(0);
+    } else {
+      this.columnMainArray = this.loadSessionData.loadColumnMainArray;
+      this.selectedDates = new Set<any>(this.loadSessionData.loadSelectedDates);
+      this.sumArray = this.loadSessionData.loadSumArray;
+      this.days = this.loadSessionData.loadDays;
+      this.calendar.selectedDates = this.selectedDates;
+      this.toggleRelayoutDay = this.loadSessionData.loadToggleRelayoutDay;
+      this.graphDayAverage = this.loadSessionData.loadGraphDayAverage;
+      this.graphBinAverage = this.loadSessionData.loadGraphBinAverage;
+      this.annotationListDayAverage = this.loadSessionData.loadAnnotationListDayAverage;
+      this.annotationListBinAverage = this.loadSessionData.loadAnnotationListBinAverage;
+      this.globalYAverageDay = this.loadSessionData.loadGlobalYAverageDay;
+      this.globalYAverageBin = this.loadSessionData.loadGlobalYAverageBin;
+    }
+    this.calendar.binList = this.binList;
+    this.calendar.days = this.days;
+    this.calendar.daysToNest = this.timeSeriesDayType;
+    this.update();
   }
 
   calculateBinAverage(channelId) {
@@ -528,7 +554,7 @@ export class HolderDayTypeComponent implements OnInit {
   saveSession() {
     this.saveLoad.saveSession(this.columnSelectorList[0].name, this.columnSelectorList[0].name, this.loadDataFromFile,
       this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
-      this.displayBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
+      this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
       this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
       this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
   }
@@ -537,7 +563,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.indexFileStore.viewDataDBSaveInputId().then(data => {
       this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
         console.log(result);
-        this.indexFileStore.deleteFromDBSaveLoad(5162673).then(deleteResult => {
+        this.indexFileStore.deleteFromDBSaveLoad(3346113).then(deleteResult => {
           console.log(deleteResult);
         });
       });
@@ -545,12 +571,12 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   loadSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(1728621).then(data => {
+    this.indexFileStore.viewSingleDataDBSaveInput(3346113).then(data => {
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
         this.loadSessionData = result;
         console.log(this.loadSessionData);
         this.saveLoadMode = this.loadSessionData.saveLoadMode;
-        this.dayTypeNavigation(false);
+        this.loadDayTypeNavigation(false);
       });
     });
   }
@@ -558,6 +584,13 @@ export class HolderDayTypeComponent implements OnInit {
   viewSession() {
     this.indexFileStore.viewDataDBSaveInput().then(data => {
       this.data.currentDataInputSaveLoadArray.subscribe(result => {
+        console.log(result);
+      });
+    });
+  }
+  viewSessionId() {
+    this.indexFileStore.viewDataDBSaveInputId().then(data => {
+      this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
         console.log(result);
       });
     });

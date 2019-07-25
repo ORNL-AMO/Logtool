@@ -40,6 +40,7 @@ export class IndexFileStoreService {
       objectStoreLoad.createIndex('sumArray', 'sumArray', {unique: false});
       objectStoreLoad.createIndex('binList', 'binList', {unique: false});
       objectStoreLoad.createIndex('displayBinList', 'displayBinList', {unique: false});
+      objectStoreLoad.createIndex('selectedBinList', 'selectedBinList', {unique: false});
       objectStoreLoad.createIndex('days', 'days', {unique: false});
       objectStoreLoad.createIndex('displayBinList', 'displayBinList', {unique: false});
       objectStoreLoad.createIndex('days', 'days', {unique: false});
@@ -103,21 +104,22 @@ export class IndexFileStoreService {
           loadDataFromFile: loadSessionData.loadDataFromFile,
           loadTimeSeriesDayType: loadSessionData.loadTimeSeriesDayType,
           loadValueColumnCount: loadSessionData.loadValueColumnCount,
-          columnMainArray: loadSessionData.columnMainArray,
-          sumArray: loadSessionData.sumArray,
-          binList: loadSessionData.binList,
-          displayBinList: loadSessionData.displayBinList,
-          days: loadSessionData.days,
-          selectedDates: loadSessionData.selectedDates,
-          graphDayAverage: loadSessionData.graphDayAverage,
-          graphBinAverage: loadSessionData.graphBinAverage,
-          mac: loadSessionData.mac,
-          showBinMode: loadSessionData.showBinMode,
-          toggleRelayoutDay: loadSessionData.toggleRelayoutDay,
-          annotationListDayAverage: loadSessionData.annotationListDayAverage,
-          annotationListBinAverage: loadSessionData.annotationListBinAverage,
-          globalYAverageDay: loadSessionData.globalYAverageDay,
-          globalYAverageBin: loadSessionData.globalYAverageBin,
+          columnMainArray: loadSessionData.loadColumnMainArray,
+          sumArray: loadSessionData.loadSumArray,
+          binList: loadSessionData.loadBinList,
+          displayBinList: loadSessionData.loadDisplayBinList,
+          selectedBinList: loadSessionData.loadSelectedBinList,
+          days: loadSessionData.loadDays,
+          selectedDates: loadSessionData.loadSelectedDates,
+          graphDayAverage: loadSessionData.loadGraphDayAverage,
+          graphBinAverage: loadSessionData.loadGraphBinAverage,
+          mac: loadSessionData.loadMac,
+          showBinMode: loadSessionData.loadShowBinMode,
+          toggleRelayoutDay: loadSessionData.loadToggleRelayoutDay,
+          annotationListDayAverage: loadSessionData.loadAnnotationListDayAverage,
+          annotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
+          globalYAverageDay: loadSessionData.loadGlobalYAverageDay,
+          globalYAverageBin: loadSessionData.loadGlobalYAverageBin,
           saveLoadMode: loadSessionData.saveLoadMode
         }).then(() => {
         },
