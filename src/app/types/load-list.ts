@@ -1,12 +1,13 @@
 export class LoadList {
   constructor(
     public id: Number, public name: String, public displayName: String, public loadDataFromFile: Array<any>,
-    public loadTimeSeriesDayType: Array<any>, public loadValueColumnCount: Array<any>, public columnMainArray: Array<any>,
-    public sumArray: Array<any>, public binList: Array<any>, public displayBinList: Array<any>,
-    public days: Array<any>, public selectedDates: Array<any>, public graphDayAverage: any,
-    public graphBinAverage: any, public showBinMode: boolean, public toggleRelayoutDay: boolean, public mac: boolean,
-    public annotationListDayAverage: Array<any>, public annotationListBinAverage: Array<any>,
-    public globalYAverageDay: Array<any>, public globalYAverageBin: Array<any>, public saveLoadMode: boolean
+    public loadTimeSeriesDayType: Array<any>, public loadValueColumnCount: Array<any>, public loadColumnMainArray: Array<any>,
+    public loadSumArray: Array<any>, public loadBinList: Array<any>, public loadDisplayBinList: Array<any>,
+    public loadSelectedBinList: Array<any>, public loadDays: Array<any>, public loadSelectedDates: Array<any>,
+    public loadGraphDayAverage: any, public loadGraphBinAverage: any, public loadShowBinMode: boolean,
+    public loadToggleRelayoutDay: boolean, public loadMac: boolean, public loadAnnotationListDayAverage: Array<any>,
+    public loadAnnotationListBinAverage: Array<any>, public loadGlobalYAverageDay: Array<any>,
+    public loadGlobalYAverageBin: Array<any>, public saveLoadMode: boolean
   ) {
   }
 }
