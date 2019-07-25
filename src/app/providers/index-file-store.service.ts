@@ -150,7 +150,8 @@ export class IndexFileStoreService {
       }
       for (let i = 0; i < loadSessionData.loadSelectedBinList.length; i++) {
         for (let j = 0; j < loadSessionData.loadSelectedBinList[i].length; j++) {
-          loadSessionData.loadSelectedBinList[i][j].date = new Date(loadSessionData.loadSelectedBinList[i][j]);
+          console.log(loadSessionData.loadSelectedBinList[i][j].date);
+          loadSessionData.loadSelectedBinList[i][j].date = new Date(loadSessionData.loadSelectedBinList[i][j].date);
         }
       }
       db.add('saveInput',
