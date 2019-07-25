@@ -34,6 +34,7 @@ import { HolderDayTypeComponent } from './components/holder-day-type/holder-day-
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
+import { ImportJsonFileComponent } from './components/import-json-file/import-json-file.component';
 
 
 // AoT requires an exported function for factories
@@ -54,10 +55,11 @@ PlotlyModule.plotlyjs = PlotlyJS;
     DayTypeBinComponent,
     HolderDayTypeComponent,
     ConfirmationModalComponent,
-    CalendarComponent
+    CalendarComponent,
+    ImportJsonFileComponent
 
   ],
-  entryComponents: [ImportDataComponent, ConfirmationModalComponent],
+  entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent],
   imports: [
     BrowserModule,
     FormsModule,

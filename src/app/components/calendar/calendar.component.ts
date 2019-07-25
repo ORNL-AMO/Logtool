@@ -305,13 +305,11 @@ export class CalendarComponent implements OnInit {
   // ------------------------------------
 
   clickHandler(event) {
-    console.log(this.selectedDates);
     // Check for single selection
     if ((!this.mac && event.ctrlKey) || (this.mac && event.metaKey)) {
 
       const target = [];
       target.push(event.target.id);
-      console.log(target);
       this.selectionToggle.emit({items: target, selected: this.selectedDates.has(event.target)});
       this.lastclick = d3.select(event.target).data()[0].values[0];
 
@@ -326,7 +324,6 @@ export class CalendarComponent implements OnInit {
 
       // on normal click on selected cell, shift all selected
     } else if (this.selectedDates.has(event.target.id)) {
-      console.log('found');
       const newBin = this.cycleBin(event.target.id);
       const items = Array.from(this.selectedDates);
       for (let i = 0; i < items.length; i++) {
@@ -338,7 +335,6 @@ export class CalendarComponent implements OnInit {
 
       // else shift target cell
     } else {
-      console.log(this.selectedDates);
       this.cycleBin(event.target.id);
       this.binShift.emit(this.days);
     }
@@ -378,16 +374,11 @@ export class CalendarComponent implements OnInit {
     let day = date.getDate();
     let length = 0;
     let start;
-    // console.log('date:', date);
-    // console.log('last:', this.lastclick);
     if (date > this.lastclick) {
       start = this.lastclick;
     } else {
       start = date;
     }
-    // console.log('start:', start);
-    // console.log('Months:', month, this.lastclick.getMonth());
-    // cycle through months in the year that matches
     while (month !== this.lastclick.getMonth()) {
       const current = day.toString() + month.toString() + year.toString();
       contents.push(current);
@@ -425,12 +416,9 @@ export class CalendarComponent implements OnInit {
             break;
           }
           day = 1;
-          console.log(month);
         }
       }
     }
-    // console.log('Month matched', length);
-    // cycle through days in the month that matches
     while (day !== this.lastclick.getDate()) {
       const current = day.toString() + month.toString() + year.toString();
       contents.push(current);
@@ -441,15 +429,12 @@ export class CalendarComponent implements OnInit {
         day--;
       }
     }
-    // console.log('Day matched', length);
-    // console.log(start);
     const id = start.getDate().toString() + start.getMonth().toString() + start.getFullYear().toString();
     const range = {start: id, length: length};
-    // console.log('Final', range);
     return contents;
   }
 
-  getAll(date1: Date, date2: Date){
+  getAll(date1: Date, date2: Date) {
     let startDate = date1;
     let endDate = date2;
     if (date1 > date2) {
@@ -481,7 +466,7 @@ export class CalendarComponent implements OnInit {
       yearCurr++;
       currMonth = 0;
     }
-    //move to the correct month in the year
+    // move to the correct month in the year
     while (currMonth !== monthEnd) {
       let end = this.monthDays[currMonth];
       // check for leap year
@@ -491,13 +476,13 @@ export class CalendarComponent implements OnInit {
       currDay = 1;
       currMonth++;
     }
-    //Add remaining days from last month
+    // Add remaining days from last month
     this.mergeSets(list , this.getDaysBetween(currDay, dayEnd, currMonth, yearCurr));
     list.delete(this.lastclick.getDate().toString(10) + this.lastclick.getMonth().toString(10) + this.lastclick.getFullYear().toString(10));
     const content = Array.from(list);
     return content;
   }
-  getDaysBetween(start, end, month, year){
+  getDaysBetween(start, end, month, year) {
     let currentday = start;
     const content = new Set();
     const step = end - start > 0 ? 1 : -1;
@@ -508,8 +493,8 @@ export class CalendarComponent implements OnInit {
 
     return content;
   }
-  mergeSets(set1, set2){
-    let n = Array.from(set2);
+  mergeSets(set1, set2) {
+    const n = Array.from(set2);
     for (let i = 0; i < n.length; i++) {
       set1.add(n[i]);
     }

@@ -1,0 +1,20 @@
+<div>
+  <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue; border-radius: 25px 25px 0 0;">
+    <div class="col-sm-6" style="text-align:left;">
+      <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
+    </div>
+    <div class="col-sm-6" style="text-align: right">
+      <button type="button" class="close pull-right"  aria-label="Close" style=" margin-top: 10px; padding: 0; background-color: rgba(0,0,0,.1);"
+              (click)="bsModalRef.hide()">
+        <span style="padding: 0;" aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div class="row justify-content-center" style="min-height: 50px; ">
+    <div class="col-9 drop-area" style="vertical-align: center;">
+      <input type="file" name="images" id="images" required="required" multiple="multiple"
+             (change)="onChange($event)"/>
+<p class="file-box-fill">Click to Upload a File</p>
+</div>
+</div>
+</div>
