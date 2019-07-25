@@ -33,7 +33,7 @@ export class HolderDayTypeComponent implements OnInit {
   @ViewChild(CalendarComponent)
   private calendar: CalendarComponent;
 
-  shift="false";
+  shift = 'data';
   currentFile: string;
   currentId: string;
 
@@ -44,7 +44,7 @@ export class HolderDayTypeComponent implements OnInit {
   start_Y = 0;
 
   temp6;
-  sesName = '';
+  sesName;
   temp5: any;
 
   selectedBinList = [];
@@ -453,7 +453,7 @@ export class HolderDayTypeComponent implements OnInit {
   loadDayTypeNavigation(reset) {
     this.saveLoadMode = true;
     this.loadSaveLoadId = this.loadSessionData.id;
-    this.sesName = = this.loadSessionData.displayName;
+    this.sesName = this.loadSessionData.displayName;
     const dataFromFile = this.loadSessionData.loadDataFromFile;
     this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
     this.selectedColumnPointer = this.loadSessionData.loadValueColumnCount;
@@ -568,24 +568,24 @@ export class HolderDayTypeComponent implements OnInit {
 // 3438957
   saveSession() {
     if (this.saveLoadMode) {
-      this.saveLoad.updateSession(this.loadSaveLoadId, this.sesName, this.loadDisplayName, this.loadDataFromFile,
+      this.saveLoad.updateSession(this.loadSaveLoadId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
         this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.saveLoadMode);
     } else {
       if (this.sesName === '' || this.sesName === undefined) {
-      alert('Invalid name. Please try again');
-      return;
-    }
-    console.log(this.selectedDates);
-    this.saveLoad.saveSession(this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
-      this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
-      this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
-      this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
-      this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
-    this.updateStash();
-    document.getElementById('save_btn').click();
+        alert('Invalid name. Please try again');
+        return;
+      }
+      console.log(this.selectedDates);
+      this.saveLoad.saveSession(this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+        this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
+        this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
+        this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
+        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+      this.updateStash();
+      document.getElementById('save_btn').click();
     }
   }
 
@@ -610,10 +610,11 @@ export class HolderDayTypeComponent implements OnInit {
       });
     });
   }
-  
-    viewSession() {
+
+  viewSession() {
     this.indexFileStore.viewSingleDataDBSaveInput(3438957).then(data => {
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
+        console.log(result);
       });
     });
   }
@@ -634,16 +635,16 @@ export class HolderDayTypeComponent implements OnInit {
     this.bsModalRef = this.modalService.show(ImportJsonFileComponent, {class: 'my-modal', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
     this.modalService.onHidden.subscribe(() => {
-      });
+    });
   }
-  
-    updateStash() {
-      this.indexFileStore.viewDataDBSaveInput().then(data => {
-        this.data.currentDataInputSaveLoadArray.subscribe(result => {
-          this.snapShotStash = result;
-        });
+
+  updateStash() {
+    this.indexFileStore.viewDataDBSaveInput().then(data => {
+      this.data.currentDataInputSaveLoadArray.subscribe(result => {
+        this.snapShotStash = result;
       });
-    }
+    });
+  }
 
   showDropDown(flag) {
     this.updateStash();
@@ -659,7 +660,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   idEvent(file: any) {
-    this.currentFile = file.name + " : " + file.id;
+    this.currentFile = file.name + ' : ' + file.id;
     this.currentId = file.id;
     this.showDropDown(false);
   }
