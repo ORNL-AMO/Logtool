@@ -8,8 +8,34 @@
         <p class="header"> Data Selector</p>
       </div>
 
-      <form #formElement="ngForm" (ngSubmit)="dayTypeNavigation(false)">
+
+
+
+        <div class="row justify-content-center">
+          <div class="col-6 tight-fit">
+            <div class="row justify-content-center"><p class="tight-fit"> Import File </p></div>
+            <div class="row justify-content-center">
+              <label>
+                <input type="radio" class="checkmark" checked="checked" name="graph" value="false" [(ngModel)]=shift>
+              </label>
+            </div>
+          </div>
+          <!--        <div class="row justify-content-center">-->
+          <div class="col-6 tight-fit ">
+            <div class="row justify-content-center"><p class="tight-fit">Load Snapshot</p></div>
+            <div class="row justify-content-center">
+              <label>
+                <input type="radio" class="checkmark" name="graph" value="true" [(ngModel)]=shift>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      <!-- Inport New File -->
+      <form #formElement="ngForm" *ngIf="shift=='false'" (ngSubmit)="dayTypeNavigation(false)">
+
         <!-- File select box --->
+        <div></div>
         <div class=" row" style="height: 30px; margin: 5px auto 5px auto;">
           <div class="col-2 tight-fit" style="padding:5px; vertical-align: center; min-width:45px;">
             <p class="dropbox-label tight-fit" style="text-align: right">File:</p>
@@ -21,7 +47,6 @@
             </select>
           </div>
         </div>
-
         <!-- Column select box -->
         <div class="row " style="height: 30px; margin: 5px auto 15px auto;">
 
@@ -44,6 +69,31 @@
             <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; z-index:0;">Import</button>
           </div>
         </div>
+      </form>
+
+      <!-- Load snapshot -->
+      <form class="row justify-content-center" *ngIf="shift=='true'">
+        <div class="row justify-content-center" id="selected" (click)="showDropDown()"
+             style="height: 20px; width: 150px; background-image: linear-gradient(to bottom right, white, rgb(221,221,221));; border: 1px solid rgb(169,169,169);" >
+          <h1></h1>
+          <span style="height: 20px; width: 100%"> 'currentfile' </span>
+
+        </div>
+        <div class="row" id="dropdown" style="position:relative; max-height: 100px; width: 150px;
+                                  background: antiquewhite;  z-index: 6; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+          <div  class="row" *ngFor="let file of snapShotStash" >
+            <p class="tight-fit" (click)="idEvent(file)" style="height: 20px; width: 60px;">{{file.name}}</p> <p>{{file.id}}</p>
+            <span class="tight-fit" (click)="deleteEvent(file.id)" style="height: 20px; width: 20px; text-align: center">X</span>
+          </div>
+        </div>
+
+        <div class="row justify-content-center " style="height:45px; z-index:-1;">
+          <div class="col-8 tight-fit" style="height:100%;">
+            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; z-index:0;">LOAD</button>
+          </div>
+        </div>
+
+
       </form>
     </div>
 
