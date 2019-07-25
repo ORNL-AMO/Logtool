@@ -30,6 +30,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   @ViewChild(CalendarComponent)
   private calendar: CalendarComponent;
+  shift="false";
 
   scrollActive = false;
   target: any;
@@ -87,9 +88,12 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMode = true;
   saveLoadMode = false;
   loadSessionData: LoadList;
+  snapShotStash: any[];
 
   ngOnInit() {
+
     this.mac = window.navigator.platform.includes('Mac') || window.navigator.platform.includes('mac');
+    this.updateStash();
     this.selectedDates = new Set([]);
     this.plotGraphDayAverage(0);
     this.plotGraphBinAverage(0);
@@ -384,6 +388,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.days = event;
     this.allocateBins();
     this.plotGraphDayAverage(0);
+    console.log(this.sumArray);
   }
 
   dayTypeNavigation(reset) {
@@ -527,7 +532,7 @@ export class HolderDayTypeComponent implements OnInit {
         this.annotationListDayAverage, this.graphDayAverage);
       this.plotGraphDayAverage(0);
     } else {
-      const selectedTrace = document.getElementById(this.days[data.points[0].curveNumber].id);
+      const selectedTrace = this.days[data.points[0].curveNumber].id;
       this.toggleSelect(selectedTrace);
     }
   }
@@ -571,14 +576,19 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   loadSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(3346113).then(data => {
+
+    this.indexFileStore.viewSingleDataDBSaveInput(5609765).then(data => {
+
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
         this.loadSessionData = result;
         console.log(this.loadSessionData);
         this.saveLoadMode = this.loadSessionData.saveLoadMode;
+
         this.loadDayTypeNavigation(false);
+
       });
     });
+
   }
 
   viewSession() {
@@ -588,12 +598,33 @@ export class HolderDayTypeComponent implements OnInit {
       });
     });
   }
-  viewSessionId() {
-    this.indexFileStore.viewDataDBSaveInputId().then(data => {
-      this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
-        console.log(result);
+
+  viewSessionId(){
+      this.indexFileStore.viewDataDBSaveInputId().then(data => {
+        this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
+          console.log(result);
+        });
       });
-    });
+    }
+
+    updateStash(){
+      this.indexFileStore.viewDataDBSaveInput().then(data => {
+        this.data.currentDataInputSaveLoadArray.subscribe(result => {
+          this.snapShotStash = result;
+        });
+      });
+
+
+
+    }
+
+  showDropDown() {
+    const target = document.getElementById(dropdown);
+    if (target.style.display === 'none') {
+      target.style.display = 'block';
+    } else {
+      target.style.display = 'none';
+    }
   }
 }
 
