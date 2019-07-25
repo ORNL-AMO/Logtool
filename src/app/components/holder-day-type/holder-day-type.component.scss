@@ -179,9 +179,10 @@ button:active {
 }
 
 h1 {
+  user-input: none;
   position: absolute;
-  top:25%;
-  left: 85px;
+  top:7px;
+  left: 81.5%;
   height: 0;
   width: 0;
   border-width: 6px 3px 0px 3px;
@@ -189,6 +190,39 @@ h1 {
   border-color: transparent;
   border-top-color: rgb(20, 20, 20);
 }
+.delete{background: darkgray;}
+
+.drop-item{background:white;}
+
+.drop-item:hover{
+  background: dodgerblue;
+  color: white;
+  .delete{
+    background: black;
+
+  }
+}
+
+.custombox{
+  height: 20px;
+  width: 180px;
+  background-image: linear-gradient(to bottom right, white, rgb(221,221,221));
+  border: 1px solid rgb(169,169,169);
+
+}
+
+.holder{
+  position:relative;
+  max-height: 100px;
+  width: 182px;
+  display: none;
+  border: 1px solid rgba(255,165,0,.75);
+  z-index: 6;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: none;
+}
+
+
 .checkmark {
   //position: absolute;
   position: relative;

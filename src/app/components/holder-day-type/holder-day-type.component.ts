@@ -31,6 +31,8 @@ export class HolderDayTypeComponent implements OnInit {
   @ViewChild(CalendarComponent)
   private calendar: CalendarComponent;
   shift="false";
+  currentFile: string;
+  currentId: string;
 
   scrollActive = false;
   target: any;
@@ -38,7 +40,7 @@ export class HolderDayTypeComponent implements OnInit {
   start_Y = 0;
 
   temp6;
-  ammo = '';
+  sesName = '';
   temp5: any;
 
   selectedBinList = [];
@@ -560,28 +562,43 @@ export class HolderDayTypeComponent implements OnInit {
 
 // 1748763, 4996927
   saveSession() {
+    console.log(this.sesName);
+    if (this.sesName === '' || this.sesName === undefined) {
+      alert('Invalid name. Please try again');
+      return;
+    }
+    if (this.snapShotStash.find(obj => obj.displayName === this.sesName)){
+      alert('Name already in use. Please try again ');
+      return;
+    }
     console.log(this.selectedDates);
-    this.saveLoad.saveSession(this.columnSelectorList[0].name, this.columnSelectorList[0].name, this.loadDataFromFile,
+    this.saveLoad.saveSession(this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
       this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
       this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
       this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
       this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+    this.updateStash();
+    document.getElementById('save_btn').click();
   }
 
-  deleteSession() {
+  deleteSession(id) {
+    console.log('id: ', id);
     this.indexFileStore.viewDataDBSaveInputId().then(data => {
       this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
-        console.log(result);
-        this.indexFileStore.deleteFromDBSaveLoad(3346113).then(deleteResult => {
+        console.log(data);
+        this.indexFileStore.deleteFromDBSaveLoad(id).then(deleteResult => {
           console.log(deleteResult);
+          this.updateStash();
         });
       });
     });
+
+    this.showDropDown(false);
   }
 
-  loadSession() {
+  loadSession(id) {
 
-    this.indexFileStore.viewSingleDataDBSaveInput(9162397).then(data => {
+    this.indexFileStore.viewSingleDataDBSaveInput(id).then(data => {
       console.log(data);
 
       this.data.currentSingleDataInputSaveLoad.subscribe(result => {
@@ -610,26 +627,38 @@ export class HolderDayTypeComponent implements OnInit {
         console.log(result);
 
       });
-    }
+    });
+  }
 
-    updateStash(){
+    updateStash() {
       this.indexFileStore.viewDataDBSaveInput().then(data => {
         this.data.currentDataInputSaveLoadArray.subscribe(result => {
           this.snapShotStash = result;
         });
       });
-
-
-
     }
 
-  showDropDown() {
-    const target = document.getElementById(dropdown);
-    if (target.style.display === 'none') {
+  showDropDown(flag) {
+    this.updateStash();
+    const target = document.getElementById('dropdown');
+    console.log(this.snapShotStash);
+    if (target.style.display === 'none' && flag) {
       target.style.display = 'block';
+      document.getElementById('selected').style.border = '1px solid rgba(255,165,0,.75)';
     } else {
       target.style.display = 'none';
+      document.getElementById('selected').style.border = '1px solid black';
     }
+  }
+
+  idEvent(file: any) {
+    this.currentFile = file.name + " : " + file.id;
+    this.currentId = file.id;
+    this.showDropDown(false);
+  }
+
+  hideSave() {
+    document.getElementById('save_btn').click();
   }
 }
 

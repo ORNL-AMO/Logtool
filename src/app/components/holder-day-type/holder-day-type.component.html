@@ -9,27 +9,25 @@
       </div>
 
 
-
-
-        <div class="row justify-content-center">
-          <div class="col-6 tight-fit">
-            <div class="row justify-content-center"><p class="tight-fit"> Import File </p></div>
-            <div class="row justify-content-center">
-              <label>
-                <input type="radio" class="checkmark" checked="checked" name="graph" value="false" [(ngModel)]=shift>
-              </label>
-            </div>
-          </div>
-          <!--        <div class="row justify-content-center">-->
-          <div class="col-6 tight-fit ">
-            <div class="row justify-content-center"><p class="tight-fit">Load Snapshot</p></div>
-            <div class="row justify-content-center">
-              <label>
-                <input type="radio" class="checkmark" name="graph" value="true" [(ngModel)]=shift>
-              </label>
-            </div>
+      <div class="row justify-content-center">
+        <div class="col-6 tight-fit">
+          <div class="row justify-content-center"><p class="tight-fit"> Import File </p></div>
+          <div class="row justify-content-center">
+            <label>
+              <input type="radio" class="checkmark" checked="checked" name="graph" value="false" [(ngModel)]=shift>
+            </label>
           </div>
         </div>
+        <!--        <div class="row justify-content-center">-->
+        <div class="col-6 tight-fit ">
+          <div class="row justify-content-center"><p class="tight-fit">Load Snapshot</p></div>
+          <div class="row justify-content-center">
+            <label>
+              <input type="radio" class="checkmark" name="graph" value="true" [(ngModel)]=shift>
+            </label>
+          </div>
+        </div>
+      </div>
 
       <!-- Inport New File -->
       <form #formElement="ngForm" *ngIf="shift=='false'" (ngSubmit)="dayTypeNavigation(false)">
@@ -72,37 +70,41 @@
       </form>
 
       <!-- Load snapshot -->
-      <form class="row justify-content-center" *ngIf="shift=='true'">
-        <div class="row justify-content-center" id="selected" (click)="showDropDown()"
-             style="height: 20px; width: 150px; background-image: linear-gradient(to bottom right, white, rgb(221,221,221));; border: 1px solid rgb(169,169,169);" >
-          <h1></h1>
-          <span style="height: 20px; width: 100%"> 'currentfile' </span>
+      <div class="row justify-content-center" style="position: relative;" *ngIf="shift=='true'">
+        <!-- always displayed box -->
+        <div class="row justify-content-center custombox" id="selected" (click)="showDropDown(true)">
 
-        </div>
-        <div class="row" id="dropdown" style="position:relative; max-height: 100px; width: 150px;
-                                  background: antiquewhite;  z-index: 6; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-          <div  class="row" *ngFor="let file of snapShotStash" >
-            <p class="tight-fit" (click)="idEvent(file)" style="height: 20px; width: 60px;">{{file.name}}</p> <p>{{file.id}}</p>
-            <span class="tight-fit" (click)="deleteEvent(file.id)" style="height: 20px; width: 20px; text-align: center">X</span>
-          </div>
+          <span style="max-height: 10px; width: 100%; text-align: center; font-size: 13px; font-weight: bold;"  (click)="$event.stopPropagation(); showDropDown(true)"> {{currentFile}} </span>
+          <h1 ></h1>
         </div>
 
-        <div class="row justify-content-center " style="height:45px; z-index:-1;">
+        <!-- load button -->
+        <div class="row justify-content-center " style="position: relative; height:45px; ; margin-top: 30px;">
           <div class="col-8 tight-fit" style="height:100%;">
-            <button class="btn tight-fit" type="submit" style="height: 100%; width: 100%; z-index:0;">LOAD</button>
+            <button class="btn tight-fit" (click)="$event.stopPropagation(); loadSession(currentId)" style="position: relative; height: 100%; width: 100%;;">LOAD</button>
           </div>
         </div>
 
+        <!-- toggled menu -->
+        <div class="row holder" id="dropdown" style="position: relative; top: -75px; display: none;" (mouseleave)="showDropDown(false);">
+          <div class="row drop-item" *ngFor="let file of snapShotStash" style="z-index: 6; ">
+            <p class="tight-fit" (click)="idEvent(file)" style="height: 20px; width: 160px; padding-left: 5px; z-index: 6;">{{file.displayName}}:</p>
 
-      </form>
+            <span class="tight-fit delete" (click)="$event.stopPropagation(); deleteSession(file.id)" style="height: 20px; width: 20px; text-align: center;  z-index: 6;">X</span>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
 
     <!-- calendar panel -->
     <div class="col-5">
-    <app-calendar style="width: 100%"
-      (selectionToggle) = "selectionToggle($event)"
-      (binShift) = "shiftBins($event)"
-      (clearSelection)="clearSelection()" ></app-calendar>
+      <app-calendar style="width: 100%"
+                    (selectionToggle)="selectionToggle($event)"
+                    (binShift)="shiftBins($event)"
+                    (clearSelection)="clearSelection()"></app-calendar>
     </div>
 
 
@@ -150,7 +152,8 @@
                (mouseleave)="$event.stopPropagation(); endDrag($event);"
                (mousemove)="$event.stopPropagation(); drag($event, 'Y')">
             <ul class="tight-fit">
-              <li class="row tight-fit" *ngFor="let day of globalYAverageBin" style="border: 1px solid black; background:blanchedalmond;"
+              <li class="row tight-fit" *ngFor="let day of globalYAverageBin"
+                  style="border: 1px solid black; background:blanchedalmond;"
                   [ngStyle]="{'border':day.value != 0 ? '1px solid black' : 'none' }">
                 <div class="col-6" *ngIf="day.value != 0" style="border-right: 1px solid black;">
                   <p class="list tight-fit">{{day.name}}</p>
@@ -236,7 +239,7 @@
         </div>
         <div class="col-4 tight-fit">
           <div class="row justify-content-center tight-fit">
-            <button class="btn" [popover]="pop" [popoverContext]="'home'" style="width: 100%">Export</button>
+            <button id="save_btn" class="btn" [popover]="pop" style="width: 100%">Save</button>
           </div>
         </div>
       </div>
@@ -317,8 +320,17 @@
 </div>
 
 <ng-template #pop id="bob">
-  <div class="panel" style="width:300px; height:40px">
-    <input type="text" [(ngModel)]="ammo">
+  <div style="width:200px; height:100px">
+    <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
+        <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="hideSave()">&times;</span>
+    </div>
+    <div class="row justify-content-center">
+      <input type="text" style="width:190px; text-align: center; height:20px; margin:auto 5px 5px 5px;" [(ngModel)]="sesName" placeholder="type session name here">
+    </div>
+    <div class="row justify-content-center">
+      <button class="btn" style="width:190px; height:30px; font-size:14px; vertical-align: middle;"  (click)="saveSession()" >Confirm</button>
+    </div>
+
   </div>
 </ng-template>
 
