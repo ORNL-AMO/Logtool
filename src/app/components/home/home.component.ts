@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
+    this.graph='line_graph'
     this.dataFromDialog = [];
     this.lineListY = [];
     this.timeSeriesY = [];
@@ -122,6 +123,7 @@ export class HomeComponent implements OnInit, DoCheck {
         graphType: 'line_graph'
       };
       this.plotGraph.ngOnInit();
+
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
@@ -129,7 +131,9 @@ export class HomeComponent implements OnInit, DoCheck {
         graphType: 'scatter_graph'
       };
       this.plotGraph.ngOnInit();
+
     } else if (this.graph === 'histogram') {
+      console.log('in histogram call');
       if (this.binType === -1) {
         alert('Please Select Bin Generation Scheme');
         return;

@@ -10,5 +10,10 @@
          [ngStyle]="{'background-color' :active === 1 ? 'darkblue':'', 'color' :active === 1 ? 'white':''}"
          (click) = "changeActive(1)"> Day Type Plots</a>
     </li>
+    <li class="nav-items" >
+      <a class="nav-link" routerLink="/file-manage"
+         [ngStyle]="{'background-color' :active === 1 ? 'darkblue':'', 'color' :active === 2 ? 'white':''}"
+         (click) = "changeActive(2)"> File management</a>
+    </li>
   </ul>
 </div>

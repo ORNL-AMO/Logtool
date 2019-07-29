@@ -138,6 +138,7 @@ export class CalendarComponent implements OnInit {
     // remove any items from previous draws
     d3.select('#grid').selectAll('*').remove();
 
+    const year = d3.timeFormat('%Y');
     const week = d3.timeFormat('%W');     // returns week of year 0-53
     const daynum = d3.timeFormat('%d');   // returns day of month 01-31
     const dayindex = d3.timeFormat('%u'); // returns index of the day of the week [1,7]
@@ -148,6 +149,9 @@ export class CalendarComponent implements OnInit {
     let weekcount = 0;
 
     const dayList = d3.nest()
+      .key(function (d) {
+        return year(new Date(d));
+      })
       .key(function (d) {
         return month(new Date(d));
       })
@@ -161,13 +165,18 @@ export class CalendarComponent implements OnInit {
       })
       .entries(this.daysToNest);
 
+    let monthlist = [];
     // calculate maximum number of weeks in the months provided
     for (let i = 0; i < dayList.length; i++) {
-      if (dayList[i].values.length > weekcount) {
-        weekcount = dayList[i].values.length;
+      for (let j  = 0; j < dayList[i].values.length; j++) {
+        console.log(dayList[i].values[j].values.length, weekcount);
+        monthlist.push(dayList[i].values[j].key);
+        if (dayList[i].values[j].values.length > weekcount) {
+          weekcount = dayList[i].values[j].values.length;
+        }
       }
     }
-
+    console.log(monthlist);
     // Calculate cell dimensions based on maximum number of weeks (rows) necessary
     let cell_dimension = 150 / (weekcount);
     // Cap at a maximum value
@@ -181,15 +190,24 @@ export class CalendarComponent implements OnInit {
     const x_offset = 10;
     const spacing_x = 5;
 
+    let week_spacing = (7 * (cell_dimension + spacing_x) + 15);
+    let year_spacing = [0]; let index = 0;
+    for (const thing of dayList){
+      console.log(thing);
+      year_spacing[index+1] = year_spacing[index] + week_spacing * thing.values.length;
+      index++;
+    }
+
+    console.log('spacing', year_spacing);
     // calculate and set total size of svg for overflow purposes
-    const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
+    const calSize = (7 * (cell_dimension + spacing_x) + 15) * monthlist.length + x_offset * 2;
     d3.select('#grid').attr('width', calSize + 'px');
 
     // Append a label for each month in list
     const monthindex = dayList.map(d => d.key);
     const title2 = d3.select('#grid').append('g')
       .selectAll('text')
-      .data(d => monthindex)
+      .data(d => monthlist)
       .join('text')
       .attr('x', function (d, i) {
         return (7 * (cell_dimension + spacing_x) + 15) * (i + .5) - 20;
@@ -200,13 +218,22 @@ export class CalendarComponent implements OnInit {
       .text(d => this.indexToMonth(d - 1));
 
 
-    // Set up group offset for a month
-    // i is number of months away from first month of data
-    const months = d3.select('#grid').selectAll('g')
+    const years = d3.select('#grid').selectAll('g')
       .data(dayList)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + (7 * (cell_dimension + spacing_x) + 15) * i + ',' + 0 + ')';
+        console.log(d);
+        return 'translate( ' + year_spacing[i] + ',' + 0 + ')';
+      });
+    // Set up group offset for a month
+    // i is number of months away from first month of data
+    const months = years.append('g')
+      .selectAll('g')
+      .data(d => d.values)
+      .join('g')
+      .attr('transform', function (d, i) {
+        console.log(d, i);
+        return 'translate( ' + week_spacing * i + ',' + 0 + ')';
       });
 
 
