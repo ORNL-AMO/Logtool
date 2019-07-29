@@ -200,11 +200,12 @@ export class HolderDayTypeComponent implements OnInit {
   columnSelectorEvent(event) {
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
-    this.columnSelectorList.pop();
+    // this.columnSelectorList.pop();
     this.columnSelectorList.push({
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
+    console.log(this.columnSelectorList);
   }
 
   binToggled(event) {
@@ -430,6 +431,7 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
       this.selectedColumnPointer = this.columnSelectorList;
+      console.log(this.timeSeriesFileDayType);
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
@@ -448,6 +450,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.calendar.daysToNest = this.timeSeriesDayType;
       this.update();
     }
+    console.log(this.columnMainArray);
   }
 
   loadDayTypeNavigation(reset) {
@@ -506,6 +509,7 @@ export class HolderDayTypeComponent implements OnInit {
   calculateBinAverage(channelId) {
     this.sumArray = this.graphCalculation.calculateBinAverage(channelId, this.binList, this.days,
       this.selectedColumnPointer, this.columnMainArray);
+    console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 
