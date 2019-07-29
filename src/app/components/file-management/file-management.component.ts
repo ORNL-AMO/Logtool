@@ -16,32 +16,88 @@ import {BsModalService} from 'ngx-bootstrap';
   styleUrls: ['./file-management.component.scss']
 })
 export class FileManagementComponent implements OnInit {
+  private dataFromDialog: any;
+  private fileList: any;
+  private active: any;
 
   constructor(private data: DataService, private indexFileStore: IndexFileStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService)  { }
 
   snapShotList: any[];
+  activeStats: any;
+
   ngOnInit() {
+    this.generateFileList();
     this.generateSnapShotList();
+  }
+
+  generateFileList() {
+    this.indexFileStore.viewDataDB().then(result => {
+      this.dataFromDialog = result;
+      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+      } else {
+        this.fileList = [];
+        //console.log(this.dataFromDialog);
+        for (let i = 0; i < this.dataFromDialog.length; i++) {
+          this.fileList.push({
+            name: this.dataFromDialog[i].name,
+            id: this.dataFromDialog[i].id
+          });
+        }
+
+      }
+    }, error => {
+      console.log(error);
+    });
   }
 
   generateSnapShotList() {
     this.indexFileStore.viewDataDBSaveInput().then(data => {
       this.data.currentDataInputSaveLoadArray.subscribe(result => {
         this.snapShotList = result;
-        console.log(result);
       });
     });
   }
 
+  getMetadata() {
+    if (this.active !== undefined && this.dataFromDialog !== null) {
+      const activeFile = this.dataFromDialog.find(obj => obj.id === this.active);
+      this.activeStats = {
+        name: activeFile.name,
+        type: activeFile.fileType,
+        rowCount: activeFile.countOfRow,
+        columnCount: activeFile.countOfColumn,
+
+
+
+
+
+      }
+      console.log(activeFile);
+
+    }
+  }
+
+  fileSelect(event, id){
+    this.toggleHighlight(event);
+    this.active = id;
+    console.log(this.active);
+    this.getMetadata();
+  }
+
+  snapSelect(event){
+    this.toggleHighlight(event);
+  }
+
 
   //Removes all selected classes- adds selected class to target
-  snapSelect(event, shot: any) {
-    console.log(event.target);
+  toggleHighlight(event) {
+
     const list = document.getElementById(event.target.id).classList;
-    if(list.contains('selected')){
+;
+    if (list.contains('selected')){
       list.remove('selected');
-    }else {
+    } else {
       list.add('selected');
     }
 /*    const selectedArray = document.getElementsByClassName('selected');

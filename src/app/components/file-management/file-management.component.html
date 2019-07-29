@@ -30,10 +30,10 @@
         </div>
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit justify-content-center" *ngFor="let shot of snapShotList, let i = index"
-               id="file{{i}}" (click)="snapSelect($event, shot);"
+          <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
+               id="file{{i}}" (click)="fileSelect($event, file.id);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+              <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
           </div>
         </div>
       </div>
@@ -66,13 +66,13 @@
           <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
                id="shot{{i}}" (click)="snapSelect($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-4 no-click" style="border-right: 1px solid black">
+            <div class="col-4 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 no-click" style="border-right: 1px solid black;">
+            <div class="col-4 inactive" style="border-right: 1px solid black;">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 no-click" style="border-right: 2px solid black">
+            <div class="col-4 inactive" style="border-right: 2px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
 
@@ -109,13 +109,13 @@
           <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
                id="shot{{i}}" (click)="snapSelect($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-4 no-click" style="border-right: 1px solid black">
+            <div class="col-4 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 no-click" style="border-right: 1px solid black;">
+            <div class="col-4 inactive" style="border-right: 1px solid black;">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 no-click" style="border-right: 2px solid black">
+            <div class="col-4 inactive" style="border-right: 2px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
 

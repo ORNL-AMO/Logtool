@@ -23,7 +23,7 @@ export class ImportDataComponent implements OnInit {
   number_columns;
   readFirstRow = [];
   interval = '';
-  filled: boolean;
+  stage: number;
   dataWithHeader = [];
   dataArrayColumns = [];
   fileRename = [];
@@ -34,7 +34,47 @@ export class ImportDataComponent implements OnInit {
 
   ngOnInit() {
     this.fileName = 'Please select a file to upload';
-    this.filled = false;
+    this.stage = 1;
+  }
+
+  onFileSelect(event){
+    this.fileName = '';
+    this.fileContent = '';
+    this.header = [];
+    this.selectedHeader = [];
+    this.start = '';
+    this.end = '';
+    this.data_count = '';
+    this.number_columns = '';
+    this.readFirstRow = [];
+    this.dataWithHeader = [];
+    this.dataArrayColumns = [];
+    const files = event.target.files;
+    const f = files[0];
+    this.fileName = f.name;
+    this.fileType = f.type;
+    const workbook = XLSX.readFile(f.path, {cellDates: true});
+    const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
+    this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+    const checkHeader = Object.values(this.dataArrayColumns[0]);
+
+    if (checkHeader.length < 2) {
+      this.dataArrayColumns.shift();
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      range.s.r += 1;
+      worksheet['!ref'] = XLSX.utils.encode_range(range);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+    } else {
+      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+    }
+    this.header = Object.values(this.dataArrayColumns[0]);
+    console.log(this.header);
+  }
+
+
+  onHeaderConfirmation(){
+
   }
 
   onChange(event) {
@@ -56,8 +96,9 @@ export class ImportDataComponent implements OnInit {
     const workbook = XLSX.readFile(f.path, {cellDates: true});
     const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
     this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-    console.log(this.dataArrayColumns);
+
     const checkHeader = Object.values(this.dataArrayColumns[0]);
+
     if (checkHeader.length < 2) {
       this.dataArrayColumns.shift();
       const range = XLSX.utils.decode_range(worksheet['!ref']);
@@ -68,8 +109,9 @@ export class ImportDataComponent implements OnInit {
       this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
     }
     this.header = Object.values(this.dataArrayColumns[0]);
+    console.log(this.header);
+    // ---------------------------------------------------------------------------------
 
-    console.log(this.dataArrayColumns);
     this.readFirstRow = Object.values(this.dataArrayColumns[0]);
     for (let i = 0; i < this.header.length; i++) {
       let check = false;
@@ -84,17 +126,25 @@ export class ImportDataComponent implements OnInit {
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
       '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
+    console.log(this.dataArrayColumns);
     for (let i = 0; i < this.header.length; i++) {
-      if ((isNaN(parseInt(this.dataArrayColumns[0][i], 10)) && Date.parse(this.dataArrayColumns[0][i]))
-        || regex.search(this.dataArrayColumns[0][i])) {
-        this.start = this.dataArrayColumns[0][i];
+      console.log(this.dataArrayColumns[1][i]);
+      console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
+      console.log(typeof this.dataArrayColumns[1][i] === 'string');
+      if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
+          (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
+        //|| regex.search(this.dataArrayColumns[1][i])) {
+        this.start = this.dataArrayColumns[1][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
-        break;
-      }
+        //console.log('start', this.start);
+        //break;
     }
+
+    }
+
     this.data_count = this.dataArrayColumns.length - 1;
     this.number_columns = this.header.length;
-    this.filled = true;
+    this.stage = 2;
     this.fileRename = this.selectedHeader.map(a => a.name);
     this.alias = this.fileName;
   }
@@ -122,9 +172,9 @@ export class ImportDataComponent implements OnInit {
 
     }
 
-    console.log(this.dataArrayColumns);
+
     this.dataArrayColumns = holder;
-    console.log(this.dataArrayColumns);
+
 
     this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
       this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, this.fileType);
@@ -136,7 +186,7 @@ export class ImportDataComponent implements OnInit {
 
   columnNameChange(event) {
     this.fileRename[parseInt(event.target.id, 10)] = event.target.value;
-    // console.log(this.fileRename);
+
   }
 
   rename(event) {
