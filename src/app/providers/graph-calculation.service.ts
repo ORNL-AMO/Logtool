@@ -40,6 +40,7 @@ export class GraphCalculationService {
           10)].dataArrayColumns[parseInt(columnPointer[1], 10)]));
       }
       for (let i = 0; i < timeSeriesDayType.length; i++) {
+
         if (i === 0) {
           particularDay = timeSeriesDayType[i].getDate();
           particularHour = timeSeriesDayType[i].getHours();
@@ -102,21 +103,24 @@ export class GraphCalculationService {
             channelName: valueColumnCount[column].name
           });
           mainArray.push(dayArray);
+          console.log(i, timeSeriesDayType[i]);
           if (column === 0) {
             days.push({
-              date: timeSeriesDayType[i - 1],
-              day: this.weekday[timeSeriesDayType[i - 1].getDay()],
-              bin: this.binAllocation(dayArray, timeSeriesDayType[i - 1].getDay()),
-              id: timeSeriesDayType[i - 1].getDate() + '' + timeSeriesDayType[i - 1].getMonth() +
-                '' + timeSeriesDayType[i - 1].getFullYear(),
+              date: timeSeriesDayType[i],
+              day: this.weekday[timeSeriesDayType[i].getDay()],
+              bin: this.binAllocation(dayArray, timeSeriesDayType[i].getDay()),
+              id: timeSeriesDayType[i].getDate() + '' + timeSeriesDayType[i].getMonth() +
+                '' + timeSeriesDayType[i].getFullYear(),
               stroke: 1,
               visible: true
             });
+            console.log(i, days);
           }
         }
       }
       columnMainArray.push(mainArray);
     }
+
     const returnObject = {
       columnMainArray: columnMainArray,
       days: days,

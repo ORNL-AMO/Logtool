@@ -56,6 +56,7 @@ export class ImportDataComponent implements OnInit {
     const workbook = XLSX.readFile(f.path, {cellDates: true});
     const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
     this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+    console.log(this.dataArrayColumns);
     const checkHeader = Object.values(this.dataArrayColumns[0]);
     if (checkHeader.length < 2) {
       this.dataArrayColumns.shift();
@@ -67,7 +68,8 @@ export class ImportDataComponent implements OnInit {
       this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
     }
     this.header = Object.values(this.dataArrayColumns[0]);
-    this.dataArrayColumns.shift();
+
+    console.log(this.dataArrayColumns);
     this.readFirstRow = Object.values(this.dataArrayColumns[0]);
     for (let i = 0; i < this.header.length; i++) {
       let check = false;
@@ -113,12 +115,17 @@ export class ImportDataComponent implements OnInit {
       const fileRename = [];
       if (this.selectedHeader[i].checked) {
         for (let j = 0; j < this.data_count; j++) {
-          fileRename[j] = this.dataArrayColumns[j][i];
+          fileRename[j] = this.dataArrayColumns[j + 1][i];
         }
         holder.push(fileRename);
       }
+
     }
+
+    console.log(this.dataArrayColumns);
     this.dataArrayColumns = holder;
+    console.log(this.dataArrayColumns);
+
     this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
       this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, this.fileType);
     setTimeout(() => {
