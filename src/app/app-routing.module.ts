@@ -7,6 +7,7 @@ import {DayTypeBinComponent} from './components/day-type-bin/day-type-bin.compon
 import {HolderDayTypeComponent} from './components/holder-day-type/holder-day-type.component';
 
 import {CalendarComponent} from './components/calendar/calendar.component';
+import {FileManagementComponent} from './components/file-management/file-management.component';
 
 
 
@@ -39,6 +40,10 @@ const routes: Routes = [
   {
     path: 'plot-graph',
     component: PlotGraphComponent
+  },
+  {
+    path: 'file-manage',
+    component: FileManagementComponent
   }
 ];
 

@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import * as XLSX from 'xlsx';
 
 
@@ -23,18 +24,114 @@ export class ImportDataComponent implements OnInit {
   number_columns;
   readFirstRow = [];
   interval = '';
-  filled: boolean;
+  stage: number;
   dataWithHeader = [];
   dataArrayColumns = [];
   fileRename = [];
   alias = '';
   fileType = '';
 
+
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {}
+
+  progress(event) { this.stage = 3; console.log('Stage', this.stage); }
+  regress()  { this.stage--; }
 
   ngOnInit() {
     this.fileName = 'Please select a file to upload';
-    this.filled = false;
+    this.stage = 1;
+  }
+
+  onFileSelect(event) {
+    // clear variables
+    this.fileName = '';
+    this.fileContent = '';
+    this.header = [];
+    this.selectedHeader = [];
+    this.start = '';
+    this.end = '';
+    this.data_count = '';
+    this.number_columns = '';
+    this.readFirstRow = [];
+    this.dataWithHeader = [];
+    this.dataArrayColumns = [];
+
+    // read file
+    const files = event.target.files;
+    const f = files[0];
+    this.fileName = f.name;
+    this.fileType = f.type;
+    const workbook = XLSX.readFile(f.path, {cellDates: true});
+    const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
+    this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+    // attempt to find header
+    let headerIndex = 0;
+    let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const numColumns = range.e.c + 1;
+    console.log(numColumns);
+
+
+    while (checkHeader.length < numColumns && headerIndex < this.dataArrayColumns.length) {
+      console.log('in loop');
+      headerIndex++;
+      checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+    }
+
+    if (headerIndex !== 0) {
+      range.s.r = range.s.r + headerIndex;
+      worksheet['!ref'] = XLSX.utils.encode_range(range);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+    } else {
+      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+    }
+    this.header = Object.values(this.dataArrayColumns[headerIndex]);
+    console.log(this.header);
+    this.stage = 2;
+    this.onAutoSelection();
+  }
+
+
+  onAutoSelection() {
+
+    this.readFirstRow = Object.values(this.dataArrayColumns[0]);
+    for (let i = 0; i < this.header.length; i++) {
+      let check = false;
+      check = !(this.readFirstRow[i] === null || this.readFirstRow[i] === undefined || this.readFirstRow[i] === ' ');
+      this.selectedHeader.push({
+        id: i,
+        checked: check,
+        name: this.header[i]
+      });
+    }
+    const regex = '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
+      '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
+      '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
+      '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
+    //console.log(this.dataArrayColumns);
+    for (let i = 0; i < this.header.length; i++) {
+/*      console.log(this.dataArrayColumns[1][i]);
+      console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
+      console.log(typeof this.dataArrayColumns[1][i] === 'string');*/
+      if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
+        (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
+        // || regex.search(this.dataArrayColumns[1][i])) {
+        this.start = this.dataArrayColumns[1][i];
+        this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
+        // console.log('start', this.start);
+        break;
+      }
+
+    }
+
+    this.data_count = this.dataArrayColumns.length - 1;
+    this.number_columns = this.header.length;
+    this.stage = 2;
+    this.fileRename = this.selectedHeader.map(a => a.name);
+    this.alias = this.fileName;
+    console.log('END');
   }
 
   onChange(event) {
@@ -56,7 +153,14 @@ export class ImportDataComponent implements OnInit {
     const workbook = XLSX.readFile(f.path, {cellDates: true});
     const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
     this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
     const checkHeader = Object.values(this.dataArrayColumns[0]);
+
+    console.log(this.dataArrayColumns);
+
+    const numColumns = XLSX.utils.decode_range(worksheet['!ref']).e.c + 1;
+    console.log(numColumns);
+
     if (checkHeader.length < 2) {
       this.dataArrayColumns.shift();
       const range = XLSX.utils.decode_range(worksheet['!ref']);
@@ -67,7 +171,9 @@ export class ImportDataComponent implements OnInit {
       this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
     }
     this.header = Object.values(this.dataArrayColumns[0]);
-    this.dataArrayColumns.shift();
+    console.log(this.header);
+    // ---------------------------------------------------------------------------------------------------------------
+
     this.readFirstRow = Object.values(this.dataArrayColumns[0]);
     for (let i = 0; i < this.header.length; i++) {
       let check = false;
@@ -82,17 +188,25 @@ export class ImportDataComponent implements OnInit {
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
       '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
+    console.log(this.dataArrayColumns);
     for (let i = 0; i < this.header.length; i++) {
-      if ((isNaN(parseInt(this.dataArrayColumns[0][i], 10)) && Date.parse(this.dataArrayColumns[0][i]))
-        || regex.search(this.dataArrayColumns[0][i])) {
-        this.start = this.dataArrayColumns[0][i];
+      console.log(this.dataArrayColumns[1][i]);
+      console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
+      console.log(typeof this.dataArrayColumns[1][i] === 'string');
+      if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
+          (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
+        // || regex.search(this.dataArrayColumns[1][i])) {
+        this.start = this.dataArrayColumns[1][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
-        break;
-      }
+        // console.log('start', this.start);
+        // break;
     }
+
+    }
+
     this.data_count = this.dataArrayColumns.length - 1;
     this.number_columns = this.header.length;
-    this.filled = true;
+    this.stage = 2;
     this.fileRename = this.selectedHeader.map(a => a.name);
     this.alias = this.fileName;
   }
@@ -113,12 +227,17 @@ export class ImportDataComponent implements OnInit {
       const fileRename = [];
       if (this.selectedHeader[i].checked) {
         for (let j = 0; j < this.data_count; j++) {
-          fileRename[j] = this.dataArrayColumns[j][i];
+          fileRename[j] = this.dataArrayColumns[j + 1][i];
         }
         holder.push(fileRename);
       }
+
     }
+
+
     this.dataArrayColumns = holder;
+
+
     this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
       this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, this.fileType);
     setTimeout(() => {
@@ -129,7 +248,7 @@ export class ImportDataComponent implements OnInit {
 
   columnNameChange(event) {
     this.fileRename[parseInt(event.target.id, 10)] = event.target.value;
-    // console.log(this.fileRename);
+
   }
 
   rename(event) {

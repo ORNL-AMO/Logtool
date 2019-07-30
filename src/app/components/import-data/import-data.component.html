@@ -1,94 +1,139 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
-<div class=" modal-lg my-modal" bsModal (onHidden) = "handler('onHidden', $event)" style=" border-radius: 32px 32px 32px 32px;">
+<div class=" modal-lg my-modal" bsModal (onHidden)="handler('onHidden', $event)"
+     style=" border-radius: 32px 32px 32px 32px;">
 
-<!-- Header Data && Close button-------------------------------------------------------------------------------->
-<div class="row" style="top:20px; margin: 0px; background-color: lightskyblue; border-radius: 25px 25px 0 0;">
-  <div class="col-sm-6" style="text-align:left;">
-    <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
+  <!-- Header Data && Close button-------------------------------------------------------------------------------->
+  <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue; border-radius: 25px 25px 0 0;">
+    <div class="col-sm-6" style="text-align:left;">
+      <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
+    </div>
+    <div class="col-sm-6" style="text-align: right">
+      <button type="button" class="close pull-right" aria-label="Close"
+              style=" margin-top: 10px; padding: 0; background-color: rgba(0,0,0,.1);"
+              (click)="bsModalRef.hide()">
+        <span style="padding: 0;" aria-hidden="true">&times;</span>
+      </button>
+    </div>
   </div>
-  <div class="col-sm-6" style="text-align: right">
-    <button type="button" class="close pull-right"  aria-label="Close" style=" margin-top: 10px; padding: 0; background-color: rgba(0,0,0,.1);"
-            (click)="bsModalRef.hide()">
-      <span style="padding: 0;" aria-hidden="true">&times;</span>
-    </button>
+
+  <!-- File upload area stage 1  ------------------------------------------------------>
+  <div class="row justify-content-center" style="min-height: 50px; ">
+    <div class="col-9 drop-area" style="vertical-align: center;"
+         [ngStyle]="{'background-color': stage ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
+      <input type="file" name="images" id="images" required="required" multiple="multiple"
+             (change)="onFileSelect($event)"/>
+      <!--(change)="onChange($event)"/>-->
+      <p class="file-box-fill" *ngIf="stage < 2">Click to Upload a File</p>
+      <p class="file-box-fill" *ngIf="stage >= 2">{{fileName}}</p>
+    </div>
   </div>
-</div>
 
-<!-- File upload area -->
-<div class="row justify-content-center" style="min-height: 50px; ">
-  <div class="col-9 drop-area" style="vertical-align: center;"
-       [ngStyle]="{'background-color': filled ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
-    <input type="file" name="images" id="images" required="required" multiple="multiple"
-           (change)="onChange($event)"/>
-    <p class="file-box-fill" *ngIf="!filled">Click to Upload a File</p>
-    <p class="file-box-fill" *ngIf="filled">{{fileName}}</p>
+  <!-- Rename and header selection stage 2 -------------------------------------------->
+  <!-- Rename option -->
+  <div class="row justify-content-center" *ngIf="stage > 1">
+    <p style="margin:0">Display Name: <br></p>
+    <input type="text" placeholder="{{fileName}}" (change)=rename($event) style="text-align: center;">
   </div>
-</div>
 
-<!-- Rename option -->
-<div class="row justify-content-center" *ngIf="filled">
-    <p style="margin:0">Display Name: <br> </p>
-    <input type="text"  placeholder="{{fileName}}" (change) = rename($event) style="text-align: center;">
-</div>
+  <br>
+  <div class="row justify-content-center" *ngIf="stage == 2">
+    <p style="margin:0; width: 25%; background:lightgray; text-align: center; ">Select Header Style <br></p>
+  </div>
 
-<br>
+  <div class="row"  *ngIf="stage == 2">
+    <div class="col-4" style="text-align: center"
+         tooltip=" Select this if the number of headers below are correct, you may rename them later" >
+      <label for="auto">Auto Find &nbsp;</label>
+        <input type="radio" name="header" value="autofind" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
+    </div>
+    <div class="col-4" style="text-align: center"
+         tooltip="Select this if your file contains headers different from those shown below" >
+      <label class="" for="none"> Manual selection &nbsp;
+        <input type="radio" name="header" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual')">
+      </label>
+    </div>
+    <div class="col-4" style="text-align: center"
+         tooltip="Select this if your file does not have headers you will be able to manually assign column headers below">
+      <label for="none"> No header &nbsp;  </label>
+      <input type="radio" name="header" value="manual" id="none" [(ngModel)]="headerFind" (change)="check('none')">
+    </div>
 
-<!-- metaData display-->
-<table id="metaData" *ngIf="filled" style="border:thick">
+  </div>
 
-  <tr>
-    <th>Start Time</th>
-    <th>End Time</th>
-    <th>Number of Samples</th>
-    <th>Columns per Sample</th>
-  </tr>
-  <tr>
-    <td>{{start}}</td>
-    <td>{{end}}</td>
-    <td>{{data_count}}</td>
-    <td>{{number_columns}}</td>
-  </tr>
-</table>
-<br>
+  <div class="row justify-content-center" *ngIf="stage == 2">
+    <p style="margin:0">Auto-Detected Column Headers </p>
+  </div>
+   <div *ngIf="stage == 2" style="max-width: 800px; margin:auto; overflow-x: auto;">
+    <table>
+      <tr>
+        <td style="max-height: 100px; white-space: nowrap" *ngFor="let head of header">{{head}}</td>
+      </tr>
+    </table>
+  </div>
 
-<!--data display && row renaming-->
-<form #formElement="ngForm" id="import_file" (ngSubmit)="submitCheckBox()" style="padding-bottom: 20px;"
-      *ngIf="filled">
-  <table style="border-radius: 32px">
-    <colgroup>
-      <col/>
-    </colgroup>
+  <div class="row justify-content-center" *ngIf="stage >= 2">
+    <button *ngIf="stage === 2" (click)="progress($event)">Confirm Headers</button>
+    <button *ngIf="stage === 3" (click)="regress()">Go Back to Header Selection</button>
+  </div>
+
+
+  <!-- metaData display-->
+  <table id="metaData" *ngIf="stage > 2" style="border:thick">
+
     <tr>
-      <th>
-        Column Name
-      </th>
-      <th>
-        Rename (Optional)
-      </th>
-      <th>
-        First Sample
-      </th>
-      <th>
-        Selected
-      </th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Number of Samples</th>
+      <th>Columns per Sample</th>
     </tr>
-    <tr *ngFor="let head of selectedHeader; let i = index" [attr.data-index]="i">
-      <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
-      <td><input [attr.id]="i" type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
-      <td>{{readFirstRow[i]}}</td>
-      <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
+    <tr>
+      <td>{{start}}</td>
+      <td>{{end}}</td>
+      <td>{{data_count}}</td>
+      <td>{{number_columns}}</td>
     </tr>
   </table>
+  <br>
 
-</form>
+  <!--data display && row renaming-->
+  <form #formElement="ngForm" id="import_file" (ngSubmit)="submitCheckBox()" style="padding-bottom: 20px;"
+        *ngIf="stage == 3">
+    <table style="border-radius: 32px">
+      <colgroup>
+        <col/>
+      </colgroup>
+      <tr>
+        <th>
+          Column Name
+        </th>
+        <th>
+          Rename (Optional)
+        </th>
+        <th>
+          First Sample
+        </th>
+        <th tooltip="Checked by default if it contains data, uncheck to exclude from import"
+            placement="bottom">
+          Selected
+        </th>
+      </tr>
+      <tr *ngFor="let head of selectedHeader; let i = index" [attr.data-index]="i">
+        <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
+        <td><input [attr.id]="i" type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
+        <td>{{readFirstRow[i]}}</td>
+        <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
+      </tr>
+    </table>
 
-<div class="container-fluid" *ngIf="filled">
-  <div class="row justify-content-center" style="margin-bottom: 10px;">
+  </form>
+
+  <div class="container-fluid" *ngIf="stage == 3">
+    <div class="row justify-content-center" style="margin-bottom: 10px;">
 
       <button class="btn pull-right" type="submit" form="import_file" style="margin:auto">Confirm</button>
       <button class="btn pull-left" (click)="bsModalRef.hide()" style="margin:auto"> Cancel</button>
+    </div>
   </div>
-</div>
 
 </div>

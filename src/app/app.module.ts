@@ -16,24 +16,29 @@ import {ElectronService} from './providers/electron.service';
 
 import {WebviewDirective} from './directives/webview.directive';
 
-import {AppComponent} from './app.component';
-import {HomeComponent} from './components/home/home.component';
-import {ToolHeaderComponent} from './components/tool-header/tool-header.component';
-import {TableDataComponent} from './components/table-data/table-data.component';
-import {ImportDataComponent} from './components/import-data/import-data.component';
-import {ModalModule} from 'ngx-bootstrap';
+
+import { AppComponent } from './app.component';
+import { HomeComponent } from './components/home/home.component';
+import { ToolHeaderComponent } from './components/tool-header/tool-header.component';
+import { TableDataComponent } from './components/table-data/table-data.component';
+import { ImportDataComponent } from './components/import-data/import-data.component';
+import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+
 
 // Log Tool Imports
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
-import {PlotlyModule} from 'angular-plotly.js';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {PlotGraphComponent} from './components/plot-graph/plot-graph.component';
-import {DayTypeBinComponent} from './components/day-type-bin/day-type-bin.component';
-import {HolderDayTypeComponent} from './components/holder-day-type/holder-day-type.component';
-import {ConfirmationModalComponent} from './components/confirmation-modal/confirmation-modal.component';
-import {CalendarComponent} from './components/calendar/calendar.component';
-import {PopoverModule} from 'ngx-bootstrap/popover';
-import {ImportJsonFileComponent} from './components/import-json-file/import-json-file.component';
+
+import { PlotlyModule } from 'angular-plotly.js';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PlotGraphComponent } from './components/plot-graph/plot-graph.component';
+import { DayTypeBinComponent } from './components/day-type-bin/day-type-bin.component';
+import { HolderDayTypeComponent } from './components/holder-day-type/holder-day-type.component';
+import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { ImportJsonFileComponent } from './components/import-json-file/import-json-file.component';
+import { FileManagementComponent } from './components/file-management/file-management.component';
+
 
 
 // AoT requires an exported function for factories
@@ -57,7 +62,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     HolderDayTypeComponent,
     ConfirmationModalComponent,
     CalendarComponent,
-    ImportJsonFileComponent
+    ImportJsonFileComponent,
+    FileManagementComponent
 
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent],
@@ -78,6 +84,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     BrowserAnimationsModule,
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
+    TooltipModule.forRoot(),
   ],
   providers: [ElectronService],
   bootstrap: [AppComponent]

@@ -3,40 +3,40 @@
   <!-- graph selection, table controls, help panel -->
   <div class="row row1" style="height:315px; margin-bottom: 10px">
     <!-- Graph selection -->
-    <div class="col-sm-3 panel" style="min-width: 300px">
+    <div class="col-sm-3 panel" style="min-width: 225px; max-width: 15vw">
       <!-- title -->
-      <div class="row header">
-        <p class="panel-title"> Graph Selection </p>
-      </div>
 
-      <form #formElement="ngForm" (ngSubmit)="plotGraphNavigation()">
+        <p class="panel-title header"> Graph Selection </p>
+
 
         <!--Radio Buttons--------------------------------------------------------------------------------->
-        <div class="row justify-content-center">
-          <div class="col-4">
-            <div class="row justify-content-center"><p class="tight-fit"> Line </p></div>
+        <div class="row justify-content-center" style="margin:auto; border: 1px solid black;">
+          <div class="col-4" style="padding:0;">
+          <!--  <div class="row justify-content-center">-->
+              <p class="tight-fit" style="margin:auto; text-align: center;"> Line </p>
             <div class="row justify-content-center">
               <label>
-                <input type="radio" checked="checked" name="graph" value="line_graph" [(ngModel)]="graph"
-                       (change)="checkboxSelect($event)">
+                <input type="radio"  name="graph" value="line_graph" [(ngModel)]="graph" (change)="checkboxSelect($event)">
               </label>
             </div>
           </div>
+
           <!--        <div class="row justify-content-center">-->
-          <div class="col-4 ">
-            <div class="row justify-content-center"><p class="tight-fit">Scatter</p></div>
+          <div class="col-4 " style="padding:0;">
+            <p class="tight-fit" style="margin:auto; text-align: center;"> Scatter </p>
             <div class="row justify-content-center">
               <label>
-                <input type="radio" checked="checked" name="graph" value="scatter_graph" [(ngModel)]="graph"
+                <input type="radio" name="graph" value="scatter_graph" [(ngModel)]="graph"
                        (change)="checkboxSelect($event)">
               </label>
             </div>
           </div>
 
-          <div class="col-4">
-            <div class="row justify-content-center"><p class="tight-fit">Histogram</p></div>
+
+          <div class="col-4" style="padding:0;">
+            <p class="tight-fit" style="margin:auto; text-align: center;"> Histogram </p>
             <div class="row justify-content-center">
-              <label>
+            <label>
                 <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
                        (change)="checkboxSelect($event)">
               </label>
@@ -46,22 +46,22 @@
         <!------------------------------------------------------------------------------------------------>
 
         <!-- Line graph-------------------------------->
-        <div style="padding-left:0;" *ngIf="show === 0">
+        <div style="padding-left:0;" *ngIf="graph === 'line_graph'">
 
           <!-- Y select -->
           <div class="row">
-            <div class="col-2 tight-fit" style="min-width: 50px; text-align: right; ">
+            <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
               <p class="tight-fit">Y:</p>
             </div>
 
-            <div class="col-9 expand-horizontal" style="margin-left: 5px;">
-              <label>
+            <div style="width: 70%; margin-right: 2.5%;">
+              <label style="margin-bottom: 0">
                 <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)">
                   <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
                 </select>
               </label>
 
-              <div class="list-box selectable">
+              <div class="list-box selectable" style="overflow-x: hidden">
                 <div class="row" *ngFor="let selector of ySelectorListLine let i= index"
                      (click)="removeFromListLine($event)" style="margin:0">
                   <p class="col-11 list">{{selector.name}}</p>
@@ -76,23 +76,23 @@
 
           <!-- X select -->
           <div class="row label-row">
-            <div class="col-2 expand-horizontal" style="min-width: 50px; text-align: center;">
-              <p class="tight-fit">Time <br> Series:</p>
+            <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
+              <p class="tight-fit" style="position:relative; ">Time Series:</p>
             </div>
-            <div class="col-9 expand-horizontal" style="margin-left: 5px;">
+            <div style="width: 70%; margin-right: 2.5%;">
 
               <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
                 <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
               </select>
               <div class="list-box">
-                <p class="list single" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
+                <p class="list" style="border:none;" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Scatter graph----------------------------->
-        <div style="padding-left:0;" *ngIf="show === 1">
+        <div style="padding-left:0;" *ngIf="graph === 'scatter_graph'">
           <div class="row">
             <div class="col-1">
               <p class="tight-fit">Y:</p>
@@ -126,7 +126,7 @@
         </div>
 
         <!-- Histogram -------------------------------->
-        <div style="padding-left:0;" *ngIf="show === 2">
+        <div style="padding-left:0;" *ngIf="graph === 'histogram'">
           <div class="row justify-content-center">
             <p class=" panel-title header tight-fit">Histogram Type Selection</p>
           </div>
@@ -190,9 +190,9 @@
         </div>
         <!--Button-------------------------------------------------------------------->
         <div class="row">
-          <button class="btn" type="submit" style="margin:auto; z-index:10;">Show</button>
+          <button class="btn" type="submit" (click)="plotGraphNavigation()" style="margin:auto; z-index:10;">Show</button>
         </div>
-      </form>
+     <!-- </form>-->
     </div>
 
     <!-- Table formating -->
@@ -236,18 +236,18 @@
     </div>
 
     <!--    Averages panel -->
-    <div class="col-3 panel " style="width:100%;">
+    <!--<div class="col-3 panel " style="width:100%;">
       <p class="header"> Statistics </p>
-      <!-- day averages -->
+      &lt;!&ndash; day averages &ndash;&gt;
       <div class="row" *ngIf="plotGraph.stats != undefined" >
 
-        <!-- xmax - ymax -->
+        &lt;!&ndash; xmax - ymax &ndash;&gt;
         <div class="col-5">
           <p class="tight-fit" style="text-align: center">Plot Limits:</p>
-          <!--<div *ngIf="globalYAverage!==undefined && globalYAverage.length >"-->
+          &lt;!&ndash;<div *ngIf="globalYAverage!==undefined && globalYAverage.length >"&ndash;&gt;
           <div style="overflow: auto; max-height: 135px;">
             <ul class="tight-fit">
-              <!-- Xmin for scatter/histogram-->
+              &lt;!&ndash; Xmin for scatter/histogram&ndash;&gt;
               <li class="row tight-fit" *ngIf="show" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">xMin</p>
@@ -257,7 +257,7 @@
                 </div>
               </li>
 
-              <!-- Xmax for scatter/histogram-->
+              &lt;!&ndash; Xmax for scatter/histogram&ndash;&gt;
               <li class="row tight-fit" *ngIf="show" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">xMax</p>
@@ -267,7 +267,7 @@
                 </div>
               </li>
 
-              <!-- Start for linegraph-->
+              &lt;!&ndash; Start for linegraph&ndash;&gt;
               <li class="row tight-fit" *ngIf="!show" style="border: 1px solid black">
                 <div class="col-6 tight-fit" style="border-right: 1px solid black;">
                   <p class="tight-fit" style="text-align: center">Start Time</p>
@@ -277,7 +277,7 @@
                 </div>
               </li>
 
-              <!-- End for linegraph-->
+              &lt;!&ndash; End for linegraph&ndash;&gt;
               <li class="row tight-fit" *ngIf="!show" style="border: 1px solid black">
                 <div class="col-6 tight-fit" style="border-right: 1px solid black;">
                   <p class="tight-fit">End Time</p>
@@ -287,7 +287,7 @@
                 </div>
               </li>
 
-              <!-- Ymin -->
+              &lt;!&ndash; Ymin &ndash;&gt;
               <li class="row tight-fit" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">Ymin</p>
@@ -297,7 +297,7 @@
                 </div>
               </li>
 
-              <!-- Ymax -->
+              &lt;!&ndash; Ymax &ndash;&gt;
               <li class="row tight-fit" style="border: 1px solid black">
                 <div class="col-6" style="border-right: 1px solid black;">
                   <p class="tight-fit">YMax</p>
@@ -310,7 +310,7 @@
           </div>
         </div>
 
-        <!-- grab averages for each line on graph -->
+        &lt;!&ndash; grab averages for each line on graph &ndash;&gt;
         <div class="col-6" *ngIf="!show">
           <p class="tight-fit" style="text-align: center">Line Averages:</p>
           <div style="overflow: auto; max-height: 135px;">
@@ -328,7 +328,7 @@
         </div>
 
 
-        <!-- Calculate R^2 for scatter -->
+        &lt;!&ndash; Calculate R^2 for scatter &ndash;&gt;
         <div class="col-6" *ngIf="show">
           <p class="tight-fit" style="text-align: center">Correlation</p>
           <div style="overflow: auto; max-height: 135px;">
@@ -347,8 +347,8 @@
 
 
       </div>
-      <!-- bin averages-->
-      <!--      <div class="row" *ngIf="!showBinMode">
+      &lt;!&ndash; bin averages&ndash;&gt;
+      &lt;!&ndash;      <div class="row" *ngIf="!showBinMode">
               <div class="col">
                 <p class="tight-fit" style="text-align: center">Daily Averages:</p>
                 <div *ngIf="globalYAverage!==undefined && globalYAverage.length > 0"
@@ -366,8 +366,8 @@
                   </ul>
                 </div>
               </div>
-            </div>-->
-    </div>
+            </div>&ndash;&gt;
+    </div>-->
   </div>
 
   <div class="row" style="margin-left: 7px">

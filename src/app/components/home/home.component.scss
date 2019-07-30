@@ -1,6 +1,6 @@
 //Basic panel ---------------------------------------------------------------------
 .panel{
-  width: 30%;
+  width: 100%;
   border: #ddd solid 1px;
   min-height: 50px;
   background: #fff;
@@ -12,14 +12,15 @@
 }
 
 .header{
-  padding-left: 15px;
+  //padding-left: 15px;
   background-color: lightskyblue;
   width: 100%;
+  text-align: center;
+
 }
 
 .panel-title{
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
   vertical-align: middle;
   font-weight: bold;
   font-size: 18px;
@@ -65,7 +66,8 @@
   border: 1px solid black;
   font-size: 12px;
   .single {
-    overflow-x: auto;
+    overflow: hidden;
+    border: none;
   }
 }
 ul {

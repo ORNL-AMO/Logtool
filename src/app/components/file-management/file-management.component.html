@@ -1,0 +1,246 @@
+<div class="row" style="margin: 5px; min-height:80vh;">
+
+  <!-- Import, Snapshots and file list -->
+  <div class="col-3 snug" style="min-height: 100%; min-width:300px;">
+    <!-- Import a file -->
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">Load a File</div>
+        <div class="row" style="margin: 5px;">
+          <div class="col-9">
+            <input type="file" name="images" id="images" required="required" multiple="multiple"
+                   style="height: 30px; text-overflow: ellipsis">
+          </div>
+          <div class="col-3" style="padding-left: 5px; padding-right: 5px;">
+            <button class="btn" style="height: 30px; width:100%">Import</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">Loaded Files</div>
+
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+          <div class="row tight-fit justify-content-center">
+              <p class="tight-fit" style="text-align: center; ">Name:</p>
+          </div>
+        </div>
+
+        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+          <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
+               id="file{{i}}" (click)="fileSelect($event, file.id);"
+               style="border-bottom: 1px solid black; border-top: 1px solid black">
+              <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Snapshots -->
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">Day Type Snapshots</div>
+
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+          <div class="row tight-fit">
+
+            <div class="col-4 " style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center; ">Name:</p>
+            </div>
+
+            <div class="col-4 " style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center;">File:</p>
+            </div>
+
+            <div class="col-4 ">
+              <p class="tight-fit" style="text-align: center;">Date:</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+          <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
+               id="shot{{i}}" (click)="snapSelect($event, shot);"
+               style="border-bottom: 1px solid black; border-top: 1px solid black">
+            <div class="col-4 inactive" style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+            <div class="col-4 inactive" style="border-right: 1px solid black;">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+            <div class="col-4 inactive" style="border-right: 2px solid black">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">Visualization Snapshots</div>
+
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+          <div class="row tight-fit">
+
+            <div class="col-4 " style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center; ">Name:</p>
+            </div>
+
+            <div class="col-4 " style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center;">File:</p>
+            </div>
+
+            <div class="col-4 ">
+              <p class="tight-fit" style="text-align: center;">Date:</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+          <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
+               id="shot{{i}}" (click)="snapSelect($event, shot);"
+               style="border-bottom: 1px solid black; border-top: 1px solid black">
+            <div class="col-4 inactive" style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+            <div class="col-4 inactive" style="border-right: 1px solid black;">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+            <div class="col-4 inactive" style="border-right: 2px solid black">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Recently used files -->
+    <div class="row snug" style="min-height: 100%">
+      <div class="panel">
+        <div class="header tight-fit">Recently Used</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metadata and table -->
+  <div class="col snug" style="min-height: 100%">
+    <div class="row snug ">
+      <div class="panel">
+        <div class="header tight-fit">Record MetaData</div>
+        <!-- Facility and Contact information -->
+        <div class="row" style="border: 3px solid black; margin: 5px;">
+          <div class="col-4">
+            <p class="tight-fit">Company: 'Company.Name'</p>
+            <p class="tight-fit">Facility: 'Facility.Name'</p>
+            <p class="tight-fit">Address:</p>
+            <p class="tight-fit">Street</p>
+            <p class="tight-fit">City, State, Zip</p>
+            <p class="tight-fit">Country</p>
+          </div>
+          <div class="col-4">
+            <p class="tight-fit">Facility Contact</p>
+            <p class="tight-fit">Name</p>
+            <p class="tight-fit">Phone</p>
+            <p class="tight-fit">Email</p>
+          </div>
+
+
+          <div class="col-4">
+            <p class="tight-fit">Assessment Contact</p>
+            <p class="tight-fit">Name</p>
+            <p class="tight-fit">Phone</p>
+            <p class="tight-fit">Email</p>
+          </div>
+
+        </div>
+
+
+        <!--File meta data -->
+        <div class="row" style="margin: 5px; border: 3px solid black;">
+          <!-- Original File -->
+          <div class="col-4">
+            <p class="tight-fit">Original File:</p>
+            <p class="tight-fit">original name:</p>
+            <p class="tight-fit">Current Name </p>
+            <p class="tight-fit">Date File uploaded</p>
+          </div>
+
+          <!-- sample meta data-->
+          <div class="col-4">
+            <p class="tight-fit">Sample Information</p>
+            <p class="tight-fit"># of Samples (rows)</p>
+            <p class="tight-fit">device channels (cols)</p>
+          </div>
+
+          <!-- time series Data -->
+          <div class="col-4">
+            <p class="tight-fit">Time frame</p>
+            <p class="tight-fit">Start</p>
+            <p class="tight-fit">End</p>
+          </div>
+
+        </div>
+
+        <div class="row" style="margin: 5px;">
+          <p>NOTES:</p>
+        </div>
+      </div>
+    </div>
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">File Contents</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigate, Export, && Instructions -->
+  <div class="snug" style="min-height: 100%; width: 400px; margin-right: 20px;">
+    <div class="row snug">
+      <div class="col-6" style="padding-left: 0; padding-right: 5px">
+      <div class="panel">
+        <div class="header tight-fit">Visualizations</div>
+        <div class="row" style="margin: 5px;">
+          <div class="col-6 tight-fit">
+            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Basic Graphs</button>
+          </div>
+          <div class="col-6 tight-fit">
+            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Day Types</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div class="col-6" style="padding-right: 0; padding-left: 5px;">
+      <div class="panel">
+        <div class="header tight-fit">Export</div>
+        <div class="row" style="margin: 5px;">
+          <div class="col-6 tight-fit">
+            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As CSV</button>
+          </div>
+          <div class="col-6 tight-fit">
+            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="row snug">
+      <div class="panel">
+        <div class="header tight-fit">Instructions</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

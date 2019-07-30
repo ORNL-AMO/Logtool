@@ -19,6 +19,19 @@ export class CalendarComponent implements OnInit {
   daysToNest: any[];
   days: any[];
 
+  // items that only need to be calculated onInit
+  dayList: any[];
+  months: any[];
+  weekCount: number;
+ cellDimension: number;
+  y_offset: number;
+  x_offset = 10;
+  spacing_y = 5;
+  spacing_x = 5;
+  weekSpacing: number;
+  yearSpacing: number[];
+  size;
+
   @Output() selectionToggle = new EventEmitter<{ items: any[], selected: boolean }>();
   @Output() binShift = new EventEmitter<any[]>();
   @Output() clearSelection = new EventEmitter();
@@ -65,10 +78,17 @@ export class CalendarComponent implements OnInit {
 
   // Visible functions ------------------
   update() {
+    this.generateNest();
+    this.getGridOffsets();
     this.generateCalendar();
     this.generateLegend();
     this.makeBold();
   }
+
+  load() {
+    this.update();
+  }
+
 
   generateLegend() {
     // remove old legend
@@ -132,22 +152,17 @@ export class CalendarComponent implements OnInit {
       });
   }
 
-  generateCalendar() {
-    this.generateLegend();
-
-    // remove any items from previous draws
-    d3.select('#grid').selectAll('*').remove();
-
+  generateNest() {
+    const year = d3.timeFormat('%Y');
     const week = d3.timeFormat('%W');     // returns week of year 0-53
     const daynum = d3.timeFormat('%d');   // returns day of month 01-31
     const dayindex = d3.timeFormat('%u'); // returns index of the day of the week [1,7]
-    const month = d3.timeFormat('%m'); // returns month index 01.12  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    IMPLEMENT
+    const month = d3.timeFormat('%m'); // returns month index 01.12
 
-    // nest data for grid formation
-    // Will eventually add in month nest as well
-    let weekcount = 0;
-
-    const dayList = d3.nest()
+    this.dayList = d3.nest()
+      .key(function (d) {
+        return year(new Date(d));
+      })
       .key(function (d) {
         return month(new Date(d));
       })
@@ -161,66 +176,106 @@ export class CalendarComponent implements OnInit {
       })
       .entries(this.daysToNest);
 
+  }
+
+  getGridOffsets() {
+    this.weekCount = 0;
+    this.months = [];
+    // generate list of months containing data
     // calculate maximum number of weeks in the months provided
-    for (let i = 0; i < dayList.length; i++) {
-      if (dayList[i].values.length > weekcount) {
-        weekcount = dayList[i].values.length;
+    for (let i = 0; i < this.dayList.length; i++) {
+      for (let j = 0; j < this.dayList[i].values.length; j++) {
+        this.months.push({index: this.dayList[i].values[j].key, year: this.dayList[i].key});
+        //console.log(this.months[i]);
+        if (this.dayList[i].values[j].values.length > this.weekCount) {
+          this.weekCount = this.dayList[i].values[j].values.length;
+        }
       }
     }
 
-    // Calculate cell dimensions based on maximum number of weeks (rows) necessary
-    let cell_dimension = 150 / (weekcount);
+    // calculate cell dimension and set up offsets
+    this.cellDimension = 150 / (this.weekCount);
     // Cap at a maximum value
-    if (cell_dimension > 50) {
-      cell_dimension = 50;
+    if (this.cellDimension > 50) {
+      this.cellDimension = 50;
+    }
+    this.y_offset = 12 + this.cellDimension;
+    this.weekSpacing = (7 * (this.cellDimension + this.spacing_x) + 15);
+    this.yearSpacing = [0];
+    let index = 0;
+    for (const year of this.dayList) {
+      //console.log(year);
+      this.yearSpacing[index + 1] = this.yearSpacing[index] + this.weekSpacing * year.values.length;
+      index++;
     }
 
-    // set up offsets and transformations for grid
-    const y_offset = 12 + cell_dimension;
-    const spacing_y = 5;
-    const x_offset = 10;
-    const spacing_x = 5;
+    // resize calendar to fit
+    this.size = (7 * (this.cellDimension + this.spacing_x) + 15) * this.months.length + this.x_offset * 2;
 
-    // calculate and set total size of svg for overflow purposes
-    const calSize = (7 * (cell_dimension + spacing_x) + 15) * dayList.length + x_offset * 2;
-    d3.select('#grid').attr('width', calSize + 'px');
+
+}
+
+  generateCalendar() {
+    // this.generateLegend();
+
+    // remove any items from previous draws
+    d3.select('#grid').selectAll('*').remove();
+    // resize grid
+    d3.select('#grid').attr('width', this.size + 'px');
+
+    // Create local copies of pre-calculated variables for internal functions below.
+    // Rewrite with proper functions in future if possible
+    const cellDimension = this.cellDimension;
+    const spacing_x = this.spacing_x;
+    const x_offset = this.x_offset;
+    const dayindex = d3.timeFormat('%u');
 
     // Append a label for each month in list
-    const monthindex = dayList.map(d => d.key);
+    const day_spacing = this.cellDimension + this.spacing_x;
+
     const title2 = d3.select('#grid').append('g')
       .selectAll('text')
-      .data(d => monthindex)
+      .data(d => this.months)
       .join('text')
       .attr('x', function (d, i) {
-        return (7 * (cell_dimension + spacing_x) + 15) * (i + .5) - 20;
+        return (7 * (day_spacing) + 15) * (i + .5) - 20;
       })
       .attr('y', 12)
       .attr('font-size', '12px')
       .attr('font-weight', 'bold')
-      .text(d => this.indexToMonth(d - 1));
+      .text(d => this.indexToMonth(d));
 
+
+    const yearSpacing = this.yearSpacing;
+    const years = d3.select('#grid').selectAll('g')
+      .data(this.dayList)
+      .join('g')
+      .attr('transform', function (d, i) {
+        return 'translate( ' + yearSpacing[i] + ',' + 0 + ')';
+      });
 
     // Set up group offset for a month
     // i is number of months away from first month of data
-    const months = d3.select('#grid').selectAll('g')
-      .data(dayList)
+    const weekSpacing = this.weekSpacing;
+    const months = years.append('g')
+      .selectAll('g')
+      .data(d => d.values)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + (7 * (cell_dimension + spacing_x) + 15) * i + ',' + 0 + ')';
+        return 'translate( ' + weekSpacing * i + ',' + 0 + ')';
       });
 
 
     // Print weekday titles for columns
-
     const title = months.append('g')
       .selectAll('g')
       .data(this.weekdays)
       .join('text')
-      .attr('x', function (d, i) {
-        return i * (cell_dimension + spacing_x) + cell_dimension / 4 + 7;
+      .attr('x', function(d, i) {
+        return i * (day_spacing) + cellDimension / 4 + 7;
       })
-      .attr('y', cell_dimension / 3 + 12)
-      .attr('font-size', cell_dimension / 3 + 'px')
+      .attr('y', cellDimension / 3 + 12)
+      .attr('font-size', cellDimension / 3 + 'px')
       .text(function (d) {
         return d;
       });
@@ -232,7 +287,7 @@ export class CalendarComponent implements OnInit {
       .data(d => d.values)
       .join('g')
       .attr('transform', function (d, i) {
-        return 'translate( ' + x_offset + ',' + (i * (cell_dimension + spacing_y) + cell_dimension / 3 + 17) + ')';
+        return 'translate( ' + x_offset + ',' + (i * (day_spacing) + cellDimension / 3 + 17) + ')';
       });
 
     // Attach bin squares to each day in each week
@@ -240,10 +295,10 @@ export class CalendarComponent implements OnInit {
       .selectAll('g')
       .data(d => d.values)
       .join('rect')
-      .attr('width', cell_dimension)
-      .attr('height', cell_dimension)
+      .attr('width', cellDimension)
+      .attr('height', cellDimension)
       .attr('x', function (d) {
-        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x);
+        return (dayindex(d.values[0]) - 1) * (cellDimension + spacing_x);
       })
       .attr('y', 0)
       .attr('fill', d => this.setColor(d.values[0]))
@@ -259,17 +314,17 @@ export class CalendarComponent implements OnInit {
       .data(d => d.values)
       .join('text')
       .attr('x', function (d) {
-        return (dayindex(d.values[0]) - 1) * (cell_dimension + spacing_x) + cell_dimension / 4;
+        return (dayindex(d.values[0]) - 1) * (cellDimension + spacing_x) + cellDimension / 4;
       })
       .attr('y', function (d) {
-        return cell_dimension - cell_dimension * (1 / 3);
+        return cellDimension * (2 / 3);
       })
       .text(function (d) {
         return d.key;
       })
       .attr('fill', 'black')
       .attr('font-weight', 'bold')
-      .attr('font-size', cell_dimension * .5 + 'px')
+      .attr('font-size', cellDimension * .5 + 'px')
       .style('pointer-events', 'none')
       .style('user-select', 'none');
 
@@ -286,18 +341,22 @@ export class CalendarComponent implements OnInit {
   }
 
   // Array search functions for svg
-  indexToMonth(i) {
-    return this.monthList[i];
+  indexToMonth(d) {
+    //console.log(d);
+    return this.monthList[d.index - 1] + ' ' + d.year;
   }
 
   // Set initial color
   setColor(key) {
+    //console.log(key);
     const obj = this.days.find(obj1 =>
-      obj1.date.getDate() === key.getDate()
-    );
+      obj1.date.getFullYear() === key.getFullYear() &&  obj1.date.getMonth() === key.getMonth() && obj1.date.getDate() === key.getDate());
+
     if (obj !== undefined) {
       return this.binList.find(bin => bin.binName === obj.bin).binColor;
     } else {
+      //console.log(this.days);
+      //console.log(key, this.days[this.days.length-1]);
       return 'purple';
     }
   }

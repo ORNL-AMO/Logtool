@@ -186,6 +186,7 @@ export class HolderDayTypeComponent implements OnInit {
     const currentSelectedFile = event.target.value;
     const tempHeader = this.dataFromInput[parseInt(currentSelectedFile, 10)].selectedHeader;
     for (let i = 0; i < tempHeader.length; i++) {
+      console.log(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0]);
       if (!(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
         this.columnSelector.push({
           name: tempHeader[i].headerName,
@@ -193,6 +194,7 @@ export class HolderDayTypeComponent implements OnInit {
         });
       } else if (this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date) {
         this.timeSeriesFileDayType = `${currentSelectedFile},${i}`;
+
       }
     }
   }
@@ -291,7 +293,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.selectedBinList.splice(0, 0, []);
 
     this.modalRef.hide();
-    this.update();
+    this.calendar.update();
   }
 
   isColor(strColor) {
@@ -307,10 +309,6 @@ export class HolderDayTypeComponent implements OnInit {
     } else if (event.target.value === 'day') {
       this.showBinMode = true;
     }
-  }
-
-  update() {
-    this.calendar.update();
   }
 
 
@@ -435,9 +433,13 @@ export class HolderDayTypeComponent implements OnInit {
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
+
+
+
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType,
         this.selectedColumnPointer, this.saveLoadMode);
       this.days = returnObject.days;
+      //console.log(this.timeSeriesDayType);
       this.columnMainArray = returnObject.columnMainArray;
       this.loadDataFromFile = returnObject.loadDataFromFile;
       this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
@@ -446,9 +448,10 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphDayAverage(0);
       this.calculateBinAverage(0);
       this.calendar.binList = this.binList;
+      //console.log(this.timeSeriesDayType);
       this.calendar.days = this.days;
       this.calendar.daysToNest = this.timeSeriesDayType;
-      this.update();
+      this.calendar.load();
     }
     console.log(this.columnMainArray);
   }
@@ -503,7 +506,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.calendar.binList = this.binList;
     this.calendar.days = this.days;
     this.calendar.daysToNest = this.timeSeriesDayType;
-    this.update();
+    this.calendar.load();
   }
 
   calculateBinAverage(channelId) {
@@ -653,7 +656,7 @@ export class HolderDayTypeComponent implements OnInit {
   showDropDown(flag) {
     this.updateStash();
     const target = document.getElementById('dropdown');
-    console.log(this.snapShotStash);
+    //console.log(this.snapShotStash);
     if (target.style.display === 'none' && flag) {
       target.style.display = 'block';
       document.getElementById('selected').style.border = '1px solid rgba(255,165,0,.75)';
