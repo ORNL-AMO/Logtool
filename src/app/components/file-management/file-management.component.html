@@ -9,10 +9,11 @@
         <div class="row" style="margin: 5px;">
           <div class="col-9">
             <input type="file" name="images" id="images" required="required" multiple="multiple"
-                   style="height: 30px; text-overflow: ellipsis">
+                   style="height: 30px; text-overflow: ellipsis" (change)="getFile($event)">
+            <!-- [(ngModel)]="inputFile" -->
           </div>
           <div class="col-3" style="padding-left: 5px; padding-right: 5px;">
-            <button class="btn" style="height: 30px; width:100%">Import</button>
+            <button class="btn" style="height: 30px; width:100%" (click) = "showInputModal()">Import</button>
           </div>
         </div>
       </div>

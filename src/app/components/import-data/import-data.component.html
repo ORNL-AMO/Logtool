@@ -1,10 +1,9 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
-<div class=" modal-lg my-modal" bsModal (onHidden)="handler('onHidden', $event)"
-     style=" border-radius: 32px 32px 32px 32px;">
+<div class=" modal-lg my-modal" bsModal (onHidden)="handler('onHidden', $event)">
 
   <!-- Header Data && Close button-------------------------------------------------------------------------------->
-  <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue; border-radius: 25px 25px 0 0;">
+  <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue;">
     <div class="col-sm-6" style="text-align:left;">
       <h2 style="padding-left: 15px; padding-top: 10px;">Import</h2>
     </div>
@@ -45,18 +44,18 @@
     <div class="col-4" style="text-align: center"
          tooltip=" Select this if the number of headers below are correct, you may rename them later" >
       <label for="auto">Auto Find &nbsp;</label>
-        <input type="radio" name="header" value="autofind" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
+        <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file contains headers different from those shown below" >
       <label class="" for="none"> Manual selection &nbsp;
-        <input type="radio" name="header" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual')">
+        <input type="radio" name="header" checked="checked" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual')">
       </label>
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file does not have headers you will be able to manually assign column headers below">
       <label for="none"> No header &nbsp;  </label>
-      <input type="radio" name="header" value="manual" id="none" [(ngModel)]="headerFind" (change)="check('none')">
+      <input type="radio" name="header" value="none" id="none" [(ngModel)]="headerFind" (change)="check('none')">
     </div>
 
   </div>
@@ -104,16 +103,19 @@
         <col/>
       </colgroup>
       <tr>
-        <th>
+        <th tooltip="Detected column name"
+            placement="bottom">
           Column Name
         </th>
-        <th>
+        <th tooltip="Change name assigned to dataset. Original File is uneffected"
+        placement="bottom">
           Rename (Optional)
         </th>
-        <th>
+        <th tooltip="First value found in first 100 samples of the column"
+            placement="bottom">
           First Sample
         </th>
-        <th tooltip="Checked by default if it contains data, uncheck to exclude from import"
+        <th tooltip="Checked by default if it contains data within the first 100 samples, uncheck to exclude from import"
             placement="bottom">
           Selected
         </th>
