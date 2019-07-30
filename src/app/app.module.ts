@@ -1,32 +1,34 @@
 import 'reflect-metadata';
 import '../polyfills';
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import {HttpClientModule, HttpClient} from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
+import {AppRoutingModule} from './app-routing.module';
 
 // NG Translate
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import { ElectronService } from './providers/electron.service';
+import {ElectronService} from './providers/electron.service';
 
-import { WebviewDirective } from './directives/webview.directive';
+import {WebviewDirective} from './directives/webview.directive';
+
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { ToolHeaderComponent } from './components/tool-header/tool-header.component';
 import { TableDataComponent } from './components/table-data/table-data.component';
 import { ImportDataComponent } from './components/import-data/import-data.component';
-import {ModalModule} from 'ngx-bootstrap';
+import {ModalModule, TooltipModule} from 'ngx-bootstrap';
+
 
 // Log Tool Imports
 import * as PlotlyJS from 'plotly.js/dist/plotly.js';
+
 import { PlotlyModule } from 'angular-plotly.js';
-import { AgGridModule } from 'ag-grid-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlotGraphComponent } from './components/plot-graph/plot-graph.component';
 import { DayTypeBinComponent } from './components/day-type-bin/day-type-bin.component';
@@ -38,12 +40,15 @@ import { ImportJsonFileComponent } from './components/import-json-file/import-js
 import { FileManagementComponent } from './components/file-management/file-management.component';
 
 
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
 // Plotly assignment
 PlotlyModule.plotlyjs = PlotlyJS;
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -76,12 +81,13 @@ PlotlyModule.plotlyjs = PlotlyJS;
     }),
     // Log Tool imports
     PlotlyModule,
-    AgGridModule.withComponents([]),
     BrowserAnimationsModule,
     ModalModule.forRoot(),
     PopoverModule.forRoot(),
+    TooltipModule.forRoot(),
   ],
   providers: [ElectronService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -202,11 +202,12 @@ export class HolderDayTypeComponent implements OnInit {
   columnSelectorEvent(event) {
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
-    this.columnSelectorList.pop();
+    // this.columnSelectorList.pop();
     this.columnSelectorList.push({
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
+    console.log(this.columnSelectorList);
   }
 
   binToggled(event) {
@@ -452,6 +453,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.calendar.daysToNest = this.timeSeriesDayType;
       this.calendar.load();
     }
+    console.log(this.columnMainArray);
   }
 
   loadDayTypeNavigation(reset) {
@@ -510,6 +512,7 @@ export class HolderDayTypeComponent implements OnInit {
   calculateBinAverage(channelId) {
     this.sumArray = this.graphCalculation.calculateBinAverage(channelId, this.binList, this.days,
       this.selectedColumnPointer, this.columnMainArray);
+    console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 

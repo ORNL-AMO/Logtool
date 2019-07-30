@@ -10,11 +10,8 @@ import {DataService} from '../../providers/data.service';
 export class TableDataComponent implements OnInit {
   arrayPointer = 0;
   inputDataArray = [];
-  columnDefs: any;
-  rowData: any;
-  rowCount: any;
   show = false;
-  displayData = [];
+  graph: any;
 
   constructor(private route: ActivatedRoute, private data: DataService) {
   }
@@ -27,44 +24,57 @@ export class TableDataComponent implements OnInit {
         if (this.inputDataArray[this.arrayPointer] === undefined) {
         } else {
           this.show = true;
-          this.columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
-          this.rowCount = this.inputDataArray[this.arrayPointer].countOfRow;
-          this.rowData = this.inputDataArray[this.arrayPointer].content;
-          // this.displayTable();
+          const columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
+          const dataArrayColumns = this.inputDataArray[this.arrayPointer].dataArrayColumns;
+          const header = [];
+          const columnOrder = [];
+          const columnWidth = [];
+          for (let i = 0; i < columnDefs.length; i++) {
+            header.push(columnDefs[i].headerName);
+            columnOrder.push(i);
+            columnWidth.push(700);
+          }
+          const data = [{
+            type: 'table',
+            columnorder: columnOrder,
+            columnwidth: columnWidth,
+            header: {
+              values: header,
+              align: 'center',
+              line: {width: 1, color: 'black'},
+              fill: {color: 'grey'},
+              font: {family: 'Arial', size: 12, color: 'white'}
+            },
+            cells: {
+              values: dataArrayColumns,
+              align: 'left',
+              line: {color: 'black', width: 1},
+              font: {family: 'Arial', size: 11, color: ['black']}
+            }
+          }];
+          this.graph = {
+            data: data,
+            layout: {
+              autosize: true,
+              margin: {
+                t: 5,
+                r: 20,
+                b: 10,
+                l: 20
+              },
+              height: 200
+            },
+            config: {
+              'showLink': false,
+              'scrollZoom': false,
+              'displayModeBar': false,
+              'editable': false,
+              'responsive': true,
+              'displaylogo': false,
+              'hovermode': false
+            }
+          };
         }
       });
-  }
-
-  displayTable() {
-    this.displayData = [];
-    for (let count = -1; count < this.rowCount; count++) {
-      const rowContent = [];
-      for (let i = 0; i < this.columnDefs.length; i++) {
-        if (count === -1) {
-          rowContent.push(this.columnDefs[i].headerName);
-        } else {
-          rowContent.push(this.rowData[i][count]);
-        }
-      }
-      this.displayData.push(rowContent);
-    }
-      console.log(this.displayData);
-  }
-
-  calculateWidth() {
-    // console.log(this.columnDefs.length);
-    return 200 * this.columnDefs.length + 'px';
-  }
-
-  maxlength() {
-    let max = 0;
-    let max_index;
-    for (let i = 0; i < this.rowData.length; i++) {
-      if (this.rowData[i].length > max) {
-        max_index = i;
-        max = this.rowData[i].length;
-      }
-    }
-    return max_index;
   }
 }

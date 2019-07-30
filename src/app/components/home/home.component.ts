@@ -36,7 +36,6 @@ export class HomeComponent implements OnInit, DoCheck {
   columnSelectorListHistogram: any = [];
   numberOfBin;
 // Day Types
-  timeSeriesDayType = '';
   // Modal Ref
   bsModalRef: BsModalRef;
   activeTab;

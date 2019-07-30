@@ -40,7 +40,7 @@ button:active {
   justify-content: space-between;
   align-items: center;
   color: #506784;
-  padding: 12px;
+  //padding: 12px;
   height: 48px;
   font-weight: 600;
   font-size: 14px;
@@ -201,10 +201,54 @@ input:hover{
 input[type=checkbox] {
   -webkit-transform: scale(2);
 }
+/*
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
 
-header {
-  //background-color: darkseagreen;
-  background: url(../../../assets/complex.jpeg) no-repeat center fixed;
-  background-size: cover;
-  border-radius:32px 32px 0 0;
+.tooltip.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  !* Position the tooltip *!
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 105%;
+}
+
+.tooltip.tooltiptext2 {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;to
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  !* Position the tooltip *!
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 105%;
+}
+
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;*/
+//}
+.bs-tooltip-top .arrow,
+.bs-tooltip-bottom .arrow {
+  margin-left: -6px;
+}
+.bs-tooltip-left .arrow,
+.bs-tooltip-right .arrow {
+  margin-top: -6px;
 }
