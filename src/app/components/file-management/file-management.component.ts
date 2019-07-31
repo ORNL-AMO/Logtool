@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {SaveLoadService} from '../../providers/save-load.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
@@ -20,7 +19,7 @@ export class FileManagementComponent implements OnInit {
   private filetype: any;
 
   constructor(private data: DataService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService) {
   }
 
   snapShotList: any[];
@@ -68,11 +67,8 @@ export class FileManagementComponent implements OnInit {
         type: activeFile.fileType,
         rowCount: activeFile.countOfRow,
         columnCount: activeFile.countOfColumn,
-
-
       };
       console.log(activeFile);
-
     }
   }
 
@@ -121,8 +117,11 @@ export class FileManagementComponent implements OnInit {
       class: 'my-modal',
 
     };
-    this.bsModalRef = this.modalService.show(ImportDataComponent,  {initialState});
+    this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
     this.bsModalRef.content.closeBtnName = 'Close';
+  }
+
+  saveMetaData(event) {
 
   }
 

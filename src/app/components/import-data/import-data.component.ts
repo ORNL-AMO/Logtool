@@ -5,6 +5,7 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import * as XLSX from 'xlsx';
 import {DataService} from '../../providers/data.service';
 import {DataList} from '../../types/data-list';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class ImportDataComponent implements OnInit {
   path: any;
 
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
-              private bsModalRef: BsModalRef, private data: DataService) {
+              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
   }
 
   progress(event) {
@@ -345,6 +346,7 @@ export class ImportDataComponent implements OnInit {
       this.bsModalRef.hide();
       console.log('Send Data');
     }, 2000);
+    this.routerData.storage = dataList;
   }
   columnNameChange(event) {
     this.fileRename[parseInt(event.target.id, 10)] = event.target.value;
