@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import * as XLSX from 'xlsx';
-
+import {DataService} from '../../providers/data.service';
+import {DataList} from '../../types/data-list';
 
 
 @Component({
@@ -35,14 +36,23 @@ export class ImportDataComponent implements OnInit{
   workbook: any;
   worksheet: any;
 
-  constructor(private indexFileStore: IndexFileStoreService, private bsModalRef: BsModalRef) {}
 
-  progress(event) { this.stage = 3;  }
-  regress()  { this.stage--; }
+  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
+              private bsModalRef: BsModalRef, private data: DataService) {
+  }
+
+  progress(event) {
+    this.stage = 3;
+  }
+
+  regress() {
+    this.stage--;
+  }
 
   ngOnInit() {
-    //this.fileName = 'Please select a file to upload';
-    this.stage = 1;
+    // this.fileName = 'Please select a file to upload';
+    // this.stage = 1;
+
     this.headerFind = 'auto';
     this.fileContent = '';
     this.header = [];
@@ -54,22 +64,27 @@ export class ImportDataComponent implements OnInit{
     this.readFirstRow = [];
     this.dataWithHeader = [];
     this.readFile();
+
   }
 
 
 
   readFile() {
 
+
     console.log('in modal');
     console.log(this.worksheet);
     console.log(this.workbook);
     console.log(this.dataArrayColumns);
 
+
     //this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
     console.log(typeof this.dataArrayColumns[0]);
 
 
+
     if ( !(this.dataArrayColumns[0] instanceof Object)) {
+
       alert('error parsing file, please confirm file is in a supported format');
       return;
     }
@@ -118,7 +133,7 @@ export class ImportDataComponent implements OnInit{
 
   onFileSelect(event) {
 
-    //reset variables
+    // reset variables
     this.stage = 1;
     this.fileName = '';
     this.fileContent = '';
@@ -195,11 +210,11 @@ export class ImportDataComponent implements OnInit{
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
       '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
-    //console.log(this.dataArrayColumns);
+    // console.log(this.dataArrayColumns);
     for (let i = 0; i < this.header.length; i++) {
-/*      console.log(this.dataArrayColumns[1][i]);
-      console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
-      console.log(typeof this.dataArrayColumns[1][i] === 'string');*/
+      /*      console.log(this.dataArrayColumns[1][i]);
+            console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
+            console.log(typeof this.dataArrayColumns[1][i] === 'string');*/
       if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
         (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
         // || regex.search(this.dataArrayColumns[1][i])) {
@@ -216,7 +231,7 @@ export class ImportDataComponent implements OnInit{
     this.stage = 2;
     this.fileRename = this.selectedHeader.map(a => a.name);
     this.alias = this.fileName;
-    //console.log('END');
+    // console.log('END');
   }
 
   onChange(event) {
@@ -279,13 +294,13 @@ export class ImportDataComponent implements OnInit{
       console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
       console.log(typeof this.dataArrayColumns[1][i] === 'string');
       if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
-          (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
+        (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
         // || regex.search(this.dataArrayColumns[1][i])) {
         this.start = this.dataArrayColumns[1][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
         // console.log('start', this.start);
         // break;
-    }
+      }
 
     }
 
@@ -318,29 +333,39 @@ export class ImportDataComponent implements OnInit{
       }
 
     }
-
-
     this.dataArrayColumns = holder;
-
-
-    this.indexFileStore.addIntoDB(this.alias, this.dataWithHeader, this.dataArrayColumns,
-      this.selectedHeader, displayHeader, this.header, this.start, this.end, '', this.data_count, this.number_columns, this.fileType);
+    const id = this.data.getRandomInt(9999999);
+    const dataList: DataList = {
+      id: id,
+      name: this.alias,
+      content: this.dataWithHeader,
+      dataArrayColumns: this.dataArrayColumns,
+      headerDetails: this.selectedHeader,
+      selectedHeader: displayHeader,
+      header: this.header,
+      startDate: this.start,
+      endDate: this.end,
+      interval: '',
+      countOfRow: this.data_count,
+      countOfColumn: this.number_columns,
+      fileType: this.fileType,
+      dateUpload: 'DateUpload'
+    };
+    this.indexFileStore.addIntoDBFileInput(dataList);
     setTimeout(() => {
       this.bsModalRef.hide();
       console.log('Send Data');
     }, 2000);
   }
-
   columnNameChange(event) {
     this.fileRename[parseInt(event.target.id, 10)] = event.target.value;
-
   }
 
   rename(event) {
     this.alias = event.target.value;
   }
 
-  public handler(type: string, $event: ModalDirective ) {
+  public handler(type: string, $event: ModalDirective) {
     console.log(
       `event ${type} is fired${$event.dismissReason
         ? ', dismissed by ' + $event.dismissReason

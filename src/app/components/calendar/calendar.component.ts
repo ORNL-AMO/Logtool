@@ -186,7 +186,7 @@ export class CalendarComponent implements OnInit {
     for (let i = 0; i < this.dayList.length; i++) {
       for (let j = 0; j < this.dayList[i].values.length; j++) {
         this.months.push({index: this.dayList[i].values[j].key, year: this.dayList[i].key});
-        //console.log(this.months[i]);
+        // console.log(this.months[i]);
         if (this.dayList[i].values[j].values.length > this.weekCount) {
           this.weekCount = this.dayList[i].values[j].values.length;
         }
@@ -204,7 +204,7 @@ export class CalendarComponent implements OnInit {
     this.yearSpacing = [0];
     let index = 0;
     for (const year of this.dayList) {
-      //console.log(year);
+      // console.log(year);
       this.yearSpacing[index + 1] = this.yearSpacing[index] + this.weekSpacing * year.values.length;
       index++;
     }
@@ -342,21 +342,21 @@ export class CalendarComponent implements OnInit {
 
   // Array search functions for svg
   indexToMonth(d) {
-    //console.log(d);
+    // console.log(d);
     return this.monthList[d.index - 1] + ' ' + d.year;
   }
 
   // Set initial color
   setColor(key) {
-    //console.log(key);
+    // console.log(key);
     const obj = this.days.find(obj1 =>
       obj1.date.getFullYear() === key.getFullYear() &&  obj1.date.getMonth() === key.getMonth() && obj1.date.getDate() === key.getDate());
 
     if (obj !== undefined) {
       return this.binList.find(bin => bin.binName === obj.bin).binColor;
     } else {
-      //console.log(this.days);
-      //console.log(key, this.days[this.days.length-1]);
+      // console.log(this.days);
+      // console.log(key, this.days[this.days.length-1]);
       return 'purple';
     }
   }

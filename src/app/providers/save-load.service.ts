@@ -1,27 +1,29 @@
 import {Injectable} from '@angular/core';
 import {IndexFileStoreService} from './index-file-store.service';
 import {LoadList} from '../types/load-list';
+import {DataService} from './data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SaveLoadService {
 
-  constructor(private indexFileStore: IndexFileStoreService) {
+  constructor(private indexFileStore: IndexFileStoreService, private data: DataService) {
   }
 
-  saveSession(name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[], loadValueColumnCount: any[],
+  saveSession(fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[], loadValueColumnCount: any[],
               columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[], selectedBinList: any[], days: any[],
               selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any, showBinMode: boolean, mac: boolean,
               toggleRelayoutDay: boolean, annotationListDayAverage: any[], annotationListBinAverage: any[],
               globalYAverageDay: any[], globalYAverageBin: any[], saveLoadMode: boolean) {
-    const id = this.getRandomInt(9999999);
+    const id = this.data.getRandomInt(9999999);
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
       selectedDatesValue.push(value);
     });
     const saveSessionData: LoadList = {
       id: id,
+      fileInputId: fileInputId,
       name: name,
       displayName: displayName,
       loadDataFromFile: loadDataFromFile,
@@ -48,11 +50,7 @@ export class SaveLoadService {
     this.indexFileStore.addIntoDBSaveInput(saveSessionData);
   }
 
-  getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max));
-  }
-
-  updateSession(id: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
+  updateSession(id: Number, fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
                 loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
                 selectedBinList: any[], days: any[], selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any,
                 showBinMode: boolean, mac: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
@@ -63,6 +61,7 @@ export class SaveLoadService {
     });
     const saveSessionData: LoadList = {
       id: id,
+      fileInputId: fileInputId,
       name: name,
       displayName: displayName,
       loadDataFromFile: loadDataFromFile,

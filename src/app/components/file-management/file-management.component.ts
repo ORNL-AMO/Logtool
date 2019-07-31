@@ -1,12 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {ImportJsonFileComponent} from '../import-json-file/import-json-file.component';
 import {SaveLoadService} from '../../providers/save-load.service';
-import {LoadList} from '../../types/load-list';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
-import {GraphCalculationService} from '../../providers/graph-calculation.service';
-import {GraphCreationService} from '../../providers/graph-creation.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
@@ -83,6 +79,7 @@ export class FileManagementComponent implements OnInit {
         end: activeFile.endDate,
       };
 
+
     }
   }
 
@@ -95,6 +92,7 @@ export class FileManagementComponent implements OnInit {
   snapSelect(event) {}
 
   // adds selected class to target
+
   toggleHighlight(event, file) {
 
     const list = document.getElementById(event.target.id).classList;
@@ -115,11 +113,7 @@ export class FileManagementComponent implements OnInit {
       });
 
     }
-    console.log(this.selected);
-    /*    const selectedArray = document.getElementsByClassName('selected');
-        for (let n = 0; n < selectedArray.length; n++) {
-          selectedArray[n].classList.remove('selected');
-        }*/
+
 
   }
 
