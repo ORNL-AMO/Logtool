@@ -213,9 +213,7 @@
             <li class="nav-item" *ngFor="let tab of tabs">
 
               <div class="nav-link" (click)="changeDisplayTable(tab.tabId)"
-                   [ngStyle]="{'background-color' :activeTab === tab.tabId ? 'rgba(0,0,255,.75)': 'rgba(0,0,255,.5)',
-                                'border-width'    :activeTab === tab.tabId ? '3px': '2px',
-                                'width'           : getTabWidth(tab) }">
+                   [ngStyle]="{'width'           : getTabWidth(tab) }">
                 <!--tab.name.length * 12 + 10 + 'px' }">-->
                 <span id={{tab.tabId}} style="margin: 10px 5px;">{{tab.name}}</span>
                 <button (click)="removeFile($event, tab.id, tab.tabId)"
@@ -228,10 +226,8 @@
         </div>
       </div>
 
-      <div class="table-display">
-        <router-outlet></router-outlet>
-        <!--[style.max-width] = getTableWidth()-->
-      </div>
+
+
 
     </div>
 

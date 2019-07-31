@@ -43,7 +43,12 @@ const routes: Routes = [
   },
   {
     path: 'file-manage',
-    component: FileManagementComponent
+    component: FileManagementComponent,
+    children: [
+      {
+        path: 'table-data',
+        component: TableDataComponent,
+      }]
   }
 ];
 

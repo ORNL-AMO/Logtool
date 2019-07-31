@@ -80,3 +80,44 @@ p {
 .inactive{
   pointer-events: none;
 }
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  li {
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+// Basic containers
+.table-display {
+  display: block;
+  position: relative;
+  margin: auto 2% 12px 2%;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.nav-link {
+  font-size: medium;
+  border: 2px solid black;
+  padding:0;
+  margin: 1px;
+  min-height:30px;
+  color: white;
+  background-color: rgba(0,0,255,.75)
+}
+.scrolling-wrapper-flexbox {
+
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1;
+  overflow-x: auto;
+  min-width: 0;
+}
+
