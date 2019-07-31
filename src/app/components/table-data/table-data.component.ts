@@ -31,7 +31,7 @@ export class TableDataComponent implements OnInit {
           for (let i = 0; i < columnDefs.length; i++) {
             header.push(columnDefs[i].headerName);
             if (i > 5) {
-              width = width + 200;
+              width = width + 150;
             }
           }
           const data = [{
@@ -64,7 +64,7 @@ export class TableDataComponent implements OnInit {
                 overflowX: 'scroll'
               },
               height: 200,
-              //width: width
+              width: width
             },
             config: {
               'showLink': false,
