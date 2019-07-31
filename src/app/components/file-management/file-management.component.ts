@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {ImportJsonFileComponent} from '../import-json-file/import-json-file.component';
 import {SaveLoadService} from '../../providers/save-load.service';
-import {LoadList} from '../../types/load-list';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
-import {GraphCalculationService} from '../../providers/graph-calculation.service';
-import {GraphCreationService} from '../../providers/graph-creation.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 
@@ -42,7 +38,7 @@ export class FileManagementComponent implements OnInit {
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
         this.fileList = [];
-        //console.log(this.dataFromDialog);
+        // console.log(this.dataFromDialog);
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           this.fileList.push({
             name: this.dataFromDialog[i].name,
@@ -74,7 +70,7 @@ export class FileManagementComponent implements OnInit {
         columnCount: activeFile.countOfColumn,
 
 
-      }
+      };
       console.log(activeFile);
 
     }
@@ -91,7 +87,7 @@ export class FileManagementComponent implements OnInit {
     this.toggleHighlight(event);
   }
 
-  //adds selected class to target
+  // adds selected class to target
   toggleHighlight(event) {
 
     const list = document.getElementById(event.target.id).classList;
@@ -101,10 +97,6 @@ export class FileManagementComponent implements OnInit {
     } else {
       list.add('selected');
     }
-    /*    const selectedArray = document.getElementsByClassName('selected');
-        for (let n = 0; n < selectedArray.length; n++) {
-          selectedArray[n].classList.remove('selected');
-        }*/
 
   }
 

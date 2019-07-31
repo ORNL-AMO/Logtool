@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
-    this.graph='line_graph'
+    this.graph = 'line_graph';
     this.dataFromDialog = [];
     this.lineListY = [];
     this.timeSeriesY = [];

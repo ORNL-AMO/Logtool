@@ -79,9 +79,12 @@ export class ExportCSVService {
     fs.writeFileSync('JSON.json', dataString);
   }
 
-  readJsonFile(data) {
+  readJsonFileSnapShot(data) {
     for (let i = 0; i < data.length; i++) {
       this.indexFileStore.addIntoDBSaveInputFromFile(data[i]);
     }
+  }
+  readJsonFileVisualizer(data) {
+
   }
 }

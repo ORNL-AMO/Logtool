@@ -13,7 +13,6 @@ import {ExportCSVService} from '../../providers/export-csv.service';
 import {CalendarComponent} from '../calendar/calendar.component';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
-import {ImportDataComponent} from '../import-data/import-data.component';
 import {ImportJsonFileComponent} from '../import-json-file/import-json-file.component';
 
 
@@ -56,6 +55,7 @@ export class HolderDayTypeComponent implements OnInit {
   loadTimeSeriesDayType = [];
   loadValueColumnCount = [];
   columnMainArray = [];
+  fileInputId;
   sumArray = [];
 
   binList = [];
@@ -185,6 +185,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.columnSelector = [];
     const currentSelectedFile = event.target.value;
     const tempHeader = this.dataFromInput[parseInt(currentSelectedFile, 10)].selectedHeader;
+    this.fileInputId = this.dataFromInput.fileInputId;
     for (let i = 0; i < tempHeader.length; i++) {
       console.log(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0]);
       if (!(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
@@ -435,11 +436,10 @@ export class HolderDayTypeComponent implements OnInit {
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
 
 
-
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType,
         this.selectedColumnPointer, this.saveLoadMode);
       this.days = returnObject.days;
-      //console.log(this.timeSeriesDayType);
+      // console.log(this.timeSeriesDayType);
       this.columnMainArray = returnObject.columnMainArray;
       this.loadDataFromFile = returnObject.loadDataFromFile;
       this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
@@ -448,7 +448,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphDayAverage(0);
       this.calculateBinAverage(0);
       this.calendar.binList = this.binList;
-      //console.log(this.timeSeriesDayType);
+      // console.log(this.timeSeriesDayType);
       this.calendar.days = this.days;
       this.calendar.daysToNest = this.timeSeriesDayType;
       this.calendar.load();
@@ -575,7 +575,7 @@ export class HolderDayTypeComponent implements OnInit {
 // 3438957
   saveSession() {
     if (this.saveLoadMode) {
-      this.saveLoad.updateSession(this.loadSaveLoadId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+      this.saveLoad.updateSession(this.loadSaveLoadId, this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
@@ -586,7 +586,7 @@ export class HolderDayTypeComponent implements OnInit {
         return;
       }
       console.log(this.selectedDates);
-      this.saveLoad.saveSession(this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+      this.saveLoad.saveSession(this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
@@ -656,7 +656,7 @@ export class HolderDayTypeComponent implements OnInit {
   showDropDown(flag) {
     this.updateStash();
     const target = document.getElementById('dropdown');
-    //console.log(this.snapShotStash);
+    // console.log(this.snapShotStash);
     if (target.style.display === 'none' && flag) {
       target.style.display = 'block';
       document.getElementById('selected').style.border = '1px solid rgba(255,165,0,.75)';
