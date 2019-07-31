@@ -94,10 +94,12 @@ ul {
 // Basic containers
 .table-display {
   display: block;
+  overflow: auto;
   position: relative;
   margin: auto 2% 12px 2%;
   cursor: pointer;
   font-size: 18px;
+
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
