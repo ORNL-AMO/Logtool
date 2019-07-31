@@ -171,6 +171,8 @@ input:checked ~ .checkmark {
 .table-display {
   display: block;
   position: relative;
+  overflow: auto;
+  min-width: 300px;
   margin: auto 2% 12px 2%;
   cursor: pointer;
   font-size: 18px;

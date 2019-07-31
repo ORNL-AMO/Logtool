@@ -27,17 +27,15 @@ export class TableDataComponent implements OnInit {
           const columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
           const dataArrayColumns = this.inputDataArray[this.arrayPointer].dataArrayColumns;
           const header = [];
-          const columnOrder = [];
-          const columnWidth = [];
+          let width = 1000;
           for (let i = 0; i < columnDefs.length; i++) {
             header.push(columnDefs[i].headerName);
-            columnOrder.push(i);
-            columnWidth.push(700);
+            if (i > 5) {
+              width = width + 200;
+            }
           }
           const data = [{
             type: 'table',
-            columnorder: columnOrder,
-            columnwidth: columnWidth,
             header: {
               values: header,
               align: 'center',
@@ -55,21 +53,25 @@ export class TableDataComponent implements OnInit {
           this.graph = {
             data: data,
             layout: {
-              autosize: false,
+              autosize: true,
               margin: {
                 t: 5,
                 r: 20,
                 b: 10,
                 l: 20
               },
-              height: 200
+              style_table: {
+                overflowX: 'scroll'
+              },
+              height: 200,
+              //width: width
             },
             config: {
               'showLink': false,
               'scrollZoom': false,
               'displayModeBar': false,
               'editable': false,
-              'responsive': false,
+              'responsive': true,
               'displaylogo': false,
               'hovermode': false
             }
