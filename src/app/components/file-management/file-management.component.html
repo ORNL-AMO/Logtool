@@ -13,7 +13,7 @@
             <!-- [(ngModel)]="inputFile" -->
           </div>
           <div class="col-3" style="padding-left: 5px; padding-right: 5px;">
-            <button class="btn" style="height: 30px; width:100%" (click) = "showInputModal()">Import</button>
+            <button class="btn" style="height: 30px; width:100%" (click)="showInputModal()">Import</button>
           </div>
         </div>
       </div>
@@ -26,21 +26,21 @@
 
         <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
           <div class="row tight-fit justify-content-center">
-              <p class="tight-fit" style="text-align: center; ">Name:</p>
+            <p class="tight-fit" style="text-align: center; ">Name:</p>
           </div>
         </div>
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
           <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
-               id="file{{i}}" (click)="fileSelect($event, file.id);"
+               id="{{i}}" (click)="fileSelect($event, file);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-              <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
+            <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Snapshots -->
+    <!-- DT Snapshots -->
     <div class="row snug">
       <div class="panel">
         <div class="header tight-fit">Day Type Snapshots</div>
@@ -84,6 +84,7 @@
       </div>
     </div>
 
+    <!-- VS Snapshots -->
     <div class="row snug">
       <div class="panel">
         <div class="header tight-fit">Visualization Snapshots</div>
@@ -136,7 +137,36 @@
   </div>
 
   <!-- Metadata and table -->
-  <div class="col snug" style="min-height: 100%">
+  <div class="col-7 snug" style="min-height: 100%">
+    <div class="row snug">
+      <div class="panel" style="height: 300px;">
+        <div class="header tight-fit">File Contents</div>
+
+        <!-- tabs -->
+        <div class="row " style="margin-left: 2%; margin-right: 2%; width:96%;">
+          <ul class="scrolling-wrapper-flexbox tight-fit">
+            <li class="nav-item" *ngFor="let tab of selected"
+                (click)="changeDisplayTable(tab.tabId)"
+                [ngStyle]="{'min-width' : getTabWidth(tab) }">
+              <div class="nav-link">
+                <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
+                <button (click)="removeFile($event, tab.id, tab.tabId)"
+                        style="padding-top: 0; margin-top:3px; float: right; font-size: 10px; height:20px">x
+                </button>
+
+              </div>
+            </li>
+          </ul>
+        </div>
+
+
+        <div class="table-display">
+          <router-outlet></router-outlet>
+          <!--[style.max-width] = getTableWidth()-->
+        </div>
+
+      </div>
+    </div>
     <div class="row snug ">
       <div class="panel">
         <div class="header tight-fit">Record MetaData</div>
@@ -173,23 +203,23 @@
           <!-- Original File -->
           <div class="col-4">
             <p class="tight-fit">Original File:</p>
-            <p class="tight-fit">original name:</p>
-            <p class="tight-fit">Current Name </p>
+            <p class="tight-fit">original name:  {{activeStats.name}}</p>
+            <p class="tight-fit">Current Name:  </p>
             <p class="tight-fit">Date File uploaded</p>
           </div>
 
           <!-- sample meta data-->
           <div class="col-4">
             <p class="tight-fit">Sample Information</p>
-            <p class="tight-fit"># of Samples (rows)</p>
-            <p class="tight-fit">device channels (cols)</p>
+            <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
+            <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
           </div>
 
           <!-- time series Data -->
           <div class="col-4">
             <p class="tight-fit">Time frame</p>
-            <p class="tight-fit">Start</p>
-            <p class="tight-fit">End</p>
+            <p class="tight-fit">Start: {{activeStats.start}}</p>
+            <p class="tight-fit">End: &nbsp; {{activeStats.end}}</p>
           </div>
 
         </div>
@@ -201,39 +231,51 @@
     </div>
     <div class="row snug">
       <div class="panel">
-        <div class="header tight-fit">File Contents</div>
+
       </div>
     </div>
   </div>
 
   <!-- Navigate, Export, && Instructions -->
-  <div class="snug" style="min-height: 100%; width: 400px; margin-right: 20px;">
+  <div class="snug col" style="min-height: 100%; margin-right: 20px;">
     <div class="row snug">
-      <div class="col-6" style="padding-left: 0; padding-right: 5px">
-      <div class="panel">
-        <div class="header tight-fit">Visualizations</div>
-        <div class="row" style="margin: 5px;">
-          <div class="col-6 tight-fit">
-            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Basic Graphs</button>
-          </div>
-          <div class="col-6 tight-fit">
-            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Day Types</button>
+      <!-- <div class="col-6" style="padding-left: 0; padding-right: 5px">
+   &lt;!&ndash;    <div class="panel">
+         <div class="header tight-fit">Visualizations</div>
+         <div class="row" style="margin: 5px;">
+           <div class="col-6 tight-fit">
+             <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Basic Graphs</button>
+           </div>
+           <div class="col-6 tight-fit">
+             <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Day Types</button>
+           </div>
+         </div>
+       </div>&ndash;&gt;
+       </div>-->
+      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
+        <div class="panel">
+          <div class="header tight-fit">Export Selected</div>
+          <div class="row" style="margin: 5px;">
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As CSV</button>
+            </div>
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+            </div>
           </div>
         </div>
       </div>
-      </div>
-      <div class="col-6" style="padding-right: 0; padding-left: 5px;">
-      <div class="panel">
-        <div class="header tight-fit">Export</div>
-        <div class="row" style="margin: 5px;">
-          <div class="col-6 tight-fit">
-            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As CSV</button>
-          </div>
-          <div class="col-6 tight-fit">
-            <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+    </div>
+    <div class="row snug">
+      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
+        <div class="panel">
+          <div class="header tight-fit">Export Database</div>
+          <div class="row" style="margin: 5px;">
+            <div class="col-12 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
     <div class="row snug">

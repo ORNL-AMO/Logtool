@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -13,7 +13,7 @@ import * as XLSX from 'xlsx';
   // encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
 })
 
-export class ImportDataComponent implements OnInit {
+export class ImportDataComponent implements OnInit{
   fileName: any;
   fileContent: any = '';
   header = [];
@@ -32,17 +32,18 @@ export class ImportDataComponent implements OnInit {
   fileType = '';
   headerFind: any;
   path: any;
+  workbook: any;
+  worksheet: any;
 
-  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService, private bsModalRef: BsModalRef) {}
+  constructor(private indexFileStore: IndexFileStoreService, private bsModalRef: BsModalRef) {}
 
-  progress(event) { this.stage = 3; }
+  progress(event) { this.stage = 3;  }
   regress()  { this.stage--; }
 
   ngOnInit() {
     //this.fileName = 'Please select a file to upload';
-    //this.stage = 1;
+    this.stage = 1;
     this.headerFind = 'auto';
-    this.fileName = '';
     this.fileContent = '';
     this.header = [];
     this.selectedHeader = [];
@@ -52,33 +53,23 @@ export class ImportDataComponent implements OnInit {
     this.number_columns = '';
     this.readFirstRow = [];
     this.dataWithHeader = [];
-    this.dataArrayColumns = [];
-    if (this.readFile() < 0){
-      this.bsModalRef.hide();
-      return;
-    }
+    this.readFile();
   }
 
+
+
   readFile() {
-    console.log('HERE');
-    let workbook = null;
-    try {
-      workbook = XLSX.readFile(this.path, {cellDates: true});
-    } catch {
-      alert('error parsing file');
 
-      console.log('Boo');
-      return -1;
-    }
+    console.log('in modal');
+    console.log(this.worksheet);
+    console.log(this.workbook);
+    console.log(this.dataArrayColumns);
 
-    if (workbook === null) {return; }
-    const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
+    //this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
+    console.log(typeof this.dataArrayColumns[0]);
 
 
-    this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-    console.log(this.dataArrayColumns[0] instanceof Object);
-
-    if (this.dataArrayColumns[0] instanceof Object){
+    if ( !(this.dataArrayColumns[0] instanceof Object)) {
       alert('error parsing file, please confirm file is in a supported format');
       return;
     }
@@ -88,22 +79,37 @@ export class ImportDataComponent implements OnInit {
     let headerIndex = 0;
     let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
 
-    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    const range = XLSX.utils.decode_range(this.worksheet['!ref']);
     const numColumns = range.e.c + 1;
+    console.log(this.dataArrayColumns[headerIndex]);
 
-    while (checkHeader.length < numColumns && headerIndex < this.dataArrayColumns.length) {
+    let check1 = 0 , check2 = 0, check3 = 0;
+    //check1 = checkHeader.length;
+
+    while (checkHeader.length < numColumns && headerIndex < 5) {
+      console.log(headerIndex, check1, check2, check3);// this.dataArrayColumns.length) {
+      check3 = check2;
+      check2 = check1;
+      check1 = checkHeader.length;
       headerIndex++;
       checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+      if (check1 === check2  && check1 === check3) {
+        console.log('trip', Object.values(this.dataArrayColumns[headerIndex - 3]));
+        headerIndex = headerIndex - 3;
+        checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+        break;
+      }
     }
 
     if (headerIndex !== 0) {
       range.s.r = range.s.r + headerIndex;
-      worksheet['!ref'] = XLSX.utils.encode_range(range);
-      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+      this.worksheet['!ref'] = XLSX.utils.encode_range(range);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     } else {
-      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     }
     this.header = Object.values(this.dataArrayColumns[headerIndex]);
+
 
     this.stage = 2;
     this.onAutoSelection(headerIndex);
