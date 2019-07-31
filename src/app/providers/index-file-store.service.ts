@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {NgxIndexedDB} from 'ngx-indexed-db';
 import {DataService} from './data.service';
 import {LoadList} from '../types/load-list';
+import {FileMetaData} from '../types/file-meta-data';
+import {DataList} from '../types/data-list';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class IndexFileStoreService {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
       const transaction = evt.currentTarget.result;
-      const objectStore = transaction.createObjectStore('fileInput', {keyPath: 'id', autoIncrement: true});
+      const objectStore = transaction.createObjectStore('fileInput', {keyPath: 'id', unique: true});
+      objectStore.createIndex('id', 'id', {unique: true});
       objectStore.createIndex('name', 'name', {unique: true});
       objectStore.createIndex('content', 'content', {unique: false});
       objectStore.createIndex('dataArrayColumns', 'dataArrayColumns', {unique: false});
@@ -28,9 +31,10 @@ export class IndexFileStoreService {
       objectStore.createIndex('countOfRow', 'countOfRow', {unique: false});
       objectStore.createIndex('countOfColumn', 'countOfColumn', {unique: false});
       objectStore.createIndex('fileType', 'fileType', {unique: false});
-      const transactionSaveInput = evt.currentTarget.result;
-      const objectStoreLoad = transactionSaveInput.createObjectStore('saveInput', {keyPath: 'id', unique: true});
+      objectStore.createIndex('dateUpload', 'dateUpload', {unique: false});
+      const objectStoreLoad = transaction.createObjectStore('dayType', {keyPath: 'id', unique: true});
       objectStoreLoad.createIndex('id', 'id', {unique: true});
+      objectStoreLoad.createIndex('fileInputId', 'fileInputId', {unique: false});
       objectStoreLoad.createIndex('name', 'name', {unique: false});
       objectStoreLoad.createIndex('displayName', 'displayName', {unique: true});
       objectStoreLoad.createIndex('loadDataFromFile', 'loadDataFromFile', {unique: false});
@@ -55,6 +59,18 @@ export class IndexFileStoreService {
       objectStoreLoad.createIndex('loadGlobalYAverageDay', 'loadGlobalYAverageDay', {unique: false});
       objectStoreLoad.createIndex('loadGlobalYAverageBin', 'loadGlobalYAverageBin', {unique: false});
       objectStoreLoad.createIndex('saveLoadMode', 'saveLoadMode', {unique: false});
+      const objectStoreFile = transaction.createObjectStore('fileMetaData', {keyPath: 'id', unique: true});
+      objectStoreFile.createIndex('id', 'id', {unique: true});
+      objectStoreFile.createIndex('fileInputId', 'fileInputId', {unique: false});
+      objectStoreFile.createIndex('companyName', 'companyName', {unique: false});
+      objectStoreFile.createIndex('facilityName', 'facilityName', {unique: false});
+      objectStoreFile.createIndex('facilityContactName', 'facilityContactName', {unique: false});
+      objectStoreFile.createIndex('assessmentContactName', 'assessmentContactName', {unique: false});
+      objectStoreFile.createIndex('address', 'address', {unique: false});
+      objectStoreFile.createIndex('facilityContact', 'facilityContact', {unique: false});
+      objectStoreFile.createIndex('assessmentContact', 'assessmentContact', {unique: false});
+      objectStoreFile.createIndex('facilityEmail', 'facilityEmail', {unique: false});
+      objectStoreFile.createIndex('assessmentEmail', 'assessmentEmail', {unique: false});
     }).then(() => {
       },
       error => {
@@ -62,25 +78,54 @@ export class IndexFileStoreService {
       });
   }
 
-  addIntoDB(name, content, dataArrayColumns, headerDetails,
-            selectedHeader, header, startDate, endDate, interval, countOfRow, countOfColumn, fileType) {
+  addIntoDBFileInput(dataList: DataList) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
       db.add('fileInput',
         {
-          name: name,
-          content: content,
-          dataArrayColumns: dataArrayColumns,
-          headerDetails: headerDetails,
-          selectedHeader: selectedHeader,
-          header: header,
-          startDate: startDate,
-          endDate: endDate,
-          interval: interval,
-          countOfRow: countOfRow,
-          countOfColumn: countOfColumn,
-          fileType: fileType
+          id: dataList.id,
+          name: dataList.name,
+          content: dataList.content,
+          dataArrayColumns: dataList.dataArrayColumns,
+          headerDetails: dataList.headerDetails,
+          selectedHeader: dataList.selectedHeader,
+          header: dataList.header,
+          startDate: dataList.startDate,
+          endDate: dataList.endDate,
+          interval: dataList.interval,
+          countOfRow: dataList.countOfRow,
+          countOfColumn: dataList.countOfColumn,
+          fileType: dataList.fileType,
+          dateUpload: dataList.dateUpload
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+          console.log(error);
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  addIntoDBFileMetaData(fileMetaData: FileMetaData) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('fileMetaData',
+        {
+          id: fileMetaData.id,
+          fileInputId: fileMetaData.fileInputId,
+          companyName: fileMetaData.companyName,
+          facilityName: fileMetaData.facilityName,
+          facilityContactName: fileMetaData.facilityContactName,
+          assessmentContactName: fileMetaData.assessmentContactName,
+          address: fileMetaData.address,
+          facilityContact: fileMetaData.facilityContact,
+          assessmentContact: fileMetaData.assessmentContact,
+          facilityEmail: fileMetaData.facilityEmail,
+          assessmentEmail: fileMetaData.assessmentEmail
         }).then(() => {
         },
         error => {
@@ -96,7 +141,7 @@ export class IndexFileStoreService {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
-      db.add('saveInput',
+      db.add('dayType',
         {
           id: loadSessionData.id,
           name: loadSessionData.name,
@@ -121,6 +166,33 @@ export class IndexFileStoreService {
           loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
           loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
           saveLoadMode: loadSessionData.saveLoadMode
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  addIntoDBFileMetaDataFromFile(fileMetaData: FileMetaData) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('fileMetaData',
+        {
+          id: fileMetaData.id,
+          fileInputId: fileMetaData.fileInputId,
+          companyName: fileMetaData.companyName,
+          facilityName: fileMetaData.facilityName,
+          facilityContactName: fileMetaData.facilityContactName,
+          assessmentContactName: fileMetaData.assessmentContactName,
+          address: fileMetaData.address,
+          facilityContact: fileMetaData.facilityContact,
+          assessmentContact: fileMetaData.assessmentContact,
+          facilityEmail: fileMetaData.facilityEmail,
+          assessmentEmail: fileMetaData.assessmentEmail
         }).then(() => {
         },
         error => {
@@ -154,9 +226,10 @@ export class IndexFileStoreService {
           loadSessionData.loadSelectedBinList[i][j].date = new Date(loadSessionData.loadSelectedBinList[i][j].date);
         }
       }
-      db.add('saveInput',
+      db.add('dayType',
         {
           id: loadSessionData.id,
+          fileInputId: loadSessionData.fileInputId,
           name: loadSessionData.name,
           displayName: loadSessionData.displayName,
           loadDataFromFile: loadSessionData.loadDataFromFile,
@@ -189,13 +262,40 @@ export class IndexFileStoreService {
     });
   }
 
+  updateIntoDBFileMetaData(fileMetaData: FileMetaData) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('fileMetaData',
+        {
+          id: fileMetaData.id,
+          companyName: fileMetaData.companyName,
+          facilityName: fileMetaData.facilityName,
+          facilityContactName: fileMetaData.facilityContactName,
+          assessmentContactName: fileMetaData.assessmentContactName,
+          address: fileMetaData.address,
+          facilityContact: fileMetaData.facilityContact,
+          assessmentContact: fileMetaData.assessmentContact,
+          facilityEmail: fileMetaData.facilityEmail,
+          assessmentEmail: fileMetaData.assessmentEmail
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
   updateIntoDBSaveInput(loadSessionData: LoadList) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
-      db.update('saveInput',
+      db.update('dayType',
         {
           id: loadSessionData.id,
+          fileInputId: loadSessionData.fileInputId,
           name: loadSessionData.name,
           displayName: loadSessionData.displayName,
           loadDataFromFile: loadSessionData.loadDataFromFile,
@@ -266,7 +366,7 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('saveInput').then(saveInput => {
+          db.getAll('dayType').then(saveInput => {
             for (let i = 0; i < saveInput.length; i++) {
               id.push(saveInput[i].id);
             }
@@ -285,7 +385,7 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getByIndex('saveInput', 'id', id).then(saveInput => {
+          db.getByIndex('dayType', 'id', id).then(saveInput => {
             resolve(saveInput);
             this.data.changeSingleInputSaveLoad(saveInput);
           });
@@ -311,12 +411,27 @@ export class IndexFileStoreService {
     });
   }
 
+  deleteFromDBFileMetaData(index) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('fileMetaData', index).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
   deleteFromDBSaveLoad(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-        db.delete('saveInput', id).then(() => {
+        db.delete('dayType', id).then(() => {
             console.log('Deleted');
           },
           error => {

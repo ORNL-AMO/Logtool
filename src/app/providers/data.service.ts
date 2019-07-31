@@ -80,4 +80,7 @@ export class DataService {
     }
     return returnData;
   }
+  getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
 }

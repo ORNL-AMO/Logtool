@@ -1,6 +1,6 @@
 export class LoadList {
   constructor(
-    public id: Number, public name: String, public displayName: String, public loadDataFromFile: Array<any>,
+    public id: Number, public fileInputId: Number, public name: String, public displayName: String, public loadDataFromFile: Array<any>,
     public loadTimeSeriesDayType: Array<any>, public loadValueColumnCount: Array<any>, public loadColumnMainArray: Array<any>,
     public loadSumArray: Array<any>, public loadBinList: Array<any>, public loadDisplayBinList: Array<any>,
     public loadSelectedBinList: Array<any>, public loadDays: Array<any>, public loadSelectedDates: Array<any>,
