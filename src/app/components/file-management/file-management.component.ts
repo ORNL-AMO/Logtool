@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {SaveLoadService} from '../../providers/save-load.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
@@ -24,6 +23,7 @@ export class FileManagementComponent implements OnInit {
   bsModalRef: BsModalRef;
   private filetype: any;
   private selected: any;
+
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
@@ -78,8 +78,6 @@ export class FileManagementComponent implements OnInit {
         start: activeFile.startDate,
         end: activeFile.endDate,
       };
-
-
     }
   }
 
@@ -130,6 +128,7 @@ export class FileManagementComponent implements OnInit {
       return;
     }
 
+
     let dataFromFile: LoadList[];
     try {
       dataFromFile = JSON.parse(fs.readFileSync(this.inputFile.path).toLocaleString());
@@ -160,6 +159,10 @@ export class FileManagementComponent implements OnInit {
         alert('File unable to be parsed, Please confirm file is of a supported type');
       }
     }
+
+
+
+  saveMetaData(event) {
 
 
   }
