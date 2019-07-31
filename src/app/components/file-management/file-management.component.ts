@@ -9,6 +9,8 @@ import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import {tryCatch} from 'rxjs/internal-compatibility';
 import {Router} from '@angular/router';
+import {SaveLoadService} from '../../providers/save-load.service';
+import {LoadList} from '../../types/load-list';
 
 
 @Component({
@@ -68,7 +70,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   getMetadata() {
-    if (this.active !== undefined && this.dataFromDialog !== null) {
+    if (this.active !== undefined && this.dataFromDialog !== null && this.active > 0) {
       const activeFile = this.dataFromDialog.find(obj => obj.id === this.active);
       this.activeStats = {
         name: activeFile.name,
@@ -79,12 +81,18 @@ export class FileManagementComponent implements OnInit {
         end: activeFile.endDate,
       };
     }
+    else{this.activeStats = null;}
   }
 
   fileSelect(event, file) {
+    console.log('fileSelect');
     this.toggleHighlight(event, file);
-    this.active = file.id;
+    if(this.selected.length > 0) {
+      this.active = file.id;
+    }else{ this.active = -1;}
+    console.log(this.active);
     this.getMetadata();
+    this.changeDisplayTable(this.active);
   }
 
   snapSelect(event) {}
@@ -121,17 +129,14 @@ export class FileManagementComponent implements OnInit {
     console.log(this.inputFile);
   }
 
-
   showInputModal() {
     if (this.inputFile === undefined) {
       alert('No input file detected please select a file');
       return;
     }
 
-
-    let dataFromFile: LoadList[];
     try {
-      dataFromFile = JSON.parse(fs.readFileSync(this.inputFile.path).toLocaleString());
+      const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(this.inputFile.path).toLocaleString());
       // this.exportCsv.readJsonFile(dataFromFile);
       alert('First catch');
       return;
@@ -153,26 +158,25 @@ export class FileManagementComponent implements OnInit {
         };
         this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
         this.bsModalRef.content.closeBtnName = 'Close';
-        this.modalService.onHidden.subscribe(() => {this.generateFileList(); });
+        this.modalService.onHidden.subscribe(() => {
+          this.generateFileList();
+        });
 
       } catch {
         alert('File unable to be parsed, Please confirm file is of a supported type');
       }
     }
-
-
-
-  saveMetaData(event) {
-
-
   }
+
+
+  saveMetaData(event) {}
 
   getTabWidth(tab) {
       // Create fake div
       const fakeDiv = document.createElement('span');
       fakeDiv.style.fontSize = '15px';
       fakeDiv.innerHTML = tab.name;
-      //console.log(tab.name);
+
       fakeDiv.id = 'testbed';
       document.body.appendChild(fakeDiv);
 
@@ -180,7 +184,7 @@ export class FileManagementComponent implements OnInit {
       // Remove div after obtaining desired color value
       document.body.removeChild(fakeDiv);
 
-      //console.log(pv);
+
       return pv + 40 + 'px';
 
     }

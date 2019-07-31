@@ -55,7 +55,7 @@ export class TableDataComponent implements OnInit {
           this.graph = {
             data: data,
             layout: {
-              autosize: true,
+              autosize: false,
               margin: {
                 t: 5,
                 r: 20,
@@ -69,7 +69,7 @@ export class TableDataComponent implements OnInit {
               'scrollZoom': false,
               'displayModeBar': false,
               'editable': false,
-              'responsive': true,
+              'responsive': false,
               'displaylogo': false,
               'hovermode': false
             }

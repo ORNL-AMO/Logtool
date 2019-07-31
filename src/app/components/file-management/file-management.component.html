@@ -142,6 +142,7 @@
       <div class="panel" style="height: 300px;">
         <div class="header tight-fit">File Contents</div>
 
+
         <!-- tabs -->
         <div class="row " style="margin-left: 2%; margin-right: 2%; width:96%;">
           <ul class="scrolling-wrapper-flexbox tight-fit">
@@ -160,16 +161,18 @@
         </div>
 
 
-        <div class="table-display">
+        <div class="table-display" *ngIf="active >= 0">
           <router-outlet></router-outlet>
           <!--[style.max-width] = getTableWidth()-->
-        </div>
+
+      </div>
 
       </div>
     </div>
     <div class="row snug ">
       <div class="panel">
         <div class="header tight-fit">Record MetaData</div>
+        <div *ngIf="activeStats != undefined && activeStats != null">
         <!-- Facility and Contact information -->
         <div class="row" style="border: 3px solid black; margin: 5px;">
           <div class="col-4">
@@ -226,6 +229,7 @@
 
         <div class="row" style="margin: 5px;">
           <p>NOTES:</p>
+        </div>
         </div>
       </div>
     </div>
