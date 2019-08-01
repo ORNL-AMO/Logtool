@@ -12,6 +12,7 @@ import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
 import {Address} from '../../types/address';
 import {FileMetaData} from '../../types/file-meta-data';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
 @Component({
   selector: 'app-file-management',
@@ -38,7 +39,8 @@ export class FileManagementComponent implements OnInit {
   private activeStats: any;
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService,
+              private routeService: RouteDataTransferService) {
   }
 
   inputFile: any;
@@ -104,7 +106,27 @@ export class FileManagementComponent implements OnInit {
     });
   }
 
-  // Selection functions
+
+
+  // Change visuals based on active selection
+  getFileData() {
+    if (this.dataFromDialog !== null && this.active > -1) {
+      const targetId = this.fileList[this.active].id;
+      const activeFile = this.dataFromDialog.find(obj => obj.id === targetId);
+      this.activeStats = {
+        name: activeFile.name,
+        type: activeFile.fileType,
+        rowCount: activeFile.countOfRow,
+        columnCount: activeFile.countOfColumn,
+        start: activeFile.startDate,
+        end: activeFile.endDate,
+      };
+    } else {
+      this.activeStats = null;
+    }
+  }
+
+
   toggleSelect(index, file) {
     const content = this.selected.findIndex(obj => obj.name === file.name);
     if (content < 0) {
@@ -229,6 +251,7 @@ export class FileManagementComponent implements OnInit {
   saveMetaData(event) {
     this.activeMetaData.fileInputId = this.fileList[this.active].id;
 
+
     // add check to see if this.activeMetaData.fileInputId is in database already
     if (true) {
       //this.activeMetaData.id = this.indexFileStore;
@@ -244,6 +267,7 @@ export class FileManagementComponent implements OnInit {
 
   // Miscellaneous
   // used to size tabs
+
   getTabWidth(tab) {
     // Create fake div
     const fakeDiv = document.createElement('span');
@@ -256,4 +280,13 @@ export class FileManagementComponent implements OnInit {
     document.body.removeChild(fakeDiv);
     return pv + 40 + 'px';
   }
+
+  sendSnapShotLoadData() {
+    const dataSend = {
+      loadMode: true,
+      id: 'id'
+    };
+    this.routeService.storage = dataSend;
+  }
+
 }

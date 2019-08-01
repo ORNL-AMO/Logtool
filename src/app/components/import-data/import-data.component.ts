@@ -15,7 +15,7 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
   // encapsulation: ViewEncapsulation.None,   // THIS IS IMPORTANT FOR READING THE SCSS
 })
 
-export class ImportDataComponent implements OnInit{
+export class ImportDataComponent implements OnInit {
   fileName: any;
   fileContent: any = '';
   header = [];
@@ -78,7 +78,7 @@ export class ImportDataComponent implements OnInit{
     console.log(this.dataArrayColumns);
 
 
-    //this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
+    // this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
     console.log(typeof this.dataArrayColumns[0]);
 
 
@@ -99,10 +99,10 @@ export class ImportDataComponent implements OnInit{
     console.log(this.dataArrayColumns[headerIndex]);
 
     let check1 = 0 , check2 = 0, check3 = 0;
-    //check1 = checkHeader.length;
+    // check1 = checkHeader.length;
 
     while (checkHeader.length < numColumns && headerIndex < 5) {
-      console.log(headerIndex, check1, check2, check3);// this.dataArrayColumns.length) {
+      console.log(headerIndex, check1, check2, check3); // this.dataArrayColumns.length) {
       check3 = check2;
       check2 = check1;
       check1 = checkHeader.length;

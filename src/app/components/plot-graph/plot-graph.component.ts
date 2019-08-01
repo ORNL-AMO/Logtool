@@ -2,9 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {DataService} from '../../providers/data.service';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
-import { GraphStats } from '../../types/graph-stats';
+import {GraphStats} from '../../types/graph-stats';
 import * as XLSX from 'xlsx';
 import * as stats from 'stats-lite';
+import {VisualizeLoadGraph} from '../../types/visualize-load-graph';
+import {IndexFileStoreService} from '../../providers/index-file-store.service';
 
 
 @Component({
@@ -31,33 +33,37 @@ export class PlotGraphComponent implements OnInit {
   globalXAverage = [];
   type;
 
-  constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService) {
+  constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService,
+              private indexFileStore: IndexFileStoreService) {
   }
+
   public stats: GraphStats;
+
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
       this.annotationListLine = [];
       this.annotationListScatter = [];
       this.displayGraph(this.graphType);
     } else {
-      this.annotationListLine = [];
-      this.annotationListScatter = [];
-      this.data.currentDataInputArray.subscribe(input => this.dataInput = input);
-      this.graphType = this.routeDataTransfer.storage.graphType;
-      this.displayGraph(this.graphType);
+      const loadMode = this.routeDataTransfer.storage.loadMode;
+      if (loadMode) {
+        console.log('Inside');
+        this.loadDisplayGraph(this.routeDataTransfer.storage.result.graph);
+      } else {
+        this.annotationListLine = [];
+        this.annotationListScatter = [];
+        this.data.currentDataInputArray.subscribe(input => this.dataInput = input);
+        this.graphType = this.routeDataTransfer.storage.graphType;
+        this.displayGraph(this.graphType);
+      }
     }
   }
 
 
   onCreateCsv() {
-    // set up workbook and sheet to catch data
     const wb = XLSX.utils.book_new();
-
     const input: any[] = [];
     input[0] = [];
-
-    // Get header data
-    // Get time series or X value based on graph type
     if (this.routeDataTransfer.storage.graphType === 'scatter_graph') {
       input[0].push(this.routeDataTransfer.storage.x.name);
     } else {
@@ -101,6 +107,24 @@ export class PlotGraphComponent implements OnInit {
       }
     }
     XLSX.writeFile(wb, 'THISPAGE.csv', {bookType: 'csv'});
+  }
+
+  saveGraph() {
+    if (this.graphType === undefined || this.graphType === '') {
+      alert('No Graph to Save');
+      return;
+    } else {
+      const graph: VisualizeLoadGraph = {
+        id: this.data.getRandomInt(999999),
+        graph: this.graph,
+        visualizeMode: true
+      };
+      this.indexFileStore.addIntoDBGraph(graph);
+    }
+  }
+
+  loadDisplayGraph(graph) {
+    this.graph = graph;
   }
 
   displayGraph(type) {
@@ -448,7 +472,8 @@ export class PlotGraphComponent implements OnInit {
         }
       }
     }
-    this.stats = new GraphStats(this.globalYMin, this.globalXMax, this.globalYMin, this.globalYMax, this.globalXAverage, this.globalYAverage);
+    this.stats = new GraphStats(this.globalYMin, this.globalXMax, this.globalYMin, this.globalYMax,
+      this.globalXAverage, this.globalYAverage);
   }
 
   plotFirstHistogram(calculationArray) {

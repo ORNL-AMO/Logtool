@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit, DoCheck {
   bsModalRef: BsModalRef;
   activeTab;
   differ: any;
-
+  loadMode = false;
   binType = -1;
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
@@ -51,33 +51,45 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
-    this.graph = 'line_graph';
-    this.dataFromDialog = [];
-    this.lineListY = [];
-    this.timeSeriesY = [];
-    this.scatterList = [];
-    this.indexFileStore.viewDataDB().then(result => {
-      this.dataFromDialog = result;
-      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
-      } else {
+    this.loadMode = this.routeDataTransfer.storage.loadMode;
+    if (this.loadMode) {
+      const id = this.routeDataTransfer.storage.id;
+      this.indexFileStore.viewSingleDataDBGraph(id).then(result => {
+        const sendData = {
+          loadMode: true,
+          result: result
+        };
+        this.routeDataTransfer.storage = sendData;
         this.plotGraph.ngOnInit();
-        this.tabs = [];
-        for (let i = 0; i < this.dataFromDialog.length; i++) {
-          // console.log(this.dataFromDialog[i].id);
-          this.tabs.push({
-            name: this.dataFromDialog[i].name,
-            id: this.dataFromDialog[i].id,
-            tabId: i
-          });
+      });
+    } else {
+      this.graph = 'line_graph';
+      this.dataFromDialog = [];
+      this.lineListY = [];
+      this.timeSeriesY = [];
+      this.scatterList = [];
+      this.indexFileStore.viewDataDB().then(result => {
+        this.dataFromDialog = result;
+        if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+        } else {
+          this.plotGraph.ngOnInit();
+          this.tabs = [];
+          for (let i = 0; i < this.dataFromDialog.length; i++) {
+            this.tabs.push({
+              name: this.dataFromDialog[i].name,
+              id: this.dataFromDialog[i].id,
+              tabId: i
+            });
+          }
+          // console.log(this.tabs);
+          this.populateSpinner();
+          this.populateGraph();
+          this.changeDisplayTable(0);
         }
-        // console.log(this.tabs);
-        this.populateSpinner();
-        this.populateGraph();
-        this.changeDisplayTable(0);
-      }
-    }, error => {
-      console.log(error);
-    });
+      }, error => {
+        console.log(error);
+      });
+    }
   }
 
   ngDoCheck(): void {
@@ -119,7 +131,8 @@ export class HomeComponent implements OnInit, DoCheck {
       this.routeDataTransfer.storage = {
         value: this.ySelectorListLine,
         timeSeries: this.timeSeriesSelectList,
-        graphType: 'line_graph'
+        graphType: 'line_graph',
+        loadMode: false,
       };
       this.plotGraph.ngOnInit();
 
@@ -127,7 +140,8 @@ export class HomeComponent implements OnInit, DoCheck {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
         y: this.ySelectorListScatter,
-        graphType: 'scatter_graph'
+        graphType: 'scatter_graph',
+        loadMode: false,
       };
       this.plotGraph.ngOnInit();
 
