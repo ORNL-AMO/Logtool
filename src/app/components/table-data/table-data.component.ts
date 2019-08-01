@@ -31,7 +31,7 @@ export class TableDataComponent implements OnInit {
           for (let i = 0; i < columnDefs.length; i++) {
             header.push(columnDefs[i].headerName);
             if (i > 5) {
-              width = width + 150;
+              width = width + 100;
             }
           }
           const data = [{

@@ -54,7 +54,6 @@ export class FileManagementComponent implements OnInit {
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
         this.fileList = [];
-        // console.log(this.dataFromDialog);
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           this.fileList.push({
             name: this.dataFromDialog[i].name,
@@ -117,6 +116,21 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
+  fileSelect(event, file) {
+    console.log('fileSelect');
+    this.toggleHighlight(event, file);
+    if (this.selected.length > 0) {
+      this.active = file.id;
+    } else {
+      this.active = -1;
+    }
+    console.log(this.active);
+    this.getMetadata();
+    this.changeDisplayTable(this.active);
+  }
+
+  snapSelect(event) {
+  }
   tabSelect(index) {
     this.active = index;
     this.activeUpdated();
@@ -128,9 +142,7 @@ export class FileManagementComponent implements OnInit {
     this.getFileData();
     this.changeDisplayTable();
   }
-
-  snapSelect() {}
-
+  
   toggleSelect(index, file) {
     const content = this.selected.findIndex(obj => obj.name === file.name);
     if (content < 0) {
@@ -221,24 +233,29 @@ export class FileManagementComponent implements OnInit {
     this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
   }
 
-  // used to size tabs
+  saveMetaData(event) {
+  }
   getTabWidth(tab) {
     // Create fake div
     const fakeDiv = document.createElement('span');
     fakeDiv.style.fontSize = '15px';
     fakeDiv.innerHTML = tab.name;
-
     fakeDiv.id = 'testbed';
     document.body.appendChild(fakeDiv);
-
     const pv = document.getElementById('testbed').offsetWidth;
     // Remove div after obtaining desired color value
     document.body.removeChild(fakeDiv);
-
-
     return pv + 40 + 'px';
-
   }
 
-
+  changeDisplayTable(value) {
+    this.router.navigateByUrl('/file-manage/table-data', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['/file-manage/table-data'], {
+        queryParams: {
+          value: value
+        }
+      });
+    });
+    this.active = value;
+  }
 }

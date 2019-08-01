@@ -133,7 +133,6 @@ export class ImportDataComponent implements OnInit{
 
 
   onFileSelect(event) {
-
     // reset variables
     this.stage = 1;
     this.fileName = '';
@@ -194,7 +193,6 @@ export class ImportDataComponent implements OnInit{
           }
         }
       }
-
     }
 
     for (let i = 0; i < this.header.length; i++) {
@@ -234,7 +232,7 @@ export class ImportDataComponent implements OnInit{
     this.alias = this.fileName;
     // console.log('END');
   }
-
+/*
   onChange(event) {
     this.fileName = '';
     this.fileContent = '';
@@ -310,7 +308,7 @@ export class ImportDataComponent implements OnInit{
     this.stage = 2;
     this.fileRename = this.selectedHeader.map(a => a.name);
     this.alias = this.fileName;
-  }
+  }*/
 
   submitCheckBox() {
     const displayHeader = [];

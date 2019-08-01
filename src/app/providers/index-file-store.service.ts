@@ -4,6 +4,7 @@ import {DataService} from './data.service';
 import {LoadList} from '../types/load-list';
 import {FileMetaData} from '../types/file-meta-data';
 import {DataList} from '../types/data-list';
+import {AssessmentFile} from '../types/assessment-file';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +72,8 @@ export class IndexFileStoreService {
       objectStoreFile.createIndex('assessmentContact', 'assessmentContact', {unique: false});
       objectStoreFile.createIndex('facilityEmail', 'facilityEmail', {unique: false});
       objectStoreFile.createIndex('assessmentEmail', 'assessmentEmail', {unique: false});
+      const objectStoreAssessment = transaction.createObjectStore('assessmentFile', {keyPath: 'id', unique: true});
+      objectStoreAssessment.createIndex('id', 'id', {unique: true});
     }).then(() => {
       },
       error => {
@@ -175,6 +178,24 @@ export class IndexFileStoreService {
       console.log(error);
     });
   }
+
+  addIntoDBAssessment(assessmentFile: AssessmentFile) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('assessmentFile',
+        {
+          id: assessmentFile.id
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
 
   addIntoDBFileMetaDataFromFile(fileMetaData: FileMetaData) {
     const db = new NgxIndexedDB('LOGGER', 1);
@@ -349,7 +370,7 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('saveInput').then(saveInput => {
+          db.getAll('dayType').then(saveInput => {
             resolve(saveInput);
             this.data.changeInputSaveLoadArray(saveInput);
           });
