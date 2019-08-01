@@ -17,20 +17,30 @@
   </div>
 
   <!-- File upload area stage 1  ------------------------------------------------------>
-  <div class="row justify-content-center" style="min-height: 50px; ">
-    <div class="col-9 drop-area" style="vertical-align: center;"
+  <div class="row justify-content-center" style="min-height:45px; ">
+    <div class="col-9 drop-area" style="vertical-align: center; min-height: 35px"
          [ngStyle]="{'background-color': stage ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
       <input type="file" name="images" id="images" required="required" multiple="multiple"
              (change)="onFileSelect($event)"/>
-      <!--(change)="onChange($event)"/>-->
       <p class="file-box-fill" *ngIf="stage < 2">Click to Upload a File</p>
       <p class="file-box-fill" *ngIf="stage >= 2">{{fileName}}</p>
     </div>
   </div>
 
+  <div class="row justify-content-center" *ngIf="stage == 5">
+      <p class=" col-4">JSON file detected</p>
+     <button class="btn col-2" (click)="confirmJSON()">Import</button>
+     <button class="btn col-2" (click)="bsModalRef.hide()">Cancel</button>
+  </div>
+
+  <div class="row justify-content-center" *ngIf="stage == 404">
+    <p class=" col-4">Unknown File Type Detected</p>
+  </div>
+
+
   <!-- Rename and header selection stage 2 -------------------------------------------->
   <!-- Rename option -->
-  <div class="row justify-content-center" *ngIf="stage > 1">
+  <div class="row justify-content-center" *ngIf="stage > 1 && stage < 5">
     <p style="margin:0">Display Name: <br></p>
     <input type="text" placeholder="{{fileName}}" (change)=rename($event) style="text-align: center;">
   </div>
@@ -49,7 +59,7 @@
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file contains headers different from those shown below" >
       <label class="" for="none"> Manual selection &nbsp;
-        <input type="radio" name="header" checked="checked" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual')">
+        <input type="radio" name="header" checked="checked" value="manual" id="manual" [popover]="pop" [(ngModel)]="headerFind" (change)="check('manual'); showHeaderMod();">
       </label>
     </div>
     <div class="col-4" style="text-align: center"
@@ -71,14 +81,14 @@
     </table>
   </div>
 
-  <div class="row justify-content-center" *ngIf="stage >= 2">
+  <div class="row justify-content-center" *ngIf="stage >= 2 && stage < 5">
     <button *ngIf="stage === 2" (click)="progress($event)">Confirm Headers</button>
     <button *ngIf="stage === 3" (click)="regress()">Go Back to Header Selection</button>
   </div>
 
 
   <!-- metaData display-->
-  <table id="metaData" *ngIf="stage > 2" style="border:thick">
+  <table id="metaData" *ngIf="stage > 2 && stage<5" style="border:thick">
 
     <tr>
       <th>Start Time</th>
@@ -139,3 +149,27 @@
   </div>
 
 </div>
+<ng-template #headerTemplate>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Second modal</h4>
+  </div>
+  <div class="modal-body">
+    This is nested modal.<br>
+  </div>
+</ng-template>
+
+<ng-template #pop id="bob">
+  <div style="width:500px; height:200px" class="panel">
+    <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
+      <p>Please Select the Row containing your headers</p>
+      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="hideSave()">&times;</span>
+    </div>
+    <div class="row justify-content-center">
+        <table>
+          <tr *ngFor="let index of [0,1,2,3,4,5]">
+            <td *ngFor="let col of [0,1,2,3,4,5]"> {{dataArrayColumns[col]}} </td>
+          </tr>
+        </table>
+    </div>
+  </div>
+</ng-template>

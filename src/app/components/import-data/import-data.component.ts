@@ -6,6 +6,9 @@ import * as XLSX from 'xlsx';
 import {DataService} from '../../providers/data.service';
 import {DataList} from '../../types/data-list';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import {LoadList} from '../../types/load-list';
+import * as fs from 'fs';
+import {ExportCSVService} from '../../providers/export-csv.service';
 
 
 @Component({
@@ -16,30 +19,42 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 })
 
 export class ImportDataComponent implements OnInit {
+  stage: number;
+  alias = '';
+
   fileName: any;
-  fileContent: any = '';
+  filePath: any;
+  fileType: any;
+
+  workbook: XLSX.WorkBook;
+  worksheet: XLSX.WorkSheet;
+  dataFromFile: LoadList[];
+
   header = [];
   selectedHeader = [];
+
+
   start: any;
+  interval = '';
   end: any;
   data_count: any;
   number_columns;
   readFirstRow = [];
-  interval = '';
-  stage: number;
+
+  fileContent: any = '';
   dataWithHeader = [];
   dataArrayColumns = [];
   fileRename = [];
-  alias = '';
-  fileType = '';
+
   headerFind: any;
-  path: any;
-  workbook: any;
-  worksheet: any;
+
+
+
 
 
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
-              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
+              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
+              private exportCSV: ExportCSVService) {
   }
 
   progress(event) {
@@ -51,9 +66,10 @@ export class ImportDataComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.fileName = 'Please select a file to upload';
-    // this.stage = 1;
+      this.stage = 1;
+  }
 
+  /*readFile() {
     this.headerFind = 'auto';
     this.fileContent = '';
     this.header = [];
@@ -64,13 +80,6 @@ export class ImportDataComponent implements OnInit {
     this.number_columns = '';
     this.readFirstRow = [];
     this.dataWithHeader = [];
-    this.readFile();
-
-
-  }
-
-  readFile() {
-
 
     console.log('in modal');
     console.log(this.worksheet);
@@ -128,61 +137,100 @@ export class ImportDataComponent implements OnInit {
 
     this.stage = 2;
     this.onAutoSelection(headerIndex);
-  }
+  }*/
 
   onFileSelect(event) {
-    // reset variables
     this.stage = 1;
-    this.fileName = '';
-    this.fileContent = '';
-    this.header = [];
-    this.selectedHeader = [];
-    this.start = '';
-    this.end = '';
-    this.data_count = '';
-    this.number_columns = '';
-    this.readFirstRow = [];
-    this.dataWithHeader = [];
-    this.dataArrayColumns = [];
-
-    // read file
     const files = event.target.files;
     const f = files[0];
     this.fileName = f.name;
     this.fileType = f.type;
-    const workbook = XLSX.readFile(f.path, {cellDates: true});
-    const worksheet: XLSX.WorkSheet = workbook.Sheets[workbook.SheetNames[0]];
-    this.dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+    this.filePath = f.path;
+
+    try {
+      this.dataFromFile = JSON.parse(fs.readFileSync(this.filePath).toLocaleString());
+      console.log('json');
+      this.stage = 5;
+    } catch {
+      try {
+        this.workbook = XLSX.readFile(f.path, {cellDates: true});
+        this.worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
+        this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
+        this.stage = 2;
+        this.CSVGetHeaders();
+      } catch (e) {
+        this.stage = 404;
+        return;
+      }
+    }
+
+  }
+
+  confirmJSON() {
+    this.exportCSV.readJsonFileSnapShot(this.dataFromFile);
+    this.bsModalRef.hide();
+  }
+
+  CSVGetHeaders() {
+    this.fileContent = '';
+    this.header = [];
+    this.selectedHeader = [];
+
+    this.start = '';
+    this.end = '';
+    this.data_count = '';
+    this.number_columns = '';
+
+    this.readFirstRow = [];
+    this.dataWithHeader = [];
+
 
     // attempt to find header
     let headerIndex = 0;
     let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+    console.log('first', checkHeader);
 
-    const range = XLSX.utils.decode_range(worksheet['!ref']);
-    const numColumns = range.e.c + 1;
+    const range = XLSX.utils.decode_range(this.worksheet['!ref']);
+    const numColumns = range.e.c + 1; // range is 0 based;
 
-    while (checkHeader.length < numColumns && headerIndex < this.dataArrayColumns.length) {
+    let check3 = 0 , check2 = 0, check1 = checkHeader.length;
+
+    while (checkHeader.length < numColumns && headerIndex < 10) {
       headerIndex++;
       checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+
+      check3 = check2;
+      check2 = check1;
+      check1 = checkHeader.length;
+
+      if (check3 === check1 && check3 === check2) {
+        console.log(headerIndex);
+        headerIndex = headerIndex - 2;
+        checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
+        break;
+      }
+
     }
+    this.dataArrayColumns.shift();
+    console.log(this.dataArrayColumns);
+    this.header = checkHeader;
 
     if (headerIndex !== 0) {
       range.s.r = range.s.r + headerIndex;
-      worksheet['!ref'] = XLSX.utils.encode_range(range);
-      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+      this.worksheet['!ref'] = XLSX.utils.encode_range(range);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     } else {
-      this.dataWithHeader = XLSX.utils.sheet_to_json(worksheet);
+      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     }
-    this.header = Object.values(this.dataArrayColumns[headerIndex]);
-
     this.stage = 2;
-    this.onAutoSelection(headerIndex);
+    this.getFirstRow(headerIndex);
+    this.getTimeSeries(headerIndex);
   }
 
-  onAutoSelection(headerIndex) {
+  getFirstRow(headerIndex) {
     this.readFirstRow = [];
     for (let i = 0; i < this.header.length; i++) {
-      this.readFirstRow[i] = this.dataArrayColumns[headerIndex + 1][i];
+      this.readFirstRow[i] = this.dataArrayColumns[headerIndex][i];
       if (this.readFirstRow[i] === undefined) {
         for (let j = headerIndex + 2; j < 100; j++) {
           this.readFirstRow[i] = this.dataArrayColumns[j][i];
@@ -202,22 +250,25 @@ export class ImportDataComponent implements OnInit {
         name: this.header[i]
       });
     }
-    console.log('selectedHeader', this.selectedHeader);
+    //console.log('selectedHeader', this.selectedHeader);
+  }
+
+  getTimeSeries(headerIndex){
+    // regex for detecting unusual date types
     const regex = '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
       '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
-    // console.log(this.dataArrayColumns);
+
+    const index = headerIndex + 1;
     for (let i = 0; i < this.header.length; i++) {
-      /*      console.log(this.dataArrayColumns[1][i]);
-            console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
-            console.log(typeof this.dataArrayColumns[1][i] === 'string');*/
-      if ((isNaN(parseInt(this.dataArrayColumns[headerIndex+1][i], 10)) && Date.parse(this.dataArrayColumns[headerIndex+1][i])) ||
-        (typeof this.dataArrayColumns[headerIndex+1][i] === 'string' && this.dataArrayColumns[headerIndex+1][i].search(regex))) {
-        // || regex.search(this.dataArrayColumns[1][i])) {
-        this.start = this.dataArrayColumns[headerIndex+1][i];
+      // column is timeSeries if not a number and parsable as date , or matches regex above
+      if ((isNaN(parseInt(this.dataArrayColumns[index][i], 10)) && Date.parse(this.dataArrayColumns[index][i])) ||
+        (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(regex))) {
+
+        this.start = this.dataArrayColumns[index][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
-        // console.log('start', this.start);
+
         break;
       }
 

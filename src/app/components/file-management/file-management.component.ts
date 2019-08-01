@@ -13,6 +13,7 @@ import {LoadList} from '../../types/load-list';
 import {Address} from '../../types/address';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import {FileImportComponent} from '../file-import/file-import.component';
 
 @Component({
   selector: 'app-file-management',
@@ -24,7 +25,8 @@ export class FileManagementComponent implements OnInit {
   private fileList: any;
   private snapShotList: any[];
 
-  bsModalRef: BsModalRef;
+  FileRef: BsModalRef;
+  LoadRef: BsModalRef;
   private filetype: any;
 
   // list of selected files
@@ -207,20 +209,28 @@ export class FileManagementComponent implements OnInit {
     this.inputFile = event.target.files[0];
     this.filetype = this.inputFile.type;
   }
-  showInputModal() {
-    if (this.inputFile === undefined) {
-      alert('No input file detected please select a file');
-      return;
-    }
 
-    try {
-      const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(this.inputFile.path).toLocaleString());
-      // this.exportCsv.readJsonFile(dataFromFile);
-      alert('First catch');
-      return;
-    } catch {
-      try {
-        const loadedWorkbook = XLSX.readFile(this.inputFile.path, {cellDates: true});
+  showInputModal() {
+    this.FileRef = this.modalService.show(ImportDataComponent);
+    this.modalService.onHide.subscribe( () => {
+      this.generateFileList();
+    });
+  }
+
+  showParsingModal() {
+
+  }
+
+  showHeaderModal() {
+
+  }
+
+    /*this.modalService.onHide.subscribe(() => {
+      const result = this.bsModalRef.content.test;
+      if (result.type === 'json') {
+         console.log('json detected');
+       } else if (result.type === 'csv') {
+        const loadedWorkbook = XLSX.readFile(result.path, {cellDates: true});
         const worksheet: XLSX.WorkSheet = loadedWorkbook.Sheets[loadedWorkbook.SheetNames[0]];
         const dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
         const initialState = {
@@ -240,11 +250,12 @@ export class FileManagementComponent implements OnInit {
           this.generateFileList();
         });
 
-      } catch {
+      } else {
         alert('File unable to be parsed, Please confirm file is of a supported type');
       }
-    }
-  }
+    });
+
+  }*/
 
 
   // Push data to database
