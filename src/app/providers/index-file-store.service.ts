@@ -74,6 +74,7 @@ export class IndexFileStoreService {
       objectStoreFile.createIndex('assessmentEmail', 'assessmentEmail', {unique: false});
       const objectStoreVisualize = transaction.createObjectStore('visualizeGraphStore', {keyPath: 'id', unique: true});
       objectStoreVisualize.createIndex('id', 'id', {unique: true});
+      objectStoreVisualize.createIndex('displayName', 'displayName', {unique: false});
       objectStoreVisualize.createIndex('graph', 'graph', {unique: false});
       objectStoreVisualize.createIndex('visualizeMode', 'visualizeMode', {unique: false});
     }).then(() => {
@@ -188,6 +189,7 @@ export class IndexFileStoreService {
       db.add('visualizeGraphStore',
         {
           id: graph.id,
+          displayName: graph.displayName,
           graph: graph.graph,
           visualizeMode: graph.visualizeMode
         }).then(() => {
@@ -353,14 +355,14 @@ export class IndexFileStoreService {
     });
   }
 
-  viewDataDB() {
+  viewDataDBGraph() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('fileInput').then(fileInput => {
+          db.getAll('visualizeGraphStore').then(fileInput => {
             resolve(fileInput);
-            this.data.changeInputArray(fileInput);
+            this.data.changeInputGraphArray(fileInput);
           });
         },
         error => {
@@ -377,6 +379,22 @@ export class IndexFileStoreService {
           db.getAll('dayType').then(saveInput => {
             resolve(saveInput);
             this.data.changeInputSaveLoadArray(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewDataDB() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('fileInput').then(saveInput => {
+            resolve(saveInput);
+            this.data.changeInputArray(saveInput);
           });
         },
         error => {

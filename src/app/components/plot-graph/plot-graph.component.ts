@@ -116,6 +116,7 @@ export class PlotGraphComponent implements OnInit {
     } else {
       const graph: VisualizeLoadGraph = {
         id: this.data.getRandomInt(999999),
+        displayName: '1233445656',
         graph: this.graph,
         visualizeMode: true
       };
