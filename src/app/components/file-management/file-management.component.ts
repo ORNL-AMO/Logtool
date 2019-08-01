@@ -47,7 +47,6 @@ export class FileManagementComponent implements OnInit {
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
         this.fileList = [];
-        // console.log(this.dataFromDialog);
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           this.fileList.push({
             name: this.dataFromDialog[i].name,
@@ -80,22 +79,26 @@ export class FileManagementComponent implements OnInit {
         start: activeFile.startDate,
         end: activeFile.endDate,
       };
+    } else {
+      this.activeStats = null;
     }
-    else{this.activeStats = null;}
   }
 
   fileSelect(event, file) {
     console.log('fileSelect');
     this.toggleHighlight(event, file);
-    if(this.selected.length > 0) {
+    if (this.selected.length > 0) {
       this.active = file.id;
-    }else{ this.active = -1;}
+    } else {
+      this.active = -1;
+    }
     console.log(this.active);
     this.getMetadata();
     this.changeDisplayTable(this.active);
   }
 
-  snapSelect(event) {}
+  snapSelect(event) {
+  }
 
   // adds selected class to target
 
@@ -107,20 +110,19 @@ export class FileManagementComponent implements OnInit {
       list.remove('selected');
       const index = this.selected.findIndex(obj => obj.name === file.name);
       if (this.selected[index].tabId === this.active) {
-        if(this.selected.length === 1) { this.changeDisplayTable(-1); }
+        if (this.selected.length === 1) {
+          this.changeDisplayTable(-1);
         }
-        this.selected.splice(index,1);
-        } else {
+      }
+      this.selected.splice(index, 1);
+    } else {
       list.add('selected');
       this.selected.push({
         name: file.name,
-        id : event.target.id,
-        tabId: this.selected.length === 0 ? 0 : this.selected[this.selected.length -1].tabId + 1,
+        id: event.target.id,
+        tabId: this.selected.length === 0 ? 0 : this.selected[this.selected.length - 1].tabId + 1,
       });
-
     }
-
-
   }
 
   getFile(event) {
@@ -169,25 +171,26 @@ export class FileManagementComponent implements OnInit {
   }
 
 
-  saveMetaData(event) {}
+  saveMetaData(event) {
+  }
 
   getTabWidth(tab) {
-      // Create fake div
-      const fakeDiv = document.createElement('span');
-      fakeDiv.style.fontSize = '15px';
-      fakeDiv.innerHTML = tab.name;
+    // Create fake div
+    const fakeDiv = document.createElement('span');
+    fakeDiv.style.fontSize = '15px';
+    fakeDiv.innerHTML = tab.name;
 
-      fakeDiv.id = 'testbed';
-      document.body.appendChild(fakeDiv);
+    fakeDiv.id = 'testbed';
+    document.body.appendChild(fakeDiv);
 
-      const pv = document.getElementById('testbed').offsetWidth;
-      // Remove div after obtaining desired color value
-      document.body.removeChild(fakeDiv);
+    const pv = document.getElementById('testbed').offsetWidth;
+    // Remove div after obtaining desired color value
+    document.body.removeChild(fakeDiv);
 
 
-      return pv + 40 + 'px';
+    return pv + 40 + 'px';
 
-    }
+  }
 
   changeDisplayTable(value) {
     this.router.navigateByUrl('/file-manage/table-data', {skipLocationChange: true}).then(() => {

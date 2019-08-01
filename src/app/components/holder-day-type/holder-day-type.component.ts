@@ -575,10 +575,10 @@ export class HolderDayTypeComponent implements OnInit {
 // 3438957
   saveSession() {
     if (this.saveLoadMode) {
-      this.saveLoad.updateSession(this.loadSaveLoadId, this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
-        this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
-        this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
-        this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
+      this.saveLoad.updateSession(this.loadSaveLoadId, this.fileInputId, this.columnSelectorList[0].name, this.sesName,
+        this.loadDataFromFile, this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray,
+        this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
+        this.graphBinAverage, this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
         this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.saveLoadMode);
     } else {
       if (this.sesName === '' || this.sesName === undefined) {
