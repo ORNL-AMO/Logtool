@@ -32,7 +32,9 @@
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
           <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
-               id="{{i}}" (click)="fileSelect($event, file);"
+               [ngStyle]="{'background' : file.selected ? 'blue' : 'white',
+                           'color' : file.selected ? 'white': 'black'}"
+               id="{{i}}" (click)="toggleSelect(i, file);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
             <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
           </div>
@@ -147,9 +149,9 @@
         <div class="row " style="margin-left: 2%; margin-right: 2%; width:96%;">
           <ul class="scrolling-wrapper-flexbox tight-fit">
             <li class="nav-item" *ngFor="let tab of selected"
-                (click)="changeDisplayTable(tab.tabId)"
-                [ngStyle]="{'min-width' : getTabWidth(tab) }">
-              <div class="nav-link">
+                [ngStyle]="{'min-width' : getTabWidth(tab)}">
+              <div class="nav-link" (click)="tabSelect(tab.tabID)"
+                   [ngStyle]="{'background': active == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
                 <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
                 <button (click)="removeFile($event, tab.id, tab.tabId)"
                         style="padding-top: 0; margin-top:3px; float: right; font-size: 10px; height:20px">x
@@ -165,7 +167,7 @@
           <router-outlet></router-outlet>
           <!--[style.max-width] = getTableWidth()-->
 
-      </div>
+        </div>
 
       </div>
     </div>
@@ -173,73 +175,142 @@
       <div class="panel">
         <div class="header tight-fit">Record MetaData</div>
         <div *ngIf="activeStats != undefined && activeStats != null">
-        <!-- Facility and Contact information -->
-        <div class="row" style="border: 3px solid black; margin: 5px;">
-          <div class="col-4">
-            <p class="tight-fit">Company: 'Company.Name'</p>
-            <p class="tight-fit">Facility: 'Facility.Name'</p>
-            <p class="tight-fit">Address:</p>
-            <p class="tight-fit">Street</p>
-            <p class="tight-fit">City, State, Zip</p>
-            <p class="tight-fit">Country</p>
-          </div>
-          <div class="col-4">
-            <p class="tight-fit">Facility Contact</p>
-            <p class="tight-fit">Name</p>
-            <p class="tight-fit">Phone</p>
-            <p class="tight-fit">Email</p>
-          </div>
+          <!-- Facility and Contact information -->
+          <div class="row" style="border: 3px solid black; margin: 5px;">
+            <div class="col-4">
+              <div class=row>
+                <p class="tight-fit col-4">Company: </p>
+                <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>
+              <div class=row><p class="tight-fit col-4">Facility:</p>
+                <input class="col-6" type="text"
+                       [(ngModel)]="activeMetaData.facilityName">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="row justify-content-center"><p class="tight-fit">Facility Contact</p></div>
+              <div class="row "><p class="tight-fit col-4">Name</p><input type="text" class="col-6"
+                                                                          [(ngModel)]="activeMetaData.facilityContactName">
+              </div>
+              <div class="row"><p class="tight-fit col-4">Phone</p><input type="text" class="col-6"
+                                                                          [(ngModel)]="activeMetaData.facilityContact">
+              </div>
+              <div class="row"><p class="tight-fit col-4">Email</p><input type="text" class="col-6"
+                                                                          [(ngModel)]="activeMetaData.facilityEmail">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="row justify-content-center"><p class="tight-fit">Assessment Contact</p>
+                <div class="row"><p class="tight-fit col-4">Name</p>  <input type="text" class="col-6"
+                                                                             [(ngModel)]="activeMetaData.assessmentContactName">
+                </div>
+                <div class="row"><p class="tight-fit col-4">Phone</p> <input type="text" class="col-6"
+                                                                             [(ngModel)]="activeMetaData.assessmentContact">
+                </div>
+                <div class="row"><p class="tight-fit col-4">Email</p> <input type="text" class="col-6"
+                                                                             [(ngModel)]="activeMetaData.assessmentEmail">
+                </div>
+              </div>
 
 
-          <div class="col-4">
-            <p class="tight-fit">Assessment Contact</p>
-            <p class="tight-fit">Name</p>
-            <p class="tight-fit">Phone</p>
-            <p class="tight-fit">Email</p>
+            </div>
+
           </div>
+          <!--<div class="row" style="border: 3px solid black; margin: 5px;"></div>-->
+          <div class="row" style="border: 3px solid black; margin: 5px;">
+            <div class="col-12">
+              <div class="row"><p class="tight-fit">Address:</p></div>
+              <!-- street -->
+              <div class="row justify-content-center">
+                <div class="col-6">
+                  <p class="tight-fit">Street:</p>
+                    <input type="text" style="width:75%" [(ngModel)]="activeMetaData.address.street">
+                </div>
+                <div class="col-6">
+                  <label>Country:
+                    <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                  </label>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <div class="col-4">
+                  <label>City:
+                    <input type="text" [(ngModel)]="activeMetaData.address.city">
+                  </label>
+                </div>
+
+                <div class="col-4">
+                  <label>State:
+                    <input type="text" [(ngModel)]="activeMetaData.address.state">
+                  </label>
+                </div>
+
+                <div class="col-4">
+                  <label>Zip:
+                    <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                  </label>
+                </div>
+
+
+              </div>
+              <!--  <div class=row><p class="tight-fit col-4">State</p>
+                  <input class="col-6" type="text"
+                         [(ngModel)]="activeMetaData.address.state">
+                </div>
+                <div class=row><p class="tight-fit col-4">Zip</p>
+                  <input class="col-6" type="text"
+                         [(ngModel)]="activeMetaData.address.zip"></div>
+                <div class=row><p class="tight-fit col-4">Country</p>
+                  <input class="col-6" type="text"
+                         [(ngModel)]="activeMetaData.address.country">
+                </div>-->
+            </div>
+          </div>
+
+          <!--      <div class="row">-->
+          <!-- <div class="col-9">
+               <div class=row>
+                <label value="Street">
+                 <input class="col-6" type="text" [(ngModel)]="activeMetaData.address.street">
+                </label>
+               </div>
+           </div>-->
+          <!--   </div>-->
+          <!--File data -->
+          <div class="row" style="margin: 5px; border: 3px solid black;">
+            <!-- Original File -->
+            <div class="col-4">
+              <p class="tight-fit">Original File:</p>
+              <p class="tight-fit">original name:  {{activeStats.name}}</p>
+              <p class="tight-fit">Current Name: </p>
+              <p class="tight-fit">Date File uploaded</p>
+            </div>
+
+            <!-- sample meta data-->
+            <div class="col-4">
+              <p class="tight-fit">Sample Information</p>
+              <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
+              <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
+            </div>
+
+            <!-- time series Data -->
+            <div class="col-4">
+              <p class="tight-fit">Time frame</p>
+              <p class="tight-fit">Start: {{activeStats.start}}</p>
+              <p class="tight-fit">End: &nbsp; {{activeStats.end}}</p>
+            </div>
+
+          </div>
+
+          <div class="row" style="margin: 5px;">
+            <p>NOTES:</p>
+            <button class="btn pull-right" style="height: 30px" (click)="saveMetaData($event)">Add meta</button>
+          </div>
+
 
         </div>
-
-
-        <!--File meta data -->
-        <div class="row" style="margin: 5px; border: 3px solid black;">
-          <!-- Original File -->
-          <div class="col-4">
-            <p class="tight-fit">Original File:</p>
-            <p class="tight-fit">original name:  {{activeStats.name}}</p>
-            <p class="tight-fit">Current Name:  </p>
-            <p class="tight-fit">Date File uploaded</p>
-          </div>
-
-          <!-- sample meta data-->
-          <div class="col-4">
-            <p class="tight-fit">Sample Information</p>
-            <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
-            <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
-          </div>
-
-          <!-- time series Data -->
-          <div class="col-4">
-            <p class="tight-fit">Time frame</p>
-            <p class="tight-fit">Start: {{activeStats.start}}</p>
-            <p class="tight-fit">End: &nbsp; {{activeStats.end}}</p>
-          </div>
-
-        </div>
-
-        <div class="row" style="margin: 5px;">
-          <p>NOTES:</p>
-        </div>
-        </div>
-      </div>
-    </div>
-    <div class="row snug">
-      <div class="panel">
-
       </div>
     </div>
   </div>
-
   <!-- Navigate, Export, && Instructions -->
   <div class="snug col" style="min-height: 100%; margin-right: 20px;">
     <div class="row snug">
