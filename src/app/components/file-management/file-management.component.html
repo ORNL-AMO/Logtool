@@ -6,14 +6,14 @@
     <div class="row snug">
       <div class="panel">
         <div class="header tight-fit">Load a File</div>
-        <div class="row" style="margin: 5px;">
+        <div class="row justify-content-center" style="margin: 5px;">
           <div class="col-9">
             <input type="file" name="images" id="images" required="required" multiple="multiple"
                    style="height: 30px; text-overflow: ellipsis" (change)="getFile($event)">
-            <!-- [(ngModel)]="inputFile" -->
+
           </div>
-          <div class="col-3" style="padding-left: 5px; padding-right: 5px;">
-            <button class="btn" style="height: 30px; width:100%" (click)="showInputModal()">Import</button>
+          <div class="col-12" style="padding-left: 5px; padding-right: 5px;">
+            <button class="btn" style="height: 30px; width:30%" (click)="showInputModal()">Import</button>
           </div>
         </div>
       </div>
@@ -36,7 +36,10 @@
                            'color' : file.selected ? 'white': 'black'}"
                id="{{i}}" (click)="toggleSelect(i, file);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <p class="tight-fit inactive" style="text-align: center;">{{file.name}}</p>
+            <p class="tight-fit inactive col-11" style="text-align: center;">{{file.name}}</p>
+            <span class="tight-fit col-1" (click)="removeFile($event, tab.id, tab.tabId)"
+                  style="padding-top: 0; text-align: center; margin-top:3px; float: right; font-size: 12px; background: darkgrey; height:100%">x
+            </span>
           </div>
         </div>
       </div>
@@ -153,9 +156,6 @@
               <div class="nav-link" (click)="tabSelect(tab.tabID)"
                    [ngStyle]="{'background': active == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
                 <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
-                <button (click)="removeFile($event, tab.id, tab.tabId)"
-                        style="padding-top: 0; margin-top:3px; float: right; font-size: 10px; height:20px">x
-                </button>
 
               </div>
             </li>
@@ -172,138 +172,125 @@
       </div>
     </div>
     <div class="row snug ">
-      <div class="panel">
+      <div class="panel" style="min-width: 735px;">
         <div class="header tight-fit">Record MetaData</div>
         <div *ngIf="activeStats != undefined && activeStats != null">
-          <!-- Facility and Contact information -->
-          <div class="row" style="border: 3px solid black; margin: 5px;">
-            <div class="col-4">
-              <div class=row>
-                <p class="tight-fit col-4">Company: </p>
-                <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>
-              <div class=row><p class="tight-fit col-4">Facility:</p>
-                <input class="col-6" type="text"
-                       [(ngModel)]="activeMetaData.facilityName">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="row justify-content-center"><p class="tight-fit">Facility Contact</p></div>
-              <div class="row "><p class="tight-fit col-4">Name</p><input type="text" class="col-6"
-                                                                          [(ngModel)]="activeMetaData.facilityContactName">
-              </div>
-              <div class="row"><p class="tight-fit col-4">Phone</p><input type="text" class="col-6"
-                                                                          [(ngModel)]="activeMetaData.facilityContact">
-              </div>
-              <div class="row"><p class="tight-fit col-4">Email</p><input type="text" class="col-6"
-                                                                          [(ngModel)]="activeMetaData.facilityEmail">
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="row justify-content-center"><p class="tight-fit">Assessment Contact</p>
-                <div class="row"><p class="tight-fit col-4">Name</p>  <input type="text" class="col-6"
-                                                                             [(ngModel)]="activeMetaData.assessmentContactName">
-                </div>
-                <div class="row"><p class="tight-fit col-4">Phone</p> <input type="text" class="col-6"
-                                                                             [(ngModel)]="activeMetaData.assessmentContact">
-                </div>
-                <div class="row"><p class="tight-fit col-4">Email</p> <input type="text" class="col-6"
-                                                                             [(ngModel)]="activeMetaData.assessmentEmail">
+          <div *ngIf="!metahidden">
+            <!-- Facility and Contact information -->
+            <div class="row" style="border: 3px solid black; margin: 5px;">
+              <div class="col-4">
+                <div class="row justify-content-center"><p class="tight-fit"></p>&nbsp;</div>
+                <div class=row>
+                  <p class="tight-fit col-4 meta">Company: </p>
+                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>
+                <div class=row><p class="tight-fit col-4 meta">Facility:</p>
+                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.facilityName">
                 </div>
               </div>
-
-
-            </div>
-
-          </div>
-          <!--<div class="row" style="border: 3px solid black; margin: 5px;"></div>-->
-          <div class="row" style="border: 3px solid black; margin: 5px;">
-            <div class="col-12">
-              <div class="row"><p class="tight-fit">Address:</p></div>
-              <!-- street -->
-              <div class="row justify-content-center">
-                <div class="col-6">
-                  <p class="tight-fit">Street:</p>
-                    <input type="text" style="width:75%" [(ngModel)]="activeMetaData.address.street">
+              <div class="col-4 tight-fit" style="border: 1px solid black">
+                <div class="row justify-content-center"><p class="tight-fit">Facility Contact</p></div>
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
+                                                                                           [(ngModel)]="activeMetaData.facilityContactName">
                 </div>
-                <div class="col-6">
-                  <label>Country:
-                    <input type="text" [(ngModel)]="activeMetaData.address.zip">
-                  </label>
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
+                                                                                            [(ngModel)]="activeMetaData.facilityContact">
+                </div>
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
+                                                                                            [(ngModel)]="activeMetaData.facilityEmail">
                 </div>
               </div>
-              <div class="row justify-content-center">
-                <div class="col-4">
-                  <label>City:
-                    <input type="text" [(ngModel)]="activeMetaData.address.city">
-                  </label>
-                </div>
-
-                <div class="col-4">
-                  <label>State:
-                    <input type="text" [(ngModel)]="activeMetaData.address.state">
-                  </label>
-                </div>
-
-                <div class="col-4">
-                  <label>Zip:
-                    <input type="text" [(ngModel)]="activeMetaData.address.zip">
-                  </label>
+              <div class="col-4 tight-fit" style="border: 1px solid black">
+                <div class="row justify-content-center"><p class="tight-fit">Assessment Contact</p>
+                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Name:</p>  <input type="text"
+                                                                                                class="col-6"
+                                                                                                [(ngModel)]="activeMetaData.assessmentContactName">
+                  </div>
+                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Phone:</p> <input type="text"
+                                                                                                class="col-6"
+                                                                                                [(ngModel)]="activeMetaData.assessmentContact">
+                  </div>
+                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Email:</p> <input type="text"
+                                                                                                class="col-6"
+                                                                                                [(ngModel)]="activeMetaData.assessmentEmail">
+                  </div>
                 </div>
 
 
               </div>
-              <!--  <div class=row><p class="tight-fit col-4">State</p>
-                  <input class="col-6" type="text"
-                         [(ngModel)]="activeMetaData.address.state">
+
+            </div>
+            <div class="row" style="border: 3px solid black; margin: 5px;">
+              <div class="col-12">
+                <div class="row"><p class="tight-fit meta">Address:</p></div>
+                <!-- street -->
+                <div class="row justify-content-center">
+                  <div class="col-6">
+                    <label>Street:
+                      <input type="text" [(ngModel)]="activeMetaData.address.street">
+                    </label>
+                  </div>
+                  <div class="col-6">
+                    <label>Country:
+                      <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                    </label>
+                  </div>
                 </div>
-                <div class=row><p class="tight-fit col-4">Zip</p>
-                  <input class="col-6" type="text"
-                         [(ngModel)]="activeMetaData.address.zip"></div>
-                <div class=row><p class="tight-fit col-4">Country</p>
-                  <input class="col-6" type="text"
-                         [(ngModel)]="activeMetaData.address.country">
-                </div>-->
-            </div>
-          </div>
+                <div class="row justify-content-center">
+                  <div class="col-4">
+                    <label>&nbsp; City:
+                      <input type="text" [(ngModel)]="activeMetaData.address.city">
+                    </label>
+                  </div>
 
-          <!--      <div class="row">-->
-          <!-- <div class="col-9">
-               <div class=row>
-                <label value="Street">
-                 <input class="col-6" type="text" [(ngModel)]="activeMetaData.address.street">
-                </label>
-               </div>
-           </div>-->
-          <!--   </div>-->
-          <!--File data -->
-          <div class="row" style="margin: 5px; border: 3px solid black;">
-            <!-- Original File -->
-            <div class="col-4">
-              <p class="tight-fit">Original File:</p>
-              <p class="tight-fit">original name:  {{activeStats.name}}</p>
-              <p class="tight-fit">Current Name: </p>
-              <p class="tight-fit">Date File uploaded</p>
+                  <div class="col-4">
+                    <label>State:
+                      <input type="text" [(ngModel)]="activeMetaData.address.state">
+                    </label>
+                  </div>
+
+                  <div class="col-4">
+                    <label>Zip:
+                      <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- sample meta data-->
-            <div class="col-4">
-              <p class="tight-fit">Sample Information</p>
-              <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
-              <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
-            </div>
+            <!--File data -->
+            <div class="row" style="margin: 5px; border: 3px solid black;">
+              <!-- Original File -->
+              <div class="col-3">
+                <p class="tight-fit meta">File Name:</p>
+                <p class="tight-fit">{{activeStats.name}}</p>
+              </div>
 
-            <!-- time series Data -->
-            <div class="col-4">
-              <p class="tight-fit">Time frame</p>
-              <p class="tight-fit">Start: {{activeStats.start}}</p>
-              <p class="tight-fit">End: &nbsp; {{activeStats.end}}</p>
-            </div>
+              <!-- sample meta data-->
+              <div class="col-3">
+                <p class="tight-fit meta">Sample Information</p>
+                <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
+                <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
+              </div>
 
+              <!-- time series Data -->
+              <div class="col-6">
+                <p class="tight-fit meta">Time frame</p>
+                <p class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
+                <p class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>
+              </div>
+            </div>
           </div>
 
           <div class="row" style="margin: 5px;">
-            <p>NOTES:</p>
-            <button class="btn pull-right" style="height: 30px" (click)="saveMetaData($event)">Add meta</button>
+            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData($event)">
+              Update MetaData
+            </button>
+            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta($event)">Hide
+              MetaData
+            </button>
+            <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta($event)">Show
+              MetaData
+            </button>
           </div>
 
 

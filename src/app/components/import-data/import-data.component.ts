@@ -66,9 +66,8 @@ export class ImportDataComponent implements OnInit {
     this.dataWithHeader = [];
     this.readFile();
 
+
   }
-
-
 
   readFile() {
 
@@ -130,7 +129,6 @@ export class ImportDataComponent implements OnInit {
     this.stage = 2;
     this.onAutoSelection(headerIndex);
   }
-
 
   onFileSelect(event) {
     // reset variables
@@ -214,10 +212,10 @@ export class ImportDataComponent implements OnInit {
       /*      console.log(this.dataArrayColumns[1][i]);
             console.log(Date.parse(this.dataArrayColumns[1][i]), isNaN(parseInt(this.dataArrayColumns[1][i], 10)));
             console.log(typeof this.dataArrayColumns[1][i] === 'string');*/
-      if ((isNaN(parseInt(this.dataArrayColumns[1][i], 10)) && Date.parse(this.dataArrayColumns[1][i])) ||
-        (typeof this.dataArrayColumns[1][i] === 'string' && this.dataArrayColumns[1][i].search(regex))) {
+      if ((isNaN(parseInt(this.dataArrayColumns[headerIndex+1][i], 10)) && Date.parse(this.dataArrayColumns[headerIndex+1][i])) ||
+        (typeof this.dataArrayColumns[headerIndex+1][i] === 'string' && this.dataArrayColumns[headerIndex+1][i].search(regex))) {
         // || regex.search(this.dataArrayColumns[1][i])) {
-        this.start = this.dataArrayColumns[1][i];
+        this.start = this.dataArrayColumns[headerIndex+1][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
         // console.log('start', this.start);
         break;

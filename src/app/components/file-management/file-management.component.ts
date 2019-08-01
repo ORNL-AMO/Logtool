@@ -22,28 +22,41 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 export class FileManagementComponent implements OnInit {
   private dataFromDialog: any;
   private fileList: any;
-  private active: any;
+  private snapShotList: any[];
+
   bsModalRef: BsModalRef;
   private filetype: any;
+
+  // list of selected files
   private selected: any;
-  activeMetaData: FileMetaData;
+  private active: any;
+
+  // MetaData variables
+  private activeMetaData: FileMetaData;
+  private metaList: any;
+
+  //file data variables
+  private activeStats: any;
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService,
               private routeService: RouteDataTransferService) {
   }
 
-  snapShotList: any[];
-  activeStats: any;
   inputFile: any;
+  metahidden: any;
 
   ngOnInit() {
     this.generateFileList();
     this.generateSnapShotList();
     this.selected = [];
     this.metaDataReset();
-
+    this.metahidden = true;
   }
+
+  blankMetaData() { return  new FileMetaData(0, 0, '', '', '', '',
+    { street: '', city: '', state: '', zip: 0, country: ''},
+    0, 0, '', ''); }
 
   metaDataReset() { this.activeMetaData = new FileMetaData(0, 0, '', '', '', '',
     { street: '', city: '', state: '', zip: 0, country: ''},
@@ -69,7 +82,6 @@ export class FileManagementComponent implements OnInit {
       console.log(error);
     });
   }
-
   generateSnapShotList() {
     this.indexFileStore.viewDataDBSaveInput().then(data => {
       this.data.currentDataInputSaveLoadArray.subscribe(result => {
@@ -77,27 +89,23 @@ export class FileManagementComponent implements OnInit {
       });
     });
   }
-
-  pullMetaData(id) {
+  generateMetaDataList(id) {
     this.indexFileStore.viewDataDB().then(result => {
-      this.dataFromDialog = result;
-      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+      const metaDataFromDialog = result;
+      if (metaDataFromDialog === null || metaDataFromDialog === undefined) {
+        console.log('no metadata found');
       } else {
-        this.fileList = [];
         // console.log(this.dataFromDialog);
-        for (let i = 0; i < this.dataFromDialog.length; i++) {
-          this.fileList.push({
-            name: this.dataFromDialog[i].name,
-            id: this.dataFromDialog[i].id,
-            selected: false
-          });
-        }
+      /*  for (let i = 0; i < metaDataFromDialog.length; i++) {*/
+          this.metaList.push(this.blankMetaData());
+    /*    }*/
 
       }
     }, error => {
       console.log(error);
     });
   }
+
 
 
   // Change visuals based on active selection
@@ -118,19 +126,6 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
-  snapSelect(event) {
-  }
-  tabSelect(index) {
-    this.active = index;
-    this.activeUpdated();
-    console.log(this.activeMetaData.companyName);
-  }
-
-  activeUpdated() {
-    console.log(this.active);
-    this.getFileData();
-    this.changeDisplayTable();
-  }
 
   toggleSelect(index, file) {
     const content = this.selected.findIndex(obj => obj.name === file.name);
@@ -159,7 +154,24 @@ export class FileManagementComponent implements OnInit {
       this.selected.splice(content, 1);
     }
   }
+  tabSelect(index) {
+    this.active = index;
+    this.activeUpdated();
+    console.log(this.activeMetaData.companyName);
+  }
+  snapSelect(event) {}
 
+
+  // update visuals based on selections
+  activeUpdated() {
+    console.log(this.active);
+    this.showFileData();
+    this.showMetaData();
+    this.changeDisplayTable();
+  }
+  showMetaData() {
+    //this.activeMetaData = this.metaList[this.active];
+  }
   changeDisplayTable() {
     // console.log('in router call', this.active);
     this.router.navigateByUrl('/file-manage/table-data', {skipLocationChange: true}).then(() => {
@@ -170,13 +182,31 @@ export class FileManagementComponent implements OnInit {
       });
     });
   }
+  showFileData() {
+    if (this.dataFromDialog !== null && this.active > -1) {
+      const targetId = this.fileList[this.active].id;
+      const activeFile = this.dataFromDialog.find(obj => obj.id === targetId);
+      this.activeStats = {
+        name: activeFile.name,
+        type: activeFile.fileType,
+        rowCount: activeFile.countOfRow,
+        columnCount: activeFile.countOfColumn,
+        start: activeFile.startDate,
+        end: activeFile.endDate,
+      };
+    } else {
+      this.activeStats = null;
+    }
+  }
+  toggleMeta() {
+    this.metahidden = !this.metahidden;
+  }
 
-  // used as part of import
+  // used as part of import currently
   getFile(event) {
     this.inputFile = event.target.files[0];
     this.filetype = this.inputFile.type;
   }
-
   showInputModal() {
     if (this.inputFile === undefined) {
       alert('No input file detected please select a file');
@@ -216,11 +246,28 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
+
+  // Push data to database
   saveMetaData(event) {
     this.activeMetaData.fileInputId = this.fileList[this.active].id;
-    this.activeMetaData.id = 555;
-    this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
+
+
+    // add check to see if this.activeMetaData.fileInputId is in database already
+    if (true) {
+      //this.activeMetaData.id = this.indexFileStore;
+      this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
+
+    } else {
+      this.indexFileStore.updateIntoDBFileMetaData(this.activeMetaData);
+    }
   }
+
+  // Export items
+
+
+  // Miscellaneous
+  // used to size tabs
+
   getTabWidth(tab) {
     // Create fake div
     const fakeDiv = document.createElement('span');
@@ -233,6 +280,7 @@ export class FileManagementComponent implements OnInit {
     document.body.removeChild(fakeDiv);
     return pv + 40 + 'px';
   }
+
   sendSnapShotLoadData() {
     const dataSend = {
       loadMode: true,
@@ -240,4 +288,5 @@ export class FileManagementComponent implements OnInit {
     };
     this.routeService.storage = dataSend;
   }
+
 }
