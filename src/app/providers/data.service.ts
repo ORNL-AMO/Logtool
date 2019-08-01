@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
 import {DataList} from '../types/data-list';
 import {LoadList} from '../types/load-list';
+import {FileMetaData} from '../types/file-meta-data';
+import {VisualizeLoadGraph} from '../types/visualize-load-graph';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +13,20 @@ export class DataService {
   private inputDataSaveLoadArray: LoadList[] = [];
   private inputDataSaveLoadIdArray: Number[] = [];
   private inputSingleDataSaveLoad: LoadList;
+  private inputSingleDataMetaData: FileMetaData;
+  private inputSingleDataGraph: VisualizeLoadGraph;
   private dataInputArray = new BehaviorSubject(this.inputDataArray);
   private dataInputSaveLoadArray = new BehaviorSubject(this.inputDataSaveLoadArray);
   private dataInputSaveLoadIdArray = new BehaviorSubject(this.inputDataSaveLoadIdArray);
   private dataSingleInputSaveLoad = new BehaviorSubject(this.inputSingleDataSaveLoad);
+  private dataSingleInputMetaData = new BehaviorSubject(this.inputSingleDataMetaData);
+  private dataSingleInputGraph = new BehaviorSubject(this.inputSingleDataGraph);
   currentDataInputArray = this.dataInputArray.asObservable();
   currentDataInputSaveLoadArray = this.dataInputSaveLoadArray.asObservable();
   currentDataInputSaveLoadIdArray = this.dataInputSaveLoadIdArray.asObservable();
   currentSingleDataInputSaveLoad = this.dataSingleInputSaveLoad.asObservable();
+  currentSingleDataInputMetaData = this.dataSingleInputMetaData.asObservable();
+  currentSingleDataInputGraph = this.dataSingleInputGraph.asObservable();
 
   constructor() {
   }
@@ -35,6 +43,12 @@ export class DataService {
   }
   changeSingleInputSaveLoad(input: LoadList) {
     this.dataSingleInputSaveLoad.next(input);
+  }
+  changeSingleInputMetaData(input: FileMetaData) {
+    this.dataSingleInputMetaData.next(input);
+  }
+  changeSingleInputGraph(input: VisualizeLoadGraph) {
+    this.dataSingleInputGraph.next(input);
   }
   getMax(data) {
     let max = data[0];

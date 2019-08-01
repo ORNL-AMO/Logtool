@@ -4,7 +4,7 @@ import {DataService} from './data.service';
 import {LoadList} from '../types/load-list';
 import {FileMetaData} from '../types/file-meta-data';
 import {DataList} from '../types/data-list';
-import {AssessmentFile} from '../types/assessment-file';
+import {VisualizeLoadGraph} from '../types/visualize-load-graph';
 
 @Injectable({
   providedIn: 'root'
@@ -72,8 +72,10 @@ export class IndexFileStoreService {
       objectStoreFile.createIndex('assessmentContact', 'assessmentContact', {unique: false});
       objectStoreFile.createIndex('facilityEmail', 'facilityEmail', {unique: false});
       objectStoreFile.createIndex('assessmentEmail', 'assessmentEmail', {unique: false});
-      const objectStoreAssessment = transaction.createObjectStore('assessmentFile', {keyPath: 'id', unique: true});
-      objectStoreAssessment.createIndex('id', 'id', {unique: true});
+      const objectStoreVisualize = transaction.createObjectStore('visualizeGraphStore', {keyPath: 'id', unique: true});
+      objectStoreVisualize.createIndex('id', 'id', {unique: true});
+      objectStoreVisualize.createIndex('graph', 'graph', {unique: false});
+      objectStoreVisualize.createIndex('visualizeMode', 'visualizeMode', {unique: false});
     }).then(() => {
       },
       error => {
@@ -179,13 +181,15 @@ export class IndexFileStoreService {
     });
   }
 
-  addIntoDBAssessment(assessmentFile: AssessmentFile) {
+  addIntoDBGraph(graph: VisualizeLoadGraph) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
-      db.add('assessmentFile',
+      db.add('visualizeGraphStore',
         {
-          id: assessmentFile.id
+          id: graph.id,
+          graph: graph.graph,
+          visualizeMode: graph.visualizeMode
         }).then(() => {
         },
         error => {
@@ -409,6 +413,37 @@ export class IndexFileStoreService {
           db.getByIndex('dayType', 'id', id).then(saveInput => {
             resolve(saveInput);
             this.data.changeSingleInputSaveLoad(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+  viewSingleDataDBGraph(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getByIndex('visualizeGraphStore', 'id', id).then(saveInput => {
+            resolve(saveInput);
+            this.data.changeSingleInputGraph(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewSingleDataDBMetaData(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getByIndex('fileMetaData', 'id', id).then(metaData => {
+            resolve(metaData);
+            this.data.changeSingleInputMetaData(metaData);
           });
         },
         error => {
