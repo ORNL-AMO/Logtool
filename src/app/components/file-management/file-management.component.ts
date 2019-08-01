@@ -5,13 +5,13 @@ import {DataService} from '../../providers/data.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
-
 import * as fs from 'fs';
 import {tryCatch} from 'rxjs/internal-compatibility';
 import {Router} from '@angular/router';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
-
+import {Address} from '../../types/address';
+import {FileMetaData} from '../../types/file-meta-data';
 
 @Component({
   selector: 'app-file-management',
@@ -25,7 +25,7 @@ export class FileManagementComponent implements OnInit {
   bsModalRef: BsModalRef;
   private filetype: any;
   private selected: any;
-
+  activeMetaData: FileMetaData;
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
@@ -39,8 +39,15 @@ export class FileManagementComponent implements OnInit {
     this.generateFileList();
     this.generateSnapShotList();
     this.selected = [];
+    this.metaDataReset();
+
   }
 
+  metaDataReset() { this.activeMetaData = new FileMetaData(0, 0, '', '', '', '',
+    { street: '', city: '', state: '', zip: 0, country: ''},
+    0, 0, '', ''); }
+
+  // Pull things from database
   generateFileList() {
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
@@ -50,7 +57,8 @@ export class FileManagementComponent implements OnInit {
         for (let i = 0; i < this.dataFromDialog.length; i++) {
           this.fileList.push({
             name: this.dataFromDialog[i].name,
-            id: this.dataFromDialog[i].id
+            id: this.dataFromDialog[i].id,
+            selected: false
           });
         }
 
@@ -68,9 +76,33 @@ export class FileManagementComponent implements OnInit {
     });
   }
 
-  getMetadata() {
-    if (this.active !== undefined && this.dataFromDialog !== null && this.active > 0) {
-      const activeFile = this.dataFromDialog.find(obj => obj.id === this.active);
+  pullMetaData(id) {
+    this.indexFileStore.viewDataDB().then(result => {
+      this.dataFromDialog = result;
+      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+      } else {
+        this.fileList = [];
+        // console.log(this.dataFromDialog);
+        for (let i = 0; i < this.dataFromDialog.length; i++) {
+          this.fileList.push({
+            name: this.dataFromDialog[i].name,
+            id: this.dataFromDialog[i].id,
+            selected: false
+          });
+        }
+
+      }
+    }, error => {
+      console.log(error);
+    });
+  }
+
+
+  // Change visuals based on active selection
+  getFileData() {
+    if (this.dataFromDialog !== null && this.active > -1) {
+      const targetId = this.fileList[this.active].id;
+      const activeFile = this.dataFromDialog.find(obj => obj.id === targetId);
       this.activeStats = {
         name: activeFile.name,
         type: activeFile.fileType,
@@ -99,36 +131,61 @@ export class FileManagementComponent implements OnInit {
 
   snapSelect(event) {
   }
+  tabSelect(index) {
+    this.active = index;
+    this.activeUpdated();
+    console.log(this.activeMetaData.companyName);
+  }
 
-  // adds selected class to target
-
-  toggleHighlight(event, file) {
-
-    const list = document.getElementById(event.target.id).classList;
-
-    if (list.contains('selected')) {
-      list.remove('selected');
-      const index = this.selected.findIndex(obj => obj.name === file.name);
-      if (this.selected[index].tabId === this.active) {
-        if (this.selected.length === 1) {
-          this.changeDisplayTable(-1);
-        }
-      }
-      this.selected.splice(index, 1);
-    } else {
-      list.add('selected');
+  activeUpdated() {
+    console.log(this.active);
+    this.getFileData();
+    this.changeDisplayTable();
+  }
+  
+  toggleSelect(index, file) {
+    const content = this.selected.findIndex(obj => obj.name === file.name);
+    if (content < 0) {
       this.selected.push({
         name: file.name,
-        id: event.target.id,
-        tabId: this.selected.length === 0 ? 0 : this.selected[this.selected.length - 1].tabId + 1,
+        IndexID: file.id,
+        tabID: index
       });
+      this.fileList[index].selected = true;
+      this.active = index;
+      this.activeUpdated();
+    } else {
+      console.log('length', this.selected.length);
+      if (this.selected.length === 1) {
+        this.active = -1;
+      } else if (this.active === this.selected[content].tabID) {
+      } else if (this.active === 0) {
+        this.active++;
+      } else {
+        this.active--;
+      }
+
+      this.activeUpdated();
+      this.fileList[index].selected = false;
+      this.selected.splice(content, 1);
     }
   }
 
+  changeDisplayTable() {
+    // console.log('in router call', this.active);
+    this.router.navigateByUrl('/file-manage/table-data', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['/file-manage/table-data'], {
+        queryParams: {
+          value: this.active
+        }
+      });
+    });
+  }
+
+  // used as part of import
   getFile(event) {
     this.inputFile = event.target.files[0];
     this.filetype = this.inputFile.type;
-    console.log(this.inputFile);
   }
 
   showInputModal() {
@@ -170,26 +227,25 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
+  saveMetaData(event) {
+    this.activeMetaData.fileInputId = this.fileList[this.active].id;
+    this.activeMetaData.id = 555;
+    this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
+  }
 
   saveMetaData(event) {
   }
-
   getTabWidth(tab) {
     // Create fake div
     const fakeDiv = document.createElement('span');
     fakeDiv.style.fontSize = '15px';
     fakeDiv.innerHTML = tab.name;
-
     fakeDiv.id = 'testbed';
     document.body.appendChild(fakeDiv);
-
     const pv = document.getElementById('testbed').offsetWidth;
     // Remove div after obtaining desired color value
     document.body.removeChild(fakeDiv);
-
-
     return pv + 40 + 'px';
-
   }
 
   changeDisplayTable(value) {
