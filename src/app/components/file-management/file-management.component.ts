@@ -12,6 +12,7 @@ import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
 import {Address} from '../../types/address';
 import {FileMetaData} from '../../types/file-meta-data';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
 @Component({
   selector: 'app-file-management',
@@ -28,7 +29,8 @@ export class FileManagementComponent implements OnInit {
   activeMetaData: FileMetaData;
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService,
+              private routeService: RouteDataTransferService) {
   }
 
   snapShotList: any[];
@@ -116,19 +118,6 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
-  fileSelect(event, file) {
-    console.log('fileSelect');
-    this.toggleHighlight(event, file);
-    if (this.selected.length > 0) {
-      this.active = file.id;
-    } else {
-      this.active = -1;
-    }
-    console.log(this.active);
-    this.getMetadata();
-    this.changeDisplayTable(this.active);
-  }
-
   snapSelect(event) {
   }
   tabSelect(index) {
@@ -142,7 +131,7 @@ export class FileManagementComponent implements OnInit {
     this.getFileData();
     this.changeDisplayTable();
   }
-  
+
   toggleSelect(index, file) {
     const content = this.selected.findIndex(obj => obj.name === file.name);
     if (content < 0) {
@@ -232,9 +221,6 @@ export class FileManagementComponent implements OnInit {
     this.activeMetaData.id = 555;
     this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
   }
-
-  saveMetaData(event) {
-  }
   getTabWidth(tab) {
     // Create fake div
     const fakeDiv = document.createElement('span');
@@ -247,15 +233,11 @@ export class FileManagementComponent implements OnInit {
     document.body.removeChild(fakeDiv);
     return pv + 40 + 'px';
   }
-
-  changeDisplayTable(value) {
-    this.router.navigateByUrl('/file-manage/table-data', {skipLocationChange: true}).then(() => {
-      this.router.navigate(['/file-manage/table-data'], {
-        queryParams: {
-          value: value
-        }
-      });
-    });
-    this.active = value;
+  sendSnapShotLoadData() {
+    const dataSend = {
+      loadMode: true,
+      id: 'id'
+    };
+    this.routeService.storage = dataSend;
   }
 }
