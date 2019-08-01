@@ -38,6 +38,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ImportJsonFileComponent } from './components/import-json-file/import-json-file.component';
 import { FileManagementComponent } from './components/file-management/file-management.component';
+import { FileImportComponent } from './components/file-import/file-import.component';
 
 
 
@@ -63,7 +64,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     ConfirmationModalComponent,
     CalendarComponent,
     ImportJsonFileComponent,
-    FileManagementComponent
+    FileManagementComponent,
+    FileImportComponent
 
   ],
   entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent],

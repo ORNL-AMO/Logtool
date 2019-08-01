@@ -1,0 +1,10 @@
+<div class="row justify-content-center" style="min-height: 50px; ">
+  <div class="col-9 drop-area" style="vertical-align: center;"
+       [ngStyle]="{'background-color': stage ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
+    <input type="file" name="images" id="images" required="required" multiple="multiple"
+           (change)="onFileSelect($event)"/>
+    <!--(change)="onChange($event)"/>-->
+    <p class="file-box-fill" *ngIf="fileName == undefined">Click to Upload a File</p>
+    <p class="file-box-fill" *ngIf="fileName != undefined">{{fileName}}</p>
+  </div>
+</div>
