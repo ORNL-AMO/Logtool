@@ -18,20 +18,7 @@ export class TableDataComponent implements OnInit {
   }
 
   ngOnInit() {
-    const loadMode = this.routeDataTransfer.storage.loadMode;
-    if (loadMode) {
-      this.show = true;
-      const columnDefs = this.routeDataTransfer.storage.tableData;
-      const header = this.routeDataTransfer.storage.tableName;
-      let width = 1000;
-      for (let i = 0; i < columnDefs.length; i++) {
-        if (i > 5) {
-          width = width + 100;
-        }
-      }
-      const dataArrayColumns = this.routeDataTransfer.storage.tableData;
-      this.displayTable(header, dataArrayColumns, width);
-    } else {
+    if (this.routeDataTransfer.storage === undefined) {
       this.data.currentDataInputArray.subscribe(input => this.inputDataArray = input);
       this.route.queryParams
         .subscribe(params => {
@@ -52,7 +39,44 @@ export class TableDataComponent implements OnInit {
             this.displayTable(header, dataArrayColumns, width);
           }
         });
+    } else {
+      const loadMode = this.routeDataTransfer.storage.loadMode;
+      if (loadMode) {
+        this.show = true;
+        const columnDefs = this.routeDataTransfer.storage.tableData;
+        const header = this.routeDataTransfer.storage.tableName;
+        let width = 1000;
+        for (let i = 0; i < columnDefs.length; i++) {
+          if (i > 5) {
+            width = width + 100;
+          }
+        }
+        const dataArrayColumns = this.routeDataTransfer.storage.tableData;
+        this.displayTable(header, dataArrayColumns, width);
+      } else {
+        this.data.currentDataInputArray.subscribe(input => this.inputDataArray = input);
+        this.route.queryParams
+          .subscribe(params => {
+            this.arrayPointer = params.value;
+            if (this.inputDataArray[this.arrayPointer] === undefined) {
+            } else {
+              this.show = true;
+              const columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
+              const dataArrayColumns = this.inputDataArray[this.arrayPointer].dataArrayColumns;
+              const header = [];
+              let width = 1000;
+              for (let i = 0; i < columnDefs.length; i++) {
+                header.push(columnDefs[i].headerName);
+                if (i > 5) {
+                  width = width + 100;
+                }
+              }
+              this.displayTable(header, dataArrayColumns, width);
+            }
+          });
+      }
     }
+
   }
 
   displayTable(header, dataArrayColumns, width) {
