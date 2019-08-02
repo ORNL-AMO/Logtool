@@ -6,14 +6,16 @@ import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
-import {tryCatch} from 'rxjs/internal-compatibility';
 import {Router} from '@angular/router';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
-import {Address} from '../../types/address';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+
 import {FileImportComponent} from '../file-import/file-import.component';
+
+import {DataList} from '../../types/data-list';
+
 
 @Component({
   selector: 'app-file-management',
@@ -125,7 +127,7 @@ export class FileManagementComponent implements OnInit {
 
   generateSnapShotListVisualize() {
     this.indexFileStore.viewDataDBGraph().then(data => {
-      //console.log(data);
+
       this.data.currentDataInputGraphArray.subscribe(result => {
         this.snapShotListGraph = result;
       });
@@ -191,7 +193,8 @@ export class FileManagementComponent implements OnInit {
       this.active = index;
       this.activeUpdated();
     } else {
-      console.log('length', this.selected.length);
+      console.log();
+      this.indexFileStore.deleteFromDBTemp(this.selected[content].IndexID);
       if (this.selected.length === 1) {
         this.active = -1;
       } else if (this.active === this.selected[content].tabID) {
@@ -216,10 +219,11 @@ export class FileManagementComponent implements OnInit {
 
   // update visuals based on selections
   activeUpdated() {
+
     if  (this.metaList.length > 0 && this.active > -1) {
-      // console.log(this.metaList, this.active);
       this.activeMetaData = this.metaList[this.active].data;
     }
+
     this.showFileData();
     this.showMetaData();
     this.changeDisplayTable();
@@ -242,7 +246,7 @@ export class FileManagementComponent implements OnInit {
   showFileData() {
     if (this.dataFromDialog !== null && this.active > -1) {
       const targetId = this.fileList[this.active].id;
-      const activeFile = this.dataFromDialog.find(obj => obj.id === targetId);
+      const activeFile: DataList = this.dataFromDialog.find(obj => obj.id === targetId);
       this.activeStats = {
         name: activeFile.name,
         type: activeFile.fileType,
@@ -251,6 +255,7 @@ export class FileManagementComponent implements OnInit {
         start: activeFile.startDate,
         end: activeFile.endDate,
       };
+      this.indexFileStore.addIntoDBFileInputTemp(activeFile);
     } else {
       this.activeStats = null;
     }
@@ -352,22 +357,46 @@ export class FileManagementComponent implements OnInit {
     return pv + 40 + 'px';
   }
 
-  sendSnapShotLoadData() {
-    console.log(this.snapShotListGraph);
+  sendSnapShotLoadData(shot) {
+    const graphData = shot.graph.data;
+    const graphLayout = shot.graph.layout;
+    const data = [];
+    const dataName = [];
+    for (let i = 0; i < graphData.length; i++) {
+      if (graphData[i].mode === 'lines') {
+        if (i === 0) {
+          const tempTime = graphData[i].x;
+          data.push(tempTime);
+          dataName.push('Time Series');
+        }
+        const tempData = graphData[i].y;
+        data.push(tempData);
+        dataName.push(graphData[i].name);
+      } else {
+        data.push(graphData[i].x);
+        dataName.push(graphLayout.xaxis.title.text);
+        data.push(graphData[i].y);
+        dataName.push(graphLayout.yaxis.title.text);
+      }
+    }
     const dataSend = {
-      loadMode: true,
-      id: 'id',
-
+      loadMode: shot.visualizeMode,
+      id: shot.id,
+      graph: shot.graph,
+      displayName: shot.displayName,
+      tableData: data,
+      tableName: dataName
     };
+    console.log(dataSend);
     this.routeService.storage = dataSend;
     this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
       this.router.navigate(['visualize']);
     });
+    this.indexFileStore.clearFromDBTemp();
   }
 
   snapSelect($event: MouseEvent, shot: any) {
-    console.log(shot);
-    this.sendSnapShotLoadData();
+    this.sendSnapShotLoadData(shot);
   }
 
   show(event) {

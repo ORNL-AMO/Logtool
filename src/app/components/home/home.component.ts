@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit, DoCheck {
       this.lineListY = [];
       this.timeSeriesY = [];
       this.scatterList = [];
-      this.indexFileStore.viewDataDB().then(result => {
+      this.indexFileStore.viewDataDBTemp().then(result => {
         this.dataFromDialog = result;
         if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
         } else {
@@ -81,23 +81,15 @@ export class HomeComponent implements OnInit, DoCheck {
     } else {
       this.loadMode = this.routeDataTransfer.storage.loadMode;
       if (this.loadMode) {
-        const id = this.routeDataTransfer.storage.id;
-        this.indexFileStore.viewSingleDataDBGraph(id).then(result => {
-          const sendData = {
-            loadMode: true,
-            result: result
-          };
-          this.routeDataTransfer.storage = sendData;
-          this.plotGraph.ngOnInit();
-        });
+        this.changeDisplayTable(0);
+        this.plotGraph.ngOnInit();
       } else {
         this.graph = '';
         this.dataFromDialog = [];
         this.lineListY = [];
         this.timeSeriesY = [];
         this.scatterList = [];
-        this.indexFileStore.viewDataDB().then(result => {
-          console.log(result);
+        this.indexFileStore.viewDataDBTemp().then(result => {
           this.dataFromDialog = result;
           if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
           } else {
@@ -120,9 +112,7 @@ export class HomeComponent implements OnInit, DoCheck {
         });
       }
     }
-
   }
-
   ngDoCheck(): void {
     this.differ.diff(this.tabs);
   }

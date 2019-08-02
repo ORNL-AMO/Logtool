@@ -33,6 +33,21 @@ export class IndexFileStoreService {
       objectStore.createIndex('countOfColumn', 'countOfColumn', {unique: false});
       objectStore.createIndex('fileType', 'fileType', {unique: false});
       objectStore.createIndex('dateUpload', 'dateUpload', {unique: false});
+      const objectTemp = transaction.createObjectStore('fileInputTemp', {keyPath: 'id', unique: true});
+      objectTemp.createIndex('id', 'id', {unique: true});
+      objectTemp.createIndex('name', 'name', {unique: true});
+      objectTemp.createIndex('content', 'content', {unique: false});
+      objectTemp.createIndex('dataArrayColumns', 'dataArrayColumns', {unique: false});
+      objectTemp.createIndex('headerDetails', 'headerDetails', {unique: false});
+      objectTemp.createIndex('selectedHeader', 'selectedHeader', {unique: false});
+      objectTemp.createIndex('header', 'header', {unique: false});
+      objectTemp.createIndex('startDate', 'startDate', {unique: false});
+      objectTemp.createIndex('endDate', 'endDate', {unique: false});
+      objectTemp.createIndex('interval', 'interval', {unique: false});
+      objectTemp.createIndex('countOfRow', 'countOfRow', {unique: false});
+      objectTemp.createIndex('countOfColumn', 'countOfColumn', {unique: false});
+      objectTemp.createIndex('fileType', 'fileType', {unique: false});
+      objectTemp.createIndex('dateUpload', 'dateUpload', {unique: false});
       const objectStoreLoad = transaction.createObjectStore('dayType', {keyPath: 'id', unique: true});
       objectStoreLoad.createIndex('id', 'id', {unique: true});
       objectStoreLoad.createIndex('fileInputId', 'fileInputId', {unique: false});
@@ -89,6 +104,37 @@ export class IndexFileStoreService {
     db.openDatabase(1, evt => {
     }).then(() => {
       db.add('fileInput',
+        {
+          id: dataList.id,
+          name: dataList.name,
+          content: dataList.content,
+          dataArrayColumns: dataList.dataArrayColumns,
+          headerDetails: dataList.headerDetails,
+          selectedHeader: dataList.selectedHeader,
+          header: dataList.header,
+          startDate: dataList.startDate,
+          endDate: dataList.endDate,
+          interval: dataList.interval,
+          countOfRow: dataList.countOfRow,
+          countOfColumn: dataList.countOfColumn,
+          fileType: dataList.fileType,
+          dateUpload: dataList.dateUpload
+        }).then(() => {
+        },
+        error => {
+          alert('File already Imported');
+          console.log(error);
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  addIntoDBFileInputTemp(dataList: DataList) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('fileInputTemp',
         {
           id: dataList.id,
           name: dataList.name,
@@ -402,6 +448,22 @@ export class IndexFileStoreService {
     });
   }
 
+  viewDataDBTemp() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('fileInputTemp').then(saveInput => {
+            resolve(saveInput);
+            this.data.changeInputArray(saveInput);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
   viewDataDBSaveInputId() {
     const id = [];
     return new Promise(resolve => {
@@ -476,6 +538,36 @@ export class IndexFileStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
         db.delete('fileInput', index).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
+  deleteFromDBTemp(index) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('fileInputTemp', index).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
+  clearFromDBTemp() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.clear('fileInputTemp').then(() => {
             console.log('Deleted');
           },
           error => {
