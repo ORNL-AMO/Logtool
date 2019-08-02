@@ -51,18 +51,7 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   ngOnInit() {
-    this.loadMode = this.routeDataTransfer.storage.loadMode;
-    if (this.loadMode) {
-      const id = this.routeDataTransfer.storage.id;
-      this.indexFileStore.viewSingleDataDBGraph(id).then(result => {
-        const sendData = {
-          loadMode: true,
-          result: result
-        };
-        this.routeDataTransfer.storage = sendData;
-        this.plotGraph.ngOnInit();
-      });
-    } else {
+    if (this.routeDataTransfer.storage === undefined) {
       this.graph = 'line_graph';
       this.dataFromDialog = [];
       this.lineListY = [];
@@ -89,7 +78,49 @@ export class HomeComponent implements OnInit, DoCheck {
       }, error => {
         console.log(error);
       });
+    } else {
+      this.loadMode = this.routeDataTransfer.storage.loadMode;
+      if (this.loadMode) {
+        const id = this.routeDataTransfer.storage.id;
+        this.indexFileStore.viewSingleDataDBGraph(id).then(result => {
+          const sendData = {
+            loadMode: true,
+            result: result
+          };
+          this.routeDataTransfer.storage = sendData;
+          this.plotGraph.ngOnInit();
+        });
+      } else {
+        this.graph = '';
+        this.dataFromDialog = [];
+        this.lineListY = [];
+        this.timeSeriesY = [];
+        this.scatterList = [];
+        this.indexFileStore.viewDataDB().then(result => {
+          console.log(result);
+          this.dataFromDialog = result;
+          if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+          } else {
+            this.plotGraph.ngOnInit();
+            this.tabs = [];
+            for (let i = 0; i < this.dataFromDialog.length; i++) {
+              this.tabs.push({
+                name: this.dataFromDialog[i].name,
+                id: this.dataFromDialog[i].id,
+                tabId: i
+              });
+            }
+            // console.log(this.tabs);
+            this.populateSpinner();
+            this.populateGraph();
+            this.changeDisplayTable(0);
+          }
+        }, error => {
+          console.log(error);
+        });
+      }
     }
+
   }
 
   ngDoCheck(): void {
@@ -167,8 +198,8 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   changeDisplayTable(value) {
-    this.router.navigateByUrl('/table-data', {skipLocationChange: true}).then(() => {
-      this.router.navigate(['/table-data'], {
+    this.router.navigateByUrl('visualize/table-data', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['visualize/table-data'], {
         queryParams: {
           value: value
         }

@@ -3,7 +3,7 @@
     <li class="nav-items" >
       <a class="nav-link" routerLink="/"
          [ngStyle]="{'background-color' :active === 0 ? 'darkblue':'', 'color' :active === 0 ? 'white':''}"
-         (click) = "changeActive(0)">Home</a>
+         (click) = "changeActive(0)">File Management</a>
     </li>
     <li class="nav-items" >
       <a class="nav-link" routerLink="/holder-day-type"
@@ -11,9 +11,9 @@
          (click) = "changeActive(1)"> Day Type Plots</a>
     </li>
     <li class="nav-items" >
-      <a class="nav-link" routerLink="/file-manage"
+      <a class="nav-link" routerLink="/visualize"
          [ngStyle]="{'background-color' :active === 1 ? 'darkblue':'', 'color' :active === 2 ? 'white':''}"
-         (click) = "changeActive(2)"> File management</a>
+         (click) = "changeActive(2)">Visualize</a>
     </li>
   </ul>
 </div>

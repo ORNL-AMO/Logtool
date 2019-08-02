@@ -64,20 +64,12 @@
         </div>
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
-               id="shot{{i}}" (click)="snapSelect($event, shot);"
+          <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
+               (click)="snapSelect($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
             <div class="col-4 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 inactive" style="border-right: 1px solid black;">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-            <div class="col-4 inactive" style="border-right: 2px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-
-
           </div>
 
         </div>

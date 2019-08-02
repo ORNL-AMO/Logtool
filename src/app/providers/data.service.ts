@@ -15,18 +15,21 @@ export class DataService {
   private inputSingleDataSaveLoad: LoadList;
   private inputSingleDataMetaData: FileMetaData;
   private inputSingleDataGraph: VisualizeLoadGraph;
+  private inputDataGraphArray: VisualizeLoadGraph[] = [];
   private dataInputArray = new BehaviorSubject(this.inputDataArray);
   private dataInputSaveLoadArray = new BehaviorSubject(this.inputDataSaveLoadArray);
   private dataInputSaveLoadIdArray = new BehaviorSubject(this.inputDataSaveLoadIdArray);
   private dataSingleInputSaveLoad = new BehaviorSubject(this.inputSingleDataSaveLoad);
   private dataSingleInputMetaData = new BehaviorSubject(this.inputSingleDataMetaData);
   private dataSingleInputGraph = new BehaviorSubject(this.inputSingleDataGraph);
+  private dataInputGraphArray = new BehaviorSubject(this.inputDataGraphArray);
   currentDataInputArray = this.dataInputArray.asObservable();
   currentDataInputSaveLoadArray = this.dataInputSaveLoadArray.asObservable();
   currentDataInputSaveLoadIdArray = this.dataInputSaveLoadIdArray.asObservable();
   currentSingleDataInputSaveLoad = this.dataSingleInputSaveLoad.asObservable();
   currentSingleDataInputMetaData = this.dataSingleInputMetaData.asObservable();
   currentSingleDataInputGraph = this.dataSingleInputGraph.asObservable();
+  currentDataInputGraphArray = this.dataInputGraphArray.asObservable();
 
   constructor() {
   }
@@ -49,6 +52,9 @@ export class DataService {
   }
   changeSingleInputGraph(input: VisualizeLoadGraph) {
     this.dataSingleInputGraph.next(input);
+  }
+  changeInputGraphArray(input: VisualizeLoadGraph[]) {
+    this.dataInputGraphArray.next(input);
   }
   getMax(data) {
     let max = data[0];

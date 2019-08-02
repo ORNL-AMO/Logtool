@@ -14,7 +14,7 @@ import {FileManagementComponent} from './components/file-management/file-managem
 const routes: Routes = [
 
   {
-    path: '',
+    path: 'visualize',
     component: HomeComponent,
     children: [
       {
@@ -42,7 +42,7 @@ const routes: Routes = [
     component: PlotGraphComponent
   },
   {
-    path: 'file-manage',
+    path: '',
     component: FileManagementComponent,
     children: [
       {
