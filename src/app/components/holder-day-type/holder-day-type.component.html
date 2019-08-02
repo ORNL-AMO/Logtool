@@ -9,9 +9,9 @@
       </div>
 
 
-      <div class="row justify-content-center">
+<!--      <div class="row justify-content-center">
 
-        <!-- data button -->
+        &lt;!&ndash; data button &ndash;&gt;
         <div class="col-4 tight-fit">
           <div class="row justify-content-center"><p class="tight-fit"> Data </p></div>
           <div class="row justify-content-center">
@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <!-- Snapshot button -->
+        &lt;!&ndash; Snapshot button &ndash;&gt;
         <div class="col-4 tight-fit ">
           <div class="row justify-content-center"><p class="tight-fit">Snapshot</p></div>
           <div class="row justify-content-center">
@@ -31,7 +31,7 @@
           </div>
         </div>
 
-        <!-- File button -->
+        &lt;!&ndash; File button &ndash;&gt;
         <div class="col-4 tight-fit">
           <div class="row justify-content-center"><p class="tight-fit"> File </p></div>
           <div class="row justify-content-center">
@@ -40,7 +40,7 @@
             </label>
           </div>
         </div>
-      </div>
+      </div>-->
 
       <!-- Import New data -->
       <form #formElement="ngForm" *ngIf="shift=='data'" (ngSubmit)="dayTypeNavigation(false)">
@@ -83,8 +83,8 @@
       </form>
 
       <!-- Load snapshot -->
-      <div class="row justify-content-center" style="position: relative;" *ngIf="shift=='snapshot'">
-        <!-- always displayed box -->
+   <!--   <div class="row justify-content-center" style="position: relative;" *ngIf="shift=='snapshot'">
+        &lt;!&ndash; always displayed box &ndash;&gt;
         <div class="row justify-content-center custombox" id="selected" (click)="showDropDown(true)">
 
           <span style="max-height: 10px; width: 100%; text-align: center; font-size: 13px; font-weight: bold;"
@@ -92,7 +92,7 @@
           <h1></h1>
         </div>
 
-        <!-- load button -->
+        &lt;!&ndash; load button &ndash;&gt;
         <div class="row justify-content-center " style="position: relative; height:45px; ; margin-top: 30px;">
           <div class="col-8 tight-fit" style="height:100%;">
             <button class="btn tight-fit" (click)="$event.stopPropagation(); loadSession(currentId)"
@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <!-- toggled menu -->
+        &lt;!&ndash; toggled menu &ndash;&gt;
         <div class="row holder" id="dropdown" style="position: relative; top: -75px; display: none;"
              (mouseleave)="showDropDown(false);">
           <div class="row drop-item" *ngFor="let file of snapShotStash" style="z-index: 6; ">
@@ -112,16 +112,16 @@
                   style="height: 20px; width: 20px; text-align: center;  z-index: 6;">X</span>
           </div>
         </div>
-      </div>
+      </div>-->
 
-      <div *ngIf="shift=='file'">
+      <!--<div *ngIf="shift=='file'">
         <div class="row justify-content-center">
           <button class="btn" style="width: 178px; margin-bottom: 10px;" (click)="exportToFile()">Export To File</button>
         </div>
         <div class="row justify-content-center">
           <button class="btn" style="width: 178px;" (click)="importFile()">Import from File</button>
         </div>
-      </div>
+      </div>-->
 
     </div>
 

@@ -11,7 +11,11 @@ import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+
+import {FileImportComponent} from '../file-import/file-import.component';
+
 import {DataList} from '../../types/data-list';
+
 
 @Component({
   selector: 'app-file-management',
@@ -24,7 +28,8 @@ export class FileManagementComponent implements OnInit {
   private snapShotListDayType: any[];
   private snapShotListGraph: any[];
 
-  bsModalRef: BsModalRef;
+  FileRef: BsModalRef;
+  LoadRef: BsModalRef;
   private filetype: any;
 
   // list of selected files
@@ -45,18 +50,19 @@ export class FileManagementComponent implements OnInit {
   metahidden: any;
 
   ngOnInit() {
+    this.selected = [];
     this.generateFileList();
     this.generateSnapShotListDayType();
     this.generateSnapShotListVisualize();
-    this.selected = [];
+
     this.metaDataReset();
-    this.metahidden = true;
+    this.metahidden = false;
   }
 
-  blankMetaData() {
-    return new FileMetaData(0, 0, '', '', '', '',
-      {street: '', city: '', state: '', zip: 0, country: ''},
-      0, 0, '', '');
+  blankMetaData(index) {
+    return new FileMetaData(this.fileList[index].id, this.fileList[index].id, '', '', '', '',
+      {street: '', city: '', state: '', zip: null, country: ''},
+      null, null, '', '');
   }
 
   metaDataReset() {
@@ -65,26 +71,47 @@ export class FileManagementComponent implements OnInit {
       0, 0, '', '');
   }
 
-  // Pull things from database
+  // Pull/Delete things from database
   generateFileList() {
     this.indexFileStore.viewDataDB().then(result => {
       this.dataFromDialog = result;
       if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
       } else {
         this.fileList = [];
+        this.metaList = [];
+        let tempSelect = [];
         for (let i = 0; i < this.dataFromDialog.length; i++) {
+          /*console.log(this.selected, this.dataFromDialog[i], this.selected.indexOf(this.dataFromDialog[i]));*/
+          const select = this.selected.findIndex(obj => obj.IndexID === this.dataFromDialog[i].id) ;
+          if (select >= 0) {this.selected[select].tabID = i;}
+          console.log(select);
           this.fileList.push({
             name: this.dataFromDialog[i].name,
             id: this.dataFromDialog[i].id,
-            selected: false
+            selected: select >= 0,
           });
         }
-
+        this.generateMetaDataList();
+        console.log(this.fileList);
+        console.log(this.selected);
       }
+
     }, error => {
       console.log(error);
     });
   }
+  removeFile(event, index) {
+    event.stopPropagation();
+    event.preventDefault();
+      if (index === this.active) {this.toggleSelect(index, this.fileList[index]);}
+      this.indexFileStore.deleteFromDB(this.fileList[index].id);
+      // Should be called ONLY if above is successful, current returned promise is always null.
+      this.indexFileStore.deleteFromDBFileMetaData(this.fileList[index].id);
+      // Should be called ONLY if above is successful, current returned promise is always null.
+      this.fileList.splice(index, 1);
+      this.metaList.splice(index, 1);
+  }
+
 
   generateSnapShotListDayType() {
     this.indexFileStore.viewDataDBSaveInput().then(data => {
@@ -93,32 +120,45 @@ export class FileManagementComponent implements OnInit {
       });
     });
   }
+  removeDTSS(index) {
+    this.indexFileStore.deleteFromDBSaveLoad(this.snapShotListDayType[index].id);
+    this.snapShotListDayType.splice(index, 1);
+  }
 
   generateSnapShotListVisualize() {
     this.indexFileStore.viewDataDBGraph().then(data => {
+
       this.data.currentDataInputGraphArray.subscribe(result => {
         this.snapShotListGraph = result;
       });
     });
   }
-
-  generateMetaDataList(id) {
-    this.indexFileStore.viewDataDB().then(result => {
-      const metaDataFromDialog = result;
-      if (metaDataFromDialog === null || metaDataFromDialog === undefined) {
-        console.log('no metadata found');
-      } else {
-        // console.log(this.dataFromDialog);
-        /*  for (let i = 0; i < metaDataFromDialog.length; i++) {*/
-        this.metaList.push(this.blankMetaData());
-        /*    }*/
-
-      }
-    }, error => {
-      console.log(error);
-    });
+  removeVSS(index) {
+    this.indexFileStore.deleteFromDBGraph(this.snapShotListGraph[index].id);
+    this.snapShotListGraph.splice(index, 1);
   }
 
+
+  generateMetaDataList() {
+    if ( this.fileList === undefined) {return;}
+    for (let i = 0; i < this.fileList.length; i++) {
+      this.indexFileStore.viewSingleDataDBMetaData(this.fileList[i].id).then(result => {
+        const metaDataFromDialog = result;
+        if (metaDataFromDialog === null || metaDataFromDialog === undefined) {
+          //console.log('no metadata found');
+          this.metaList.push({data: this.blankMetaData(i), previous: 'false'});
+          //console.log('metaList', this.metaList);
+        } else {
+         // console.log('metadata found');
+          this.metaList.push({data: metaDataFromDialog, previous: 'true'});
+          // console.log('metaList', this.metaList);
+        }
+      }, error => {
+        console.log(error);
+      });
+    }
+    //console.log(this.metaList);
+  }
 
   // Change visuals based on active selection
   getFileData() {
@@ -140,6 +180,8 @@ export class FileManagementComponent implements OnInit {
 
 
   toggleSelect(index, file) {
+    if (this.metaList.length === 0) {this.metaList[this.active].data = this.activeMetaData; }
+
     const content = this.selected.findIndex(obj => obj.name === file.name);
     if (content < 0) {
       this.selected.push({
@@ -169,13 +211,19 @@ export class FileManagementComponent implements OnInit {
   }
 
   tabSelect(index) {
+    this.metaList[this.active].data = this.activeMetaData;
     this.active = index;
     this.activeUpdated();
-    console.log(this.activeMetaData.companyName);
+    //console.log(this.activeMetaData.companyName);
   }
 
   // update visuals based on selections
   activeUpdated() {
+
+    if  (this.metaList.length > 0 && this.active > -1) {
+      this.activeMetaData = this.metaList[this.active].data;
+    }
+
     this.showFileData();
     this.showMetaData();
     this.changeDisplayTable();
@@ -213,9 +261,7 @@ export class FileManagementComponent implements OnInit {
     }
   }
 
-  toggleMeta() {
-    this.metahidden = !this.metahidden;
-  }
+
 
   // used as part of import currently
   getFile(event) {
@@ -224,19 +270,21 @@ export class FileManagementComponent implements OnInit {
   }
 
   showInputModal() {
-    if (this.inputFile === undefined) {
-      alert('No input file detected please select a file');
-      return;
-    }
+    this.FileRef = this.modalService.show(ImportDataComponent);
+    this.modalService.onHide.subscribe( () => {
+      this.generateFileList();
+      this.generateSnapShotListDayType();
+      this.generateSnapShotListVisualize();
+    });
+  }
 
-    try {
-      const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(this.inputFile.path).toLocaleString());
-      // this.exportCsv.readJsonFile(dataFromFile);
-      alert('First catch');
-      return;
-    } catch {
-      try {
-        const loadedWorkbook = XLSX.readFile(this.inputFile.path, {cellDates: true});
+
+    /*this.modalService.onHide.subscribe(() => {
+      const result = this.bsModalRef.content.test;
+      if (result.type === 'json') {
+         console.log('json detected');
+       } else if (result.type === 'csv') {
+        const loadedWorkbook = XLSX.readFile(result.path, {cellDates: true});
         const worksheet: XLSX.WorkSheet = loadedWorkbook.Sheets[loadedWorkbook.SheetNames[0]];
         const dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
         const initialState = {
@@ -256,25 +304,38 @@ export class FileManagementComponent implements OnInit {
           this.generateFileList();
         });
 
-      } catch {
+      } else {
         alert('File unable to be parsed, Please confirm file is of a supported type');
       }
-    }
+    });
+
+  }*/
+
+
+  // Meta data
+  toggleMeta() {
+    this.metaList[this.active].data = this.activeMetaData;
+    this.metahidden = !this.metahidden;
   }
-
-
-  // Push data to database
-  saveMetaData(event) {
-    this.activeMetaData.fileInputId = this.fileList[this.active].id;
-
+  saveMetaData(index) {
+    if (index === -1) {index = this.active;}
 
     // add check to see if this.activeMetaData.fileInputId is in database already
-    if (true) {
+    if (!this.metaList[index].previous) {
       this.indexFileStore.addIntoDBFileMetaData(this.activeMetaData);
+      this.metaList[index].previous = 'true';
 
     } else {
       this.indexFileStore.updateIntoDBFileMetaData(this.activeMetaData);
     }
+  }
+  saveAllMeta() {
+    const indexOld = this.active;
+    for (let i = 0; i < this.metaList.length; i++) {
+      this.activeMetaData = this.metaList[i].data;
+      this.saveMetaData(i);
+    }
+    this.active = indexOld;
   }
 
   // Export items
@@ -337,4 +398,9 @@ export class FileManagementComponent implements OnInit {
   snapSelect($event: MouseEvent, shot: any) {
     this.sendSnapShotLoadData(shot);
   }
+
+  show(event) {
+    console.log(event);
+  }
+
 }

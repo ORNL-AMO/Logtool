@@ -80,6 +80,12 @@ p {
 .inactive{
   pointer-events: none;
 }
+
+.nonSelectable{
+  user-select: none;
+}
+
+
 ul {
   list-style-type: none;
   overflow-x: auto;

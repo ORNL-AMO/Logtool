@@ -68,7 +68,7 @@ PlotlyModule.plotlyjs = PlotlyJS;
     FileImportComponent
 
   ],
-  entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent],
+  entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent, FileImportComponent],
   imports: [
     BrowserModule,
     FormsModule,

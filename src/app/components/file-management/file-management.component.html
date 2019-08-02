@@ -7,14 +7,9 @@
       <div class="panel">
         <div class="header tight-fit">Load a File</div>
         <div class="row justify-content-center" style="margin: 5px;">
-          <div class="col-9">
-            <input type="file" name="images" id="images" required="required" multiple="multiple"
-                   style="height: 30px; text-overflow: ellipsis" (change)="getFile($event)">
 
-          </div>
-          <div class="col-12" style="padding-left: 5px; padding-right: 5px;">
-            <button class="btn" style="height: 30px; width:30%" (click)="showInputModal()">Import</button>
-          </div>
+          <button class="btn" style="height: 30px; width:30%" (click)="showInputModal()">Import</button>
+
         </div>
       </div>
     </div>
@@ -32,13 +27,15 @@
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
           <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
-               [ngStyle]="{'background' : file.selected ? 'blue' : 'white',
-                           'color' : file.selected ? 'white': 'black'}"
-               id="{{i}}" (click)="toggleSelect(i, file);"
-               style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <p class="tight-fit inactive col-11" style="text-align: center;">{{file.name}}</p>
-            <span class="tight-fit col-1" (click)="removeFile($event, tab.id, tab.tabId)"
-                  style="padding-top: 0; text-align: center; margin-top:3px; float: right; font-size: 12px; background: darkgrey; height:100%">x
+               [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}"
+               id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
+            <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
+                    <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+            </div>
+            <span class="tight-fit col-1"
+                  (click)="removeFile($event, i)"
+                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
             </span>
           </div>
         </div>
@@ -53,12 +50,8 @@
         <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
           <div class="row tight-fit">
 
-            <div class="col-4 " style="border-right: 1px solid black">
+            <div class="col-8 " style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center; ">Name:</p>
-            </div>
-
-            <div class="col-4 " style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">File:</p>
             </div>
 
             <div class="col-4 ">
@@ -69,12 +62,18 @@
         </div>
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
+          <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
                (click)="snapSelect($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-4 inactive" style="border-right: 1px solid black">
+            <div class="col-8 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
+            <div class="col-3 inactive" style="border-right: 1px solid black">
+              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+            </div>
+            <span class="tight-fit col-1" (click)="removeDTSS(i)"
+                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
+            </span>
           </div>
 
         </div>
@@ -89,12 +88,8 @@
         <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
           <div class="row tight-fit">
 
-            <div class="col-4 " style="border-right: 1px solid black">
+            <div class="col-8 " style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center; ">Name:</p>
-            </div>
-
-            <div class="col-4 " style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">File:</p>
             </div>
 
             <div class="col-4 ">
@@ -105,18 +100,18 @@
         </div>
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit" *ngFor="let shot of snapShotList, let i = index"
+          <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
                id="shot{{i}}" (click)="snapSelect($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-4 inactive" style="border-right: 1px solid black">
+            <div class="col-8 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 inactive" style="border-right: 1px solid black;">
+            <div class="col-3 inactive" style="border-right: 1px solid black;">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
             </div>
-            <div class="col-4 inactive" style="border-right: 2px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
+            <span class="tight-fit col-1" (click)="removeVSS(i)"
+                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
+            </span>
 
 
           </div>
@@ -134,7 +129,7 @@
   </div>
 
   <!-- Metadata and table -->
-  <div class="col-7 snug" style="min-height: 100%">
+  <div class="col-6 snug" style="min-height: 100%; min-width:275px;">
     <div class="row snug">
       <div class="panel" style="height: 300px;">
         <div class="header tight-fit">File Contents</div>
@@ -164,23 +159,31 @@
       </div>
     </div>
     <div class="row snug ">
-      <div class="panel" style="min-width: 735px;">
+      <div class="panel" style="">
         <div class="header tight-fit">Record MetaData</div>
         <div *ngIf="activeStats != undefined && activeStats != null">
           <div *ngIf="!metahidden">
             <!-- Facility and Contact information -->
-            <div class="row" style="border: 3px solid black; margin: 5px;">
-              <div class="col-4">
-                <div class="row justify-content-center"><p class="tight-fit"></p>&nbsp;</div>
+            <div class="row" style=" border: 3px solid black; margin: 5px;">
+              <div class="col-4" style="border: 1px solid black; min-width: 200px;">
+
                 <div class=row>
-                  <p class="tight-fit col-4 meta">Company: </p>
-                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>
-                <div class=row><p class="tight-fit col-4 meta">Facility:</p>
-                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.facilityName">
+                  <!-- <p class="tight-fit col-4 meta">Company: </p>
+                   <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>-->
+
+                  <label>Company:
+                    <input type="text" style="width:90%" [(ngModel)]="activeMetaData.companyName">
+                  </label>
+                </div>
+                <div class=row><!--<p class="tight-fit col-4 meta">Facility:</p>
+                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.facilityName">-->
+                  <label>Facility:
+                    <input type="text" style="width:90%" [(ngModel)]="activeMetaData.facilityName">
+                  </label>
                 </div>
               </div>
-              <div class="col-4 tight-fit" style="border: 1px solid black">
-                <div class="row justify-content-center"><p class="tight-fit">Facility Contact</p></div>
+              <div class="col-4 tight-fit" style="border: 1px solid black; min-width: 200px;">
+                <div class="row justify-content-center"><p class="tight-fit font-weight-bold">Facility Contact</p></div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
                                                                                            [(ngModel)]="activeMetaData.facilityContactName">
                 </div>
@@ -191,58 +194,54 @@
                                                                                             [(ngModel)]="activeMetaData.facilityEmail">
                 </div>
               </div>
-              <div class="col-4 tight-fit" style="border: 1px solid black">
-                <div class="row justify-content-center"><p class="tight-fit">Assessment Contact</p>
-                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Name:</p>  <input type="text"
-                                                                                                class="col-6"
-                                                                                                [(ngModel)]="activeMetaData.assessmentContactName">
-                  </div>
-                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Phone:</p> <input type="text"
-                                                                                                class="col-6"
-                                                                                                [(ngModel)]="activeMetaData.assessmentContact">
-                  </div>
-                  <div class="row  tight-fit"><p class="tight-fit col-4 meta">Email:</p> <input type="text"
-                                                                                                class="col-6"
-                                                                                                [(ngModel)]="activeMetaData.assessmentEmail">
-                  </div>
+
+              <div class="col-4 tight-fit" style="border: 1px solid black; min-width: 200px;">
+                <div class="row justify-content-center"><p class="tight-fit font-weight-bold">Assessment Contact</p>
                 </div>
-
-
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
+                                                                                           [(ngModel)]="activeMetaData.assessmentContactName">
+                </div>
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
+                                                                                            [(ngModel)]="activeMetaData.assessmentContact">
+                </div>
+                <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
+                                                                                            [(ngModel)]="activeMetaData.assessmentEmail">
+                </div>
               </div>
-
             </div>
+
             <div class="row" style="border: 3px solid black; margin: 5px;">
               <div class="col-12">
-                <div class="row"><p class="tight-fit meta">Address:</p></div>
+                <div class="row justify-content-center"><p class="tight-fit meta">Address</p></div>
                 <!-- street -->
                 <div class="row justify-content-center">
                   <div class="col-6">
                     <label>Street:
-                      <input type="text" [(ngModel)]="activeMetaData.address.street">
+                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.street">
                     </label>
                   </div>
                   <div class="col-6">
                     <label>Country:
-                      <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.country">
                     </label>
                   </div>
                 </div>
                 <div class="row justify-content-center">
                   <div class="col-4">
                     <label>&nbsp; City:
-                      <input type="text" [(ngModel)]="activeMetaData.address.city">
+                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.city">
                     </label>
                   </div>
 
                   <div class="col-4">
                     <label>State:
-                      <input type="text" [(ngModel)]="activeMetaData.address.state">
+                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.state">
                     </label>
                   </div>
 
                   <div class="col-4">
                     <label>Zip:
-                      <input type="text" [(ngModel)]="activeMetaData.address.zip">
+                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.zip">
                     </label>
                   </div>
                 </div>
@@ -258,31 +257,32 @@
               </div>
 
               <!-- sample meta data-->
-              <div class="col-3">
+              <div class="col-4">
                 <p class="tight-fit meta">Sample Information</p>
                 <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
                 <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
               </div>
 
               <!-- time series Data -->
-              <div class="col-6">
+              <div class="col-5">
                 <p class="tight-fit meta">Time frame</p>
-                <p class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
-                <p class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>
+                <!--              <p *ngIf="activeStats.start | date:'medium' " class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
+                              <p *ngIf="activeStats.end | date:'medium' "class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>-->
               </div>
             </div>
           </div>
 
-          <div class="row" style="margin: 5px;">
-            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData($event)">
+          <div class="row justify-content-center" style="margin: 5px;">
+            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData(-1)">
               Update MetaData
             </button>
-            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta($event)">Hide
+            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Hide
               MetaData
             </button>
-            <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta($event)">Show
+            <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Show
               MetaData
             </button>
+            <button class="btn pull-right" style="height: 30px" (click)="saveAllMeta()">Save ALL changes</button>
           </div>
 
 
@@ -290,31 +290,19 @@
       </div>
     </div>
   </div>
+
   <!-- Navigate, Export, && Instructions -->
-  <div class="snug col" style="min-height: 100%; margin-right: 20px;">
-    <div class="row snug">
-      <!-- <div class="col-6" style="padding-left: 0; padding-right: 5px">
-   &lt;!&ndash;    <div class="panel">
-         <div class="header tight-fit">Visualizations</div>
-         <div class="row" style="margin: 5px;">
-           <div class="col-6 tight-fit">
-             <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Basic Graphs</button>
-           </div>
-           <div class="col-6 tight-fit">
-             <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Day Types</button>
-           </div>
-         </div>
-       </div>&ndash;&gt;
-       </div>-->
-      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
+  <div class="snug col" style="min-height: 100%; margin-right: 20px; min-width:200px;">
+    <div class="row snug ">
+      <div class="col-12" style="padding-left: 0; padding-right: 5px">
         <div class="panel">
-          <div class="header tight-fit">Export Selected</div>
-          <div class="row" style="margin: 5px;">
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As CSV</button>
+          <div class="header tight-fit">Visualize Selection</div>
+          <div class="row justify-content-center" style="margin: 5px;">
+            <div class="col-5 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Basic Graphs</button>
             </div>
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+            <div class="col-5 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Day Types</button>
             </div>
           </div>
         </div>
@@ -323,10 +311,13 @@
     <div class="row snug">
       <div class="col-12" style="padding-right: 0; padding-left: 5px;">
         <div class="panel">
-          <div class="header tight-fit">Export Database</div>
+          <div class="header tight-fit">Export Options</div>
           <div class="row" style="margin: 5px;">
-            <div class="col-12 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">As JSON</button>
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Selected</button>
+            </div>
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Everything</button>
             </div>
           </div>
         </div>
