@@ -6,11 +6,9 @@ import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
-import {tryCatch} from 'rxjs/internal-compatibility';
 import {Router} from '@angular/router';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
-import {Address} from '../../types/address';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
@@ -97,7 +95,6 @@ export class FileManagementComponent implements OnInit {
 
   generateSnapShotListVisualize() {
     this.indexFileStore.viewDataDBGraph().then(data => {
-      console.log(data);
       this.data.currentDataInputGraphArray.subscribe(result => {
         this.snapShotListGraph = result;
       });
@@ -298,11 +295,31 @@ export class FileManagementComponent implements OnInit {
   }
 
   sendSnapShotLoadData() {
-    console.log(this.snapShotListGraph);
-    const dataSend = {
-      loadMode: true,
-      id: 'id',
+    const graphData = this.snapShotListGraph[0].graph.data;
 
+    const data = [];
+    const dataName = [];
+    for (let i = 0; i < graphData.length; i++) {
+      if (graphData[i].mode === 'lines') {
+        if (i === 0) {
+          const tempTime = graphData[i].x;
+          data.push(tempTime);
+          dataName.push('Time Series');
+        }
+        const tempData = graphData[i].y;
+        data.push(tempData);
+        dataName.push(graphData[i].name);
+      } else {
+
+      }
+    }
+    const dataSend = {
+      loadMode: this.snapShotListGraph[0].visualizeMode,
+      id: this.snapShotListGraph[0].id,
+      graph: this.snapShotListGraph[0].graph,
+      displayName: this.snapShotListGraph[0].displayName,
+      tableData: data,
+      tableName: dataName
     };
     this.routeService.storage = dataSend;
     this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {

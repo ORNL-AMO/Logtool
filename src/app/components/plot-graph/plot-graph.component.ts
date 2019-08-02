@@ -47,8 +47,7 @@ export class PlotGraphComponent implements OnInit {
     } else {
       const loadMode = this.routeDataTransfer.storage.loadMode;
       if (loadMode) {
-        console.log('Inside');
-        this.loadDisplayGraph(this.routeDataTransfer.storage.result.graph);
+        this.loadDisplayGraph(this.routeDataTransfer.storage.graph);
       } else {
         this.annotationListLine = [];
         this.annotationListScatter = [];
