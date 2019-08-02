@@ -81,15 +81,8 @@ export class HomeComponent implements OnInit, DoCheck {
     } else {
       this.loadMode = this.routeDataTransfer.storage.loadMode;
       if (this.loadMode) {
-        const id = this.routeDataTransfer.storage.id;
-        this.indexFileStore.viewSingleDataDBGraph(id).then(result => {
-          const sendData = {
-            loadMode: true,
-            result: result
-          };
-          this.routeDataTransfer.storage = sendData;
-          this.plotGraph.ngOnInit();
-        });
+        this.changeDisplayTable(0);
+        this.plotGraph.ngOnInit();
       } else {
         this.graph = '';
         this.dataFromDialog = [];

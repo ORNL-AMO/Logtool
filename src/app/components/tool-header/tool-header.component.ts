@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
 @Component({
   selector: 'app-tool-header',
@@ -8,13 +9,15 @@ import { Component, OnInit } from '@angular/core';
 export class ToolHeaderComponent implements OnInit {
 
   active = 0;
-  constructor() { }
+  constructor(private routeService: RouteDataTransferService) { }
   ngOnInit() {
 
   }
-
-
   changeActive(tab) {
+    const dataSend = {
+      loadMode: false
+    };
+    this.routeService.storage = dataSend;
     this.active = tab;
   }
 }
