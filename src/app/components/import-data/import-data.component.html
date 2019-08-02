@@ -1,6 +1,6 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
-<div class=" modal-lg my-modal" style="position: absolute; top: 5vh; left:-15vw;"  bsModal (onHidden)="handler('onHidden', $event)">
+<div class=" modal-lg my-modal" style="position: absolute; top: 50px; left:-225px;"  bsModal (onHidden)="handler('onHidden', $event)">
 
   <!-- Header Data && Close button-------------------------------------------------------------------------------->
   <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue;">
@@ -54,13 +54,12 @@
     <div class="col-4" style="text-align: center"
          tooltip=" Select this if the number of headers below are correct, you may rename them later">
       <label for="auto">Auto Find &nbsp;</label>
-      <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
+      <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto'); AutoHeaders();">
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file contains headers different from those shown below">
-      <label class="" for="none"> Manual selection &nbsp;
-        <input type="radio" name="header" checked="checked" value="manual" id="manual" [(ngModel)]="headerFind"
-               (change)="check('manual'); manualHeaders(pop);">
+      <label for="manual"> Manual selection &nbsp;
+        <input type="radio" name="header" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual'); manualHeaders(pop);">
       </label>
     </div>
     <div class="col-4" style="text-align: center"
@@ -163,7 +162,7 @@
 
 <ng-template #pop id="bob">
 
-  <div style="width:800px; height:350px; position: absolute; top: 30vh; left:-5.5vw; background: white" class="panel">
+  <div style="width:800px; height:350px; position: absolute; top: 270px; left:-76px; background: white; border: 3px solid black;" class="panel">
     <div class="row" style="height: 50px; margin: 0 ; background: lightskyblue">
       <div class="col">
       <p style="font-size: 22px; font-weight: bold">Click the Row containing the headers</p>

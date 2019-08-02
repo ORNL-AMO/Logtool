@@ -74,6 +74,7 @@ export class ImportDataComponent implements OnInit {
 
   ngOnInit() {
       this.stage = 1;
+      this.headerFind = 'auto';
   }
 
   /*readFile() {
@@ -227,10 +228,10 @@ export class ImportDataComponent implements OnInit {
 
   getDataWithHeader() {
     this.dataArrayColumns.shift();
-
+    const range: XLSX.Range = this.originalrange;
     if (this.headerIndex !== 0) {
-        this.originalrange.s.r = this.originalrange.s.r + this.headerIndex;
-        this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
+        range.s.r = this.originalrange.s.r + this.headerIndex;
+        this.worksheet['!ref'] = XLSX.utils.encode_range(range);
         this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     } else {
         this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
