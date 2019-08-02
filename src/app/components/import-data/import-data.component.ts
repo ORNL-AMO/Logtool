@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
@@ -29,6 +29,7 @@ export class ImportDataComponent implements OnInit {
   workbook: XLSX.WorkBook;
   worksheet: XLSX.WorkSheet;
   dataFromFile: LoadList[];
+  originalrange: XLSX.Range;
 
   header = [];
   selectedHeader = [];
@@ -46,10 +47,13 @@ export class ImportDataComponent implements OnInit {
   dataArrayColumns = [];
   fileRename = [];
 
+  headerIndex; number;
+
   headerFind: any;
+  private manualSample: any[];
 
 
-
+  testModRef: BsModalRef;
 
 
   constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
@@ -58,6 +62,9 @@ export class ImportDataComponent implements OnInit {
   }
 
   progress(event) {
+
+    this.getFirstRow(this.headerIndex);
+    this.getTimeSeries(this.headerIndex);
     this.stage = 3;
   }
 
@@ -155,9 +162,10 @@ export class ImportDataComponent implements OnInit {
       try {
         this.workbook = XLSX.readFile(f.path, {cellDates: true});
         this.worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
+        console.log(this.worksheet);
         this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
         this.stage = 2;
-        this.CSVGetHeaders();
+        this.AutoHeaders();
       } catch (e) {
         this.stage = 404;
         return;
@@ -171,7 +179,7 @@ export class ImportDataComponent implements OnInit {
     this.bsModalRef.hide();
   }
 
-  CSVGetHeaders() {
+  AutoHeaders() {
     this.fileContent = '';
     this.header = [];
     this.selectedHeader = [];
@@ -184,16 +192,17 @@ export class ImportDataComponent implements OnInit {
     this.readFirstRow = [];
     this.dataWithHeader = [];
 
-
     // attempt to find header
     let headerIndex = 0;
     let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
     console.log('first', checkHeader);
 
     const range = XLSX.utils.decode_range(this.worksheet['!ref']);
+    this.originalrange = {s: {r: 0, c: 0}, e: {r: range.e.r, c: range.e.c}};
+    console.log(this.originalrange, this.originalrange.s.r, this.originalrange.s.c, this.originalrange.e.r, this.originalrange.e.c);
     const numColumns = range.e.c + 1; // range is 0 based;
 
-    let check3 = 0 , check2 = 0, check1 = checkHeader.length;
+    let check3 = 0, check2 = 0, check1 = checkHeader.length;
 
     while (checkHeader.length < numColumns && headerIndex < 10) {
       headerIndex++;
@@ -211,20 +220,23 @@ export class ImportDataComponent implements OnInit {
       }
 
     }
-    this.dataArrayColumns.shift();
-    console.log(this.dataArrayColumns);
     this.header = checkHeader;
+    this.headerIndex = headerIndex;
+    this.getDataWithHeader();
+  }
 
-    if (headerIndex !== 0) {
-      range.s.r = range.s.r + headerIndex;
-      this.worksheet['!ref'] = XLSX.utils.encode_range(range);
-      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
+  getDataWithHeader() {
+    this.dataArrayColumns.shift();
+
+    if (this.headerIndex !== 0) {
+        this.originalrange.s.r = this.originalrange.s.r + this.headerIndex;
+        this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
+        this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     } else {
-      this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
+        this.dataWithHeader = XLSX.utils.sheet_to_json(this.worksheet);
     }
     this.stage = 2;
-    this.getFirstRow(headerIndex);
-    this.getTimeSeries(headerIndex);
+
   }
 
   getFirstRow(headerIndex) {
@@ -250,10 +262,10 @@ export class ImportDataComponent implements OnInit {
         name: this.header[i]
       });
     }
-    //console.log('selectedHeader', this.selectedHeader);
+    // console.log('selectedHeader', this.selectedHeader);
   }
 
-  getTimeSeries(headerIndex){
+  getTimeSeries(headerIndex) {
     // regex for detecting unusual date types
     const regex = '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
@@ -359,6 +371,28 @@ export class ImportDataComponent implements OnInit {
     this.alias = this.fileName;
   }*/
 
+  manualHeaders(template:  TemplateRef<any> ) {
+
+    this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
+    this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
+
+    if (this.dataArrayColumns.length < 5) {
+      this.manualSample = this.dataArrayColumns.slice(0, this.dataArrayColumns.length - 1);
+    } else { this.manualSample = this.dataArrayColumns.slice(0, 5); }
+
+    for (let i = 0; i < this.manualSample.length; i++) {
+      if (this.manualSample[i].length >= 4) { this.manualSample[i] = this.manualSample[i].slice(0, 5); }
+    }
+
+    this.testModRef = this.modalService.show(template, Object.assign({}, { class: 'modal-lg' }));
+  }
+  manualRow(index: number) {
+    this.header = this.dataArrayColumns[index];
+    this.headerIndex = index;
+    this.testModRef.hide();
+    this.getDataWithHeader();
+  }
+
   submitCheckBox() {
     const displayHeader = [];
     for (let i = 0; i < this.selectedHeader.length; i++) {
@@ -427,4 +461,6 @@ export class ImportDataComponent implements OnInit {
     this.headerFind = type;
     console.log(this.headerFind);
   }
+
+
 }

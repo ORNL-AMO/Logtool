@@ -1,6 +1,6 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
-<div class=" modal-lg my-modal" bsModal (onHidden)="handler('onHidden', $event)">
+<div class=" modal-lg my-modal" style="position: absolute; top: 5vh; left:-15vw;"  bsModal (onHidden)="handler('onHidden', $event)">
 
   <!-- Header Data && Close button-------------------------------------------------------------------------------->
   <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue;">
@@ -28,9 +28,9 @@
   </div>
 
   <div class="row justify-content-center" *ngIf="stage == 5">
-      <p class=" col-4">JSON file detected</p>
-     <button class="btn col-2" (click)="confirmJSON()">Import</button>
-     <button class="btn col-2" (click)="bsModalRef.hide()">Cancel</button>
+    <p class=" col-4">JSON file detected</p>
+    <button class="btn col-2" (click)="confirmJSON()">Import</button>
+    <button class="btn col-2" (click)="bsModalRef.hide()">Cancel</button>
   </div>
 
   <div class="row justify-content-center" *ngIf="stage == 404">
@@ -50,21 +50,22 @@
     <p style="margin:0; width: 25%; background:lightgray; text-align: center; ">Select Header Style <br></p>
   </div>
 
-  <div class="row"  *ngIf="stage == 2">
+  <div class="row" *ngIf="stage == 2">
     <div class="col-4" style="text-align: center"
-         tooltip=" Select this if the number of headers below are correct, you may rename them later" >
+         tooltip=" Select this if the number of headers below are correct, you may rename them later">
       <label for="auto">Auto Find &nbsp;</label>
-        <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
+      <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto')">
     </div>
     <div class="col-4" style="text-align: center"
-         tooltip="Select this if your file contains headers different from those shown below" >
+         tooltip="Select this if your file contains headers different from those shown below">
       <label class="" for="none"> Manual selection &nbsp;
-        <input type="radio" name="header" checked="checked" value="manual" id="manual" [popover]="pop" [(ngModel)]="headerFind" (change)="check('manual'); showHeaderMod();">
+        <input type="radio" name="header" checked="checked" value="manual" id="manual" [(ngModel)]="headerFind"
+               (change)="check('manual'); manualHeaders(pop);">
       </label>
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file does not have headers you will be able to manually assign column headers below">
-      <label for="none"> No header &nbsp;  </label>
+      <label for="none"> No header &nbsp; </label>
       <input type="radio" name="header" value="none" id="none" [(ngModel)]="headerFind" (change)="check('none')">
     </div>
 
@@ -73,7 +74,7 @@
   <div class="row justify-content-center" *ngIf="stage == 2">
     <p style="margin:0">Auto-Detected Column Headers </p>
   </div>
-   <div *ngIf="stage == 2" style="max-width: 800px; margin:auto; overflow-x: auto;">
+  <div *ngIf="stage == 2" style="max-width: 800px; margin:auto; overflow-x: auto;">
     <table>
       <tr>
         <td style="max-height: 100px; white-space: nowrap" *ngFor="let head of header">{{head}}</td>
@@ -106,7 +107,8 @@
   <br>
 
   <!--data display && row renaming-->
-  <form #formElement="ngForm" id="import_file" (ngSubmit)="submitCheckBox()" style="padding-bottom: 20px;"
+  <form #formElement="ngForm" id="import_file" (ngSubmit)="submitCheckBox()"
+        style="padding-bottom: 20px; max-height: 50vh; overflow: auto"
         *ngIf="stage == 3">
     <table style="border-radius: 32px">
       <colgroup>
@@ -118,15 +120,16 @@
           Column Name
         </th>
         <th tooltip="Change name assigned to dataset. Original File is uneffected"
-        placement="bottom">
+            placement="bottom">
           Rename (Optional)
         </th>
         <th tooltip="First value found in first 100 samples of the column"
             placement="bottom">
           First Sample
         </th>
-        <th tooltip="Checked by default if it contains data within the first 100 samples, uncheck to exclude from import"
-            placement="bottom">
+        <th
+          tooltip="Checked by default if it contains data within the first 100 samples, uncheck to exclude from import"
+          placement="bottom">
           Selected
         </th>
       </tr>
@@ -159,17 +162,21 @@
 </ng-template>
 
 <ng-template #pop id="bob">
-  <div style="width:500px; height:200px" class="panel">
-    <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
-      <p>Please Select the Row containing your headers</p>
-      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="hideSave()">&times;</span>
+
+  <div style="width:800px; height:350px; position: absolute; top: 30vh; left:-5.5vw; background: white" class="panel">
+    <div class="row" style="height: 50px; margin: 0 ; background: lightskyblue">
+      <div class="col">
+      <p style="font-size: 22px; font-weight: bold">Click the Row containing the headers</p>
+      </div>
+      <div class="col-1">
+      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="testModRef.hide();">&times;</span>
     </div>
-    <div class="row justify-content-center">
-        <table>
-          <tr *ngFor="let index of [0,1,2,3,4,5]">
-            <td *ngFor="let col of [0,1,2,3,4,5]"> {{dataArrayColumns[col]}} </td>
-          </tr>
-        </table>
     </div>
+    <div class="row test" style="width:700px; height: 50px; margin-left: 50px" *ngFor = " let index of [0,1,2,3,4]" (click)="manualRow(index)">
+    <div style="width:140px; height: 50px; overflow: hidden; border: 1px solid black;  " *ngFor="let col of manualSample[index]">
+      <p class="tight-fit" style="padding: 5px; margin: 0">{{col}}</p>
+    </div>
+  </div>
+
   </div>
 </ng-template>

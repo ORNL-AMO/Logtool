@@ -202,7 +202,6 @@ export class IndexFileStoreService {
     });
   }
 
-
   addIntoDBFileMetaDataFromFile(fileMetaData: FileMetaData) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
@@ -438,6 +437,7 @@ export class IndexFileStoreService {
         });
     });
   }
+
   viewSingleDataDBGraph(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
@@ -506,6 +506,23 @@ export class IndexFileStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
         db.delete('dayType', id).then(() => {
+            console.log('Deleted');
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
+
+  // testing needed
+  deleteFromDBGraph(id: any) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('visualizeGraphStore', id).then(() => {
             console.log('Deleted');
           },
           error => {
