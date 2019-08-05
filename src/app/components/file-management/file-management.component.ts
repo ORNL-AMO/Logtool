@@ -4,16 +4,10 @@ import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
 import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
-import * as XLSX from 'xlsx';
-import * as fs from 'fs';
 import {Router} from '@angular/router';
 import {SaveLoadService} from '../../providers/save-load.service';
-import {LoadList} from '../../types/load-list';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
-
-import {FileImportComponent} from '../file-import/file-import.component';
-
 import {DataList} from '../../types/data-list';
 
 

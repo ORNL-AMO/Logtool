@@ -153,7 +153,6 @@ export class IndexFileStoreService {
         }).then(() => {
         },
         error => {
-          alert('File already Imported');
           console.log(error);
         });
     }, error => {
