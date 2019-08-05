@@ -19,7 +19,7 @@
       <div class="panel">
         <div class="header tight-fit">Loaded Files</div>
 
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
           <div class="row tight-fit justify-content-center">
             <p class="tight-fit" style="text-align: center; ">Name:</p>
           </div>
@@ -47,7 +47,7 @@
       <div class="panel">
         <div class="header tight-fit">Day Type Snapshots</div>
 
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
           <div class="row tight-fit">
 
             <div class="col-8 " style="border-right: 1px solid black">
@@ -85,7 +85,7 @@
       <div class="panel">
         <div class="header tight-fit">Visualization Snapshots</div>
 
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: rosybrown;">
+        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
           <div class="row tight-fit">
 
             <div class="col-8 " style="border-right: 1px solid black">
@@ -121,9 +121,19 @@
     </div>
 
     <!-- Recently used files -->
-    <div class="row snug" style="min-height: 100%">
-      <div class="panel">
-        <div class="header tight-fit">Recently Used</div>
+    <div class="row snug">
+      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
+        <div class="panel">
+          <div class="header tight-fit">Export Options</div>
+          <div class="row" style="margin: 5px;">
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Selected</button>
+            </div>
+            <div class="col-6 tight-fit">
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Everything</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -187,7 +197,7 @@
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
                                                                                            [(ngModel)]="activeMetaData.facilityContactName">
                 </div>
-                <div class="row tight-fit"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
+                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
                                                                                             [(ngModel)]="activeMetaData.facilityContact">
                 </div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
@@ -201,7 +211,7 @@
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
                                                                                            [(ngModel)]="activeMetaData.assessmentContactName">
                 </div>
-                <div class="row tight-fit"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
+                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
                                                                                             [(ngModel)]="activeMetaData.assessmentContact">
                 </div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
@@ -293,7 +303,7 @@
 
   <!-- Navigate, Export, && Instructions -->
   <div class="snug col" style="min-height: 100%; margin-right: 20px; min-width:200px;">
-    <div class="row snug ">
+   <!-- <div class="row snug ">
       <div class="col-12" style="padding-left: 0; padding-right: 5px">
         <div class="panel">
           <div class="header tight-fit">Visualize Selection</div>
@@ -307,22 +317,8 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row snug">
-      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
-        <div class="panel">
-          <div class="header tight-fit">Export Options</div>
-          <div class="row" style="margin: 5px;">
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Selected</button>
-            </div>
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Everything</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div>-->
+
     <div class="row snug">
       <div class="panel">
         <div class="header tight-fit">Instructions</div>

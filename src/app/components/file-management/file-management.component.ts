@@ -50,6 +50,7 @@ export class FileManagementComponent implements OnInit {
   metahidden: any;
 
   ngOnInit() {
+    this.indexFileStore.clearFromDBTemp();
     this.selected = [];
     this.generateFileList();
     this.generateSnapShotListDayType();
@@ -84,7 +85,7 @@ export class FileManagementComponent implements OnInit {
           /*console.log(this.selected, this.dataFromDialog[i], this.selected.indexOf(this.dataFromDialog[i]));*/
           const select = this.selected.findIndex(obj => obj.IndexID === this.dataFromDialog[i].id) ;
           if (select >= 0) {this.selected[select].tabID = i;}
-          console.log(select);
+          //console.log(select);
           this.fileList.push({
             name: this.dataFromDialog[i].name,
             id: this.dataFromDialog[i].id,
@@ -192,6 +193,8 @@ export class FileManagementComponent implements OnInit {
       this.fileList[index].selected = true;
       this.active = index;
       this.activeUpdated();
+      const activeFile: DataList = this.dataFromDialog.find(obj => obj.id === file.id);
+      this.indexFileStore.addIntoDBFileInputTemp(activeFile);
     } else {
       console.log();
       this.indexFileStore.deleteFromDBTemp(this.selected[content].IndexID);
@@ -204,6 +207,7 @@ export class FileManagementComponent implements OnInit {
         this.active--;
       }
 
+      console.log('check one');
       this.activeUpdated();
       this.fileList[index].selected = false;
       this.selected.splice(content, 1);
@@ -224,9 +228,13 @@ export class FileManagementComponent implements OnInit {
       this.activeMetaData = this.metaList[this.active].data;
     }
 
+
     this.showFileData();
+
     this.showMetaData();
+
     this.changeDisplayTable();
+
   }
 
   showMetaData() {
@@ -255,7 +263,7 @@ export class FileManagementComponent implements OnInit {
         start: activeFile.startDate,
         end: activeFile.endDate,
       };
-      this.indexFileStore.addIntoDBFileInputTemp(activeFile);
+      //this.indexFileStore.addIntoDBFileInputTemp(activeFile);
     } else {
       this.activeStats = null;
     }
