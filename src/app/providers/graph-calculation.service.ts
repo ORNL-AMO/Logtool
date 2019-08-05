@@ -120,6 +120,39 @@ export class GraphCalculationService {
               });
               console.log(i, days);
             }
+/*<<<<<<< Updated upstream
+=======
+            dayArray = [];
+            valueArray = [];
+            particularHour = timeSeriesDayType[i].getHours();
+            valueArray.push(dataFromFileColumn[0][i]);
+            particularDay = timeSeriesDayType[i].getDate();
+          }
+        }
+        if (i === timeSeriesDayType.length - 1) {
+          const hourValue = timeSeriesDayType[i].getHours() - 1;
+          dayArray.push({
+            valueArray: valueArray,
+            hourAverage: this.averageArray(valueArray),
+            hourValue: hourValue === -1 ? 23 : hourValue,
+            date: particularDay,
+            displayDate: timeSeriesDayType[i],
+            channelName: valueColumnCount[column].name
+          });
+          mainArray.push(dayArray);
+          //console.log(i, timeSeriesDayType[i]);
+          if (column === 0) {
+            days.push({
+              date: timeSeriesDayType[i],
+              day: this.weekday[timeSeriesDayType[i].getDay()],
+              bin: this.binAllocation(dayArray, timeSeriesDayType[i].getDay()),
+              id: timeSeriesDayType[i].getDate() + '' + timeSeriesDayType[i].getMonth() +
+                '' + timeSeriesDayType[i].getFullYear(),
+              stroke: 1,
+              visible: true
+            });
+            //console.log(i, days);
+>>>>>>> Stashed changes*/
           }
         }
 

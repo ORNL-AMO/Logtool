@@ -176,6 +176,8 @@ export class CalendarComponent implements OnInit {
       })
       .entries(this.daysToNest);
 
+     //console.log(this.dayList);
+      this.dayList = this.INsort(this.dayList);
   }
 
   getGridOffsets() {
@@ -577,4 +579,31 @@ export class CalendarComponent implements OnInit {
   clear() {
     this.clearSelection.emit();
   }
+
+  INsort(CurrArray) {
+    const array = [];
+    array[0] = CurrArray[0];
+
+    for (let i = 1; i < CurrArray.length; i++) {
+      const key = CurrArray[i].key;
+
+      let j = i - 1;
+
+      while (j >= 0 && array[j].key > key) {
+        array[j + 1] = array[j];
+        j = j - 1;
+
+      }
+      array[j + 1] = CurrArray[i];
+    }
+    console.log(array);
+    return array;
+  }
+
+
+
+
+
+
+
 }
