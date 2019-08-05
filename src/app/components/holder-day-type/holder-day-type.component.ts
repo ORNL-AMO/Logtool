@@ -462,7 +462,7 @@ export class HolderDayTypeComponent implements OnInit {
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
-
+      //console.log(this.timeSeriesDayType);
       timeSeriesDayType = this.data.curateTimeSeries(this.timeSeriesDayType);
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, timeSeriesDayType,
         this.selectedColumnPointer, this.saveLoadMode);

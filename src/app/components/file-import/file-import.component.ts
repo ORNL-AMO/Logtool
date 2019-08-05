@@ -33,9 +33,6 @@ export class FileImportComponent implements OnInit {
   }
 
 
-
-
-
   public decline() {
     this.onClose.next(false);
     this.bsModalRef.hide();

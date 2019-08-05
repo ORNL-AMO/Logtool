@@ -105,7 +105,7 @@ export class GraphCalculationService {
               channelName: valueColumnCount[column].name
             });
             mainArray.push(dayArray);
-            console.log(i, timeSeriesDayType[i]);
+            //console.log(i, timeSeriesDayType[i]);
             if (column === 0) {
               days.push({
                 date: timeSeriesDayType[i],
@@ -116,7 +116,7 @@ export class GraphCalculationService {
                 stroke: 1,
                 visible: true
               });
-              console.log(i, days);
+              //console.log(i, days);
             }
 /*<<<<<<< Updated upstream
 =======

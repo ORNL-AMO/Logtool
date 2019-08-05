@@ -29,6 +29,7 @@ export class DayTypeBinComponent implements OnInit {
 
   ngOnInit() {
     this.show = false;
+    //console.log(this.name, this.activeContents);
     // this.getTextColor();
   }
 
