@@ -18,13 +18,14 @@ export class GraphCalculationService {
   constructor(private data: DataService) {
   }
 
-  averageCalculation(dataFromFile, timeSeriesDayType, valueColumnCount, saveLoadMode) {
+  averageCalculation(dataFromFile, inputTimeSeriesDayType, valueColumnCount, saveLoadMode) {
     let valueArray = [];
     let dayArray = [];
     let mainArray = [];
     let dataFromFileColumn = [];
     let particularDay: any;
     let particularHour: any;
+    let timeSeriesDayType = [];
     // Return Values
     const days = [];
     const columnMainArray = [];
@@ -39,16 +40,33 @@ export class GraphCalculationService {
         dataFromFileColumn.push(this.data.curateData(dataFromFile[parseInt(columnPointer[0],
           10)].dataArrayColumns[parseInt(columnPointer[1], 10)]));
       }
+      timeSeriesDayType = this.data.curateTimeSeries(inputTimeSeriesDayType);
       for (let i = 0; i < timeSeriesDayType.length; i++) {
-
-        if (i === 0) {
-          particularDay = timeSeriesDayType[i].getDate();
-          particularHour = timeSeriesDayType[i].getHours();
-          valueArray.push(dataFromFileColumn[0][i]);
+        if (timeSeriesDayType[i] === undefined) {
+          continue;
         } else {
-          if (particularDay === timeSeriesDayType[i].getDate()) {
-            if (particularHour === timeSeriesDayType[i].getHours()) {
-              valueArray.push(dataFromFileColumn[0][i]);
+          if (i === 0) {
+            particularDay = timeSeriesDayType[i].getDate();
+            particularHour = timeSeriesDayType[i].getHours();
+            valueArray.push(dataFromFileColumn[0][i]);
+          } else {
+            if (particularDay === timeSeriesDayType[i].getDate()) {
+              if (particularHour === timeSeriesDayType[i].getHours()) {
+                valueArray.push(dataFromFileColumn[0][i]);
+              } else {
+                const hourValue = timeSeriesDayType[i].getHours() - 1;
+                dayArray.push({
+                  valueArray: valueArray,
+                  hourAverage: this.averageArray(valueArray),
+                  hourValue: hourValue === -1 ? 23 : hourValue,
+                  date: particularDay,
+                  displayDate: timeSeriesDayType[i],
+                  channelName: valueColumnCount[column].name
+                });
+                valueArray = [];
+                particularHour = timeSeriesDayType[i].getHours();
+                valueArray.push(dataFromFileColumn[0][i]);
+              }
             } else {
               const hourValue = timeSeriesDayType[i].getHours() - 1;
               dayArray.push({
@@ -59,11 +77,26 @@ export class GraphCalculationService {
                 displayDate: timeSeriesDayType[i],
                 channelName: valueColumnCount[column].name
               });
+              mainArray.push(dayArray);
+              if (column === 0) {
+                days.push({
+                  date: timeSeriesDayType[i - 1],
+                  day: this.weekday[timeSeriesDayType[i - 1].getDay()],
+                  bin: this.binAllocation(dayArray, timeSeriesDayType[i - 1].getDay()),
+                  id: timeSeriesDayType[i - 1].getDate() + '' + timeSeriesDayType[i - 1].getMonth() +
+                    '' + timeSeriesDayType[i - 1].getFullYear(),
+                  stroke: 1,
+                  visible: true
+                });
+              }
+              dayArray = [];
               valueArray = [];
               particularHour = timeSeriesDayType[i].getHours();
               valueArray.push(dataFromFileColumn[0][i]);
+              particularDay = timeSeriesDayType[i].getDate();
             }
-          } else {
+          }
+          if (i === timeSeriesDayType.length - 1) {
             const hourValue = timeSeriesDayType[i].getHours() - 1;
             dayArray.push({
               valueArray: valueArray,
@@ -74,49 +107,22 @@ export class GraphCalculationService {
               channelName: valueColumnCount[column].name
             });
             mainArray.push(dayArray);
+            console.log(i, timeSeriesDayType[i]);
             if (column === 0) {
               days.push({
-                date: timeSeriesDayType[i - 1],
-                day: this.weekday[timeSeriesDayType[i - 1].getDay()],
-                bin: this.binAllocation(dayArray, timeSeriesDayType[i - 1].getDay()),
-                id: timeSeriesDayType[i - 1].getDate() + '' + timeSeriesDayType[i - 1].getMonth() +
-                  '' + timeSeriesDayType[i - 1].getFullYear(),
+                date: timeSeriesDayType[i],
+                day: this.weekday[timeSeriesDayType[i].getDay()],
+                bin: this.binAllocation(dayArray, timeSeriesDayType[i].getDay()),
+                id: timeSeriesDayType[i].getDate() + '' + timeSeriesDayType[i].getMonth() +
+                  '' + timeSeriesDayType[i].getFullYear(),
                 stroke: 1,
                 visible: true
               });
+              console.log(i, days);
             }
-            dayArray = [];
-            valueArray = [];
-            particularHour = timeSeriesDayType[i].getHours();
-            valueArray.push(dataFromFileColumn[0][i]);
-            particularDay = timeSeriesDayType[i].getDate();
           }
         }
-        if (i === timeSeriesDayType.length - 1) {
-          const hourValue = timeSeriesDayType[i].getHours() - 1;
-          dayArray.push({
-            valueArray: valueArray,
-            hourAverage: this.averageArray(valueArray),
-            hourValue: hourValue === -1 ? 23 : hourValue,
-            date: particularDay,
-            displayDate: timeSeriesDayType[i],
-            channelName: valueColumnCount[column].name
-          });
-          mainArray.push(dayArray);
-          console.log(i, timeSeriesDayType[i]);
-          if (column === 0) {
-            days.push({
-              date: timeSeriesDayType[i],
-              day: this.weekday[timeSeriesDayType[i].getDay()],
-              bin: this.binAllocation(dayArray, timeSeriesDayType[i].getDay()),
-              id: timeSeriesDayType[i].getDate() + '' + timeSeriesDayType[i].getMonth() +
-                '' + timeSeriesDayType[i].getFullYear(),
-              stroke: 1,
-              visible: true
-            });
-            console.log(i, days);
-          }
-        }
+
       }
       columnMainArray.push(mainArray);
     }
