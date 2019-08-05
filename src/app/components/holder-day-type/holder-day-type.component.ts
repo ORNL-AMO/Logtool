@@ -27,7 +27,7 @@ export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
               private graphCreation: GraphCreationService, private routeDataTransfer: RouteDataTransferService,
               private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
-              private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
+              private exportCsv: ExportCSVService, private saveLoadService: SaveLoadService) {
   }
 
   @ViewChild(CalendarComponent)
@@ -93,8 +93,8 @@ export class HolderDayTypeComponent implements OnInit {
   newBinColor;
   selectedDates: Set<any>;
   showBinMode = true;
-  saveLoadMode = false;
-  loadSaveLoadId;
+  dayTypeMode = false;
+  loadDayTypeId;
   loadSessionData: LoadList;
   snapShotStash: any[];
   bsModalRef;
@@ -119,8 +119,8 @@ export class HolderDayTypeComponent implements OnInit {
         this.populateSpinner();
       });
     } else {
-      this.saveLoadMode = this.routeDataTransfer.storage.loadMode;
-      if (this.saveLoadMode) {
+      this.dayTypeMode = this.routeDataTransfer.storage.loadMode;
+      if (this.dayTypeMode) {
         this.plotGraphDayAverage(0);
         this.plotGraphBinAverage(0);
         const id = this.routeDataTransfer.storage.id;
@@ -258,7 +258,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   resetBins() {
     this.clearSelection();
-    if (this.saveLoadMode) {
+    if (this.dayTypeMode) {
       this.loadDayTypeNavigation(true);
     } else {
       this.dayTypeNavigation(true);
@@ -422,7 +422,7 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   dayTypeNavigation(reset) {
-    this.saveLoadMode = false;
+    this.dayTypeMode = false;
     this.columnMainArray = [];
     this.days = [];
     this.selectedDates.clear();
@@ -463,7 +463,7 @@ export class HolderDayTypeComponent implements OnInit {
 
       timeSeriesDayType = this.data.curateTimeSeries(this.timeSeriesDayType);
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, timeSeriesDayType,
-        this.selectedColumnPointer, this.saveLoadMode);
+        this.selectedColumnPointer, this.dayTypeMode);
       this.days = returnObject.days;
       // console.log(this.timeSeriesDayType);
       this.columnMainArray = returnObject.columnMainArray;
@@ -483,8 +483,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   loadDayTypeNavigation(reset) {
-    this.saveLoadMode = true;
-    this.loadSaveLoadId = this.loadSessionData.id;
+    this.dayTypeMode = true;
+    this.loadDayTypeId = this.loadSessionData.id;
     this.sesName = this.loadSessionData.displayName;
     const dataFromFile = this.loadSessionData.loadDataFromFile;
     this.timeSeriesDayType = this.loadSessionData.loadTimeSeriesDayType;
@@ -506,7 +506,7 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType,
-        this.selectedColumnPointer, this.saveLoadMode);
+        this.selectedColumnPointer, this.dayTypeMode);
       this.days = returnObject.days;
       this.columnMainArray = returnObject.columnMainArray;
       this.loadDataFromFile = returnObject.loadDataFromFile;
@@ -599,18 +599,18 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   saveSession() {
-    if (this.saveLoadMode) {
-      this.saveLoad.updateSession(this.loadSaveLoadId, this.fileInputId, this.columnSelectorList[0].name, this.sesName,
+    if (this.dayTypeMode) {
+      this.saveLoadService.updateSession(this.loadDayTypeId, this.fileInputId, this.columnSelectorList[0].name, this.sesName,
         this.loadDataFromFile, this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray,
         this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
         this.graphBinAverage, this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
-        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.saveLoadMode);
+        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.dayTypeMode);
     } else {
       if (this.sesName === '' || this.sesName === undefined) {
         alert('Invalid name. Please try again');
         return;
       }
-      this.saveLoad.saveSession(this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+      this.saveLoadService.saveSession(this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.mac, this.toggleRelayoutDay, this.annotationListDayAverage,
@@ -622,9 +622,9 @@ export class HolderDayTypeComponent implements OnInit {
 
   deleteSession(id) {
     console.log('id: ', id);
-    this.indexFileStore.viewDataDBSaveInputId().then(data => {
-      this.data.currentDataInputSaveLoadIdArray.subscribe(result => {
-        this.indexFileStore.deleteFromDBSaveLoad(id).then(deleteResult => {
+    this.indexFileStore.viewDataDBDayTypeId().then(data => {
+      this.data.currentDataInputDayTypeIdArray.subscribe(result => {
+        this.indexFileStore.deleteFromDBDayType(id).then(deleteResult => {
           this.updateStash();
         });
       });
@@ -633,35 +633,22 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   loadSession(id) {
-    this.indexFileStore.viewSingleDataDBSaveInput(id).then(data => {
-      this.data.currentSingleDataInputSaveLoad.subscribe(result => {
+    this.indexFileStore.viewSingleDataDBDayType(id).then(data => {
+      this.data.currentSingleDataInputDayType.subscribe(result => {
         this.loadSessionData = result;
-        this.saveLoadMode = this.loadSessionData.saveLoadMode;
+        this.dayTypeMode = this.loadSessionData.dayTypeMode;
         this.loadDayTypeNavigation(false);
       });
     });
   }
 
   viewSession() {
-    this.indexFileStore.viewSingleDataDBSaveInput(3438957).then(data => {
-      this.data.currentSingleDataInputSaveLoad.subscribe(result => {
+    this.indexFileStore.viewSingleDataDBDayType(3438957).then(data => {
+      this.data.currentSingleDataInputDayType.subscribe(result => {
         console.log(result);
       });
     });
   }
-
-  exportToFile() {
-    this.indexFileStore.viewDataDBSaveInput().then(data => {
-      this.data.currentDataInputSaveLoadArray.subscribe(result => {
-        if (result.length < 1) {
-          alert('No Data To Export');
-          return;
-        }
-        this.exportCsv.createJsonFile(result);
-      });
-    });
-  }
-
   importFile() {
     this.bsModalRef = this.modalService.show(ImportJsonFileComponent, {class: 'my-modal', ignoreBackdropClick: true});
     this.bsModalRef.content.closeBtnName = 'Close';
@@ -670,8 +657,8 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   updateStash() {
-    this.indexFileStore.viewDataDBSaveInput().then(data => {
-      this.data.currentDataInputSaveLoadArray.subscribe(result => {
+    this.indexFileStore.viewDataDBDayType().then(data => {
+      this.data.currentDataInputDayTypeArray.subscribe(result => {
         this.snapShotStash = result;
       });
     });

@@ -21,6 +21,6 @@ export class ImportJsonFileComponent implements OnInit {
     const files = event.target.files;
     const f = files[0];
     const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
-    this.exportCSV.readJsonFileSnapShot(dataFromFile);
+    this.exportCSV.readJsonFileSnapShotDayType(dataFromFile);
   }
 }

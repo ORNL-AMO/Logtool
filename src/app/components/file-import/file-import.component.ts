@@ -52,7 +52,7 @@ export class FileImportComponent implements OnInit {
       const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
       alert('First catch');
       this.test = {type: 'json', path: f.path};
-      //this.bsModalRef.hide();
+      // this.bsModalRef.hide();
     } catch (e) {
       try {
         const loadedWorkbook = XLSX.readFile(f.path, {cellDates: true});
@@ -76,7 +76,7 @@ export class FileImportComponent implements OnInit {
     const initialState = {
       stage: 2,
       fileName: f.name,
-      path:f.path,
+      path: f.path,
       fileType: f.type,
       ignoreBackdropClick: true,
       class: 'my-modal',
@@ -85,6 +85,6 @@ export class FileImportComponent implements OnInit {
       dataArrayColumns: dataArrayColumns,
     };
     this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
-    //this.bsModalRef.content.closeBtnName = 'Close';
+    // this.bsModalRef.content.closeBtnName = 'Close';
   }
 }

@@ -74,7 +74,7 @@ export class IndexFileStoreService {
       objectStoreLoad.createIndex('loadAnnotationListBinAverage', 'loadAnnotationListBinAverage', {unique: false});
       objectStoreLoad.createIndex('loadGlobalYAverageDay', 'loadGlobalYAverageDay', {unique: false});
       objectStoreLoad.createIndex('loadGlobalYAverageBin', 'loadGlobalYAverageBin', {unique: false});
-      objectStoreLoad.createIndex('saveLoadMode', 'saveLoadMode', {unique: false});
+      objectStoreLoad.createIndex('dayTypeMode', 'dayTypeMode', {unique: false});
       const objectStoreFile = transaction.createObjectStore('fileMetaData', {keyPath: 'id', unique: true});
       objectStoreFile.createIndex('id', 'id', {unique: true});
       objectStoreFile.createIndex('fileInputId', 'fileInputId', {unique: false});
@@ -188,7 +188,7 @@ export class IndexFileStoreService {
     });
   }
 
-  addIntoDBSaveInput(loadSessionData: LoadList) {
+  addIntoDBDayType(loadSessionData: LoadList) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
@@ -216,7 +216,7 @@ export class IndexFileStoreService {
           loadAnnotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
           loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
           loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
-          saveLoadMode: loadSessionData.saveLoadMode
+          dayTypeMode: loadSessionData.dayTypeMode
         }).then(() => {
         },
         error => {
@@ -274,7 +274,7 @@ export class IndexFileStoreService {
     });
   }
 
-  addIntoDBSaveInputFromFile(loadSessionData: LoadList) {
+  addIntoDBDayTypeFromFile(loadSessionData: LoadList) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
@@ -322,7 +322,7 @@ export class IndexFileStoreService {
           loadAnnotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
           loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
           loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
-          saveLoadMode: loadSessionData.saveLoadMode
+          dayTypeMode: loadSessionData.dayTypeMode
         }).then(() => {
         },
         error => {
@@ -359,7 +359,7 @@ export class IndexFileStoreService {
     });
   }
 
-  updateIntoDBSaveInput(loadSessionData: LoadList) {
+  updateIntoDBDayType(loadSessionData: LoadList) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
@@ -388,7 +388,7 @@ export class IndexFileStoreService {
           loadAnnotationListBinAverage: loadSessionData.loadAnnotationListBinAverage,
           loadGlobalYAverageDay: loadSessionData.loadGlobalYAverageDay,
           loadGlobalYAverageBin: loadSessionData.loadGlobalYAverageBin,
-          saveLoadMode: loadSessionData.saveLoadMode
+          dayTypeMode: loadSessionData.dayTypeMode
         }).then(() => {
         },
         error => {
@@ -415,14 +415,14 @@ export class IndexFileStoreService {
     });
   }
 
-  viewDataDBSaveInput() {
+  viewDataDBDayType() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('dayType').then(saveInput => {
-            resolve(saveInput);
-            this.data.changeInputSaveLoadArray(saveInput);
+          db.getAll('dayType').then(DayType => {
+            resolve(DayType);
+            this.data.changeInputDayTypeArray(DayType);
           });
         },
         error => {
@@ -436,9 +436,9 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('fileInput').then(saveInput => {
-            resolve(saveInput);
-            this.data.changeInputArray(saveInput);
+          db.getAll('fileInput').then(DayType => {
+            resolve(DayType);
+            this.data.changeInputArray(DayType);
           });
         },
         error => {
@@ -452,9 +452,9 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('fileInputTemp').then(saveInput => {
-            resolve(saveInput);
-            this.data.changeInputArray(saveInput);
+          db.getAll('fileInputTemp').then(DayType => {
+            resolve(DayType);
+            this.data.changeInputArray(DayType);
           });
         },
         error => {
@@ -463,18 +463,18 @@ export class IndexFileStoreService {
     });
   }
 
-  viewDataDBSaveInputId() {
+  viewDataDBDayTypeId() {
     const id = [];
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getAll('dayType').then(saveInput => {
-            for (let i = 0; i < saveInput.length; i++) {
-              id.push(saveInput[i].id);
+          db.getAll('dayType').then(DayType => {
+            for (let i = 0; i < DayType.length; i++) {
+              id.push(DayType[i].id);
             }
             resolve(id);
-            this.data.changeInputSaveLoadIdArray(id);
+            this.data.changeInputDayTypeIdArray(id);
           });
         },
         error => {
@@ -483,14 +483,14 @@ export class IndexFileStoreService {
     });
   }
 
-  viewSingleDataDBSaveInput(id) {
+  viewSingleDataDBDayType(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getByIndex('dayType', 'id', id).then(saveInput => {
-            resolve(saveInput);
-            this.data.changeSingleInputSaveLoad(saveInput);
+          db.getByIndex('dayType', 'id', id).then(DayType => {
+            resolve(DayType);
+            this.data.changeSingleInputDayType(DayType);
           });
         },
         error => {
@@ -504,9 +504,9 @@ export class IndexFileStoreService {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
       }).then(() => {
-          db.getByIndex('visualizeGraphStore', 'id', id).then(saveInput => {
-            resolve(saveInput);
-            this.data.changeSingleInputGraph(saveInput);
+          db.getByIndex('visualizeGraphStore', 'id', id).then(DayType => {
+            resolve(DayType);
+            this.data.changeSingleInputGraph(DayType);
           });
         },
         error => {
@@ -591,7 +591,7 @@ export class IndexFileStoreService {
     });
   }
 
-  deleteFromDBSaveLoad(id) {
+  deleteFromDBDayType(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
       db.openDatabase(1, evt => {
