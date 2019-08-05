@@ -171,11 +171,12 @@ export class CalendarComponent implements OnInit {
         return week(new Date(d));
       })
       .key(function (d) {
-
+        //console.log(d);
         return daynum(new Date(d));
       })
       .entries(this.daysToNest);
-
+      //console.log(this.daysToNest);
+      this.dayList = this.INsort(this.dayList);
   }
 
   getGridOffsets() {
@@ -381,6 +382,8 @@ export class CalendarComponent implements OnInit {
       const dateData = d3.select(event.target).data()[0].values[0];
       if (this.lastclick !== undefined) {
         const range = this.getDatesBetween(dateData);
+        //this.discontinue(this.lastclick, dateData);
+        //const range = this.getAll(this.lastclick, dateData);
         this.selectionToggle.emit({items: range, selected: true});
       }
 
@@ -577,4 +580,52 @@ export class CalendarComponent implements OnInit {
   clear() {
     this.clearSelection.emit();
   }
+
+  INsort(CurrArray) {
+    //console.log(this.daysToNest);
+    const array = [];
+    array[0] = CurrArray[0];
+
+    for (let i = 1; i < CurrArray.length; i++) {
+      const key = CurrArray[i].key;
+
+      let j = i - 1;
+
+      while (j >= 0 && array[j].key > key) {
+        array[j + 1] = array[j];
+        j = j - 1;
+
+      }
+      array[j + 1] = CurrArray[i];
+    }
+    //console.log(array);
+    return array;
+  }
+
+  discontinue(date1: Date, date2: Date ) {
+    console.log(date1, date2);
+    const yearStartIndex   = this.dayList.findIndex(obj => obj.key === date1.getFullYear().toString());
+    const yearEndIndex   = this.dayList.findIndex(obj => obj.key === date2.getFullYear().toString());
+
+    const monthStartIndex = this.dayList[yearStartIndex].values.findIndex(obj => obj.key === date1.getMonth().toString());
+    const monthEndIndex   = this.dayList[yearEndIndex].values.findIndex(obj => obj.key === date2.getMonth().toString());
+
+    console.log(this.dayList[yearStartIndex].values);
+
+
+
+    const dayStartIndex = this.dayList[yearStartIndex].values[monthStartIndex].values.findIndex(obj => obj.key === date1.getDate().toString());
+    const dayEndIndex   = this.dayList[yearEndIndex].values[monthEndIndex].values.findIndex(obj => obj.key === date2.getDate().toString());
+
+    console.log('start', yearStartIndex, monthStartIndex, dayStartIndex);
+    console.log('end', yearEndIndex, monthEndIndex, dayEndIndex);
+
+
+  }
+
+
+
+
+
+
 }

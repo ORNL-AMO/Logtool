@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-tool-header',
