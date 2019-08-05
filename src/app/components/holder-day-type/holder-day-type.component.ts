@@ -457,7 +457,6 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
       this.selectedColumnPointer = this.columnSelectorList;
-      console.log(this.timeSeriesFileDayType);
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
