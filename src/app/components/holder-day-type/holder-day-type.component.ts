@@ -214,6 +214,7 @@ export class HolderDayTypeComponent implements OnInit {
     const tempHeader = this.dataFromInput[parseInt(currentSelectedFile, 10)].selectedHeader;
     this.fileInputId = this.dataFromInput.fileInputId;
     for (let i = 0; i < tempHeader.length; i++) {
+
       if (!(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
         this.columnSelector.push({
           name: tempHeader[i].headerName,
@@ -234,7 +235,7 @@ export class HolderDayTypeComponent implements OnInit {
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
-    console.log(this.columnSelectorList);
+    //console.log(this.columnSelectorList);
   }
 
   binToggled(event) {
@@ -457,10 +458,11 @@ export class HolderDayTypeComponent implements OnInit {
         }
       }
       this.selectedColumnPointer = this.columnSelectorList;
+
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
-
+      //console.log(this.timeSeriesDayType);
       timeSeriesDayType = this.data.curateTimeSeries(this.timeSeriesDayType);
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, timeSeriesDayType,
         this.selectedColumnPointer, this.dayTypeMode);
@@ -479,7 +481,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.calendar.daysToNest = timeSeriesDayType;
       this.calendar.load();
     }
-    console.log(this.columnMainArray);
+    //console.log(this.columnMainArray);
   }
 
   loadDayTypeNavigation(reset) {
@@ -538,7 +540,7 @@ export class HolderDayTypeComponent implements OnInit {
   calculateBinAverage(channelId) {
     this.sumArray = this.graphCalculation.calculateBinAverage(channelId, this.binList, this.days,
       this.selectedColumnPointer, this.columnMainArray);
-    console.log(this.sumArray);
+    //console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 

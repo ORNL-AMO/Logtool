@@ -75,6 +75,7 @@ export class ImportDataComponent implements OnInit {
 
   ngOnInit() {
     this.stage = 1;
+    this.headerFind = 'auto';
   }
 
   onFileSelect(event) {
@@ -164,7 +165,7 @@ export class ImportDataComponent implements OnInit {
 
   getDataWithHeader() {
     this.dataArrayColumns.shift();
-
+    const range: XLSX.Range = this.originalrange;
     if (this.headerIndex !== 0) {
       this.originalrange.s.r = this.originalrange.s.r + this.headerIndex;
       this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
@@ -204,24 +205,65 @@ export class ImportDataComponent implements OnInit {
 
   getTimeSeries(headerIndex) {
     // regex for detecting unusual date types
-    const regex = '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
+    const regex = new RegExp( '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
-      '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/';
+      '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/');
+
+    const timeCheck = /[0-9][0-9]:[0-9][0-9]/;
+    const dateCheck = /[0-9]-[0-9]|\/\/|\/[0-9]/;
+
+    console.log(new Date('6-30-1991 5:00'));
+
+    let timelist = [];
 
     const index = headerIndex + 1;
+    console.log(this.dataArrayColumns[index - 1]);
     for (let i = 0; i < this.header.length; i++) {
       // column is timeSeries if not a number and parsable as date , or matches regex above
-      if ((isNaN(parseInt(this.dataArrayColumns[index][i], 10)) && Date.parse(this.dataArrayColumns[index][i])) ||
-        (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(regex))) {
+      if ((isNaN(parseInt(this.dataArrayColumns[index][i], 10)) && !isNaN(Date.parse(this.dataArrayColumns[index][i]))) ||
+        (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(regex) > -1)) {
 
         this.start = this.dataArrayColumns[index][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
-
-        break;
+        timelist.push({value: this.dataArrayColumns[index][i], index: i, type:'date'} );
+      } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(dateCheck) > -1) {
+        timelist.push({value: this.headerIndex[index][i], index: i, type:'dateMismatch'});
+      } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(timeCheck) > -1){
+        timelist.push({value: this.dataArrayColumns[index][i], index: i, type:'time'} );
       }
-
     }
+     console.log(timelist);
+      if (timelist.length === 1 && timelist[0].type === 'dateMismatch'){
+        // custom Date parser
+      }
+      if (timelist.length === 2) {
+          if (timelist[0].type !== timelist[1].type) {
+            if (timelist[0].type === 'date') {
+              if (timelist[1].type === 'time') {/* Merge */} else { /* custom parser + merge */ }
+              let array = [];
+                  for(let i = headerIndex; i < this.dataArrayColumns.length ; i++){
+                    const date = this.dataArrayColumns[i][timelist[0].index];
+                    /*console.log(date.toString().slice(4,15));*/
+                    let time = this.dataArrayColumns[i][timelist[1].index];
+                    if ( time === '24:00') { time = '0:00'}
+                    this.dataArrayColumns[i][timelist[0].index] = new Date(date.toString().slice(4,15) + ' ' + time);
+                    /*this.dataArrayColumns[i][timelist[0].index] = new Date(date.getMonth + ' ' + date.getDate + ' ' + date.getFullYear() +
+                                         ' ' +  this.dataArrayColumns[i][timelist[1].index]);*/
+                    console.log( this.dataArrayColumns[i][0]);
+                  }
+
+
+            } else if (timelist[1].type === 'time') {
+              if (timelist[0].type === 'date') {/* Merge */} else { /* custom parser + merge */ }
+
+            } else {
+             // prompt?
+            }
+          }
+      } else {
+        // prompt?
+      }
 
     this.data_count = this.dataArrayColumns.length - 1;
     this.number_columns = this.header.length;

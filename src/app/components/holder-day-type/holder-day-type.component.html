@@ -144,7 +144,7 @@
         <div class="col">
           <p class="tight-fit" style="text-align: center">Daily Averages:</p>
           <div id='avg' *ngIf="globalYAverageDay!==undefined && globalYAverageDay.length > 0"
-               style="overflow: auto; max-height: 135px; border: 1px solid black"
+               style="overflow: auto; max-height: 175px; border: 1px solid black"
                (mousedown)="$event.stopPropagation(); startDrag($event, 'avg');"
                (mouseup)="$event.stopPropagation(); endDrag($event);"
                (mouseleave)="$event.stopPropagation(); endDrag($event);"
