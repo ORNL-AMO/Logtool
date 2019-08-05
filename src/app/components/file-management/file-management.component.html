@@ -63,7 +63,7 @@
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
           <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
-               (click)="snapSelect($event, shot);"
+               (click)="snapSelectDayType($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
             <div class="col-8 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
@@ -101,7 +101,7 @@
 
         <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
           <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
-               id="shot{{i}}" (click)="snapSelect($event, shot);"
+               id="shot{{i}}" (click)="snapSelectGraph($event, shot);"
                style="border-bottom: 1px solid black; border-top: 1px solid black">
             <div class="col-8 inactive" style="border-right: 1px solid black">
               <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>

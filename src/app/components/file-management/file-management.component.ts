@@ -52,6 +52,7 @@ export class FileManagementComponent implements OnInit {
   ngOnInit() {
     this.indexFileStore.clearFromDBTemp();
     this.selected = [];
+    this.indexFileStore.clearFromDBTemp();
     this.generateFileList();
     this.generateSnapShotListDayType();
     this.generateSnapShotListVisualize();
@@ -80,12 +81,14 @@ export class FileManagementComponent implements OnInit {
       } else {
         this.fileList = [];
         this.metaList = [];
-        let tempSelect = [];
+        const tempSelect = [];
         for (let i = 0; i < this.dataFromDialog.length; i++) {
-          /*console.log(this.selected, this.dataFromDialog[i], this.selected.indexOf(this.dataFromDialog[i]));*/
-          const select = this.selected.findIndex(obj => obj.IndexID === this.dataFromDialog[i].id) ;
-          if (select >= 0) {this.selected[select].tabID = i;}
-          //console.log(select);
+
+          const select = this.selected.findIndex(obj => obj.IndexID === this.dataFromDialog[i].id);
+          if (select >= 0) {
+            this.selected[select].tabID = i;
+          }
+
           this.fileList.push({
             name: this.dataFromDialog[i].name,
             id: this.dataFromDialog[i].id,
@@ -93,24 +96,25 @@ export class FileManagementComponent implements OnInit {
           });
         }
         this.generateMetaDataList();
-        console.log(this.fileList);
-        console.log(this.selected);
       }
 
     }, error => {
       console.log(error);
     });
   }
+
   removeFile(event, index) {
     event.stopPropagation();
     event.preventDefault();
-      if (index === this.active) {this.toggleSelect(index, this.fileList[index]);}
-      this.indexFileStore.deleteFromDB(this.fileList[index].id);
-      // Should be called ONLY if above is successful, current returned promise is always null.
-      this.indexFileStore.deleteFromDBFileMetaData(this.fileList[index].id);
-      // Should be called ONLY if above is successful, current returned promise is always null.
-      this.fileList.splice(index, 1);
-      this.metaList.splice(index, 1);
+    if (index === this.active) {
+      this.toggleSelect(index, this.fileList[index]);
+    }
+    this.indexFileStore.deleteFromDB(this.fileList[index].id);
+    // Should be called ONLY if above is successful, current returned promise is always null.
+    this.indexFileStore.deleteFromDBFileMetaData(this.fileList[index].id);
+    // Should be called ONLY if above is successful, current returned promise is always null.
+    this.fileList.splice(index, 1);
+    this.metaList.splice(index, 1);
   }
 
 
@@ -121,6 +125,7 @@ export class FileManagementComponent implements OnInit {
       });
     });
   }
+
   removeDTSS(index) {
     this.indexFileStore.deleteFromDBSaveLoad(this.snapShotListDayType[index].id);
     this.snapShotListDayType.splice(index, 1);
@@ -134,6 +139,7 @@ export class FileManagementComponent implements OnInit {
       });
     });
   }
+
   removeVSS(index) {
     this.indexFileStore.deleteFromDBGraph(this.snapShotListGraph[index].id);
     this.snapShotListGraph.splice(index, 1);
@@ -141,24 +147,21 @@ export class FileManagementComponent implements OnInit {
 
 
   generateMetaDataList() {
-    if ( this.fileList === undefined) {return;}
+    if (this.fileList === undefined) {
+      return;
+    }
     for (let i = 0; i < this.fileList.length; i++) {
       this.indexFileStore.viewSingleDataDBMetaData(this.fileList[i].id).then(result => {
         const metaDataFromDialog = result;
         if (metaDataFromDialog === null || metaDataFromDialog === undefined) {
-          //console.log('no metadata found');
           this.metaList.push({data: this.blankMetaData(i), previous: 'false'});
-          //console.log('metaList', this.metaList);
         } else {
-         // console.log('metadata found');
           this.metaList.push({data: metaDataFromDialog, previous: 'true'});
-          // console.log('metaList', this.metaList);
         }
       }, error => {
         console.log(error);
       });
     }
-    //console.log(this.metaList);
   }
 
   // Change visuals based on active selection
@@ -181,7 +184,9 @@ export class FileManagementComponent implements OnInit {
 
 
   toggleSelect(index, file) {
-    if (this.metaList.length === 0) {this.metaList[this.active].data = this.activeMetaData; }
+    if (this.metaList.length === 0) {
+      this.metaList[this.active].data = this.activeMetaData;
+    }
 
     const content = this.selected.findIndex(obj => obj.name === file.name);
     if (content < 0) {
@@ -196,7 +201,6 @@ export class FileManagementComponent implements OnInit {
       const activeFile: DataList = this.dataFromDialog.find(obj => obj.id === file.id);
       this.indexFileStore.addIntoDBFileInputTemp(activeFile);
     } else {
-      console.log();
       this.indexFileStore.deleteFromDBTemp(this.selected[content].IndexID);
       if (this.selected.length === 1) {
         this.active = -1;
@@ -218,13 +222,12 @@ export class FileManagementComponent implements OnInit {
     this.metaList[this.active].data = this.activeMetaData;
     this.active = index;
     this.activeUpdated();
-    //console.log(this.activeMetaData.companyName);
   }
 
   // update visuals based on selections
   activeUpdated() {
 
-    if  (this.metaList.length > 0 && this.active > -1) {
+    if (this.metaList.length > 0 && this.active > -1) {
       this.activeMetaData = this.metaList[this.active].data;
     }
 
@@ -241,7 +244,6 @@ export class FileManagementComponent implements OnInit {
   }
 
   changeDisplayTable() {
-    // console.log('in router call', this.active);
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
@@ -270,7 +272,6 @@ export class FileManagementComponent implements OnInit {
   }
 
 
-
   // used as part of import currently
   getFile(event) {
     this.inputFile = event.target.files[0];
@@ -279,54 +280,23 @@ export class FileManagementComponent implements OnInit {
 
   showInputModal() {
     this.FileRef = this.modalService.show(ImportDataComponent);
-    this.modalService.onHide.subscribe( () => {
+    this.modalService.onHide.subscribe(() => {
       this.generateFileList();
       this.generateSnapShotListDayType();
       this.generateSnapShotListVisualize();
     });
   }
 
-
-    /*this.modalService.onHide.subscribe(() => {
-      const result = this.bsModalRef.content.test;
-      if (result.type === 'json') {
-         console.log('json detected');
-       } else if (result.type === 'csv') {
-        const loadedWorkbook = XLSX.readFile(result.path, {cellDates: true});
-        const worksheet: XLSX.WorkSheet = loadedWorkbook.Sheets[loadedWorkbook.SheetNames[0]];
-        const dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-        const initialState = {
-          stage: 2,
-          fileName: this.inputFile.name,
-          path: this.inputFile.path,
-          fileType: this.inputFile.type,
-          ignoreBackdropClick: true,
-          class: 'my-modal',
-          workbook: loadedWorkbook,
-          worksheet: worksheet,
-          dataArrayColumns: dataArrayColumns,
-        };
-        this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
-        this.bsModalRef.content.closeBtnName = 'Close';
-        this.modalService.onHidden.subscribe(() => {
-          this.generateFileList();
-        });
-
-      } else {
-        alert('File unable to be parsed, Please confirm file is of a supported type');
-      }
-    });
-
-  }*/
-
-
   // Meta data
   toggleMeta() {
     this.metaList[this.active].data = this.activeMetaData;
     this.metahidden = !this.metahidden;
   }
+
   saveMetaData(index) {
-    if (index === -1) {index = this.active;}
+    if (index === -1) {
+      index = this.active;
+    }
 
     // add check to see if this.activeMetaData.fileInputId is in database already
     if (!this.metaList[index].previous) {
@@ -337,6 +307,7 @@ export class FileManagementComponent implements OnInit {
       this.indexFileStore.updateIntoDBFileMetaData(this.activeMetaData);
     }
   }
+
   saveAllMeta() {
     const indexOld = this.active;
     for (let i = 0; i < this.metaList.length; i++) {
@@ -365,7 +336,7 @@ export class FileManagementComponent implements OnInit {
     return pv + 40 + 'px';
   }
 
-  sendSnapShotLoadData(shot) {
+  sendSnapShotLoadGraph(shot) {
     const graphData = shot.graph.data;
     const graphLayout = shot.graph.layout;
     const data = [];
@@ -395,7 +366,6 @@ export class FileManagementComponent implements OnInit {
       tableData: data,
       tableName: dataName
     };
-    console.log(dataSend);
     this.routeService.storage = dataSend;
     this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
       this.router.navigate(['visualize']);
@@ -403,8 +373,25 @@ export class FileManagementComponent implements OnInit {
     this.indexFileStore.clearFromDBTemp();
   }
 
-  snapSelect($event: MouseEvent, shot: any) {
-    this.sendSnapShotLoadData(shot);
+  sendSnapShotLoadDayType(shot) {
+    const dataSend = {
+      loadMode: shot.saveLoadMode,
+      id: shot.id,
+      displayName: shot.displayName
+    };
+    this.routeService.storage = dataSend;
+    this.router.navigateByUrl('holder-day-type', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['holder-day-type']);
+    });
+    this.indexFileStore.clearFromDBTemp();
+  }
+
+  snapSelectDayType($event: MouseEvent, shot: any) {
+    this.sendSnapShotLoadDayType(shot);
+  }
+
+  snapSelectGraph($event: MouseEvent, shot: any) {
+    this.sendSnapShotLoadGraph(shot);
   }
 
   show(event) {

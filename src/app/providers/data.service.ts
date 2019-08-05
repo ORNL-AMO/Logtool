@@ -41,21 +41,27 @@ export class DataService {
   changeInputSaveLoadArray(input: LoadList[]) {
     this.dataInputSaveLoadArray.next(input);
   }
+
   changeInputSaveLoadIdArray(input: Number[]) {
     this.dataInputSaveLoadIdArray.next(input);
   }
+
   changeSingleInputSaveLoad(input: LoadList) {
     this.dataSingleInputSaveLoad.next(input);
   }
+
   changeSingleInputMetaData(input: FileMetaData) {
     this.dataSingleInputMetaData.next(input);
   }
+
   changeSingleInputGraph(input: VisualizeLoadGraph) {
     this.dataSingleInputGraph.next(input);
   }
+
   changeInputGraphArray(input: VisualizeLoadGraph[]) {
     this.dataInputGraphArray.next(input);
   }
+
   getMax(data) {
     let max = data[0];
     for (let i = 0; i <= data.length; i++) {
@@ -100,7 +106,18 @@ export class DataService {
     }
     return returnData;
   }
+
   getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  curateTimeSeries(inputTimeSeriesDayType: any) {
+    const timeSeries = [];
+    for (let i = 0; i < inputTimeSeriesDayType.length; i++) {
+      if (inputTimeSeriesDayType[i] instanceof Date) {
+        timeSeries.push(inputTimeSeriesDayType[i]);
+      }
+    }
+    return timeSeries;
   }
 }
