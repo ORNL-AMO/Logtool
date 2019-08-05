@@ -10,23 +10,23 @@ import {VisualizeLoadGraph} from '../types/visualize-load-graph';
 })
 export class DataService {
   private inputDataArray: DataList[] = [];
-  private inputDataSaveLoadArray: LoadList[] = [];
-  private inputDataSaveLoadIdArray: Number[] = [];
-  private inputSingleDataSaveLoad: LoadList;
+  private inputDataDayTypeArray: LoadList[] = [];
+  private inputDataDayTypeIdArray: Number[] = [];
+  private inputSingleDataDayType: LoadList;
   private inputSingleDataMetaData: FileMetaData;
   private inputSingleDataGraph: VisualizeLoadGraph;
   private inputDataGraphArray: VisualizeLoadGraph[] = [];
   private dataInputArray = new BehaviorSubject(this.inputDataArray);
-  private dataInputSaveLoadArray = new BehaviorSubject(this.inputDataSaveLoadArray);
-  private dataInputSaveLoadIdArray = new BehaviorSubject(this.inputDataSaveLoadIdArray);
-  private dataSingleInputSaveLoad = new BehaviorSubject(this.inputSingleDataSaveLoad);
+  private dataInputDayTypeArray = new BehaviorSubject(this.inputDataDayTypeArray);
+  private dataInputDayTypeIdArray = new BehaviorSubject(this.inputDataDayTypeIdArray);
+  private dataSingleInputDayType = new BehaviorSubject(this.inputSingleDataDayType);
   private dataSingleInputMetaData = new BehaviorSubject(this.inputSingleDataMetaData);
   private dataSingleInputGraph = new BehaviorSubject(this.inputSingleDataGraph);
   private dataInputGraphArray = new BehaviorSubject(this.inputDataGraphArray);
   currentDataInputArray = this.dataInputArray.asObservable();
-  currentDataInputSaveLoadArray = this.dataInputSaveLoadArray.asObservable();
-  currentDataInputSaveLoadIdArray = this.dataInputSaveLoadIdArray.asObservable();
-  currentSingleDataInputSaveLoad = this.dataSingleInputSaveLoad.asObservable();
+  currentDataInputDayTypeArray = this.dataInputDayTypeArray.asObservable();
+  currentDataInputDayTypeIdArray = this.dataInputDayTypeIdArray.asObservable();
+  currentSingleDataInputDayType = this.dataSingleInputDayType.asObservable();
   currentSingleDataInputMetaData = this.dataSingleInputMetaData.asObservable();
   currentSingleDataInputGraph = this.dataSingleInputGraph.asObservable();
   currentDataInputGraphArray = this.dataInputGraphArray.asObservable();
@@ -38,16 +38,16 @@ export class DataService {
     this.dataInputArray.next(input);
   }
 
-  changeInputSaveLoadArray(input: LoadList[]) {
-    this.dataInputSaveLoadArray.next(input);
+  changeInputDayTypeArray(input: LoadList[]) {
+    this.dataInputDayTypeArray.next(input);
   }
 
-  changeInputSaveLoadIdArray(input: Number[]) {
-    this.dataInputSaveLoadIdArray.next(input);
+  changeInputDayTypeIdArray(input: Number[]) {
+    this.dataInputDayTypeIdArray.next(input);
   }
 
-  changeSingleInputSaveLoad(input: LoadList) {
-    this.dataSingleInputSaveLoad.next(input);
+  changeSingleInputDayType(input: LoadList) {
+    this.dataSingleInputDayType.next(input);
   }
 
   changeSingleInputMetaData(input: FileMetaData) {

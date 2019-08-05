@@ -36,7 +36,7 @@ export class FileManagementComponent implements OnInit {
   private activeStats: any;
 
   constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoad: SaveLoadService,
+              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoadService: SaveLoadService,
               private routeService: RouteDataTransferService) {
   }
 
@@ -113,15 +113,15 @@ export class FileManagementComponent implements OnInit {
 
 
   generateSnapShotListDayType() {
-    this.indexFileStore.viewDataDBSaveInput().then(data => {
-      this.data.currentDataInputSaveLoadArray.subscribe(result => {
+    this.indexFileStore.viewDataDBDayType().then(data => {
+      this.data.currentDataInputDayTypeArray.subscribe(result => {
         this.snapShotListDayType = result;
       });
     });
   }
 
   removeDTSS(index) {
-    this.indexFileStore.deleteFromDBSaveLoad(this.snapShotListDayType[index].id);
+    this.indexFileStore.deleteFromDBDayType(this.snapShotListDayType[index].id);
     this.snapShotListDayType.splice(index, 1);
   }
 
@@ -368,8 +368,9 @@ export class FileManagementComponent implements OnInit {
   }
 
   sendSnapShotLoadDayType(shot) {
+    console.log(shot);
     const dataSend = {
-      loadMode: shot.saveLoadMode,
+      loadMode: shot.dayTypeMode,
       id: shot.id,
       displayName: shot.displayName
     };
@@ -392,4 +393,27 @@ export class FileManagementComponent implements OnInit {
     console.log(event);
   }
 
+  exportDayTypeToFile() {
+    this.indexFileStore.viewDataDBDayType().then(data => {
+      this.data.currentDataInputDayTypeArray.subscribe(result => {
+        if (result.length < 1) {
+          alert('No Data To Export');
+          return;
+        }
+        this.exportCsv.createJsonFileDayType(result);
+      });
+    });
+  }
+  exportGraphToFile() {
+    this.indexFileStore.viewDataDBGraph().then(data => {
+      this.data.currentDataInputGraphArray.subscribe(result => {
+        console.log(result);
+        if (result.length < 1) {
+          alert('No Data To Export');
+          return;
+        }
+        this.exportCsv.createJsonFileGraph(result);
+      });
+    });
+  }
 }

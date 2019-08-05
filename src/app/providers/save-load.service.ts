@@ -11,11 +11,11 @@ export class SaveLoadService {
   constructor(private indexFileStore: IndexFileStoreService, private data: DataService) {
   }
 
-  saveSession(fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[], loadValueColumnCount: any[],
-              columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[], selectedBinList: any[], days: any[],
-              selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any, showBinMode: boolean, mac: boolean,
-              toggleRelayoutDay: boolean, annotationListDayAverage: any[], annotationListBinAverage: any[],
-              globalYAverageDay: any[], globalYAverageBin: any[], saveLoadMode: boolean) {
+  saveSession(fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
+              loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
+              selectedBinList: any[], days: any[], selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any,
+              showBinMode: boolean, mac: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
+              annotationListBinAverage: any[], globalYAverageDay: any[], globalYAverageBin: any[], dayTypeMode: boolean) {
     const id = this.data.getRandomInt(9999999);
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
@@ -45,16 +45,16 @@ export class SaveLoadService {
       loadAnnotationListBinAverage: annotationListBinAverage,
       loadGlobalYAverageDay: globalYAverageDay,
       loadGlobalYAverageBin: globalYAverageBin,
-      saveLoadMode: saveLoadMode
+      dayTypeMode: dayTypeMode
     };
-    this.indexFileStore.addIntoDBSaveInput(saveSessionData);
+    this.indexFileStore.addIntoDBDayType(saveSessionData);
   }
 
   updateSession(id: Number, fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
                 loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
                 selectedBinList: any[], days: any[], selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any,
                 showBinMode: boolean, mac: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
-                annotationListBinAverage: any[], globalYAverageDay: any[], globalYAverageBin: any[], saveLoadMode: boolean) {
+                annotationListBinAverage: any[], globalYAverageDay: any[], globalYAverageBin: any[], dayTypeMode: boolean) {
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
       selectedDatesValue.push(value);
@@ -83,8 +83,8 @@ export class SaveLoadService {
       loadAnnotationListBinAverage: annotationListBinAverage,
       loadGlobalYAverageDay: globalYAverageDay,
       loadGlobalYAverageBin: globalYAverageBin,
-      saveLoadMode: saveLoadMode
+      dayTypeMode: dayTypeMode
     };
-    this.indexFileStore.updateIntoDBSaveInput(saveSessionData);
+    this.indexFileStore.updateIntoDBDayType(saveSessionData);
   }
 }

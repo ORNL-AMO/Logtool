@@ -7,7 +7,7 @@ export class LoadList {
     public loadGraphDayAverage: any, public loadGraphBinAverage: any, public loadShowBinMode: boolean,
     public loadToggleRelayoutDay: boolean, public loadMac: boolean, public loadAnnotationListDayAverage: Array<any>,
     public loadAnnotationListBinAverage: Array<any>, public loadGlobalYAverageDay: Array<any>,
-    public loadGlobalYAverageBin: Array<any>, public saveLoadMode: boolean
+    public loadGlobalYAverageBin: Array<any>, public dayTypeMode: boolean
   ) {
   }
 }

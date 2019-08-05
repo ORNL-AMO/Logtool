@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import {LoadList} from '../types/load-list';
 import * as fs from 'fs';
 import {IndexFileStoreService} from './index-file-store.service';
+import {VisualizeLoadGraph} from '../types/visualize-load-graph';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -74,17 +75,25 @@ export class ExportCSVService {
     XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
   }
 
-  createJsonFile(dataArray: LoadList[]) {
+  createJsonFileDayType(dataArray: LoadList[]) {
     const dataString = JSON.stringify(dataArray, null, 2);
-    fs.writeFileSync('JSON.json', dataString);
+    fs.writeFileSync('JSONDAYTYPE.json', dataString);
   }
 
-  readJsonFileSnapShot(data) {
+  createJsonFileGraph(dataArray: VisualizeLoadGraph[]) {
+    const dataString = JSON.stringify(dataArray, null, 2);
+    fs.writeFileSync('JSONGraph.json', dataString);
+  }
+
+  readJsonFileSnapShotDayType(data: LoadList[]) {
     for (let i = 0; i < data.length; i++) {
-      this.indexFileStore.addIntoDBSaveInputFromFile(data[i]);
+      this.indexFileStore.addIntoDBDayTypeFromFile(data[i]);
     }
   }
-  readJsonFileVisualizer(data) {
 
+  readJsonFileVisualizer(data: VisualizeLoadGraph[]) {
+    for (let i = 0; i < data.length; i++) {
+      this.indexFileStore.addIntoDBGraph(data[i]);
+    }
   }
 }
