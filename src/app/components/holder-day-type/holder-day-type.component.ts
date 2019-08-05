@@ -429,6 +429,7 @@ export class HolderDayTypeComponent implements OnInit {
     this.selectedDates.clear();
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
+    let timeSeriesDayType = [];
     const dataFromFile = this.dataFromInput;
     if (this.columnSelectorList.length === 0) {
       alert('Please select Column');
@@ -462,8 +463,8 @@ export class HolderDayTypeComponent implements OnInit {
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
 
-
-      const returnObject = this.graphCalculation.averageCalculation(dataFromFile, this.timeSeriesDayType,
+      timeSeriesDayType = this.data.curateTimeSeries(this.timeSeriesDayType);
+      const returnObject = this.graphCalculation.averageCalculation(dataFromFile, timeSeriesDayType,
         this.selectedColumnPointer, this.saveLoadMode);
       this.days = returnObject.days;
       // console.log(this.timeSeriesDayType);
@@ -477,7 +478,7 @@ export class HolderDayTypeComponent implements OnInit {
       this.calendar.binList = this.binList;
       // console.log(this.timeSeriesDayType);
       this.calendar.days = this.days;
-      this.calendar.daysToNest = this.timeSeriesDayType;
+      this.calendar.daysToNest = timeSeriesDayType;
       this.calendar.load();
     }
     //console.log(this.columnMainArray);
