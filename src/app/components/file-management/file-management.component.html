@@ -31,7 +31,7 @@
                            'color' : file.selected ? 'white': ''}"
                id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
             <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
-                    <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+              <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
             </div>
             <span class="tight-fit col-1"
                   (click)="removeFile($event, i)"
@@ -127,10 +127,12 @@
           <div class="header tight-fit">Export Options</div>
           <div class="row" style="margin: 5px;">
             <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Selected</button>
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportDayTypeToFile()">Day Type
+              </button>
             </div>
             <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%">Everything</button>
+              <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportGraphToFile()">Visualize
+              </button>
             </div>
           </div>
         </div>
@@ -197,8 +199,9 @@
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
                                                                                            [(ngModel)]="activeMetaData.facilityContactName">
                 </div>
-                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
-                                                                                            [(ngModel)]="activeMetaData.facilityContact">
+                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input
+                  type="text" class="col-6"
+                  [(ngModel)]="activeMetaData.facilityContact">
                 </div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
                                                                                             [(ngModel)]="activeMetaData.facilityEmail">
@@ -211,8 +214,9 @@
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
                                                                                            [(ngModel)]="activeMetaData.assessmentContactName">
                 </div>
-                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input type="text" class="col-6"
-                                                                                            [(ngModel)]="activeMetaData.assessmentContact">
+                <div class="row tight-fit" style="margin: 2px 0 2px 0"><p class="tight-fit col-4 meta">Phone:</p><input
+                  type="text" class="col-6"
+                  [(ngModel)]="activeMetaData.assessmentContact">
                 </div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Email:</p><input type="text" class="col-6"
                                                                                             [(ngModel)]="activeMetaData.assessmentEmail">
