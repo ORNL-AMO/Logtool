@@ -14,6 +14,7 @@ import {CalendarComponent} from '../calendar/calendar.component';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {LoadList} from '../../types/load-list';
 import {ImportJsonFileComponent} from '../import-json-file/import-json-file.component';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
 
 @Component({
@@ -24,9 +25,9 @@ import {ImportJsonFileComponent} from '../import-json-file/import-json-file.comp
 
 export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
-              private graphCreation: GraphCreationService, private indexFileStore: IndexFileStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService,
-              private saveLoad: SaveLoadService) {
+              private graphCreation: GraphCreationService, private routeDataTransfer: RouteDataTransferService,
+              private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
+              private exportCsv: ExportCSVService, private saveLoad: SaveLoadService) {
   }
 
   @ViewChild(CalendarComponent)
@@ -99,24 +100,50 @@ export class HolderDayTypeComponent implements OnInit {
   bsModalRef;
 
   ngOnInit() {
-
     this.mac = window.navigator.platform.includes('Mac') || window.navigator.platform.includes('mac');
-    this.updateStash();
-    this.selectedDates = new Set([]);
-    this.plotGraphDayAverage(0);
-    this.plotGraphBinAverage(0);
-    this.indexFileStore.viewDataDB().then(result => {
-      this.dataFromInput = result;
-      this.tabs = [];
-      for (let i = 0; i < this.dataFromInput.length; i++) {
-        this.tabs.push({
-          name: this.dataFromInput[i].name,
-          id: this.dataFromInput[i].id,
-          tabId: i
+    if (this.routeDataTransfer.storage === undefined) {
+      this.updateStash();
+      this.selectedDates = new Set([]);
+      this.plotGraphDayAverage(0);
+      this.plotGraphBinAverage(0);
+      this.indexFileStore.viewDataDBTemp().then(result => {
+        this.dataFromInput = result;
+        this.tabs = [];
+        for (let i = 0; i < this.dataFromInput.length; i++) {
+          this.tabs.push({
+            name: this.dataFromInput[i].name,
+            id: this.dataFromInput[i].id,
+            tabId: i
+          });
+        }
+        this.populateSpinner();
+      });
+    } else {
+      this.saveLoadMode = this.routeDataTransfer.storage.loadMode;
+      if (this.saveLoadMode) {
+        this.plotGraphDayAverage(0);
+        this.plotGraphBinAverage(0);
+        const id = this.routeDataTransfer.storage.id;
+        this.loadSession(id);
+      } else {
+        this.updateStash();
+        this.selectedDates = new Set([]);
+        this.plotGraphDayAverage(0);
+        this.plotGraphBinAverage(0);
+        this.indexFileStore.viewDataDBTemp().then(result => {
+          this.dataFromInput = result;
+          this.tabs = [];
+          for (let i = 0; i < this.dataFromInput.length; i++) {
+            this.tabs.push({
+              name: this.dataFromInput[i].name,
+              id: this.dataFromInput[i].id,
+              tabId: i
+            });
+          }
+          this.populateSpinner();
         });
       }
-      this.populateSpinner();
-    });
+    }
   }
 
   allocateBins() {
@@ -187,7 +214,6 @@ export class HolderDayTypeComponent implements OnInit {
     const tempHeader = this.dataFromInput[parseInt(currentSelectedFile, 10)].selectedHeader;
     this.fileInputId = this.dataFromInput.fileInputId;
     for (let i = 0; i < tempHeader.length; i++) {
-      console.log(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0]);
       if (!(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
         this.columnSelector.push({
           name: tempHeader[i].headerName,
@@ -572,7 +598,6 @@ export class HolderDayTypeComponent implements OnInit {
     }
   }
 
-// 3438957
   saveSession() {
     if (this.saveLoadMode) {
       this.saveLoad.updateSession(this.loadSaveLoadId, this.fileInputId, this.columnSelectorList[0].name, this.sesName,
@@ -585,7 +610,6 @@ export class HolderDayTypeComponent implements OnInit {
         alert('Invalid name. Please try again');
         return;
       }
-      console.log(this.selectedDates);
       this.saveLoad.saveSession(this.fileInputId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,

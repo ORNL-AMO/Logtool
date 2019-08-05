@@ -23,7 +23,7 @@ export class CalendarComponent implements OnInit {
   dayList: any[];
   months: any[];
   weekCount: number;
- cellDimension: number;
+  cellDimension: number;
   y_offset: number;
   x_offset = 10;
   spacing_y = 5;
@@ -213,7 +213,7 @@ export class CalendarComponent implements OnInit {
     this.size = (7 * (this.cellDimension + this.spacing_x) + 15) * this.months.length + this.x_offset * 2;
 
 
-}
+  }
 
   generateCalendar() {
     // this.generateLegend();
@@ -271,7 +271,7 @@ export class CalendarComponent implements OnInit {
       .selectAll('g')
       .data(this.weekdays)
       .join('text')
-      .attr('x', function(d, i) {
+      .attr('x', function (d, i) {
         return i * (day_spacing) + cellDimension / 4 + 7;
       })
       .attr('y', cellDimension / 3 + 12)
@@ -303,8 +303,10 @@ export class CalendarComponent implements OnInit {
       .attr('y', 0)
       .attr('fill', d => this.setColor(d.values[0]))
       .attr('id', function (d) {
-        return d.values[0].getDate() + '' + d.values[0].getMonth() +
-          '' + d.values[0].getFullYear();
+        if (d.values[0] !== undefined) {
+          return d.values[0].getDate() + '' + d.values[0].getMonth() +
+            '' + d.values[0].getFullYear();
+        }
       });
 
 
@@ -348,16 +350,17 @@ export class CalendarComponent implements OnInit {
 
   // Set initial color
   setColor(key) {
-    // console.log(key);
-    const obj = this.days.find(obj1 =>
-      obj1.date.getFullYear() === key.getFullYear() &&  obj1.date.getMonth() === key.getMonth() && obj1.date.getDate() === key.getDate());
+    if (key !== undefined) {
+      const obj = this.days.find(obj1 =>
+        obj1.date.getFullYear() === key.getFullYear() && obj1.date.getMonth() === key.getMonth() && obj1.date.getDate() === key.getDate());
 
-    if (obj !== undefined) {
-      return this.binList.find(bin => bin.binName === obj.bin).binColor;
-    } else {
-      // console.log(this.days);
-      // console.log(key, this.days[this.days.length-1]);
-      return 'purple';
+      if (obj !== undefined) {
+        return this.binList.find(bin => bin.binName === obj.bin).binColor;
+      } else {
+        // console.log(this.days);
+        // console.log(key, this.days[this.days.length-1]);
+        return 'purple';
+      }
     }
   }
 
@@ -517,8 +520,12 @@ export class CalendarComponent implements OnInit {
       while (currMonth < 12) {
         let end = this.monthDays[currMonth];
         // check for leap year
-        if (currMonth === 1) { if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) { end = 29; } }
-        this.mergeSets(list , this.getDaysBetween(currDay, end, currMonth, yearCurr));
+        if (currMonth === 1) {
+          if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) {
+            end = 29;
+          }
+        }
+        this.mergeSets(list, this.getDaysBetween(currDay, end, currMonth, yearCurr));
         currDay = 1;
         currMonth++;
       }
@@ -529,18 +536,23 @@ export class CalendarComponent implements OnInit {
     while (currMonth !== monthEnd) {
       let end = this.monthDays[currMonth];
       // check for leap year
-      if (currMonth === 1) { if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) { end = 29; } }
-      this.mergeSets(list , this.getDaysBetween(currDay, end, currMonth, yearCurr));
+      if (currMonth === 1) {
+        if (yearCurr % 4 === 0 && (yearCurr % 100 !== 0 || yearCurr % 400 === 0)) {
+          end = 29;
+        }
+      }
+      this.mergeSets(list, this.getDaysBetween(currDay, end, currMonth, yearCurr));
 
       currDay = 1;
       currMonth++;
     }
     // Add remaining days from last month
-    this.mergeSets(list , this.getDaysBetween(currDay, dayEnd, currMonth, yearCurr));
+    this.mergeSets(list, this.getDaysBetween(currDay, dayEnd, currMonth, yearCurr));
     list.delete(this.lastclick.getDate().toString(10) + this.lastclick.getMonth().toString(10) + this.lastclick.getFullYear().toString(10));
     const content = Array.from(list);
     return content;
   }
+
   getDaysBetween(start, end, month, year) {
     let currentday = start;
     const content = new Set();
@@ -552,6 +564,7 @@ export class CalendarComponent implements OnInit {
 
     return content;
   }
+
   mergeSets(set1, set2) {
     const n = Array.from(set2);
     for (let i = 0; i < n.length; i++) {
