@@ -171,12 +171,11 @@ export class CalendarComponent implements OnInit {
         return week(new Date(d));
       })
       .key(function (d) {
-
+        console.log(d);
         return daynum(new Date(d));
       })
       .entries(this.daysToNest);
-
-     //console.log(this.dayList);
+      console.log(this.daysToNest);
       this.dayList = this.INsort(this.dayList);
   }
 
