@@ -5,8 +5,8 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 import {GraphStats} from '../../types/graph-stats';
 import * as XLSX from 'xlsx';
 import * as stats from 'stats-lite';
-import {VisualizeLoadGraph} from '../../types/visualize-load-graph';
-import {IndexFileStoreService} from '../../providers/index-file-store.service';
+import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
+import {Graph} from '../../types/graph';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class PlotGraphComponent implements OnInit {
   type;
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService,
-              private indexFileStore: IndexFileStoreService) {
+              private indexFileStore: IndexDataBaseStoreService) {
   }
 
   public stats: GraphStats;
@@ -51,7 +51,7 @@ export class PlotGraphComponent implements OnInit {
       } else {
         this.annotationListLine = [];
         this.annotationListScatter = [];
-        this.data.currentDataInputArray.subscribe(input => this.dataInput = input);
+        // this.dataInput will have current quickSave Data init
         this.graphType = this.routeDataTransfer.storage.graphType;
         this.displayGraph(this.graphType);
       }
@@ -113,13 +113,14 @@ export class PlotGraphComponent implements OnInit {
       alert('No Graph to Save');
       return;
     } else {
-      const graph: VisualizeLoadGraph = {
+      const graph: Graph = {
         id: this.data.getRandomInt(999999),
+        assessmentId: 12345,
         displayName: '1233445656',
         graph: this.graph,
         visualizeMode: true
       };
-      this.indexFileStore.addIntoDBGraph(graph);
+      this.indexFileStore.insertIntoGraphStore(graph);
     }
   }
 

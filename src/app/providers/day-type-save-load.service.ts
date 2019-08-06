@@ -1,29 +1,28 @@
-import {Injectable} from '@angular/core';
-import {IndexFileStoreService} from './index-file-store.service';
-import {LoadList} from '../types/load-list';
+import { Injectable } from '@angular/core';
+import {DayType} from '../types/day-type';
 import {DataService} from './data.service';
+import {IndexDataBaseStoreService} from './index-data-base-store.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SaveLoadService {
+export class DayTypeSaveLoadService {
 
-  constructor(private indexFileStore: IndexFileStoreService, private data: DataService) {
-  }
+  constructor(private indexFileStore: IndexDataBaseStoreService, private data: DataService) { }
 
-  saveSession(fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
+  saveSession(assessmentId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
               loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
               selectedBinList: any[], days: any[], selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any,
-              showBinMode: boolean, mac: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
+              showBinMode: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
               annotationListBinAverage: any[], globalYAverageDay: any[], globalYAverageBin: any[], dayTypeMode: boolean) {
     const id = this.data.getRandomInt(9999999);
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
       selectedDatesValue.push(value);
     });
-    const saveSessionData: LoadList = {
+    const saveSessionData: DayType = {
       id: id,
-      fileInputId: fileInputId,
+      assessmentId: assessmentId,
       name: name,
       displayName: displayName,
       loadDataFromFile: loadDataFromFile,
@@ -38,7 +37,6 @@ export class SaveLoadService {
       loadSelectedDates: selectedDatesValue,
       loadGraphDayAverage: graphDayAverage,
       loadGraphBinAverage: graphBinAverage,
-      loadMac: mac,
       loadShowBinMode: showBinMode,
       loadToggleRelayoutDay: toggleRelayoutDay,
       loadAnnotationListDayAverage: annotationListDayAverage,
@@ -47,21 +45,21 @@ export class SaveLoadService {
       loadGlobalYAverageBin: globalYAverageBin,
       dayTypeMode: dayTypeMode
     };
-    this.indexFileStore.addIntoDBDayType(saveSessionData);
+    this.indexFileStore.insertIntoDayTypeStore(saveSessionData);
   }
 
-  updateSession(id: Number, fileInputId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
+  updateSession(id: Number, assessmentId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
                 loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
                 selectedBinList: any[], days: any[], selectedDates: Set<any>, graphDayAverage: any, graphBinAverage: any,
-                showBinMode: boolean, mac: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
+                showBinMode: boolean, toggleRelayoutDay: boolean, annotationListDayAverage: any[],
                 annotationListBinAverage: any[], globalYAverageDay: any[], globalYAverageBin: any[], dayTypeMode: boolean) {
     const selectedDatesValue = [];
     selectedDates.forEach((value) => {
       selectedDatesValue.push(value);
     });
-    const saveSessionData: LoadList = {
+    const saveSessionData: DayType = {
       id: id,
-      fileInputId: fileInputId,
+      assessmentId: assessmentId,
       name: name,
       displayName: displayName,
       loadDataFromFile: loadDataFromFile,
@@ -76,7 +74,6 @@ export class SaveLoadService {
       loadSelectedDates: selectedDatesValue,
       loadGraphDayAverage: graphDayAverage,
       loadGraphBinAverage: graphBinAverage,
-      loadMac: mac,
       loadShowBinMode: showBinMode,
       loadToggleRelayoutDay: toggleRelayoutDay,
       loadAnnotationListDayAverage: annotationListDayAverage,
@@ -85,6 +82,6 @@ export class SaveLoadService {
       loadGlobalYAverageBin: globalYAverageBin,
       dayTypeMode: dayTypeMode
     };
-    this.indexFileStore.updateIntoDBDayType(saveSessionData);
+    this.indexFileStore.updateDayTypeStore(saveSessionData);
   }
 }

@@ -1,65 +1,12 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {DataList} from '../types/data-list';
-import {LoadList} from '../types/load-list';
-import {FileMetaData} from '../types/file-meta-data';
-import {VisualizeLoadGraph} from '../types/visualize-load-graph';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private inputDataArray: DataList[] = [];
-  private inputDataDayTypeArray: LoadList[] = [];
-  private inputDataDayTypeIdArray: Number[] = [];
-  private inputSingleDataDayType: LoadList;
-  private inputSingleDataMetaData: FileMetaData;
-  private inputSingleDataGraph: VisualizeLoadGraph;
-  private inputDataGraphArray: VisualizeLoadGraph[] = [];
-  private dataInputArray = new BehaviorSubject(this.inputDataArray);
-  private dataInputDayTypeArray = new BehaviorSubject(this.inputDataDayTypeArray);
-  private dataInputDayTypeIdArray = new BehaviorSubject(this.inputDataDayTypeIdArray);
-  private dataSingleInputDayType = new BehaviorSubject(this.inputSingleDataDayType);
-  private dataSingleInputMetaData = new BehaviorSubject(this.inputSingleDataMetaData);
-  private dataSingleInputGraph = new BehaviorSubject(this.inputSingleDataGraph);
-  private dataInputGraphArray = new BehaviorSubject(this.inputDataGraphArray);
-  currentDataInputArray = this.dataInputArray.asObservable();
-  currentDataInputDayTypeArray = this.dataInputDayTypeArray.asObservable();
-  currentDataInputDayTypeIdArray = this.dataInputDayTypeIdArray.asObservable();
-  currentSingleDataInputDayType = this.dataSingleInputDayType.asObservable();
-  currentSingleDataInputMetaData = this.dataSingleInputMetaData.asObservable();
-  currentSingleDataInputGraph = this.dataSingleInputGraph.asObservable();
-  currentDataInputGraphArray = this.dataInputGraphArray.asObservable();
+
 
   constructor() {
-  }
-
-  changeInputArray(input: DataList[]) {
-    this.dataInputArray.next(input);
-  }
-
-  changeInputDayTypeArray(input: LoadList[]) {
-    this.dataInputDayTypeArray.next(input);
-  }
-
-  changeInputDayTypeIdArray(input: Number[]) {
-    this.dataInputDayTypeIdArray.next(input);
-  }
-
-  changeSingleInputDayType(input: LoadList) {
-    this.dataSingleInputDayType.next(input);
-  }
-
-  changeSingleInputMetaData(input: FileMetaData) {
-    this.dataSingleInputMetaData.next(input);
-  }
-
-  changeSingleInputGraph(input: VisualizeLoadGraph) {
-    this.dataSingleInputGraph.next(input);
-  }
-
-  changeInputGraphArray(input: VisualizeLoadGraph[]) {
-    this.dataInputGraphArray.next(input);
   }
 
   getMax(data) {

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
-import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as XLSX from 'xlsx';
 import {DataService} from '../../providers/data.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
@@ -8,6 +7,8 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
 import * as fs from 'fs';
 import {Subject} from 'rxjs';
 import {ImportDataComponent} from '../import-data/import-data.component';
+import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
+import {Assessment} from '../../types/assessment';
 
 @Component({
   selector: 'app-file-import',
@@ -17,41 +18,45 @@ import {ImportDataComponent} from '../import-data/import-data.component';
 export class FileImportComponent implements OnInit {
 
   public onClose: Subject<any>;
-  public test: {type: string, path: string};
+  public test: { type: string, path: string };
   private fileType: any;
   private inputFile: any;
-  private dataFromDialog: any;
-  private fileList: any[];
+  private dataFromDialogCSV: any;
+  private csvList: any[];
   FileRef: BsModalRef;
   private selected: any[];
-  constructor(private modalService: BsModalService,
-              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) { }
+
+  constructor(private modalService: BsModalService, private indexDatabaseStoreService: IndexDataBaseStoreService,
+              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
+  }
+
   fileName: any;
+
   ngOnInit() {
     this.onClose = new Subject();
-    this.fileList = [];
+    this.csvList = [];
     this.selected = [];
-    this.generateFileList();
+    this.generatecsvList();
   }
 
   showImportModal() {
     this.FileRef = this.modalService.show(ImportDataComponent);
     this.modalService.onHide.subscribe(() => {
-      this.generateFileList();
+      this.generatecsvList();
     });
   }
 
-  generateFileList() {
-    this.indexFileStore.viewDataDB().then(result => {
-      this.dataFromDialog = result;
+  generatecsvList() {
+    this.indexDatabaseStoreService.viewFromCSVStore().then(result => {
+      this.dataFromDialogCSV = result;
       console.log(result);
-      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+      if (this.dataFromDialogCSV === null || this.dataFromDialogCSV === undefined) {
       } else {
-        this.fileList = [];
-        for (let i = 0; i < this.dataFromDialog.length; i++) {
-          this.fileList.push({
-            name: this.dataFromDialog[i].name,
-            id: this.dataFromDialog[i].id,
+        this.csvList = [];
+        for (let i = 0; i < this.dataFromDialogCSV.length; i++) {
+          this.csvList.push({
+            name: this.dataFromDialogCSV[i].name,
+            id: this.dataFromDialogCSV[i].id,
             selected: false,
           });
         }
@@ -61,7 +66,7 @@ export class FileImportComponent implements OnInit {
     });
   }
 
-  clickSelect(file){
+  clickSelect(file) {
     console.log(this.selected.findIndex(obj => obj.id === file.id));
     if (this.selected.findIndex(obj => obj.id === file.id) >= 0) {
       console.log('already imported');
@@ -79,7 +84,7 @@ export class FileImportComponent implements OnInit {
     this.fileType = f.type;
 
     try {
-      const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
+      const assessments: Assessment[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
       alert('First catch');
       this.test = {type: 'json', path: f.path};
       // this.bsModalRef.hide();
@@ -117,6 +122,7 @@ export class FileImportComponent implements OnInit {
     this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
     // this.bsModalRef.content.closeBtnName = 'Close';
   }
+
   public decline() {
     this.onClose.next(false);
     this.bsModalRef.hide();

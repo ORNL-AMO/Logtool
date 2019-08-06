@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ElectronService } from './providers/electron.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppConfig } from '../environments/environment';
-import {IndexFileStoreService} from './providers/index-file-store.service';
+import {IndexDataBaseStoreService} from './providers/index-data-base-store.service';
 
 @Component({
   selector: 'app-root',
@@ -11,13 +11,13 @@ import {IndexFileStoreService} from './providers/index-file-store.service';
 })
 export class AppComponent {
   constructor(public electronService: ElectronService,
-    private translate: TranslateService, private indexFileStore: IndexFileStoreService) {
+    private translate: TranslateService, private indexDataBaseStoreService: IndexDataBaseStoreService) {
 
     translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
 
     if (electronService.isElectron()) {
-      this.indexFileStore.operationDB();
+      this.indexDataBaseStoreService.operationDB();
     } else {
       console.log('Mode web');
     }

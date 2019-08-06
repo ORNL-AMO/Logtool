@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import * as fs from 'fs';
-import {LoadList} from '../../types/load-list';
 import {ExportCSVService} from '../../providers/export-csv.service';
+import {DayType} from '../../types/day-type';
 
 @Component({
   selector: 'app-import-json-file',
@@ -20,7 +20,7 @@ export class ImportJsonFileComponent implements OnInit {
   onChange(event) {
     const files = event.target.files;
     const f = files[0];
-    const dataFromFile: LoadList[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
+    const dataFromFile: DayType[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
     this.exportCSV.readJsonFileSnapShotDayType(dataFromFile);
   }
 }

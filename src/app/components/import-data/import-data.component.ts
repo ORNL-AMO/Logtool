@@ -5,6 +5,8 @@ import {DataService} from '../../providers/data.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import * as fs from 'fs';
 import {ExportCSVService} from '../../providers/export-csv.service';
+import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
+import {CSVFileInput} from '../../types/csvfile-input';
 
 
 @Component({
@@ -53,7 +55,7 @@ export class ImportDataComponent implements OnInit {
   testModRef: BsModalRef;
 
 
-  constructor(private modalService: BsModalService,
+  constructor(private modalService: BsModalService, private indexFileStore: IndexDataBaseStoreService,
               private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
               private exportCSV: ExportCSVService) {
   }
@@ -322,7 +324,7 @@ export class ImportDataComponent implements OnInit {
     }
     this.dataArrayColumns = holder;
     const id = this.data.getRandomInt(9999999);
-    const dataList: DataList = {
+    const dataList: CSVFileInput = {
       id: id,
       name: this.alias,
       content: this.dataWithHeader,
@@ -338,12 +340,11 @@ export class ImportDataComponent implements OnInit {
       fileType: this.fileType,
       dateUpload: 'DateUpload'
     };
-    this.indexFileStore.addIntoDBFileInput(dataList);
+    this.indexFileStore.insertIntoCSVStore(dataList);
     setTimeout(() => {
       this.bsModalRef.hide();
       console.log('Send Data');
     }, 2000);
-    this.routerData.storage = dataList;
   }
 
   columnNameChange(event) {

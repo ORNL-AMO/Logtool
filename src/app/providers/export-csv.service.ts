@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as XLSX from 'xlsx';
-import {LoadList} from '../types/load-list';
 import * as fs from 'fs';
-import {IndexFileStoreService} from './index-file-store.service';
-import {VisualizeLoadGraph} from '../types/visualize-load-graph';
+import {IndexDataBaseStoreService} from './index-data-base-store.service';
+import {DayType} from '../types/day-type';
+import {Graph} from '../types/graph';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -13,7 +13,7 @@ const EXCEL_EXTENSION = '.xlsx';
 })
 export class ExportCSVService {
 
-  constructor(private indexFileStore: IndexFileStoreService) {
+  constructor(private indexFileStore: IndexDataBaseStoreService) {
   }
 
   public exportAsExcelFile(json: any[], excelFileName: string): void {
@@ -75,25 +75,25 @@ export class ExportCSVService {
     XLSX.writeFile(workbook, 'THISPAGE2.xlsx', {bookType: 'xlsx'});
   }
 
-  createJsonFileDayType(dataArray: LoadList[]) {
+  createJsonFileDayType(dataArray: DayType[]) {
     const dataString = JSON.stringify(dataArray, null, 2);
     fs.writeFileSync('JSONDAYTYPE.json', dataString);
   }
 
-  createJsonFileGraph(dataArray: VisualizeLoadGraph[]) {
+  createJsonFileGraph(dataArray: Graph[]) {
     const dataString = JSON.stringify(dataArray, null, 2);
     fs.writeFileSync('JSONGraph.json', dataString);
   }
 
-  readJsonFileSnapShotDayType(data: LoadList[]) {
+  readJsonFileSnapShotDayType(data: DayType[]) {
     for (let i = 0; i < data.length; i++) {
-      this.indexFileStore.addIntoDBDayTypeFromFile(data[i]);
+      this.indexFileStore.insertIntoDayTypeStoreFromFile(data[i]);
     }
   }
 
-  readJsonFileVisualizer(data: VisualizeLoadGraph[]) {
+  readJsonFileVisualizer(data: Graph[]) {
     for (let i = 0; i < data.length; i++) {
-      this.indexFileStore.addIntoDBGraph(data[i]);
+      this.indexFileStore.insertIntoGraphStore(data[i]);
     }
   }
 }

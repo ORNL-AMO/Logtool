@@ -19,7 +19,7 @@ export class TableDataComponent implements OnInit {
 
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
-      this.data.currentDataInputArray.subscribe(input => this.inputDataArray = input);
+      // this.inputDataArray will have quickData init
       this.route.queryParams
         .subscribe(params => {
           this.arrayPointer = params.value;
@@ -54,7 +54,7 @@ export class TableDataComponent implements OnInit {
         const dataArrayColumns = this.routeDataTransfer.storage.tableData;
         this.displayTable(header, dataArrayColumns, width);
       } else {
-        this.data.currentDataInputArray.subscribe(input => this.inputDataArray = input);
+        // this.inputDataArray will have quickData init
         this.route.queryParams
           .subscribe(params => {
             this.arrayPointer = params.value;
