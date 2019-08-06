@@ -4,9 +4,10 @@ import {DataService} from '../../providers/data.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {Router} from '@angular/router';
 import {FileMetaData} from '../../types/file-meta-data';
-import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {DayTypeSaveLoadService} from '../../providers/day-type-save-load.service';
+import {FileImportComponent} from '../file-import/file-import.component';
 
 
 @Component({
@@ -17,8 +18,13 @@ import {DayTypeSaveLoadService} from '../../providers/day-type-save-load.service
 export class FileManagementComponent implements OnInit {
   private assessmentList: any;
   private selected: any;
-  private active: any;
+  private tableActive;
+  private assessmentActive: boolean;
+  private metaHidden: boolean;
+  private dataHidden: boolean;
   private activeMetaData: FileMetaData;
+  private FileRef: BsModalRef;
+  private metaDataList = [];
 
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
@@ -56,6 +62,57 @@ export class FileManagementComponent implements OnInit {
       }
     }, error => {
       console.log(error);
+    });
+  }
+
+  importAssessment() {
+
+  }
+
+  createNew() {
+    this.assessmentActive = true;
+    this.metaHidden = false;
+    this.dataHidden = false;
+    this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
+  }
+
+  assessmentSelect(i: number, assessment: any) {
+    console.log(i);
+    console.log(assessment);
+  }
+
+  removeAssessment(event: MouseEvent, i: number) {
+    console.log(i);
+    console.log(event);
+  }
+
+  tabTableSelect(tabID) {
+    this.metaDataList[this.tableActive].data = this.activeMetaData;
+    this.tableActive = tabID;
+    this.activeUpdated();
+  }
+
+  activeUpdated() {
+    if (this.metaDataList.length > 0 && this.tableActive > -1) {
+      this.activeMetaData = this.metaDataList[this.tableActive].data;
+    }
+    this.changeDisplayTable();
+  }
+
+  changeDisplayTable() {
+    this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['table-data'], {
+        queryParams: {
+          value: this.tableActive
+        }
+      });
+    });
+  }
+
+  showDataModal() {
+    this.FileRef = this.modalService.show(FileImportComponent);
+    this.modalService.onHide.subscribe(result => {
+      console.log(result);
     });
   }
 }
