@@ -2,10 +2,10 @@ import {Component, DoCheck, OnInit, ViewChild, IterableDiffers} from '@angular/c
 import {Router} from '@angular/router';
 import {ImportDataComponent} from '../import-data/import-data.component';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
-import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
+import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class HomeComponent implements OnInit, DoCheck {
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
-  constructor(private router: Router, private indexFileStore: IndexFileStoreService,
+  constructor(private router: Router, private indexFileStore: IndexDataBaseStoreService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
     this.differ = differs.find([]).create(null);
   }
@@ -57,8 +57,8 @@ export class HomeComponent implements OnInit, DoCheck {
       this.lineListY = [];
       this.timeSeriesY = [];
       this.scatterList = [];
-      this.indexFileStore.viewDataDBTemp().then(result => {
-        this.dataFromDialog = result;
+      this.indexFileStore.viewSelectedAssessmentStore(234345).then(assessment => {
+        this.dataFromDialog = assessment;
         if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
         } else {
           this.plotGraph.ngOnInit();
@@ -89,8 +89,8 @@ export class HomeComponent implements OnInit, DoCheck {
         this.lineListY = [];
         this.timeSeriesY = [];
         this.scatterList = [];
-        this.indexFileStore.viewDataDBTemp().then(result => {
-          this.dataFromDialog = result;
+        this.indexFileStore.viewSelectedAssessmentStore(123).then(assessment => {
+          this.dataFromDialog = assessment;
           if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
           } else {
             this.plotGraph.ngOnInit();
@@ -116,34 +116,6 @@ export class HomeComponent implements OnInit, DoCheck {
   ngDoCheck(): void {
     this.differ.diff(this.tabs);
   }
-
-  onImport() {
-    this.bsModalRef = this.modalService.show(ImportDataComponent, {class: 'my-modal', ignoreBackdropClick: true});
-    this.bsModalRef.content.closeBtnName = 'Close';
-    this.dataFromDialog = [];
-    this.lineListY = [];
-    this.timeSeriesY = [];
-    this.scatterList = [];
-    this.modalService.onHidden.subscribe(() => {
-      this.indexFileStore.viewDataDB().then(result => {
-        this.dataFromDialog = result;
-        this.tabs = [];
-        for (let i = 0; i < this.dataFromDialog.length; i++) {
-          this.tabs.push({
-            name: this.dataFromDialog[i].name,
-            id: this.dataFromDialog[i].id,
-            tabId: i
-          });
-        }
-        this.populateSpinner();
-        this.populateGraph();
-      });
-    });
-    // this.modalService.onHidden.unsubscribe() ;
-    this.changeDisplayTable(this.dataFromDialog.length - 1);
-
-  }
-
   plotGraphNavigation() {
     if (this.graph === '' || this.graph === undefined) {
       alert('Please select Graph type');
@@ -318,14 +290,12 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   removeFile(event, id, tabId) {
-
     const initialState = {message: 'Are you sure you want to delete this record'};
-
     this.bsModalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
     this.bsModalRef.content.onClose.subscribe(result => {
       console.log(result);
       if (result) {
-        this.indexFileStore.deleteFromDB(id).then(result2 => {
+        this.indexFileStore.deleteFromCSVStore(id).then(result2 => {
           console.log('before', this.tabs);
           this.tabs.splice(tabId, 1);
         });
