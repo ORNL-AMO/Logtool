@@ -5,195 +5,231 @@
     <!-- Import a file -->
     <div class="row snug">
       <div class="panel">
-        <div class="header tight-fit">Load a File</div>
+
+        <div class="row header justify-content-center" style="margin:auto">
+          <div class="tight-fit">Assessments </div>
+          <p class="tight-fit font-weight-bolder" tooltip="Create new assessment or import an assessment">&nbsp; &nbsp; ?</p>
+        </div>
         <div class="row justify-content-center" style="margin: 5px;">
 
-          <button class="btn" style="height: 30px; width:30%" (click)="showInputModal()">Import</button>
+          <button class="btn col-5" (click)="CreateNew()" style="height: 30px; width:30%; margin-right: 10px;">Create New</button>
 
+          <button class="btn col-5" (click)="importAssessment()"style="height: 30px; width:30%; margin-left: 10px;">Import</button>
+
+
+        </div>
+
+        <div class="row justify-content-center header" style="margin: auto; width:90%;">
+          <div class="header col-11" style=" text-align: center">Assessments Available</div>
+          <div class="tight-fit" tooltip="Click a assessment to view contents">&#9921; ?</div>
+        </div>
+        <div class="row justify-content-center" style="margin: 5px;">
+          <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+            <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
+                 [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}"
+                 id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
+              <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
+                <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+              </div>
+              <span class="tight-fit col-1"
+                    (click)="removeFile($event, i)"
+                    style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
+            </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Files -->
-    <div class="row snug">
+    <!--<div class="row snug">
       <div class="panel">
-        <div class="header tight-fit">Loaded Files</div>
-
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
-          <div class="row tight-fit justify-content-center">
-            <p class="tight-fit" style="text-align: center; ">Name:</p>
-          </div>
+        <div class="row header " style="margin: auto">
+        <div class=" col-10 tight-fit">Independent Reports</div>
+        <p class=" col-1 tight-fit font-weight-bolder" tooltip="Import and view Reports from external sources. Click a report to view">?</p>
         </div>
+        &lt;!&ndash;<div class="row justify-content-center" style="margin: auto; width:90%;">
+          <div class="header" style=" text-align: center">Loaded Reports</div>
+        </div>&ndash;&gt;
 
-        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
-               [ngStyle]="{'background' : file.selected ? 'blue': '',
-                           'color' : file.selected ? 'white': ''}"
-               id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
-              <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
-            </div>
+        <div class="row justify-content-center" style="margin: 5px;">
+          <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+            <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
+                 (click)="snapSelectDayType($event, shot);"
+                 style="border-bottom: 1px solid black; border-top: 1px solid black">
+              <p class="tight-fit col-11">{{shot.name}}</p>
             <span class="tight-fit col-1"
                   (click)="removeFile($event, i)"
                   style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
             </span>
+            </div>
           </div>
         </div>
+        <div class="row justify-content-center" style="margin: 5px;">
+
+          <button class="btn col-5" style="height: 30px; width:30%; margin-right: 10px;">Load</button>
+
+        </div>
+
       </div>
-    </div>
+    </div>-->
+    <!-- Files -->
+    <!--    <div class="row snug">
+          <div class="panel">
+            <div class="header tight-fit">Loaded Files</div>
 
-    <!-- DT Snapshots -->
-    <div class="row snug">
-      <div class="panel">
-        <div class="header tight-fit">Day Type Snapshots</div>
-
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
-          <div class="row tight-fit">
-
-            <div class="col-8 " style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center; ">Name:</p>
+            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: 'deepseagreen';">
+              <div class="row tight-fit justify-content-center">
+                <p class="tight-fit" style="text-align: center; ">Name:</p>
+              </div>
             </div>
 
-            <div class="col-4 ">
-              <p class="tight-fit" style="text-align: center;">Date:</p>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
-               (click)="snapSelectDayType($event, shot);"
-               style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-8 inactive" style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-            <div class="col-3 inactive" style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-            <span class="tight-fit col-1" (click)="removeDTSS(i)"
-                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
-            </span>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- VS Snapshots -->
-    <div class="row snug">
-      <div class="panel">
-        <div class="header tight-fit">Visualization Snapshots</div>
-
-        <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
-          <div class="row tight-fit">
-
-            <div class="col-8 " style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center; ">Name:</p>
-            </div>
-
-            <div class="col-4 ">
-              <p class="tight-fit" style="text-align: center;">Date:</p>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-          <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
-               id="shot{{i}}" (click)="snapSelectGraph($event, shot);"
-               style="border-bottom: 1px solid black; border-top: 1px solid black">
-            <div class="col-8 inactive" style="border-right: 1px solid black">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-            <div class="col-3 inactive" style="border-right: 1px solid black;">
-              <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-            </div>
-            <span class="tight-fit col-1" (click)="removeVSS(i)"
-                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
-            </span>
-
-
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Recently used files -->
-    <div class="row snug">
-      <div class="col-12" style="padding-right: 0; padding-left: 5px;">
-        <div class="panel">
-          <div class="header tight-fit">Export Options</div>
-          <div class="row" style="margin: 5px;">
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportDayTypeToFile()">Day Type
-              </button>
-            </div>
-            <div class="col-6 tight-fit">
-              <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportGraphToFile()">Visualize
-              </button>
+            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+              <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
+                   [ngStyle]="{'background' : file.selected ? 'blue': '',
+                               'color' : file.selected ? 'white': ''}"
+                   id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
+                <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
+                  <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+                </div>
+                <span class="tight-fit col-1"
+                      (click)="removeFile($event, i)"
+                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
+        &lt;!&ndash; DT Snapshots &ndash;&gt;
+        <div class="row snug">
+          <div class="panel">
+            <div class="header tight-fit">Day Type Snapshots</div>
+
+            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
+              <div class="row tight-fit">
+
+                <div class="col-8 " style="border-right: 1px solid black">
+                  <p class="tight-fit" style="text-align: center; ">Name:</p>
+                </div>
+
+                <div class="col-4 ">
+                  <p class="tight-fit" style="text-align: center;">Date:</p>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+              <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
+                   (click)="snapSelectDayType($event, shot);"
+                   style="border-bottom: 1px solid black; border-top: 1px solid black">
+                <div class="col-8 inactive" style="border-right: 1px solid black">
+                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+                </div>
+                <div class="col-3 inactive" style="border-right: 1px solid black">
+                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+                </div>
+                <span class="tight-fit col-1" (click)="removeDTSS(i)"
+                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        &lt;!&ndash; VS Snapshots &ndash;&gt;
+        <div class="row snug">
+          <div class="panel">
+            <div class="header tight-fit">Visualization Snapshots</div>
+
+            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
+              <div class="row tight-fit">
+
+                <div class="col-8 " style="border-right: 1px solid black">
+                  <p class="tight-fit" style="text-align: center; ">Name:</p>
+                </div>
+
+                <div class="col-4 ">
+                  <p class="tight-fit" style="text-align: center;">Date:</p>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+              <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
+                   id="shot{{i}}" (click)="snapSelectGraph($event, shot);"
+                   style="border-bottom: 1px solid black; border-top: 1px solid black">
+                <div class="col-8 inactive" style="border-right: 1px solid black">
+                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+                </div>
+                <div class="col-3 inactive" style="border-right: 1px solid black;">
+                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
+                </div>
+                <span class="tight-fit col-1" (click)="removeVSS(i)"
+                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
+                </span>
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        &lt;!&ndash; Recently used files &ndash;&gt;
+        <div class="row snug">
+          <div class="col-12" style="padding-right: 0; padding-left: 5px;">
+            <div class="panel">
+              <div class="header tight-fit">Export Options</div>
+              <div class="row" style="margin: 5px;">
+                <div class="col-6 tight-fit">
+                  <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportDayTypeToFile()">Day Type
+                  </button>
+                </div>
+                <div class="col-6 tight-fit">
+                  <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportGraphToFile()">Visualize
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>-->
   </div>
 
   <!-- Metadata and table -->
-  <div class="col-6 snug" style="min-height: 100%; min-width:275px;">
-    <div class="row snug">
-      <div class="panel" style="height: 300px;">
-        <div class="header tight-fit">File Contents</div>
-
-
-        <!-- tabs -->
-        <div class="row " style="margin-left: 2%; margin-right: 2%; width:96%;">
-          <ul class="scrolling-wrapper-flexbox tight-fit">
-            <li class="nav-item" *ngFor="let tab of selected"
-                [ngStyle]="{'min-width' : getTabWidth(tab)}">
-              <div class="nav-link" (click)="tabSelect(tab.tabID)"
-                   [ngStyle]="{'background': active == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
-                <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
-
-              </div>
-            </li>
-          </ul>
-        </div>
-
-
-        <div class="table-display" *ngIf="active >= 0">
-          <router-outlet></router-outlet>
-          <!--[style.max-width] = getTableWidth()-->
-
-        </div>
-
-      </div>
-    </div>
+  <div class="col-6 snug"  *ngIf="Active" style="min-height: 100%; min-width:275px;">
     <div class="row snug ">
       <div class="panel" style="">
-        <div class="header tight-fit">Record MetaData</div>
-        <div *ngIf="activeStats != undefined && activeStats != null">
+        <div class="row header tight-fit justify-content-end" style="height: 35px;">
+          <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+          <div style="position: relative; top:-100%;">
+            <button *ngIf= "metahidden" (click)="metahidden = !metahidden" class=" btn " style="margin: 5px 5px 5px 0">Show</button>
+            <button *ngIf="!metahidden" (click)="metahidden = !metahidden" class=" btn " style="margin: 5px 5px 5px 0">Hide</button>
+          </div>
+        </div>
+        <div> <!--*ngIf="activeStats != undefined && activeStats != null">-->
           <div *ngIf="!metahidden">
             <!-- Facility and Contact information -->
             <div class="row" style=" border: 3px solid black; margin: 5px;">
               <div class="col-4" style="border: 1px solid black; min-width: 200px;">
 
                 <div class=row>
-                  <!-- <p class="tight-fit col-4 meta">Company: </p>
-                   <input class="col-6" type="text" [(ngModel)]="activeMetaData.companyName"></div>-->
-
                   <label>Company:
                     <input type="text" style="width:90%" [(ngModel)]="activeMetaData.companyName">
                   </label>
                 </div>
-                <div class=row><!--<p class="tight-fit col-4 meta">Facility:</p>
-                  <input class="col-6" type="text" [(ngModel)]="activeMetaData.facilityName">-->
+
+                <div class=row>
                   <label>Facility:
                     <input type="text" style="width:90%" [(ngModel)]="activeMetaData.facilityName">
                   </label>
                 </div>
+
               </div>
+
               <div class="col-4 tight-fit" style="border: 1px solid black; min-width: 200px;">
                 <div class="row justify-content-center"><p class="tight-fit font-weight-bold">Facility Contact</p></div>
                 <div class="row tight-fit"><p class="tight-fit col-4 meta">Name:</p><input type="text" class="col-6"
@@ -231,12 +267,12 @@
                 <div class="row justify-content-center">
                   <div class="col-6">
                     <label>Street:
-                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.street">
+                      <input type="text" style="width:80%" [(ngModel)]="activeMetaData.address.street">
                     </label>
                   </div>
                   <div class="col-6">
                     <label>Country:
-                      <input type="text" style="width:90%" [(ngModel)]="activeMetaData.address.country">
+                      <input type="text" style="width:80%" [(ngModel)]="activeMetaData.address.country">
                     </label>
                   </div>
                 </div>
@@ -263,50 +299,89 @@
             </div>
 
             <!--File data -->
-            <div class="row" style="margin: 5px; border: 3px solid black;">
-              <!-- Original File -->
-              <div class="col-3">
-                <p class="tight-fit meta">File Name:</p>
-                <p class="tight-fit">{{activeStats.name}}</p>
-              </div>
+            <!--   <div class="row" style="margin: 5px; border: 3px solid black;">
+                 &lt;!&ndash; Original File &ndash;&gt;
+                 <div class="col-3">
+                   <p class="tight-fit meta">File Name:</p>
+                   <p class="tight-fit">{{activeStats.name}}</p>
+                 </div>
 
-              <!-- sample meta data-->
-              <div class="col-4">
-                <p class="tight-fit meta">Sample Information</p>
-                <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
-                <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
-              </div>
+                 &lt;!&ndash; sample meta data&ndash;&gt;
+                 <div class="col-4">
+                   <p class="tight-fit meta">Sample Information</p>
+                   <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
+                   <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
+                 </div>
 
-              <!-- time series Data -->
-              <div class="col-5">
-                <p class="tight-fit meta">Time frame</p>
-                <!--              <p *ngIf="activeStats.start | date:'medium' " class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
-                              <p *ngIf="activeStats.end | date:'medium' "class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>-->
-              </div>
-            </div>
+                 &lt;!&ndash; time series Data &ndash;&gt;
+                 <div class="col-5">
+                   <p class="tight-fit meta">Time frame</p>
+                   &lt;!&ndash;              <p *ngIf="activeStats.start | date:'medium' " class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
+                                 <p *ngIf="activeStats.end | date:'medium' "class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>&ndash;&gt;
+                 </div>
+               </div>-->
           </div>
 
-          <div class="row justify-content-center" style="margin: 5px;">
-            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData(-1)">
-              Update MetaData
-            </button>
-            <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Hide
-              MetaData
-            </button>
-            <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Show
-              MetaData
-            </button>
-            <button class="btn pull-right" style="height: 30px" (click)="saveAllMeta()">Save ALL changes</button>
-          </div>
+          <!-- <div class="row justify-content-center" style="margin: 5px;">
+             <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData(-1)">
+               Update MetaData
+             </button>
+             <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Hide
+               MetaData
+             </button>
+             <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Show
+               MetaData
+             </button>
+             <button class="btn pull-right" style="height: 30px" (click)="saveAllMeta()">Save ALL changes</button>
+           </div>-->
 
 
         </div>
       </div>
     </div>
+    <div class="row snug">
+      <div class="panel">
+        <div class="row header tight-fit justify-content-end" style="height: 35px;">
+          <p class="col-12" style="margin: 5px 0 5px 0"> Data Sets </p>
+          <div style="position: relative; top:-100%;">
+            <button *ngIf= "datahidden" (click)="datahidden = !datahidden" class=" btn " style="margin: 5px 5px 5px 0">Show</button>
+            <button *ngIf="!datahidden" (click)="datahidden = !datahidden" class=" btn " style="margin: 5px 5px 5px 0">Hide</button>
+          </div>
+        </div>
+        <!--<button class=" btn " (click)="showDataModal()" >Add DataSets</button>-->
+
+        <!-- tabs -->
+        <div *ngIf="selected.length>0"class="row " style="margin-left: 19px; margin-right: 18px;">
+          <ul  class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
+            <li class="nav-item" *ngFor="let tab of selected"><!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
+              <div class="nav-link" (click)="tabSelect(tab.tabID)"
+                   [ngStyle]="{'background': active == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
+                <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
+
+              </div>
+            </li>
+
+          </ul><ul class="tight-fit" style="margin-top: 1px; margin-left: 3px">
+          <li>  <button class=" btn " style="" (click)="showDataModal()" >+</button></li>
+        </ul>
+        </div>
+        <div *ngIf="selected.length==0 || selected == undefined" class="row justify-content-center" style="margin-left: 2%; margin-right: 2%; width:96%;">
+          <button class=" btn " (click)="showDataModal()" >Add DataSets</button>
+        </div>
+
+        <div class="table-display" *ngIf="active >= 0" style="margin-left: 0">
+          <router-outlet></router-outlet>
+          <!--[style.max-width] = getTableWidth()-->
+
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <!-- Navigate, Export, && Instructions -->
-  <div class="snug col" style="min-height: 100%; margin-right: 20px; min-width:200px;">
+  <div class="snug col-2" style="min-height: 100%; margin-right: 20px; min-width:200px;">
     <div class="row snug">
       <div class="panel">
         <div class="header tight-fit">Instructions</div>

@@ -171,11 +171,11 @@ export class CalendarComponent implements OnInit {
         return week(new Date(d));
       })
       .key(function (d) {
-        //console.log(d);
+        // console.log(d);
         return daynum(new Date(d));
       })
       .entries(this.daysToNest);
-      //console.log(this.daysToNest);
+      // console.log(this.daysToNest);
       this.dayList = this.INsort(this.dayList);
   }
 
@@ -382,8 +382,8 @@ export class CalendarComponent implements OnInit {
       const dateData = d3.select(event.target).data()[0].values[0];
       if (this.lastclick !== undefined) {
         const range = this.getDatesBetween(dateData);
-        //this.discontinue(this.lastclick, dateData);
-        //const range = this.getAll(this.lastclick, dateData);
+        // this.discontinue(this.lastclick, dateData);
+        // const range = this.getAll(this.lastclick, dateData);
         this.selectionToggle.emit({items: range, selected: true});
       }
 
@@ -582,7 +582,7 @@ export class CalendarComponent implements OnInit {
   }
 
   INsort(CurrArray) {
-    //console.log(this.daysToNest);
+    // console.log(this.daysToNest);
     const array = [];
     array[0] = CurrArray[0];
 
@@ -598,7 +598,7 @@ export class CalendarComponent implements OnInit {
       }
       array[j + 1] = CurrArray[i];
     }
-    //console.log(array);
+    // console.log(array);
     return array;
   }
 
