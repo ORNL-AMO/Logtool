@@ -1,10 +1,44 @@
 <div class="row justify-content-center" style="min-height: 50px; ">
-  <div class="col-9 drop-area" style="vertical-align: center;"
-       [ngStyle]="{'background-color': stage ? 'rgba(255,255,255,.25)': 'rgba(0,0,0,0)'}">
-    <input type="file" name="images" id="images" required="required" multiple="multiple"
-           (change)="onFileSelect($event)"/>
-    <!--(change)="onChange($event)"/>-->
-    <p class="file-box-fill" *ngIf="fileName == undefined">Click to Upload a File</p>
-    <p class="file-box-fill" *ngIf="fileName != undefined">{{fileName}}</p>
-  </div>
+  <p class="header" >DataSet Selection</p>
 </div>
+
+<div class="row">
+  <div class="col-6" style="border-right: 3px solid black;">
+    <div class="row justify-content-center">
+      <p class="header tight-fit" >Available DataSets</p>
+    </div>
+    <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+      <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList"
+           style="border-bottom: 1px solid black; border-top: 1px solid black"
+           [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}">
+        <div class="tight-fit nonSelectable col-11" (click)="clickSelect(file)">
+          <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <button (click)="showImportModal()">Import New DataSet</button>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="row justify-content-center">
+      <p class="header tight-fit" >Available DataSets</p>
+    </div>
+    <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+      <div class="row test tight-fit justify-content-center" *ngFor="let file of selected, let i = index" id="{{i}}"
+           style="border-bottom: 1px solid black; border-top: 1px solid black">
+        <div class="tight-fit nonSelectable col-11">
+          <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="row justify-content-center" style="margin-top: 20px;">
+  <button>Confirm</button><button>Cancel</button>
+</div>
+
+
+

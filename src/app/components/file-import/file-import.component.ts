@@ -1,13 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import * as XLSX from 'xlsx';
 import {DataService} from '../../providers/data.service';
-import {DataList} from '../../types/data-list';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 
-import {LoadList} from '../../types/load-list';
 import * as fs from 'fs';
 import {Subject} from 'rxjs';
 import {ImportDataComponent} from '../import-data/import-data.component';
@@ -23,21 +20,57 @@ export class FileImportComponent implements OnInit {
   public test: {type: string, path: string};
   private fileType: any;
   private inputFile: any;
-
-  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
+  private dataFromDialog: any;
+  private fileList: any[];
+  FileRef: BsModalRef;
+  private selected: any[];
+  constructor(private modalService: BsModalService,
               private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) { }
-              fileName: any;
+  fileName: any;
   ngOnInit() {
     this.onClose = new Subject();
-    this.test = null;
+    this.fileList = [];
+    this.selected = [];
+    this.generateFileList();
   }
 
-
-  public decline() {
-    this.onClose.next(false);
-    this.bsModalRef.hide();
+  showImportModal() {
+    this.FileRef = this.modalService.show(ImportDataComponent);
+    this.modalService.onHide.subscribe(() => {
+      this.generateFileList();
+    });
   }
 
+  generateFileList() {
+    this.indexFileStore.viewDataDB().then(result => {
+      this.dataFromDialog = result;
+      console.log(result);
+      if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+      } else {
+        this.fileList = [];
+        for (let i = 0; i < this.dataFromDialog.length; i++) {
+          this.fileList.push({
+            name: this.dataFromDialog[i].name,
+            id: this.dataFromDialog[i].id,
+            selected: false,
+          });
+        }
+      }
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  clickSelect(file){
+    console.log(this.selected.findIndex(obj => obj.id === file.id));
+    if (this.selected.findIndex(obj => obj.id === file.id) >= 0) {
+      console.log('already imported');
+      return;
+    }
+    file.selected = true;
+    this.selected.push(file);
+    console.log(this.selected);
+  }
 
   onFileSelect(event) {
     const files = event.target.files;
@@ -84,4 +117,9 @@ export class FileImportComponent implements OnInit {
     this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
     // this.bsModalRef.content.closeBtnName = 'Close';
   }
+  public decline() {
+    this.onClose.next(false);
+    this.bsModalRef.hide();
+  }
+
 }

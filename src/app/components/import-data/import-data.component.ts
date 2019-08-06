@@ -1,15 +1,10 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService, ModalDirective} from 'ngx-bootstrap';
-import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import * as XLSX from 'xlsx';
 import {DataService} from '../../providers/data.service';
-import {DataList} from '../../types/data-list';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
-import {LoadList} from '../../types/load-list';
 import * as fs from 'fs';
 import {ExportCSVService} from '../../providers/export-csv.service';
-import {VisualizeLoadGraph} from '../../types/visualize-load-graph';
 
 
 @Component({
@@ -58,7 +53,7 @@ export class ImportDataComponent implements OnInit {
   testModRef: BsModalRef;
 
 
-  constructor(private indexFileStore: IndexFileStoreService, private modalService: BsModalService,
+  constructor(private modalService: BsModalService,
               private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
               private exportCSV: ExportCSVService) {
   }
@@ -133,11 +128,9 @@ export class ImportDataComponent implements OnInit {
     // attempt to find header
     let headerIndex = 0;
     let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
-    console.log('first', checkHeader);
 
     const range = XLSX.utils.decode_range(this.worksheet['!ref']);
     this.originalrange = {s: {r: 0, c: 0}, e: {r: range.e.r, c: range.e.c}};
-    console.log(this.originalrange, this.originalrange.s.r, this.originalrange.s.c, this.originalrange.e.r, this.originalrange.e.c);
     const numColumns = range.e.c + 1; // range is 0 based;
 
     let check3 = 0, check2 = 0, check1 = checkHeader.length;
@@ -205,7 +198,7 @@ export class ImportDataComponent implements OnInit {
 
   getTimeSeries(headerIndex) {
     // regex for detecting unusual date types
-    const regex = new RegExp( '/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
+    const regex = new RegExp('/^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[13-9]|1[0-2])\\2))' +
       '(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]' +
       '|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))' +
       '$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$/');
@@ -215,7 +208,7 @@ export class ImportDataComponent implements OnInit {
 
     console.log(new Date('6-30-1991 5:00'));
 
-    let timelist = [];
+    const timelist = [];
 
     const index = headerIndex + 1;
     console.log(this.dataArrayColumns[index - 1]);
@@ -226,44 +219,49 @@ export class ImportDataComponent implements OnInit {
 
         this.start = this.dataArrayColumns[index][i];
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
-        timelist.push({value: this.dataArrayColumns[index][i], index: i, type:'date'} );
+        timelist.push({value: this.dataArrayColumns[index][i], index: i, type: 'date'});
       } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(dateCheck) > -1) {
-        timelist.push({value: this.headerIndex[index][i], index: i, type:'dateMismatch'});
-      } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(timeCheck) > -1){
-        timelist.push({value: this.dataArrayColumns[index][i], index: i, type:'time'} );
+        timelist.push({value: this.headerIndex[index][i], index: i, type: 'dateMismatch'});
+      } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(timeCheck) > -1) {
+        timelist.push({value: this.dataArrayColumns[index][i], index: i, type: 'time'});
       }
     }
-     console.log(timelist);
-      if (timelist.length === 1 && timelist[0].type === 'dateMismatch'){
-        // custom Date parser
-      }
-      if (timelist.length === 2) {
-          if (timelist[0].type !== timelist[1].type) {
-            if (timelist[0].type === 'date') {
-              if (timelist[1].type === 'time') {/* Merge */} else { /* custom parser + merge */ }
-              let array = [];
-                  for(let i = headerIndex; i < this.dataArrayColumns.length ; i++){
-                    const date = this.dataArrayColumns[i][timelist[0].index];
-                    /*console.log(date.toString().slice(4,15));*/
-                    let time = this.dataArrayColumns[i][timelist[1].index];
-                    if ( time === '24:00') { time = '0:00'}
-                    this.dataArrayColumns[i][timelist[0].index] = new Date(date.toString().slice(4,15) + ' ' + time);
-                    /*this.dataArrayColumns[i][timelist[0].index] = new Date(date.getMonth + ' ' + date.getDate + ' ' + date.getFullYear() +
-                                         ' ' +  this.dataArrayColumns[i][timelist[1].index]);*/
-                    console.log( this.dataArrayColumns[i][0]);
-                  }
-
-
-            } else if (timelist[1].type === 'time') {
-              if (timelist[0].type === 'date') {/* Merge */} else { /* custom parser + merge */ }
-
-            } else {
-             // prompt?
-            }
+    if (timelist.length === 1 && timelist[0].type === 'dateMismatch') {
+      // custom Date parser
+    }
+    if (timelist.length === 2) {
+      if (timelist[0].type !== timelist[1].type) {
+        if (timelist[0].type === 'date') {
+          if (timelist[1].type === 'time') {/* Merge */
+          } else { /* custom parser + merge */
           }
-      } else {
-        // prompt?
+          const array = [];
+          for (let i = headerIndex; i < this.dataArrayColumns.length; i++) {
+            const date = this.dataArrayColumns[i][timelist[0].index];
+            /*console.log(date.toString().slice(4,15));*/
+            let time = this.dataArrayColumns[i][timelist[1].index];
+            if (time === '24:00') {
+              time = '0:00';
+            }
+            this.dataArrayColumns[i][timelist[0].index] = new Date(date.toString().slice(4, 15) + ' ' + time);
+            /*this.dataArrayColumns[i][timelist[0].index] = new Date(date.getMonth + ' ' + date.getDate + ' ' + date.getFullYear() +
+                                 ' ' +  this.dataArrayColumns[i][timelist[1].index]);*/
+            console.log(this.dataArrayColumns[i][0]);
+          }
+
+
+        } else if (timelist[1].type === 'time') {
+          if (timelist[0].type === 'date') {/* Merge */
+          } else { /* custom parser + merge */
+          }
+
+        } else {
+          // prompt?
+        }
       }
+    } else {
+      // prompt?
+    }
 
     this.data_count = this.dataArrayColumns.length - 1;
     this.number_columns = this.header.length;

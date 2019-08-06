@@ -2,13 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {ImportDataComponent} from '../import-data/import-data.component';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
-import {IndexFileStoreService} from '../../providers/index-file-store.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {Router} from '@angular/router';
 import {SaveLoadService} from '../../providers/save-load.service';
 import {FileMetaData} from '../../types/file-meta-data';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
-import {DataList} from '../../types/data-list';
+import {FileImportComponent} from '../file-import/file-import.component';
 
 
 @Component({
@@ -35,15 +34,18 @@ export class FileManagementComponent implements OnInit {
   private metaList: any;
   private activeStats: any;
 
-  constructor(private router: Router, private data: DataService, private indexFileStore: IndexFileStoreService,
+  constructor(private router: Router, private data: DataService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoadService: SaveLoadService,
               private routeService: RouteDataTransferService) {
   }
 
   inputFile: any;
   metahidden: any;
+  Active: any;
+  datahidden: boolean;
 
   ngOnInit() {
+    this.Active = false;
     this.indexFileStore.clearFromDBTemp();
     this.selected = [];
     this.indexFileStore.clearFromDBTemp();
@@ -56,7 +58,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   blankMetaData(index) {
-    return new FileMetaData(this.fileList[index].id, this.fileList[index].id, '', '', '', '',
+    return new FileMetaData(index, index, '', '', '', '',
       {street: '', city: '', state: '', zip: null, country: ''},
       null, null, '', '');
   }
@@ -138,7 +140,6 @@ export class FileManagementComponent implements OnInit {
     this.indexFileStore.deleteFromDBGraph(this.snapShotListGraph[index].id);
     this.snapShotListGraph.splice(index, 1);
   }
-
 
   generateMetaDataList() {
     if (this.fileList === undefined) {
@@ -281,6 +282,14 @@ export class FileManagementComponent implements OnInit {
     });
   }
 
+  showDataModal() {
+    this.FileRef = this.modalService.show(FileImportComponent);
+    this.modalService.onHide.subscribe(result => {
+      console.log(result);
+    });
+  }
+
+
   // Meta data
   toggleMeta() {
     this.metaList[this.active].data = this.activeMetaData;
@@ -415,5 +424,13 @@ export class FileManagementComponent implements OnInit {
         this.exportCsv.createJsonFileGraph(result);
       });
     });
+  }
+
+  CreateNew() {
+    this.Active = true;
+    this.metahidden = false;
+    this.datahidden = false;
+    this.activeMetaData = this.blankMetaData(this.fileList.length + 1);
+    //console.log(this.metahidden);
   }
 }
