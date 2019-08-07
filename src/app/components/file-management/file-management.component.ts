@@ -11,6 +11,7 @@ import {FileImportComponent} from '../file-import/file-import.component';
 import {DatabaseOperationService} from '../../providers/database-operation.service';
 import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
+import {Assessment} from '../../types/assessment';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class FileManagementComponent implements OnInit {
   private selected: any;
   private tableTabs = [];
   private tableActive;
-
+  private newAssessment = false;
 
   private tableData: any;
 
@@ -47,10 +48,15 @@ export class FileManagementComponent implements OnInit {
     this.selected = [];
 
     this.generateAssessmentList();
-    this.indexdbstore.viewFromQuickSaveStore().then( save => {
-      console.log(save[0]);
-      this.indexdbstore.viewSelectedAssessmentStore(save[0].id).then(file => {
-          this.loadAssessment(file);
+    this.indexdbstore.viewFromQuickSaveStore().then( () => {
+      this.data.currentQuickSaveItem.subscribe(save => {
+        console.log(save);
+        this.indexdbstore.viewSelectedAssessmentStore(save[0].id).then(() => {
+          this.data.currentAssessmentItem.subscribe(file => {
+            console.log(file);
+            this.loadAssessment(file);
+          });
+        });
       });
     });
 
@@ -73,18 +79,18 @@ export class FileManagementComponent implements OnInit {
   generateAssessmentList() {
 
     this.indexdbstore.viewFromAssessmentStore().then(result => {
+      console.log(result);
       this.assessmentList = result;
       if (this.assessmentList === null || this.assessmentList === undefined) {
       } else {
-        for (let i = 0; i < this.assessmentList.length; i++) {
+/*        for (let i = 0; i < this.assessmentList.length; i++) {
           const select = this.selected.findIndex(obj => obj.IndexID === this.assessmentList[i].id);
           if (select >= 0) {
             this.selected[select].tabID = i;
           }
-          console.log(this.assessmentList);
-        }
+
+        }*/
       }
-      console.log(this.selected);
     }, error => {
       console.log(error);
     });
@@ -96,7 +102,7 @@ export class FileManagementComponent implements OnInit {
 
   createNew() {
     this.assessmentActive = true;
-    this.new = true;
+    this.newAssessment = true;
     this.metaHidden = false;
     this.dataHidden = false;
     this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
@@ -105,9 +111,9 @@ export class FileManagementComponent implements OnInit {
     console.log(this.activeMetaData);
   }
 
-  assessmentSelect(i: number, assessment: any) {
-    console.log(this.new);
-    if (this.new) {
+  assessmentSelect(i: number, assessment: Assessment) {
+    console.log(this.newAssessment);
+    if (this.newAssessment) {
       const initialState = {message: 'Current Assessment has not been saved. \t' + 'Do you want to proceed without saving?'};
       this.confirmRef = this.modalService.show(ConfirmationModalComponent, {initialState});
       this.confirmRef.content.onClose.subscribe(result => {
@@ -123,18 +129,27 @@ export class FileManagementComponent implements OnInit {
 
         }
       });
-    } else if( this.new === undefined || !this.new ) {
+    } else if( this.newAssessment === undefined || !this.newAssessment ) {
       this.loadAssessment(assessment);
     }
   }
 
   loadAssessment(assessment) {
-    console.log('loading');
+    //console.log('loading');
     this.assessmentActive = true;
-    this.new = false;
+    this.newAssessment = false;
     this.activeName = assessment.name;
     this.activeMetaData = assessment.metadata;
-    this.tableTabs = assessment.csv;
+    this.tableTabs = [];
+
+    for (let i = 0; i < assessment.csv.length; i++) {
+      //console.log(assessment.csv[i]);
+        this.addDataSetsToTable(parseInt(assessment.csv[i].id, 10));
+    }
+    if (assessment.csv.length > 0){
+      this.tabTableSelect(0);
+      console.log(this.tableActive);
+    } else { this.tableActive = -1; }
     this.indexdbstore.clearQuickSaveStore().then(() => {
       const quickSave: QuickSave = {
         id: assessment.id,
@@ -152,8 +167,10 @@ export class FileManagementComponent implements OnInit {
 
   tabTableSelect(tabId) {
     this.tableActive = tabId;
-    this.tableData = this.tableTabs[tabId].id;
-    this.activeUpdated();
+     if(this.tableTabs.length > 0) {
+       this.tableData = this.tableTabs[tabId].id;
+       this.activeUpdated();
+     }
   }
 
   activeUpdated() {
@@ -173,12 +190,19 @@ export class FileManagementComponent implements OnInit {
   showDataModal() {
     console.log(this.tableTabs);
     console.log('trim', this.tableTabs.slice(0, this.tableTabs.length));
+    const ids = this.tableTabs.map(obj => obj.id);
+    const names = this.tableTabs.map(obj => obj.name);
+    const currentTable = [];
+    for (let i = 0; i < names.length; i++) {
+      currentTable.push( {name: names[i], id: ids[i], selected: true});
+    }
     const initialDataState = {
-      selected: this.tableTabs.slice(0, this.tableTabs.length),
+      selected: currentTable
     };
-    this.tableTabs = [];
+
     this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
+      console.log(result);
       for (let i = 0; i < result.length; i++) {
         this.addDataSetsToTable(result[i]);
 
@@ -216,6 +240,7 @@ export class FileManagementComponent implements OnInit {
           storeName: 'assessment'
         };
         this.indexdbstore.insertIntoQuickSaveStore(quickSave);
+        this.newAssessment = false;
       }, error => {
         console.log(error);
       });
@@ -228,7 +253,7 @@ export class FileManagementComponent implements OnInit {
         console.log(quickSave);
       });
     });
-    this.new = false;
+
   }
 
 }
