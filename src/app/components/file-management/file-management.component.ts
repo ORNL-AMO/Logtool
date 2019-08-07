@@ -28,6 +28,8 @@ export class FileManagementComponent implements OnInit {
   private activeMetaData: FileMetaData;
   private FileRef: BsModalRef;
   private metaDataList = [];
+  private csvRefIdList = [];
+  private activeName;
 
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
@@ -80,6 +82,7 @@ export class FileManagementComponent implements OnInit {
     this.metaHidden = false;
     this.dataHidden = false;
     this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
+    console.log(this.activeMetaData);
   }
 
   assessmentSelect(i: number, assessment: any) {
@@ -113,15 +116,15 @@ export class FileManagementComponent implements OnInit {
 
   showDataModal() {
     const initialDataState = {
-      selectedCSVS: this.tableTabs,
+      selected: this.tableTabs,
     };
-    this.FileRef = this.modalService.show(FileImportComponent);
+    this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
       for (const i of result) {
         console.log(i);
-        this.addDataSetRef(i);
+        this.csvRefIdList.push(i);
+        //this.addDataSetToTable(i);
       }
-      // console.log(this.tableTabs);
     });
   }
 
@@ -140,9 +143,12 @@ export class FileManagementComponent implements OnInit {
     const metaDataId = this.data.getRandomInt(9999999);
     const graphId = this.data.getRandomInt(9999999);
     const dayTypeId = this.data.getRandomInt(9999999);
-    const name = '';
-    const csvId = this.tableTabs.map(obj => obj.id);
-    const metaData: FileMetaData = {
+    const name = this.activeName;
+    const csvId = this.csvRefIdList;
+    this.activeMetaData.id = metaDataId;
+    this.activeMetaData.assessmentId = id;
+    const metaData: FileMetaData = this.activeMetaData;
+   /*   {
       id: metaDataId,
       assessmentId: assessmentId,
       companyName: '',
@@ -160,7 +166,7 @@ export class FileManagementComponent implements OnInit {
         state: '',
         country: ''
       },
-    };
+    };*/
     const assessmentMode = true;
 
     this.indexdbstore.clearQuickSaveStore().then(resut => {

@@ -7,14 +7,19 @@
       <div class="panel">
 
         <div class="row header justify-content-center" style="margin:auto">
-          <div class="tight-fit">Assessments </div>
-          <p class="tight-fit font-weight-bolder" tooltip="Create new assessment or import an assessment">&nbsp; &nbsp; ?</p>
+          <div class="tight-fit">Assessments</div>
+          <p class="tight-fit font-weight-bolder" tooltip="Create new assessment or import an assessment">&nbsp; &nbsp;
+            ?</p>
         </div>
         <div class="row justify-content-center" style="margin: 5px;">
 
-          <button class="btn col-5" (click)="createNew()" style="height: 30px; width:30%; margin-right: 10px;">Create New</button>
+          <button class="btn col-5" (click)="createNew()" style="height: 30px; width:30%; margin-right: 10px;">Create
+            New
+          </button>
 
-          <button class="btn col-5" (click)="importAssessment()"style="height: 30px; width:30%; margin-left: 10px;">Import</button>
+          <button class="btn col-5" (click)="importAssessment()" style="height: 30px; width:30%; margin-left: 10px;">
+            Import
+          </button>
 
 
         </div>
@@ -25,7 +30,8 @@
         </div>
         <div class="row justify-content-center" style="margin: 5px;">
           <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-            <div class="row test tight-fit justify-content-center" *ngFor="let assessment of assessmentList, let i = index"
+            <div class="row test tight-fit justify-content-center"
+                 *ngFor="let assessment of assessmentList, let i = index"
                  [ngStyle]="{'background' : assessment.selected ? 'blue': '',
                            'color' : assessment.selected ? 'white': ''}"
                  id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
@@ -200,30 +206,35 @@
   </div>
 
   <!-- Assessment Full View -->
-  <div class="col-6 snug"  *ngIf="assessmentActive" style="min-height: 100%; min-width:275px;">
-
+  <div class="col-6 snug" *ngIf="assessmentActive" style="min-height: 100%; min-width:275px;">
     <!-- Name -->
-    <div class="row snug">
-      <div class="panel" style="">
-        <div class="row header tight-fit justify-content-end" style="height: 35px;">
-             <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+    <div class="panel" style="">
+      <div class="row header tight-fit justify-content-end" style="height: 35px;">
+        <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+      </div>
+      <div class="row tight-fit justify-content-center" style="height: 35px;">
         <label>Name
-        <input type="text" placeholder="AssessmentName">
+          <input type="text" placeholder="AssessmentName" [(ngModel)]="activeName">
         </label>
       </div>
-    </div>
 
-    <!-- metaData -->
-    <div class="row snug ">
-      <div class="panel" style="">
-        <div class="row header tight-fit justify-content-end" style="height: 35px;">
-          <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
-          <div style="position: relative; top:-100%;">
-            <button *ngIf= "metaHidden" (click)="metaHidden = !metaHidden" class=" btn " style="margin: 5px 5px 5px 0">Show</button>
-            <button *ngIf="!metaHidden" (click)="metaHidden = !metaHidden" class=" btn " style="margin: 5px 5px 5px 0">Hide</button>
+
+      <!-- metaData -->
+      <div class="row snug ">
+        <div class="panel" style="">
+          <div class="row header tight-fit justify-content-end" style="height: 35px;">
+            <p class="col-12" style="margin: 5px 0 5px 0"> Contact Information </p>
+            <div style="position: relative; top:-100%;">
+              <button *ngIf="metaHidden" (click)="metaHidden = !metaHidden" class=" btn " style="margin: 5px 5px 5px 0">
+                Show
+              </button>
+              <button *ngIf="!metaHidden" (click)="metaHidden = !metaHidden" class=" btn "
+                      style="margin: 5px 5px 5px 0">
+                Hide
+              </button>
+            </div>
           </div>
-        </div>
-        <div> <!--*ngIf="activeStats != undefined && activeStats != null">-->
+          <!--*ngIf="activeStats != undefined && activeStats != null">-->
           <div *ngIf="!metaHidden">
             <!-- Facility and Contact information -->
             <div class="row" style=" border: 3px solid black; margin: 5px;">
@@ -313,48 +324,61 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- CSV Data -->
-    <div class="row snug">
-      <div class="panel">
-        <div class="row header tight-fit justify-content-end" style="height: 35px;">
-          <p class="col-12" style="margin: 5px 0 5px 0"> Data Sets </p>
-          <div style="position: relative; top:-100%;">
-            <button *ngIf= "dataHidden" (click)="dataHidden = !dataHidden" class=" btn " style="margin: 5px 5px 5px 0">Show</button>
-            <button *ngIf="!dataHidden" (click)="dataHidden = !dataHidden" class=" btn " style="margin: 5px 5px 5px 0">Hide</button>
+      <!-- CSV Data -->
+      <div class="row snug">
+        <div class="panel">
+          <div class="row header tight-fit justify-content-end" style="height: 35px;">
+            <p class="col-12" style="margin: 5px 0 5px 0"> Data Sets </p>
+            <div style="position: relative; top:-100%;">
+              <button *ngIf="!dataHidden" (click)="dataHidden = !dataHidden" class=" btn "
+                      style="margin: 5px 5px 5px 0">
+                Show
+              </button>
+              <button *ngIf="dataHidden" (click)="dataHidden = !dataHidden" class=" btn " style="margin: 5px 5px 5px 0">
+                Hide
+              </button>
+            </div>
+          </div>
+          <!--<button class=" btn " (click)="showDataModal()" >Add DataSets</button>-->
+          <div *ngIf="dataHidden">
+            <!-- tabs -->
+            <div *ngIf="tableTabs.length>0" class="row " style="margin-left: 19px; margin-right: 18px;">
+              <ul class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
+                <li class="nav-item" *ngFor="let tab of tableTabs">
+                  <!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
+                  <div class="nav-link" (click)="tabTableSelect(tab.tabID)"
+                       [ngStyle]="{'background': tableActive == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
+                    <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
+
+                  </div>
+                </li>
+
+              </ul>
+              <ul class="tight-fit" style="margin-top: 1px; margin-left: 3px">
+                <li>
+                  <button class=" btn " style="" (click)="showDataModal()">+</button>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="tableTabs == undefined || tableTabs.length == 0 " class="row justify-content-center"
+                 style="margin-left: 2%; margin-right: 2%; width:96%;">
+              <button class=" btn " (click)="showDataModal()">Add DataSets</button>
+            </div>
+
+            <div class="table-display" *ngIf="tableActive >= 0" style="margin-left: 0">
+              <router-outlet></router-outlet>
+              <!--[style.max-width] = getTableWidth()-->
+
+            </div>
           </div>
         </div>
-        <!--<button class=" btn " (click)="showDataModal()" >Add DataSets</button>-->
+      </div>
 
-        <!-- tabs -->
-        <div *ngIf="tableTabs.length>0"class="row " style="margin-left: 19px; margin-right: 18px;">
-          <ul  class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
-            <li class="nav-item" *ngFor="let tab of tableTabs"><!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
-              <div class="nav-link" (click)="tabTableSelect(tab.tabID)"
-                   [ngStyle]="{'background': tableActive == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
-                <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
-
-              </div>
-            </li>
-
-          </ul><ul class="tight-fit" style="margin-top: 1px; margin-left: 3px">
-          <li>  <button class=" btn " style="" (click)="showDataModal()" >+</button></li>
-        </ul>
-        </div>
-        <div *ngIf="tableTabs == undefined || tableTabs.length == 0 " class="row justify-content-center" style="margin-left: 2%; margin-right: 2%; width:96%;">
-          <button class=" btn " (click)="showDataModal()" >Add DataSets</button>
-        </div>
-
-        <div class="table-display" *ngIf="tableActive >= 0" style="margin-left: 0">
-          <router-outlet></router-outlet>
-          <!--[style.max-width] = getTableWidth()-->
-
-        </div>
-
+      <div class="row snug justify-content-end">
+        <button class="col-2 btn" (click)="createAssessment()">Finialize</button>
       </div>
     </div>
-
   </div>
 
   <!-- Instructions -->
