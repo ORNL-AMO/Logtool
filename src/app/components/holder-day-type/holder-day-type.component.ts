@@ -11,7 +11,7 @@ import {ExportCSVService} from '../../providers/export-csv.service';
 
 import {CalendarComponent} from '../calendar/calendar.component';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
-import {DayTypeSaveLoadService} from '../../providers/day-type-save-load.service';
+import {DatabaseOperationService} from '../../providers/database-operation.service';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
               private graphCreation: GraphCreationService, private indexFileStore: IndexDataBaseStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService,
-              private saveLoadService: DayTypeSaveLoadService) {
+              private dbOperation: DatabaseOperationService) {
   }
 
   @ViewChild(CalendarComponent)
@@ -601,7 +601,7 @@ export class HolderDayTypeComponent implements OnInit {
 
   saveSession() {
     if (this.dayTypeMode) {
-      this.saveLoadService.updateSession(this.loadDayTypeId, this.assessmentId, this.columnSelectorList[0].name, this.sesName,
+      this.dbOperation.updateSession(this.loadDayTypeId, this.assessmentId, this.columnSelectorList[0].name, this.sesName,
         this.loadDataFromFile, this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray,
         this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
         this.graphBinAverage, this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,
@@ -611,7 +611,7 @@ export class HolderDayTypeComponent implements OnInit {
         alert('Invalid name. Please try again');
         return;
       }
-      this.saveLoadService.saveSession(this.assessmentId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
+      this.dbOperation.saveSession(this.assessmentId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
         this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
         this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
         this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,

@@ -6,8 +6,8 @@ import {Router} from '@angular/router';
 import {FileMetaData} from '../../types/file-meta-data';
 
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
-import {DayTypeSaveLoadService} from '../../providers/day-type-save-load.service';
 import {FileImportComponent} from '../file-import/file-import.component';
+import {DatabaseOperationService} from '../../providers/database-operation.service';
 
 
 @Component({
@@ -28,7 +28,7 @@ export class FileManagementComponent implements OnInit {
 
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private saveLoadService: DayTypeSaveLoadService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService, private dbOperation: DatabaseOperationService) {
   }
 
   ngOnInit() {
@@ -114,5 +114,35 @@ export class FileManagementComponent implements OnInit {
     this.modalService.onHide.subscribe(result => {
       console.log(result);
     });
+  }
+
+  createAssessment() {
+    const id = this.data.getRandomInt(9999999);
+    const metaDataId = this.data.getRandomInt(9999999);
+    const graphId = this.data.getRandomInt(9999999);
+    const dayTypeId = this.data.getRandomInt(9999999);
+    const name = '';
+    const csvId = [];
+    const metaData: FileMetaData = {
+      id: metaDataId,
+      assessmentId: id,
+      companyName: '',
+      facilityName: '',
+      facilityContactName: '',
+      facilityContact: 0,
+      facilityEmail: '',
+      assessmentContactName: '',
+      assessmentContact: 0,
+      assessmentEmail: '',
+      address: {
+        street: '',
+        city: '',
+        zip: 0,
+        state: '',
+        country: ''
+      },
+    };
+    const assessmentMode = true;
+    this.dbOperation.createAssessment(id, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
   }
 }
