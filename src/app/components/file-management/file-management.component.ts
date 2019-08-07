@@ -128,7 +128,7 @@ export class FileManagementComponent implements OnInit {
   addDataSetRef(id) {
     this.indexdbstore.viewSelectedCSVStore(id).then(csvRecord => {
       console.log(csvRecord);
-      this.tableTabs.push({name: csvRecord.name, id: id, tabID: this.tableTabs.length});
+      //this.tableTabs.push({name: csvRecord.name, id: id, tabID: this.tableTabs.length});
       console.log(this.tableTabs);
     });
   }
@@ -140,7 +140,7 @@ export class FileManagementComponent implements OnInit {
     const graphId = this.data.getRandomInt(9999999);
     const dayTypeId = this.data.getRandomInt(9999999);
     const name = '';
-    const csvId = [];
+    const csvId = this.tableTabs.map(obj => obj.id);
     const metaData: FileMetaData = {
       id: metaDataId,
       assessmentId: id,
