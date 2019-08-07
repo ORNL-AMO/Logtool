@@ -26,7 +26,7 @@
 
         <div class="row justify-content-center header" style="margin: auto; width:90%;">
           <div class="header col-11" style=" text-align: center">Assessments Available</div>
-          <div class="tight-fit" tooltip="Click a assessment to view contents">&#9921; ?</div>
+          <div class="tight-fit" tooltip="Click a assessment to view contents &#013;  &#9921;: Full Assessment &#9920;: Report"> ?</div>
         </div>
         <div class="row justify-content-center" style="margin: 5px;">
           <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
@@ -35,9 +35,11 @@
                  [ngStyle]="{'background' : assessment.selected ? 'blue': '',
                            'color' : assessment.selected ? 'white': ''}"
                  id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
-              <div class="tight-fit nonSelectable col-11" (click)="assessmentSelect(i, assessment)">
+              <div class="tight-fit nonSelectable col-10" (click)="assessmentSelect(i, assessment)">
                 <p class="tight-fit" style="text-align: center;">{{assessment.name}}</p>
               </div>
+              <span *ngIf="assessment.assessmentMode " class="tight-fit col-1" style="padding-top: 0; text-align: center; margin-top:0; float: right; height:100%;">&#9921; </span>
+              <span *ngIf="!assessment.assessmentMode "class="tight-fit col-1" style="padding-top: 0; text-align: center; margin-top:0; float: right; height:100%;">&#9920; </span>
               <span class="tight-fit col-1"
                     (click)="removeAssessment($event, i)"
                     style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x

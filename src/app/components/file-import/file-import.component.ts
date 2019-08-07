@@ -25,6 +25,7 @@ export class FileImportComponent implements OnInit {
   private csvList: any[];
   ImportRef: BsModalRef;
   private selected: any[];
+  private originalSet;
 
   constructor(private modalService: BsModalService, private indexDatabaseStoreService: IndexDataBaseStoreService,
               private selfModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
@@ -37,6 +38,7 @@ export class FileImportComponent implements OnInit {
     this.csvList = [];
     console.log('selected: ', this.selected);
     this.generatecsvList();
+    this.originalSet = this.selected.slice(0, this.selected.length);
   }
 
   showImportModal() {
@@ -67,11 +69,16 @@ export class FileImportComponent implements OnInit {
   }
 
   clickSelect(file) {
-    if (this.selected.findIndex(obj => obj.id === file.id) >= 0) {
-      file.selected = false;
-      const index = this.selected.indexOf(file);
+    let index = this.selected.findIndex(obj => obj.id === file.id);
+    if ( index >= 0) {
+      console.log('removing', file, index);
+
+      console.log(this.selected[index]);
+
       this.selected.splice(index, 1);
+      file.selected = false;
     } else {
+
       file.selected = true;
       this.selected.push(file);
     }

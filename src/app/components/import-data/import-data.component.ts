@@ -223,7 +223,7 @@ export class ImportDataComponent implements OnInit {
         this.end = this.dataArrayColumns[this.dataArrayColumns.length - 1][i];
         timelist.push({value: this.dataArrayColumns[index][i], index: i, type: 'date'});
       } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(dateCheck) > -1) {
-        timelist.push({value: this.headerIndex[index][i], index: i, type: 'dateMismatch'});
+        timelist.push({value: this.dataArrayColumns[index][i], index: i, type: 'dateMismatch'});
       } else if (typeof this.dataArrayColumns[index][i] === 'string' && this.dataArrayColumns[index][i].search(timeCheck) > -1) {
         timelist.push({value: this.dataArrayColumns[index][i], index: i, type: 'time'});
       }
