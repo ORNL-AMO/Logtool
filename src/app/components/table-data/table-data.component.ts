@@ -23,6 +23,7 @@ export class TableDataComponent implements OnInit {
       this.route.queryParams
         .subscribe(params => {
           this.arrayPointer = params.value;
+          console.log(this.arrayPointer);
           if (this.inputDataArray[this.arrayPointer] === undefined) {
           } else {
             this.show = true;

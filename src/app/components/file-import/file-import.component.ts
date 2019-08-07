@@ -17,30 +17,30 @@ import {Assessment} from '../../types/assessment';
 })
 export class FileImportComponent implements OnInit {
 
-  public onClose: Subject<any>;
+  public returnList: Subject<any>;
   public test: { type: string, path: string };
   private fileType: any;
   private inputFile: any;
   private dataFromDialogCSV: any;
   private csvList: any[];
-  FileRef: BsModalRef;
+  ImportRef: BsModalRef;
   private selected: any[];
 
   constructor(private modalService: BsModalService, private indexDatabaseStoreService: IndexDataBaseStoreService,
-              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
+              private selfModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
   }
 
   fileName: any;
 
   ngOnInit() {
-    this.onClose = new Subject();
+    this.returnList = new Subject();
     this.csvList = [];
     this.selected = [];
     this.generatecsvList();
   }
 
   showImportModal() {
-    this.FileRef = this.modalService.show(ImportDataComponent);
+    this.ImportRef = this.modalService.show(ImportDataComponent);
     this.modalService.onHide.subscribe(() => {
       this.generatecsvList();
     });
@@ -119,13 +119,16 @@ export class FileImportComponent implements OnInit {
       worksheet: worksheet,
       dataArrayColumns: dataArrayColumns,
     };
-    this.bsModalRef = this.modalService.show(ImportDataComponent, {initialState});
+    this.selfModalRef = this.modalService.show(ImportDataComponent, {initialState});
     // this.bsModalRef.content.closeBtnName = 'Close';
   }
 
-  public decline() {
-    this.onClose.next(false);
-    this.bsModalRef.hide();
+
+  public confirm(){
+    const list = this.selected.map(obj => obj.id);
+    console.log(list);
+    this.returnList.next(list);
+    this.selfModalRef.hide();
   }
 
 }

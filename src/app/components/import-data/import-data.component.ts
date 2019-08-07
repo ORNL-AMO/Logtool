@@ -248,7 +248,7 @@ export class ImportDataComponent implements OnInit {
             this.dataArrayColumns[i][timelist[0].index] = new Date(date.toString().slice(4, 15) + ' ' + time);
             /*this.dataArrayColumns[i][timelist[0].index] = new Date(date.getMonth + ' ' + date.getDate + ' ' + date.getFullYear() +
                                  ' ' +  this.dataArrayColumns[i][timelist[1].index]);*/
-            console.log(this.dataArrayColumns[i][0]);
+            //console.log(this.dataArrayColumns[i][0]);
           }
 
 

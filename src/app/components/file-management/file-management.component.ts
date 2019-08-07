@@ -8,6 +8,7 @@ import {FileMetaData} from '../../types/file-meta-data';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {DayTypeSaveLoadService} from '../../providers/day-type-save-load.service';
 import {FileImportComponent} from '../file-import/file-import.component';
+import {initialState} from 'ngx-bootstrap/timepicker/reducer/timepicker.reducer';
 
 
 @Component({
@@ -18,6 +19,7 @@ import {FileImportComponent} from '../file-import/file-import.component';
 export class FileManagementComponent implements OnInit {
   private assessmentList: any;
   private selected: any;
+  private tableTabs = [];
   private tableActive;
   private assessmentActive: boolean;
   private metaHidden: boolean;
@@ -32,6 +34,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.selected=[];
     this.generateAssessmentList();
   }
 
@@ -48,6 +51,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   generateAssessmentList() {
+
     this.indexdbstore.viewFromAssessmentStore().then(result => {
       this.assessmentList = result;
       if (this.assessmentList === null || this.assessmentList === undefined) {
@@ -60,6 +64,7 @@ export class FileManagementComponent implements OnInit {
           console.log(this.assessmentList);
         }
       }
+      console.log(this.selected);
     }, error => {
       console.log(error);
     });
@@ -87,15 +92,11 @@ export class FileManagementComponent implements OnInit {
   }
 
   tabTableSelect(tabID) {
-    this.metaDataList[this.tableActive].data = this.activeMetaData;
     this.tableActive = tabID;
     this.activeUpdated();
   }
 
   activeUpdated() {
-    if (this.metaDataList.length > 0 && this.tableActive > -1) {
-      this.activeMetaData = this.metaDataList[this.tableActive].data;
-    }
     this.changeDisplayTable();
   }
 
@@ -110,9 +111,26 @@ export class FileManagementComponent implements OnInit {
   }
 
   showDataModal() {
+    const initialDataState = {
+      selectedCSVS: this.tableTabs,
+    };
     this.FileRef = this.modalService.show(FileImportComponent);
-    this.modalService.onHide.subscribe(result => {
-      console.log(result);
+    this.FileRef.content.returnList.subscribe(result => {
+      for ( const i of result) {
+        console.log(i);
+        this.addDataSet(i);
+      }
+      // console.log(this.tableTabs);
     });
   }
+
+  addDataSet(id) {
+    this.indexdbstore.viewSelectedCSVStore(id).then(csvRecord => {
+      console.log(csvRecord);
+      this.tableTabs.push({name: csvRecord.name, id: id, tabID: this.tableTabs.length});
+      console.log(this.tableTabs);
+    });
+  }
+
 }
+
