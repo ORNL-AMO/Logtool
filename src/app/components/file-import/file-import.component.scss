@@ -1,0 +1,29 @@
+.list-container {
+  list-style-type: none;
+  white-space: nowrap;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  user-select: none;
+  margin: 10px 5% 10px 5%;
+  padding: 0;
+  width: 90%;
+  border-width: 1px 2px 1px 2px;
+  border-style: solid;
+  border-color: black;
+
+}
+ul {
+  list-style-type: none;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  li {
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+.test:hover{
+  background: dodgerblue;
+  color: white;
+}

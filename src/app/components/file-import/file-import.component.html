@@ -8,7 +8,7 @@
       <p class="header tight-fit" >Available DataSets</p>
     </div>
     <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-      <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList"
+      <div class="row test tight-fit justify-content-center" *ngFor="let file of csvList"
            style="border-bottom: 1px solid black; border-top: 1px solid black"
            [ngStyle]="{'background' : file.selected ? 'blue': '',
                            'color' : file.selected ? 'white': ''}">
@@ -23,7 +23,7 @@
   </div>
   <div class="col-6">
     <div class="row justify-content-center">
-      <p class="header tight-fit" >Available DataSets</p>
+      <p class="header tight-fit" >Selected DataSets</p>
     </div>
     <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
       <div class="row test tight-fit justify-content-center" *ngFor="let file of selected, let i = index" id="{{i}}"
@@ -37,7 +37,7 @@
 
 </div>
 <div class="row justify-content-center" style="margin-top: 20px;">
-  <button>Confirm</button><button>Cancel</button>
+  <button (click)="confirm()">Confirm</button><button>Cancel</button>
 </div>
 
 

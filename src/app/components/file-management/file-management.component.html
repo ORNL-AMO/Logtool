@@ -201,6 +201,19 @@
 
   <!-- Assessment Full View -->
   <div class="col-6 snug"  *ngIf="assessmentActive" style="min-height: 100%; min-width:275px;">
+
+    <!-- Name -->
+    <div class="row snug ">
+      <div class="panel" style="">
+        <div class="row header tight-fit justify-content-end" style="height: 35px;">
+             <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+        <label>Name
+        <input type="text" placeholder="AssessmentName">
+        </label>
+      </div>
+    </div>
+
+    <!-- metaData -->
     <div class="row snug ">
       <div class="panel" style="">
         <div class="row header tight-fit justify-content-end" style="height: 35px;">
@@ -339,6 +352,8 @@
         </div>
       </div>
     </div>
+
+    <!-- CSV Data -->
     <div class="row snug">
       <div class="panel">
         <div class="row header tight-fit justify-content-end" style="height: 35px;">
@@ -351,9 +366,9 @@
         <!--<button class=" btn " (click)="showDataModal()" >Add DataSets</button>-->
 
         <!-- tabs -->
-        <div *ngIf="selected.length>0"class="row " style="margin-left: 19px; margin-right: 18px;">
+        <div *ngIf="tableTabs.length>0"class="row " style="margin-left: 19px; margin-right: 18px;">
           <ul  class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
-            <li class="nav-item" *ngFor="let tab of selected"><!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
+            <li class="nav-item" *ngFor="let tab of tableTabs"><!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
               <div class="nav-link" (click)="tabTableSelect(tab.tabID)"
                    [ngStyle]="{'background': tableActive == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
                 <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
@@ -365,7 +380,7 @@
           <li>  <button class=" btn " style="" (click)="showDataModal()" >+</button></li>
         </ul>
         </div>
-        <div *ngIf="selected.length==0 || selected == undefined" class="row justify-content-center" style="margin-left: 2%; margin-right: 2%; width:96%;">
+        <div *ngIf="tableTabs == undefined || tableTabs.length == 0 " class="row justify-content-center" style="margin-left: 2%; margin-right: 2%; width:96%;">
           <button class=" btn " (click)="showDataModal()" >Add DataSets</button>
         </div>
 
@@ -380,7 +395,7 @@
 
   </div>
 
-  <!-- Navigate, Export, && Instructions -->
+  <!-- Instructions -->
   <div class="snug col-2" style="min-height: 100%; margin-right: 20px; min-width:200px;">
     <div class="row snug">
       <div class="panel">

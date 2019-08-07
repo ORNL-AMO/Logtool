@@ -7,7 +7,9 @@ import {FileMetaData} from '../../types/file-meta-data';
 
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {FileImportComponent} from '../file-import/file-import.component';
+
 import {DatabaseOperationService} from '../../providers/database-operation.service';
+
 
 
 @Component({
@@ -18,6 +20,7 @@ import {DatabaseOperationService} from '../../providers/database-operation.servi
 export class FileManagementComponent implements OnInit {
   private assessmentList: any;
   private selected: any;
+  private tableTabs = [];
   private tableActive;
   private assessmentActive: boolean;
   private metaHidden: boolean;
@@ -32,6 +35,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.selected=[];
     this.generateAssessmentList();
   }
 
@@ -48,6 +52,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   generateAssessmentList() {
+
     this.indexdbstore.viewFromAssessmentStore().then(result => {
       this.assessmentList = result;
       if (this.assessmentList === null || this.assessmentList === undefined) {
@@ -60,6 +65,7 @@ export class FileManagementComponent implements OnInit {
           console.log(this.assessmentList);
         }
       }
+      console.log(this.selected);
     }, error => {
       console.log(error);
     });
@@ -87,15 +93,11 @@ export class FileManagementComponent implements OnInit {
   }
 
   tabTableSelect(tabID) {
-    this.metaDataList[this.tableActive].data = this.activeMetaData;
     this.tableActive = tabID;
     this.activeUpdated();
   }
 
   activeUpdated() {
-    if (this.metaDataList.length > 0 && this.tableActive > -1) {
-      this.activeMetaData = this.metaDataList[this.tableActive].data;
-    }
     this.changeDisplayTable();
   }
 
@@ -110,11 +112,27 @@ export class FileManagementComponent implements OnInit {
   }
 
   showDataModal() {
+    const initialDataState = {
+      selectedCSVS: this.tableTabs,
+    };
     this.FileRef = this.modalService.show(FileImportComponent);
-    this.modalService.onHide.subscribe(result => {
-      console.log(result);
+    this.FileRef.content.returnList.subscribe(result => {
+      for ( const i of result) {
+        console.log(i);
+        this.addDataSetRef(i);
+      }
+      // console.log(this.tableTabs);
     });
   }
+
+  addDataSetRef(id) {
+    this.indexdbstore.viewSelectedCSVStore(id).then(csvRecord => {
+      console.log(csvRecord);
+      //this.tableTabs.push({name: csvRecord.name, id: id, tabID: this.tableTabs.length});
+      console.log(this.tableTabs);
+    });
+  }
+
 
   createAssessment() {
     const id = this.data.getRandomInt(9999999);
@@ -122,7 +140,7 @@ export class FileManagementComponent implements OnInit {
     const graphId = this.data.getRandomInt(9999999);
     const dayTypeId = this.data.getRandomInt(9999999);
     const name = '';
-    const csvId = [];
+    const csvId = this.tableTabs.map(obj => obj.id);
     const metaData: FileMetaData = {
       id: metaDataId,
       assessmentId: id,
@@ -145,4 +163,6 @@ export class FileManagementComponent implements OnInit {
     const assessmentMode = true;
     this.dbOperation.createAssessment(id, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
   }
+
 }
+
