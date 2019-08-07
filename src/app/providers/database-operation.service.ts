@@ -94,9 +94,11 @@ export class DatabaseOperationService {
     const csvList = [];
     for (let i = 0; i < csvId.length; i++) {
       this.indexFileStore.viewSelectedCSVStore(csvId[i]).then(csv => {
+        console.log(csvId[i]);
         csvList.push(csv);
       });
     }
+    console.log('csvId', csvList);
     const assessmentItem: Assessment = {
       id: id,
       name: name,

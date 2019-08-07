@@ -124,9 +124,9 @@ export class FileManagementComponent implements OnInit {
     this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
       console.log('result', result);
-      for (let i = 0; i < result.length; i++) {
-        this.csvRefIdList.push(result[i]);
-        this.addDataSetsToTable(result[i]);
+     for (let i = 0; i < result.length; i++) {
+         this.tableTabs.push({name: result[i].name, id: result[i].id, tabID: this.tableTabs.length});
+         this.csvRefIdList.push(result[i].id);
       }
     });
   }
@@ -147,7 +147,7 @@ export class FileManagementComponent implements OnInit {
     const graphId = this.data.getRandomInt(9999999);
     const dayTypeId = this.data.getRandomInt(9999999);
     const name = this.activeName;
-    const csvId = this.csvRefIdList;
+    const csvId = this.csvRefIdList.slice(0, this.csvRefIdList.length);
     this.activeMetaData.id = metaDataId;
     this.activeMetaData.assessmentId = assessmentId;
     const metaData: FileMetaData = this.activeMetaData;
@@ -172,13 +172,16 @@ export class FileManagementComponent implements OnInit {
      };*/
     const assessmentMode = true;
 
-    this.indexdbstore.clearQuickSaveStore().then(resut => {
+    this.indexdbstore.clearQuickSaveStore().then(() => {
+      console.log(csvId);
       this.dbOperation.createAssessment(assessmentId, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
       const quickSave: QuickSave = {
         id: assessmentId,
         storeName: 'assessment'
       };
       this.indexdbstore.insertIntoQuickSaveStore(quickSave);
+    }, error => {
+      console.log(error);
     });
   }
 

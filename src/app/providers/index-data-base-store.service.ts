@@ -174,6 +174,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
         db.delete('assessment', id).then(() => {
             console.log('Deleted');
+            resolve();
             // Call Meta Data
             // Call Graph
             // Call Day Type
@@ -260,6 +261,7 @@ export class IndexDataBaseStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
         db.clear('quickSave').then(() => {
+            resolve();
             console.log('Cleared');
           },
           error => {
@@ -307,6 +309,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
         db.delete('csv', id).then(() => {
             console.log('Deleted');
+            resolve();
           },
           error => {
             console.log(error);
@@ -492,6 +495,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
         db.delete('graph', id).then(() => {
             console.log('Deleted');
+            resolve();
           },
           error => {
             console.log(error);
@@ -676,6 +680,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
         db.delete('dayType', id).then(() => {
             console.log('Deleted');
+            resolve();
           },
           error => {
             console.log(error);
