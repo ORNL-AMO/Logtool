@@ -12,78 +12,88 @@ import {QuickSave} from '../types/quick-save';
 })
 export class DataService {
   private assessmentItem: Assessment;
-  private subjectAssessmentItem = new BehaviorSubject(this.assessmentItem);
-  curresntAssessmentItem = this.subjectAssessmentItem.asObservable();
+  currentAssessmentItem;
   private assessmentItemArray: Assessment[];
-  private subjectAssessmentItemArray = new BehaviorSubject(this.assessmentItemArray);
-  currentAssessmentItemArray = this.subjectAssessmentItemArray.asObservable();
+  currentAssessmentItemArray;
   private csvItem: CSVFileInput;
-  private subjectCSVItem = new BehaviorSubject(this.csvItem);
-  currentCSVItem = this.subjectCSVItem.asObservable();
+  currentCSVItem;
   private csvItemArray: CSVFileInput[];
-  private subjectCSVItemArray = new BehaviorSubject(this.csvItemArray);
-  currentCSVItemArray = this.subjectCSVItemArray.asObservable();
+  currentCSVItemArray;
   private metaDataItem: FileMetaData;
-  private subjectMetaDataItem = new BehaviorSubject(this.metaDataItem);
-  currentMetaDataItem = this.subjectMetaDataItem.asObservable();
+  currentMetaDataItem;
   private graphItem: Graph;
-  private subjectGraphItem = new BehaviorSubject(this.graphItem);
-  currentGraphItem = this.subjectGraphItem.asObservable();
+  currentGraphItem;
   private graphItemArray: Graph[];
-  private subjectGraphItemArray = new BehaviorSubject(this.graphItemArray);
-  currentGraphItemArray = this.subjectGraphItemArray.asObservable();
+  currentGraphItemArray;
   private dayTypeItem: DayType;
-  private subjectDayTypeItem = new BehaviorSubject(this.dayTypeItem);
-  currentDayTypeItem = this.subjectDayTypeItem.asObservable();
+  currentDayTypeItem;
   private dayTypeItemArray: DayType[];
-  private subjectDayTypeItemArray = new BehaviorSubject(this.dayTypeItemArray);
-  currentDayTypeItemArray = this.subjectDayTypeItemArray.asObservable();
+  currentDayTypeItemArray;
   private quickSaveItem: QuickSave;
-  private subjectQuickSaveItem = new BehaviorSubject(this.quickSaveItem);
-  currentQuickSaveItem = this.subjectQuickSaveItem;
+  currentQuickSaveItem;
 
 
   constructor() {
   }
 
   changeAssessmentItem(assessment: Assessment) {
-    this.subjectAssessmentItem.next(assessment);
+    const subjectAssessmentItem = new BehaviorSubject<Assessment>(this.assessmentItem);
+    subjectAssessmentItem.next(assessment);
+    this.currentAssessmentItem = subjectAssessmentItem.asObservable();
   }
 
   changeAssessmentItemArray(assessment: Assessment[]) {
-    this.subjectAssessmentItemArray.next(assessment);
+    const subjectAssessmentItemArray = new BehaviorSubject<Assessment[]>(this.assessmentItemArray);
+    subjectAssessmentItemArray.next(assessment);
+    this.currentAssessmentItemArray = subjectAssessmentItemArray.asObservable();
   }
 
   changeCSVItem(csv: CSVFileInput) {
-    this.subjectCSVItem.next(csv);
+    const subjectCSVItem = new BehaviorSubject<CSVFileInput>(this.csvItem);
+    subjectCSVItem.next(csv);
+    this.currentCSVItem = subjectCSVItem.asObservable();
   }
 
   changeCSVItemArray(csv: CSVFileInput[]) {
-    this.subjectCSVItemArray.next(csv);
+    const subjectCSVItemArray = new BehaviorSubject<CSVFileInput[]>(this.csvItemArray);
+    subjectCSVItemArray.next(csv);
+    this.currentCSVItemArray = subjectCSVItemArray.asObservable();
   }
 
   changeMetaDataItem(metaData: FileMetaData) {
-    this.subjectMetaDataItem.next(metaData);
+    const subjectMetaDataItem = new BehaviorSubject(this.metaDataItem);
+    subjectMetaDataItem.next(metaData);
+    this.currentMetaDataItem = subjectMetaDataItem.asObservable();
   }
 
   changeGraphItem(graph: Graph) {
-    this.subjectGraphItem.next(graph);
+    const subjectGraphItem = new BehaviorSubject(this.graphItem);
+    subjectGraphItem.next(graph);
+    this.currentGraphItem = subjectGraphItem.asObservable();
   }
 
   changeGraphItemArray(graph: Graph[]) {
-    this.subjectGraphItemArray.next(graph);
+    const subjectGraphItemArray = new BehaviorSubject(this.graphItemArray);
+    subjectGraphItemArray.next(graph);
+    this.currentGraphItemArray = subjectGraphItemArray.asObservable();
   }
 
   changeDayTypeItem(dayType: DayType) {
-    this.subjectDayTypeItem.next(dayType);
+    const subjectDayTypeItem = new BehaviorSubject(this.dayTypeItem);
+    subjectDayTypeItem.next(dayType);
+    this.currentDayTypeItem = subjectDayTypeItem.asObservable();
   }
 
   changeDayTypeItemArray(dayType: DayType[]) {
-    this.subjectDayTypeItemArray.next(dayType);
+    const subjectDayTypeItemArray = new BehaviorSubject(this.dayTypeItemArray);
+    subjectDayTypeItemArray.next(dayType);
+    this.currentDayTypeItemArray = subjectDayTypeItemArray.asObservable();
   }
 
   changeQuickSaveItem(quickSave: QuickSave) {
-    this.subjectQuickSaveItem.next(quickSave);
+    const subjectQuickSaveItem = new BehaviorSubject(this.quickSaveItem);
+    subjectQuickSaveItem.next(quickSave);
+    this.currentQuickSaveItem = subjectQuickSaveItem;
   }
 
 
