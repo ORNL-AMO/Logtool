@@ -91,11 +91,10 @@ export class DatabaseOperationService {
 
   createAssessment(id: number, name: string, csv: any[], metaDataId: number, metaData: FileMetaData,
                    graphId: number, dayTypeId: number, assessmentMode: boolean) {
-    const csvList: CSVFileInput[] = [];
+    const csvList = [];
     for (let i = 0; i < csv.length; i++) {
-          csvList.push(csv[i].value);
+          csvList.push(csv[i]);
     }
-    console.log('csvId', csvList);
     const assessmentItem: Assessment = {
       id: id,
       name: name,
