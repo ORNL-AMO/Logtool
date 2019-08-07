@@ -27,7 +27,6 @@ export class FileManagementComponent implements OnInit {
   private dataHidden: boolean;
   private activeMetaData: FileMetaData;
   private FileRef: BsModalRef;
-  private metaDataList = [];
   private csvRefIdList = [];
   private activeName;
 
@@ -96,7 +95,12 @@ export class FileManagementComponent implements OnInit {
   }
 
   tabTableSelect(tabID) {
-    this.tableActive = tabID;
+    this.tableActive = tabID; for (let i = 0; i < csvId.length; i++) {
+      this.indexFileStore.viewSelectedCSVStore(csvId[i]).then(csv => {
+        console.log(csvId[i]);
+        csvList.push(csv);
+      });
+    }
     this.activeUpdated();
   }
 
@@ -123,15 +127,17 @@ export class FileManagementComponent implements OnInit {
     this.tableTabs = [];
     this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
-      console.log('result', result);
-     for (let i = 0; i < result.length; i++) {
-         this.tableTabs.push({name: result[i].name, id: result[i].id, tabID: this.tableTabs.length});
-         this.csvRefIdList.push(result[i].id);
+
+      for (let i = 0; i < result.length; i++) {
+        this.csvRefIdList.push(result[i]);
+        this.addDataSetsToTable(result[i]);
+
       }
     });
   }
 
   addDataSetsToTable(id) {
+    console.log('id');
     this.tableTabs = [];
     this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
@@ -151,25 +157,6 @@ export class FileManagementComponent implements OnInit {
     this.activeMetaData.id = metaDataId;
     this.activeMetaData.assessmentId = assessmentId;
     const metaData: FileMetaData = this.activeMetaData;
-    /*   {
-       id: metaDataId,
-       assessmentId: assessmentId,
-       companyName: '',
-       facilityName: '',
-       facilityContactName: '',
-       facilityContact: 0,
-       facilityEmail: '',
-       assessmentContactName: '',
-       assessmentContact: 0,
-       assessmentEmail: '',
-       address: {
-         street: '',
-         city: '',
-         zip: 0,
-         state: '',
-         country: ''
-       },
-     };*/
     const assessmentMode = true;
 
     this.indexdbstore.clearQuickSaveStore().then(() => {
