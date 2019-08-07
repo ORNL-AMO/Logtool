@@ -10,6 +10,7 @@ import {FileImportComponent} from '../file-import/file-import.component';
 
 import {DatabaseOperationService} from '../../providers/database-operation.service';
 import {QuickSave} from '../../types/quick-save';
+import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 
 
 @Component({
@@ -22,11 +23,14 @@ export class FileManagementComponent implements OnInit {
   private selected: any;
   private tableTabs = [];
   private tableActive;
+  private new;
   private assessmentActive: boolean;
-  private metaHidden: boolean;
-  private dataHidden: boolean;
+  private metaHidden = false;
+  private dataHidden =  false;
+  private reportsHidden = false;
   private activeMetaData: FileMetaData;
   private FileRef: BsModalRef;
+  private confirmRef: BsModalRef;
   private csvRefIdList = [];
   private activeName;
 
@@ -37,7 +41,17 @@ export class FileManagementComponent implements OnInit {
 
   ngOnInit() {
     this.selected = [];
+
     this.generateAssessmentList();
+    this.indexdbstore.viewFromQuickSaveStore().then( save => {
+      console.log(save[0]);
+      this.indexdbstore.viewSelectedAssessmentStore(save[0].id).then(file => {
+          this.loadAssessment(file);
+      });
+    });
+
+
+
   }
 
   blankMetaData(index) {
@@ -78,6 +92,7 @@ export class FileManagementComponent implements OnInit {
 
   createNew() {
     this.assessmentActive = true;
+    this.new = true;
     this.metaHidden = false;
     this.dataHidden = false;
     this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
@@ -87,8 +102,42 @@ export class FileManagementComponent implements OnInit {
   }
 
   assessmentSelect(i: number, assessment: any) {
-    console.log(i);
-    console.log(assessment);
+    console.log(this.new);
+    if (this.new) {
+      const initialState = {message: 'Current Assessment has not been saved. \t' + 'Do you want to proceed without saving?'};
+      this.confirmRef = this.modalService.show(ConfirmationModalComponent, {initialState});
+      this.confirmRef.content.onClose.subscribe(result => {
+        console.log(result);
+        if (!result) {
+          console.log('Aborting');
+          return;
+        } else {
+          console.log(i);
+          console.log(assessment);
+          this.loadAssessment(assessment);
+
+
+        }
+      });
+    } else if( this.new === undefined || !this.new ) {
+      this.loadAssessment(assessment);
+    }
+  }
+
+  loadAssessment(assessment) {
+    console.log('loading');
+    this.assessmentActive = true;
+    this.new = false;
+    this.activeName = assessment.name;
+    this.activeMetaData = assessment.metadata;
+    this.tableTabs = assessment.csv;
+    this.indexdbstore.clearQuickSaveStore().then(() => {
+      const quickSave: QuickSave = {
+        id: assessment.id,
+        storeName: 'assessment'
+      };
+      this.indexdbstore.insertIntoQuickSaveStore(quickSave);
+    });
   }
 
   removeAssessment(event: MouseEvent, i: number) {
@@ -133,7 +182,6 @@ export class FileManagementComponent implements OnInit {
       }
     });
   }
-
   addDataSetsToTable(id) {
     console.log(id);
     this.tableTabs = [];
@@ -168,6 +216,7 @@ export class FileManagementComponent implements OnInit {
     }, error => {
       console.log(error);
     });
+    this.new = false;
   }
 
 }
