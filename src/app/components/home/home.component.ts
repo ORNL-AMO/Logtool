@@ -1,11 +1,11 @@
 import {Component, DoCheck, OnInit, ViewChild, IterableDiffers} from '@angular/core';
 import {Router} from '@angular/router';
-import {ImportDataComponent} from '../import-data/import-data.component';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
+import {DataService} from '../../providers/data.service';
 
 
 @Component({
@@ -45,90 +45,65 @@ export class HomeComponent implements OnInit, DoCheck {
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
-  constructor(private router: Router, private indexFileStore: IndexDataBaseStoreService,
+  constructor(private router: Router, private indexFileStore: IndexDataBaseStoreService, private data: DataService,
               private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
     this.differ = differs.find([]).create(null);
   }
 
   ngOnInit() {
-    if (this.routeDataTransfer.storage === undefined) {
-      this.graph = 'line_graph';
-      this.dataFromDialog = [];
-      this.lineListY = [];
-      this.timeSeriesY = [];
-      this.scatterList = [];
-      this.indexFileStore.viewSelectedAssessmentStore(234345).then(assessment => {
-        this.dataFromDialog = assessment;
-        if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
-        } else {
-          this.plotGraph.ngOnInit();
-          this.tabs = [];
-          for (let i = 0; i < this.dataFromDialog.length; i++) {
-            this.tabs.push({
-              name: this.dataFromDialog[i].name,
-              id: this.dataFromDialog[i].id,
-              tabId: i
-            });
-          }
-          // console.log(this.tabs);
-          this.populateSpinner();
-          this.populateGraph();
-          this.changeDisplayTable(0);
+    this.graph = '';
+    this.dataFromDialog = [];
+    this.lineListY = [];
+    this.timeSeriesY = [];
+    this.scatterList = [];
+    this.indexFileStore.viewFromQuickSaveStore().then(() => {
+      this.data.currentQuickSaveItem.subscribe(quickSave => {
+        if (quickSave[0] !== undefined) {
+          this.indexFileStore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
+            this.data.currentAssessmentItem.subscribe(assessment => {
+                console.log(assessment);
+                this.dataFromDialog = assessment.csv;
+                if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
+                } else {
+                  this.plotGraph.ngOnInit();
+                  this.tabs = [];
+                  for (let i = 0; i < this.dataFromDialog.length; i++) {
+                    this.tabs.push({
+                      name: this.dataFromDialog[i].name,
+                      id: this.dataFromDialog[i].id,
+                      tabId: i
+                    });
+                  }
+                  this.populateSpinner();
+                  this.populateGraph();
+                  this.changeDisplayTable(this.dataFromDialog[0].id);
+                }
+              }, error => {
+                console.log(error);
+              }
+            );
+          });
         }
-      }, error => {
-        console.log(error);
       });
-    } else {
-      this.loadMode = this.routeDataTransfer.storage.loadMode;
-      if (this.loadMode) {
-        this.changeDisplayTable(0);
-        this.plotGraph.ngOnInit();
-      } else {
-        this.graph = '';
-        this.dataFromDialog = [];
-        this.lineListY = [];
-        this.timeSeriesY = [];
-        this.scatterList = [];
-        this.indexFileStore.viewSelectedAssessmentStore(123).then(assessment => {
-          this.dataFromDialog = assessment;
-          if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
-          } else {
-            this.plotGraph.ngOnInit();
-            this.tabs = [];
-            for (let i = 0; i < this.dataFromDialog.length; i++) {
-              this.tabs.push({
-                name: this.dataFromDialog[i].name,
-                id: this.dataFromDialog[i].id,
-                tabId: i
-              });
-            }
-            // console.log(this.tabs);
-            this.populateSpinner();
-            this.populateGraph();
-            this.changeDisplayTable(0);
-          }
-        }, error => {
-          console.log(error);
-        });
-      }
-    }
+    });
   }
+
   ngDoCheck(): void {
     this.differ.diff(this.tabs);
   }
+
   plotGraphNavigation() {
     if (this.graph === '' || this.graph === undefined) {
       alert('Please select Graph type');
     } else if (this.graph === 'line_graph') {
-
       this.routeDataTransfer.storage = {
         value: this.ySelectorListLine,
         timeSeries: this.timeSeriesSelectList,
         graphType: 'line_graph',
         loadMode: false,
       };
+      console.log(this.routeDataTransfer.storage);
       this.plotGraph.ngOnInit();
-
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
         x: this.xSelectorListScatter,
