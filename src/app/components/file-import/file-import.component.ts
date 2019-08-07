@@ -35,7 +35,6 @@ export class FileImportComponent implements OnInit {
   ngOnInit() {
     this.returnList = new Subject();
     this.csvList = [];
-    this.selected = [];
     this.generatecsvList();
   }
 
@@ -54,10 +53,11 @@ export class FileImportComponent implements OnInit {
       } else {
         this.csvList = [];
         for (let i = 0; i < this.dataFromDialogCSV.length; i++) {
+         const prev = this.selected.findIndex(obj => obj.name === this.dataFromDialogCSV[i].name) >= 0;
           this.csvList.push({
             name: this.dataFromDialogCSV[i].name,
             id: this.dataFromDialogCSV[i].id,
-            selected: false,
+            selected: prev,
           });
         }
       }
