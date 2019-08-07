@@ -8,6 +8,7 @@ import {FileMetaData} from '../../types/file-meta-data';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {FileImportComponent} from '../file-import/file-import.component';
 import {DatabaseOperationService} from '../../providers/database-operation.service';
+import {QuickSave} from '../../types/quick-save';
 
 
 @Component({
@@ -143,6 +144,14 @@ export class FileManagementComponent implements OnInit {
       },
     };
     const assessmentMode = true;
-    this.dbOperation.createAssessment(id, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
+
+    this.indexdbstore.clearQuickSaveStore().then( resut => {
+      this.dbOperation.createAssessment(id, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
+      const quickSave: QuickSave = {
+        id: id,
+        storeName: 'assessment'
+      };
+      this.indexdbstore.insertIntoQuickSaveStore(quickSave);
+    });
   }
 }
