@@ -196,8 +196,8 @@
               <ul class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
                 <li class="nav-item" *ngFor="let tab of tableTabs">
                   <!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
-                  <div class="nav-link" (click)="tabTableSelect(tab.tabID)"
-                       [ngStyle]="{'background': tableActive == tab.tabID ? 'blue': 'rgba(0,0,255,.5)' }">
+                  <div class="nav-link" (click)="tabTableSelect(tab.id)"
+                       [ngStyle]="{'background': tableActive == tab.id ? 'blue': 'rgba(0,0,255,.5)' }">
                     <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
 
                   </div>

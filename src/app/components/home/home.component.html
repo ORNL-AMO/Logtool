@@ -212,10 +212,10 @@
           <ul class="scrolling-wrapper-flexbox tight-fit">
             <li class="nav-item" *ngFor="let tab of tabs">
 
-              <div class="nav-link" (click)="changeDisplayTable(tab.tabId)"
+              <div class="nav-link" (click)="changeDisplayTable(tab.id)"
                    [ngStyle]="{'width': getTabWidth(tab),
-                    'background': tab.tabId == activeTab ? 'darkblue': 'lightblue',
-                    'color':  tab.tabId == activeTab ? 'white': 'black'
+                    'background': tab.id == activeTab ? 'darkblue': 'lightblue',
+                    'color':  tab.id == activeTab ? 'white': 'black'
 
                     }">
                 <!--tab.name.length * 12 + 10 + 'px' }">-->

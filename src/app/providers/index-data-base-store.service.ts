@@ -302,7 +302,7 @@ export class IndexDataBaseStoreService {
       db.add('quickSave',
         {
           id: quickSave.id,
-          name: quickSave.storeName,
+          storeName: quickSave.storeName,
         }).then(() => {
         },
         error => {

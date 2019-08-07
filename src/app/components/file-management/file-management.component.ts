@@ -26,19 +26,15 @@ export class FileManagementComponent implements OnInit {
   private tableActive;
   private newAssessment = false;
 
-  private tableData: any;
 
   private assessmentActive: boolean;
   private metaHidden = false;
-  private dataHidden =  false;
+  private dataHidden = false;
   private reportsHidden = false;
   private activeMetaData: FileMetaData;
   private FileRef: BsModalRef;
-
   private confirmRef: BsModalRef;
-
   private activeName;
-
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private dbOperation: DatabaseOperationService) {
@@ -46,22 +42,20 @@ export class FileManagementComponent implements OnInit {
 
   ngOnInit() {
     this.selected = [];
-
     this.generateAssessmentList();
-    this.indexdbstore.viewFromQuickSaveStore().then( () => {
-      this.data.currentQuickSaveItem.subscribe(save => {
-        console.log(save);
-        this.indexdbstore.viewSelectedAssessmentStore(save[0].id).then(() => {
-          this.data.currentAssessmentItem.subscribe(file => {
-            console.log(file);
-            this.loadAssessment(file);
+    this.indexdbstore.viewFromQuickSaveStore().then(() => {
+      this.data.currentQuickSaveItem.subscribe(quickSave => {
+        if (quickSave[0] !== undefined) {
+          this.indexdbstore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
+            this.data.currentAssessmentItem.subscribe(assessment => {
+              console.log(assessment);
+              this.loadAssessment(assessment);
+            });
           });
-        });
+        }
+
       });
     });
-
-
-
   }
 
   blankMetaData(index) {
@@ -77,19 +71,14 @@ export class FileManagementComponent implements OnInit {
   }
 
   generateAssessmentList() {
-
     this.indexdbstore.viewFromAssessmentStore().then(result => {
       console.log(result);
       this.assessmentList = result;
       if (this.assessmentList === null || this.assessmentList === undefined) {
       } else {
-/*        for (let i = 0; i < this.assessmentList.length; i++) {
-          const select = this.selected.findIndex(obj => obj.IndexID === this.assessmentList[i].id);
-          if (select >= 0) {
-            this.selected[select].tabID = i;
-          }
 
-        }*/
+        }
+
       }
     }, error => {
       console.log(error);
@@ -111,7 +100,9 @@ export class FileManagementComponent implements OnInit {
     console.log(this.activeMetaData);
   }
 
+
   assessmentSelect(i: number, assessment: Assessment) {
+
     console.log(this.newAssessment);
     if (this.newAssessment) {
       const initialState = {message: 'Current Assessment has not been saved. \t' + 'Do you want to proceed without saving?'};
@@ -129,13 +120,15 @@ export class FileManagementComponent implements OnInit {
 
         }
       });
+
     } else if( this.newAssessment === undefined || !this.newAssessment ) {
+
       this.loadAssessment(assessment);
     }
   }
 
   loadAssessment(assessment) {
-    //console.log('loading');
+
     this.assessmentActive = true;
     this.newAssessment = false;
     this.activeName = assessment.name;
@@ -164,13 +157,13 @@ export class FileManagementComponent implements OnInit {
     console.log(event);
   }
 
-
   tabTableSelect(tabId) {
     this.tableActive = tabId;
      if(this.tableTabs.length > 0) {
        this.tableData = this.tableTabs[tabId].id;
        this.activeUpdated();
      }
+
   }
 
   activeUpdated() {
@@ -181,7 +174,7 @@ export class FileManagementComponent implements OnInit {
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
-          value: this.tableData
+          value: this.tableActive
         }
       });
     });
@@ -209,11 +202,12 @@ export class FileManagementComponent implements OnInit {
       }
     });
   }
+
   addDataSetsToTable(id) {
     this.tableTabs = [];
     this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
-        this.tableTabs.push({name: csvFile.name, id: id, tabID: this.tableTabs.length, value: csvFile});
+        this.tableTabs.push(csvFile);
       });
     });
   }
@@ -254,6 +248,7 @@ export class FileManagementComponent implements OnInit {
       });
     });
 
+    this.newAssessment = false;
   }
 
 }
