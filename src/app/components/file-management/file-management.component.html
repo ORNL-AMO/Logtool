@@ -203,7 +203,7 @@
   <div class="col-6 snug"  *ngIf="assessmentActive" style="min-height: 100%; min-width:275px;">
 
     <!-- Name -->
-    <div class="row snug ">
+    <div class="row snug">
       <div class="panel" style="">
         <div class="row header tight-fit justify-content-end" style="height: 35px;">
              <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
@@ -310,45 +310,7 @@
                 </div>
               </div>
             </div>
-
-            <!--File data -->
-            <!--   <div class="row" style="margin: 5px; border: 3px solid black;">
-                 &lt;!&ndash; Original File &ndash;&gt;
-                 <div class="col-3">
-                   <p class="tight-fit meta">File Name:</p>
-                   <p class="tight-fit">{{activeStats.name}}</p>
-                 </div>
-
-                 &lt;!&ndash; sample meta data&ndash;&gt;
-                 <div class="col-4">
-                   <p class="tight-fit meta">Sample Information</p>
-                   <p class="tight-fit"># of Samples: {{activeStats.rowCount}}</p>
-                   <p class="tight-fit">data columns: {{activeStats.columnCount}}</p>
-                 </div>
-
-                 &lt;!&ndash; time series Data &ndash;&gt;
-                 <div class="col-5">
-                   <p class="tight-fit meta">Time frame</p>
-                   &lt;!&ndash;              <p *ngIf="activeStats.start | date:'medium' " class="tight-fit" style="text-align: center">Start: {{activeStats.start | date:'medium' }}</p>
-                                 <p *ngIf="activeStats.end | date:'medium' "class="tight-fit" style="text-align: center">End: &nbsp; {{activeStats.end | date:'medium'}}</p>&ndash;&gt;
-                 </div>
-               </div>-->
           </div>
-
-          <!-- <div class="row justify-content-center" style="margin: 5px;">
-             <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="saveMetaData(-1)">
-               Update MetaData
-             </button>
-             <button *ngIf="!metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Hide
-               MetaData
-             </button>
-             <button *ngIf="metahidden" class="btn pull-right" style="height: 30px" (click)="toggleMeta()">Show
-               MetaData
-             </button>
-             <button class="btn pull-right" style="height: 30px" (click)="saveAllMeta()">Save ALL changes</button>
-           </div>-->
-
-
         </div>
       </div>
     </div>

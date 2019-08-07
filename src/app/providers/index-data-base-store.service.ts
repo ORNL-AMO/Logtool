@@ -194,6 +194,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getAll('assessment').then(assessment => {
             resolve(assessment);
+            this.data.changeAssessmentItemArray(assessment);
           });
         },
         error => {
@@ -209,6 +210,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getByIndex('assessment', 'id', id).then(assessment => {
             resolve(assessment);
+            this.data.changeAssessmentItem(assessment);
           });
         },
         error => {
@@ -224,6 +226,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getAll('quickSave').then(quickSave => {
             resolve(quickSave);
+            this.data.changeQuickSaveItem(quickSave);
           });
         },
         error => {
@@ -257,7 +260,7 @@ export class IndexDataBaseStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
         db.clear('quickSave').then(() => {
-            console.log('Deleted');
+            console.log('Cleared');
           },
           error => {
             console.log(error);
@@ -319,6 +322,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getAll('csv').then(csv => {
             resolve(csv);
+            this.data.changeCSVItemArray(csv);
           });
         },
         error => {
@@ -334,6 +338,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getByIndex('csv', 'id', id).then(csv => {
             resolve(csv);
+            this.data.changeCSVItem(csv);
           });
         },
         error => {
@@ -404,6 +409,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getByIndex('meta', 'id', id).then(metaData => {
             resolve(metaData);
+            this.data.changeMetaDataItem(metaData);
           });
         },
         error => {
@@ -454,6 +460,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getAll('graph').then(graph => {
             resolve(graph);
+            this.data.changeGraphItemArray(graph);
           });
         },
         error => {
@@ -469,6 +476,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getByIndex('graph', 'id', id).then(graph => {
             resolve(graph);
+            this.data.changeGraphItem(graph);
           });
         },
         error => {
@@ -636,6 +644,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getAll('dayType').then(dayType => {
             resolve(dayType);
+            this.data.changeDayTypeItemArray(dayType);
           });
         },
         error => {
@@ -651,6 +660,7 @@ export class IndexDataBaseStoreService {
       }).then(() => {
           db.getByIndex('dayType', 'id', id).then(dayType => {
             resolve(dayType);
+            this.data.changeDayTypeItem(dayType);
           });
         },
         error => {
