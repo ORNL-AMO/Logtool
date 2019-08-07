@@ -167,6 +167,65 @@ export class IndexDataBaseStoreService {
     });
   }
 
+  updateGraphAssessmentStore(assessment) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('assessment',
+        {
+          id: assessment.id,
+          graph: assessment.graph,
+        }).then(() => {
+        },
+        error => {
+          alert('Error');
+          console.log(error);
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateDayTypeAssessmentStore(assessment) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('assessment',
+        {
+          id: assessment.id,
+          dayType: assessment.dayType,
+        }).then(() => {
+        },
+        error => {
+          alert('Error');
+          console.log(error);
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateInitialAssessmentStore(assessment) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('assessment',
+        {
+          id: assessment.id,
+          name: assessment.name,
+          csv: assessment.csv,
+          metadata: assessment.metaData,
+        }).then(() => {
+        },
+        error => {
+          alert('Error');
+          console.log(error);
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
   deleteFromAssessmentStore(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
