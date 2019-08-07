@@ -1,14 +1,18 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DayType} from '../types/day-type';
 import {DataService} from './data.service';
 import {IndexDataBaseStoreService} from './index-data-base-store.service';
+import {FileMetaData} from '../types/file-meta-data';
+import {CSVFileInput} from '../types/csvfile-input';
+import {Assessment} from '../types/assessment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DayTypeSaveLoadService {
+export class DatabaseOperationService {
 
-  constructor(private indexFileStore: IndexDataBaseStoreService, private data: DataService) { }
+  constructor(private data: DataService, private indexFileStore: IndexDataBaseStoreService) {
+  }
 
   saveSession(assessmentId: Number, name: String, displayName: string, loadDataFromFile: any[], loadTimeSeriesDayType: any[],
               loadValueColumnCount: any[], columnMainArray: any[], sumArray: any[], binList: any[], displayBinList: any[],
@@ -83,5 +87,31 @@ export class DayTypeSaveLoadService {
       dayTypeMode: dayTypeMode
     };
     this.indexFileStore.updateDayTypeStore(saveSessionData);
+  }
+
+  createAssessment(id: number, name: string, csvId: number[], metaDataId: number, metaData: FileMetaData,
+                   graphId: number, dayTypeId: number, assessmentMode: boolean) {
+    const csvList = [];
+    for (let i = 0; i < csvId.length; i++) {
+      this.indexFileStore.viewSelectedCSVStore(csvId[i]).then(csv => {
+        csvList.push(csv);
+      });
+    }
+    const assessmentItem: Assessment = {
+      id: id,
+      name: name,
+      csv: csvList,
+      metaDataId: metaDataId,
+      metaData: metaData,
+      graphId: graphId,
+      graph: undefined,
+      dayTypeId: dayTypeId,
+      dayType: undefined,
+      reportGraph: undefined,
+      reportDayType: undefined,
+      assessmentMode: assessmentMode
+    };
+    this.indexFileStore.insertIntoMetaStore(metaData);
+    this.indexFileStore.insertIntoAssessmentStore(assessmentItem);
   }
 }
