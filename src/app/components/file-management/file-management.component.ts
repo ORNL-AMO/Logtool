@@ -12,7 +12,6 @@ import {DatabaseOperationService} from '../../providers/database-operation.servi
 import {QuickSave} from '../../types/quick-save';
 
 
-
 @Component({
   selector: 'app-file-management',
   templateUrl: './file-management.component.html',
@@ -121,7 +120,7 @@ export class FileManagementComponent implements OnInit {
     };
     this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
-      for ( const i of result) {
+      for (const i of result) {
         console.log(i);
         this.csvRefIdList.push(i);
         //this.addDataSetToTable(i);
@@ -129,17 +128,18 @@ export class FileManagementComponent implements OnInit {
     });
   }
 
-  addDataSetToTable(id) {
-    this.indexdbstore.viewSelectedCSVStore(id).then(csvRecord => {
-      console.log(csvRecord);
-      this.tableTabs.push({name: csvRecord.name, id: id, tabID: this.tableTabs.length});
-      console.log(this.tableTabs);
+  addDataSetRef(id) {
+    this.indexdbstore.viewSelectedCSVStore(id).then(() => {
+      this.data.currentCSVItem.subscribe(csvFile => {
+        this.tableTabs.push({name: csvFile.name, id: id, tabID: this.tableTabs.length});
+        console.log(this.tableTabs);
+      });
     });
   }
 
 
   createAssessment() {
-    const id = this.data.getRandomInt(9999999);
+    const assessmentId = this.data.getRandomInt(9999999);
     const metaDataId = this.data.getRandomInt(9999999);
     const graphId = this.data.getRandomInt(9999999);
     const dayTypeId = this.data.getRandomInt(9999999);
@@ -150,7 +150,7 @@ export class FileManagementComponent implements OnInit {
     const metaData: FileMetaData = this.activeMetaData;
    /*   {
       id: metaDataId,
-      assessmentId: id,
+      assessmentId: assessmentId,
       companyName: '',
       facilityName: '',
       facilityContactName: '',
@@ -169,10 +169,10 @@ export class FileManagementComponent implements OnInit {
     };*/
     const assessmentMode = true;
 
-    this.indexdbstore.clearQuickSaveStore().then( resut => {
-      this.dbOperation.createAssessment(id, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
+    this.indexdbstore.clearQuickSaveStore().then(resut => {
+      this.dbOperation.createAssessment(assessmentId, name, csvId, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
       const quickSave: QuickSave = {
-        id: id,
+        id: assessmentId,
         storeName: 'assessment'
       };
       this.indexdbstore.insertIntoQuickSaveStore(quickSave);
