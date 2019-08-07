@@ -81,6 +81,8 @@ export class FileManagementComponent implements OnInit {
     this.metaHidden = false;
     this.dataHidden = false;
     this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
+    const today = new Date();
+    this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
     console.log(this.activeMetaData);
   }
 
@@ -95,12 +97,8 @@ export class FileManagementComponent implements OnInit {
   }
 
   tabTableSelect(tabID) {
-    this.tableActive = tabID; for (let i = 0; i < csvId.length; i++) {
-      this.indexFileStore.viewSelectedCSVStore(csvId[i]).then(csv => {
-        console.log(csvId[i]);
-        csvList.push(csv);
-      });
-    }
+    this.tableActive = tabID;
+
     this.activeUpdated();
   }
 
@@ -137,7 +135,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   addDataSetsToTable(id) {
-    console.log('id');
+    console.log(id);
     this.tableTabs = [];
     this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
