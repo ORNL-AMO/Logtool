@@ -6,6 +6,7 @@ import {CSVFileInput} from '../types/csvfile-input';
 import {Graph} from '../types/graph';
 import {DayType} from '../types/day-type';
 import {DataService} from './data.service';
+import {QuickSave} from '../types/quick-save';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,9 @@ export class IndexDataBaseStoreService {
       objectStore.createIndex('reportGraph', 'reportGraph', {unique: false});
       objectStore.createIndex('reportDayType', 'reportDayType', {unique: false});
       objectStore.createIndex('assessmentMode', 'assessmentMode', {unique: false});
+      objectStore = transaction.createObjectStore('quickSave', {keyPath: 'id', unique: true});
+      objectStore.createIndex('id', 'id', {unique: true});
+      objectStore.createIndex('storeName', 'storeName', {unique: true});
       objectStore = transaction.createObjectStore('csv', {keyPath: 'id', unique: true});
       objectStore.createIndex('id', 'id', {unique: true});
       objectStore.createIndex('name', 'name', {unique: true});
@@ -213,20 +217,6 @@ export class IndexDataBaseStoreService {
     });
   }
 
-  createQuickSaveStore() {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-      const transaction = evt.currentTarget.result;
-      const objectStore = transaction.createObjectStore('quickSave', {keyPath: 'id', unique: true});
-      objectStore.createIndex('id', 'id', {unique: true});
-      objectStore.createIndex('storeName', 'storeName', {unique: false});
-    }).then(() => {
-      },
-      error => {
-        console.log(error);
-      });
-  }
-
   viewFromQuickSaveStore() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
@@ -242,14 +232,14 @@ export class IndexDataBaseStoreService {
     });
   }
 
-  insertIntoQuickSaveStore(assessment: Assessment) {
+  insertIntoQuickSaveStore(quickSave: QuickSave) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
       db.add('quickSave',
         {
-          id: assessment.id,
-          name: assessment.name,
+          id: quickSave.id,
+          name: quickSave.storeName,
         }).then(() => {
         },
         error => {
