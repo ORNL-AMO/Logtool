@@ -47,168 +47,12 @@
         </div>
       </div>
     </div>
-
-    <!--<div class="row snug">
-      <div class="panel">
-        <div class="row header " style="margin: auto">
-        <div class=" col-10 tight-fit">Independent Reports</div>
-        <p class=" col-1 tight-fit font-weight-bolder" tooltip="Import and view Reports from external sources. Click a report to view">?</p>
-        </div>
-        &lt;!&ndash;<div class="row justify-content-center" style="margin: auto; width:90%;">
-          <div class="header" style=" text-align: center">Loaded Reports</div>
-        </div>&ndash;&gt;
-
-        <div class="row justify-content-center" style="margin: 5px;">
-          <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-            <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
-                 (click)="snapSelectDayType($event, shot);"
-                 style="border-bottom: 1px solid black; border-top: 1px solid black">
-              <p class="tight-fit col-11">{{shot.name}}</p>
-            <span class="tight-fit col-1"
-                  (click)="removeFile($event, i)"
-                  style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
-            </span>
-            </div>
-          </div>
-        </div>
-        <div class="row justify-content-center" style="margin: 5px;">
-
-          <button class="btn col-5" style="height: 30px; width:30%; margin-right: 10px;">Load</button>
-
-        </div>
-
-      </div>
-    </div>-->
-    <!-- Files -->
-    <!--    <div class="row snug">
-          <div class="panel">
-            <div class="header tight-fit">Loaded Files</div>
-
-            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: 'deepseagreen';">
-              <div class="row tight-fit justify-content-center">
-                <p class="tight-fit" style="text-align: center; ">Name:</p>
-              </div>
-            </div>
-
-            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-              <div class="row test tight-fit justify-content-center" *ngFor="let file of fileList, let i = index"
-                   [ngStyle]="{'background' : file.selected ? 'blue': '',
-                               'color' : file.selected ? 'white': ''}"
-                   id="{{i}}" style="border-bottom: 1px solid black; border-top: 1px solid black">
-                <div class="tight-fit nonSelectable col-11" (click)="toggleSelect(i, file)">
-                  <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
-                </div>
-                <span class="tight-fit col-1"
-                      (click)="removeFile($event, i)"
-                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%;">x
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        &lt;!&ndash; DT Snapshots &ndash;&gt;
-        <div class="row snug">
-          <div class="panel">
-            <div class="header tight-fit">Day Type Snapshots</div>
-
-            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
-              <div class="row tight-fit">
-
-                <div class="col-8 " style="border-right: 1px solid black">
-                  <p class="tight-fit" style="text-align: center; ">Name:</p>
-                </div>
-
-                <div class="col-4 ">
-                  <p class="tight-fit" style="text-align: center;">Date:</p>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-              <div class="row test tight-fit" *ngFor="let shot of snapShotListDayType, let i = index"
-                   (click)="snapSelectDayType($event, shot);"
-                   style="border-bottom: 1px solid black; border-top: 1px solid black">
-                <div class="col-8 inactive" style="border-right: 1px solid black">
-                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-                </div>
-                <div class="col-3 inactive" style="border-right: 1px solid black">
-                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-                </div>
-                <span class="tight-fit col-1" (click)="removeDTSS(i)"
-                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
-                </span>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        &lt;!&ndash; VS Snapshots &ndash;&gt;
-        <div class="row snug">
-          <div class="panel">
-            <div class="header tight-fit">Visualization Snapshots</div>
-
-            <div class="list-container" style="padding-right: 15px; overflow: hidden; background: deepseagreen;">
-              <div class="row tight-fit">
-
-                <div class="col-8 " style="border-right: 1px solid black">
-                  <p class="tight-fit" style="text-align: center; ">Name:</p>
-                </div>
-
-                <div class="col-4 ">
-                  <p class="tight-fit" style="text-align: center;">Date:</p>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-              <div class="row test tight-fit" *ngFor="let shot of snapShotListGraph, let i = index"
-                   id="shot{{i}}" (click)="snapSelectGraph($event, shot);"
-                   style="border-bottom: 1px solid black; border-top: 1px solid black">
-                <div class="col-8 inactive" style="border-right: 1px solid black">
-                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-                </div>
-                <div class="col-3 inactive" style="border-right: 1px solid black;">
-                  <p class="tight-fit" style="text-align: center;">{{shot.displayName}}</p>
-                </div>
-                <span class="tight-fit col-1" (click)="removeVSS(i)"
-                      style="padding-top: 0; text-align: center; margin-top:0; float: right; background: darkgrey; height:100%">x
-                </span>
-
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        &lt;!&ndash; Recently used files &ndash;&gt;
-        <div class="row snug">
-          <div class="col-12" style="padding-right: 0; padding-left: 5px;">
-            <div class="panel">
-              <div class="header tight-fit">Export Options</div>
-              <div class="row" style="margin: 5px;">
-                <div class="col-6 tight-fit">
-                  <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportDayTypeToFile()">Day Type
-                  </button>
-                </div>
-                <div class="col-6 tight-fit">
-                  <button class="btn" style="width: 90%; margin: auto 5% auto 5%" (click)="exportGraphToFile()">Visualize
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>-->
   </div>
 
   <!-- Assessment Full View -->
-  <div class="col-6 snug" *ngIf="assessmentActive" style="min-height: 100%; min-width:275px;">
+  <div class="col-6 snug" *ngIf="assessmentActive" style="min-width:275px;">
     <!-- Name -->
-    <div class="panel" style="">
+    <div class="panel" style="width:100%">
       <div class="row header tight-fit justify-content-end" style="height: 35px;">
         <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
       </div>
@@ -375,7 +219,7 @@
         </div>
       </div>
 
-      <div class="row snug justify-content-end">
+      <div class="row snug justify-content-center">
         <button class="col-2 btn" (click)="createAssessment()">Finialize</button>
       </div>
     </div>

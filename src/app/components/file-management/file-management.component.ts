@@ -115,24 +115,27 @@ export class FileManagementComponent implements OnInit {
   }
 
   showDataModal() {
+    console.log(this.tableTabs);
+    console.log('trim', this.tableTabs.slice(0, this.tableTabs.length));
     const initialDataState = {
-      selected: this.tableTabs,
+      selected: this.tableTabs.slice(0, this.tableTabs.length),
     };
+    this.tableTabs = [];
     this.FileRef = this.modalService.show(FileImportComponent, {initialState: initialDataState});
     this.FileRef.content.returnList.subscribe(result => {
-      for (const i of result) {
-        console.log(i);
-        this.csvRefIdList.push(i);
-        //this.addDataSetToTable(i);
+      console.log('result', result);
+      for (let i = 0; i < result.length; i++) {
+        this.csvRefIdList.push(result[i]);
+        this.addDataSetsToTable(result[i]);
       }
     });
   }
 
-  addDataSetRef(id) {
-    this.indexdbstore.viewSelectedCSVStore(id).then(() => {
+  addDataSetsToTable(id) {
+    this.tableTabs = [];
+    this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
         this.tableTabs.push({name: csvFile.name, id: id, tabID: this.tableTabs.length});
-        console.log(this.tableTabs);
       });
     });
   }
@@ -146,27 +149,27 @@ export class FileManagementComponent implements OnInit {
     const name = this.activeName;
     const csvId = this.csvRefIdList;
     this.activeMetaData.id = metaDataId;
-    this.activeMetaData.assessmentId = id;
+    this.activeMetaData.assessmentId = assessmentId;
     const metaData: FileMetaData = this.activeMetaData;
-   /*   {
-      id: metaDataId,
-      assessmentId: assessmentId,
-      companyName: '',
-      facilityName: '',
-      facilityContactName: '',
-      facilityContact: 0,
-      facilityEmail: '',
-      assessmentContactName: '',
-      assessmentContact: 0,
-      assessmentEmail: '',
-      address: {
-        street: '',
-        city: '',
-        zip: 0,
-        state: '',
-        country: ''
-      },
-    };*/
+    /*   {
+       id: metaDataId,
+       assessmentId: assessmentId,
+       companyName: '',
+       facilityName: '',
+       facilityContactName: '',
+       facilityContact: 0,
+       facilityEmail: '',
+       assessmentContactName: '',
+       assessmentContact: 0,
+       assessmentEmail: '',
+       address: {
+         street: '',
+         city: '',
+         zip: 0,
+         state: '',
+         country: ''
+       },
+     };*/
     const assessmentMode = true;
 
     this.indexdbstore.clearQuickSaveStore().then(resut => {

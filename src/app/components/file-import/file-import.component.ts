@@ -35,6 +35,7 @@ export class FileImportComponent implements OnInit {
   ngOnInit() {
     this.returnList = new Subject();
     this.csvList = [];
+    console.log('selected: ', this.selected);
     this.generatecsvList();
   }
 
@@ -48,7 +49,6 @@ export class FileImportComponent implements OnInit {
   generatecsvList() {
     this.indexDatabaseStoreService.viewFromCSVStore().then(result => {
       this.dataFromDialogCSV = result;
-      console.log(result);
       if (this.dataFromDialogCSV === null || this.dataFromDialogCSV === undefined) {
       } else {
         this.csvList = [];
@@ -67,17 +67,19 @@ export class FileImportComponent implements OnInit {
   }
 
   clickSelect(file) {
-    console.log(this.selected.findIndex(obj => obj.id === file.id));
+    //console.log(this.selected.findIndex(obj => obj.id === file.id));
     if (this.selected.findIndex(obj => obj.id === file.id) >= 0) {
-      console.log('already imported');
-      return;
+      file.selected = false;
+      const index = this.selected.indexOf(file);
+      this.selected.splice(index, 1);
+    } else {
+      file.selected = true;
+      this.selected.push(file);
     }
-    file.selected = true;
-    this.selected.push(file);
-    console.log(this.selected);
+    console.log('selected', this.selected);
   }
 
-  onFileSelect(event) {
+/*  onFileSelect(event) {
     const files = event.target.files;
     const f = files[0];
     this.fileName = f.name;
@@ -121,14 +123,13 @@ export class FileImportComponent implements OnInit {
     };
     this.selfModalRef = this.modalService.show(ImportDataComponent, {initialState});
     // this.bsModalRef.content.closeBtnName = 'Close';
-  }
+  }*/
 
 
-  public confirm(){
+  public confirm() {
     const list = this.selected.map(obj => obj.id);
     console.log(list);
     this.returnList.next(list);
     this.selfModalRef.hide();
   }
-
 }
