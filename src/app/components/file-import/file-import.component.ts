@@ -53,7 +53,7 @@ export class FileImportComponent implements OnInit {
       } else {
         this.csvList = [];
         for (let i = 0; i < this.dataFromDialogCSV.length; i++) {
-         const prev = this.selected.findIndex(obj => obj.name === this.dataFromDialogCSV[i].name) >= 0;
+          const prev = this.selected.findIndex(obj => obj.name === this.dataFromDialogCSV[i].name) >= 0;
           this.csvList.push({
             name: this.dataFromDialogCSV[i].name,
             id: this.dataFromDialogCSV[i].id,
@@ -67,7 +67,6 @@ export class FileImportComponent implements OnInit {
   }
 
   clickSelect(file) {
-    //console.log(this.selected.findIndex(obj => obj.id === file.id));
     if (this.selected.findIndex(obj => obj.id === file.id) >= 0) {
       file.selected = false;
       const index = this.selected.indexOf(file);
@@ -78,52 +77,6 @@ export class FileImportComponent implements OnInit {
     }
     console.log('selected', this.selected);
   }
-
-/*  onFileSelect(event) {
-    const files = event.target.files;
-    const f = files[0];
-    this.fileName = f.name;
-    this.fileType = f.type;
-
-    try {
-      const assessments: Assessment[] = JSON.parse(fs.readFileSync(f.path).toLocaleString());
-      alert('First catch');
-      this.test = {type: 'json', path: f.path};
-      // this.bsModalRef.hide();
-    } catch (e) {
-      try {
-        const loadedWorkbook = XLSX.readFile(f.path, {cellDates: true});
-        const worksheet: XLSX.WorkSheet = loadedWorkbook.Sheets[loadedWorkbook.SheetNames[0]];
-        const dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-        alert('Second catch');
-        this.loadCSVMode(f);
-      } catch {
-        alert('no catch');
-        this.test = {type: 'json', path: f.path};
-      }
-    }
-
-  }
-
-
-  private loadCSVMode(f) {
-    const loadedWorkbook = XLSX.readFile(f.path, {cellDates: true});
-    const worksheet: XLSX.WorkSheet = loadedWorkbook.Sheets[loadedWorkbook.SheetNames[0]];
-    const dataArrayColumns = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-    const initialState = {
-      stage: 2,
-      fileName: f.name,
-      path: f.path,
-      fileType: f.type,
-      ignoreBackdropClick: true,
-      class: 'my-modal',
-      workbook: loadedWorkbook,
-      worksheet: worksheet,
-      dataArrayColumns: dataArrayColumns,
-    };
-    this.selfModalRef = this.modalService.show(ImportDataComponent, {initialState});
-    // this.bsModalRef.content.closeBtnName = 'Close';
-  }*/
 
 
   public confirm() {

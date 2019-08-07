@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataService} from '../../providers/data.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
+import {CSVFileInput} from '../../types/csvfile-input';
 
 @Component({
   selector: 'app-table-data',
@@ -9,75 +11,38 @@ import {RouteDataTransferService} from '../../providers/route-data-transfer.serv
   styleUrls: ['./table-data.component.scss']
 })
 export class TableDataComponent implements OnInit {
-  arrayPointer = 0;
-  inputDataArray = [];
+  csv;
   show = false;
   graph: any;
 
-  constructor(private route: ActivatedRoute, private routeDataTransfer: RouteDataTransferService, private data: DataService) {
+  constructor(private route: ActivatedRoute, private routeDataTransfer: RouteDataTransferService, private data: DataService,
+              private indexDbStore: IndexDataBaseStoreService) {
   }
 
   ngOnInit() {
-    if (this.routeDataTransfer.storage === undefined) {
-      // this.inputDataArray will have quickData init
-      this.route.queryParams
-        .subscribe(params => {
-          this.arrayPointer = params.value;
-          console.log(this.arrayPointer);
-          if (this.inputDataArray[this.arrayPointer] === undefined) {
-          } else {
-            this.show = true;
-            const columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
-            const dataArrayColumns = this.inputDataArray[this.arrayPointer].dataArrayColumns;
-            const header = [];
-            let width = 1000;
-            for (let i = 0; i < columnDefs.length; i++) {
-              header.push(columnDefs[i].headerName);
-              if (i > 5) {
-                width = width + 100;
-              }
-            }
-            this.displayTable(header, dataArrayColumns, width);
-          }
-        });
-    } else {
-      const loadMode = this.routeDataTransfer.storage.loadMode;
-      if (loadMode) {
-        this.show = true;
-        const columnDefs = this.routeDataTransfer.storage.tableData;
-        const header = this.routeDataTransfer.storage.tableName;
-        let width = 1000;
-        for (let i = 0; i < columnDefs.length; i++) {
-          if (i > 5) {
-            width = width + 100;
-          }
-        }
-        const dataArrayColumns = this.routeDataTransfer.storage.tableData;
-        this.displayTable(header, dataArrayColumns, width);
-      } else {
-        // this.inputDataArray will have quickData init
-        this.route.queryParams
-          .subscribe(params => {
-            this.arrayPointer = params.value;
-            if (this.inputDataArray[this.arrayPointer] === undefined) {
-            } else {
-              this.show = true;
-              const columnDefs = this.inputDataArray[this.arrayPointer].selectedHeader;
-              const dataArrayColumns = this.inputDataArray[this.arrayPointer].dataArrayColumns;
-              const header = [];
-              let width = 1000;
-              for (let i = 0; i < columnDefs.length; i++) {
-                header.push(columnDefs[i].headerName);
-                if (i > 5) {
-                  width = width + 100;
+    this.route.queryParams
+      .subscribe(params => {
+        this.csv = params.value;
+        if (this.csv === undefined) {
+        } else {
+          this.indexDbStore.viewSelectedCSVStore(parseInt(this.csv, 10)).then(() => {
+              this.data.currentCSVItem.subscribe(result => {
+                this.show = true;
+                const columnDefs = result.selectedHeader;
+                const dataArrayColumns = result.dataArrayColumns;
+                const header = [];
+                let width = 1000;
+                for (let i = 0; i < columnDefs.length; i++) {
+                  header.push(columnDefs[i].headerName);
+                  if (i > 5) {
+                    width = width + 100;
+                  }
                 }
-              }
-              this.displayTable(header, dataArrayColumns, width);
-            }
+                this.displayTable(header, dataArrayColumns, width);
+              });
           });
-      }
-    }
-
+        }
+      });
   }
 
   displayTable(header, dataArrayColumns, width) {

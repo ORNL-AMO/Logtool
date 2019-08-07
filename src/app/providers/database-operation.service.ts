@@ -89,14 +89,11 @@ export class DatabaseOperationService {
     this.indexFileStore.updateDayTypeStore(saveSessionData);
   }
 
-  createAssessment(id: number, name: string, csvId: number[], metaDataId: number, metaData: FileMetaData,
+  createAssessment(id: number, name: string, csv: any[], metaDataId: number, metaData: FileMetaData,
                    graphId: number, dayTypeId: number, assessmentMode: boolean) {
-    const csvList = [];
-    for (let i = 0; i < csvId.length; i++) {
-      this.indexFileStore.viewSelectedCSVStore(csvId[i]).then(csv => {
-        console.log(csvId[i]);
-        csvList.push(csv);
-      });
+    const csvList: CSVFileInput[] = [];
+    for (let i = 0; i < csv.length; i++) {
+          csvList.push(csv[i].value);
     }
     console.log('csvId', csvList);
     const assessmentItem: Assessment = {
@@ -116,4 +113,5 @@ export class DatabaseOperationService {
     this.indexFileStore.insertIntoMetaStore(metaData);
     this.indexFileStore.insertIntoAssessmentStore(assessmentItem);
   }
+
 }
