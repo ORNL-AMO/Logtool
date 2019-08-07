@@ -127,7 +127,11 @@ export class FileImportComponent implements OnInit {
 
 
   public confirm() {
-    const list = this.selected.map(obj => obj.id);
+    const list = [];
+    for (const i in this.selected) {
+      console.log(i);
+      list.push({name: this.selected[i].name, id: this.selected[i].id});
+    }
     console.log(list);
     this.returnList.next(list);
     this.selfModalRef.hide();
