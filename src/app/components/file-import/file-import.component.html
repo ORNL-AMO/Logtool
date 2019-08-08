@@ -1,44 +1,58 @@
-<div class="row justify-content-center" style="min-height: 50px; ">
-  <p class="header" >DataSet Selection</p>
-</div>
+<div>
+  <div class="row justify-content-center" style="min-height: 50px; ">
+    <p class="header">DataSet Selection</p>
+  </div>
 
-<div class="row">
-  <div class="col-6" style="border-right: 3px solid black;">
-    <div class="row justify-content-center">
-      <p class="header tight-fit" >Available DataSets</p>
-    </div>
-    <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-      <div class="row test tight-fit justify-content-center" *ngFor="let file of csvList"
-           style="border-bottom: 1px solid black; border-top: 1px solid black"
-           [ngStyle]="{'background' : file.selected ? 'blue': '',
+  <div class="row">
+    <div class="col-6" style="border: 3px solid black;border-right-width: 0;">
+      <div class="row justify-content-center">
+        <p class=" header  tight-fit" style="margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Available
+          DataSets</p>
+      </div>
+      <div class="row justify-content-center" style="margin-bottom: 10px;">
+        <button class="btn" style="font-size: 10px" (click)="showImportModal()">Import New DataSet</button>
+      </div>
+
+      <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+        <div class="row test tight-fit justify-content-center" *ngFor="let file of csvList"
+             style="border-bottom: 1px solid black; border-top: 1px solid black"
+             [ngStyle]="{'background' : file.selected ? 'blue': '',
                            'color' : file.selected ? 'white': ''}">
-        <div class="tight-fit nonSelectable col-11" (click)="clickSelect(file)">
-          <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+          <div class="tight-fit nonSelectable col-11" (click)="clickSelect(file)">
+            <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-6" style="border: 3px solid black;">
+      <div class="row justify-content-center">
+        <p class="header tight-fit" style="margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Selected
+          DataSets</p>
+      </div>
+      <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+        <div class="row test tight-fit justify-content-center" *ngFor="let file of selected, let i = index" id="{{i}}"
+             style="border-bottom: 1px solid black; border-top: 1px solid black">
+          <div class="tight-fit nonSelectable col-11">
+            <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="row justify-content-center">
-      <button (click)="showImportModal()">Import New DataSet</button>
-    </div>
+
   </div>
-  <div class="col-6">
-    <div class="row justify-content-center">
-      <p class="header tight-fit" >Selected DataSets</p>
+  <div class="row justify-content-center" style="margin-top: 10px; margin-bottom: 10px;">
+    <div class="col-6">
+      <div class="row justify-content-center">
+        <button class="btn" (click)="confirm()">Confirm</button>
+      </div>
     </div>
-    <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-      <div class="row test tight-fit justify-content-center" *ngFor="let file of selected, let i = index" id="{{i}}"
-           style="border-bottom: 1px solid black; border-top: 1px solid black">
-        <div class="tight-fit nonSelectable col-11">
-          <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
-        </div>
+    <div class="col-6">
+      <div class="row justify-content-center">
+        <button class="btn" (click)="selfModalRef.hide()">Cancel</button>
       </div>
     </div>
   </div>
-
 </div>
-<div class="row justify-content-center" style="margin-top: 20px;">
-  <button (click)="confirm()">Confirm</button><button (click)="selfModalRef.hide()">Cancel</button>
-</div>
-
 
 
