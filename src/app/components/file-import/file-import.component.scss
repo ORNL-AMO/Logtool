@@ -27,3 +27,33 @@ ul {
   background: dodgerblue;
   color: white;
 }
+.header{
+  //padding-left: 15px;
+  background-color: lightskyblue;
+  width: 100%;
+  text-align: center;
+
+}
+
+.row{
+  margin: auto;
+}
+
+.btn {
+  color: #fff;
+  background: #2980b9;
+  border-color: #000B13;
+  font-weight: normal;
+  border-radius: 2px;
+  fon-size: 16px;
+  box-shadow: 4px 4px 0 rgba(20,20,20,.5);
+
+  //position: relative;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.tight-fit{
+  margin:0;
+  padding:0;
+}
