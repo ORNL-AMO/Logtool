@@ -58,9 +58,15 @@
   <!-- Assessment Full View -->
   <div class="col-6 snug" *ngIf="assessmentActive" style="min-width:275px;">
     <!-- Name -->
+
     <div class="panel" style="width:100%">
       <div class="row header tight-fit justify-content-end" style="height: 35px;">
         <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+        <div style="position: relative; top:-100%;">
+          <button (click)="exportAssessment()" class=" btn " style="margin: 5px 5px 5px 0">
+            Export
+          </button>
+        </div>
       </div>
       <div class="row tight-fit justify-content-center" style="height: 35px;">
         <label>Name

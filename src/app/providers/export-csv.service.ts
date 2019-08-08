@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import {IndexDataBaseStoreService} from './index-data-base-store.service';
 import {DayType} from '../types/day-type';
 import {Graph} from '../types/graph';
+import {Assessment} from '../types/assessment';
 
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
@@ -78,6 +79,11 @@ export class ExportCSVService {
   createJsonFileDayType(dataArray: DayType[]) {
     const dataString = JSON.stringify(dataArray, null, 2);
     fs.writeFileSync('JSONDAYTYPE.json', dataString);
+  }
+
+  createJsonFileAssessment(assessment: Assessment) {
+    const dataString = JSON.stringify(assessment, null, 0);
+    fs.writeFileSync('JSONASSESSMENT.json', dataString);
   }
 
   createJsonFileGraph(dataArray: Graph[]) {

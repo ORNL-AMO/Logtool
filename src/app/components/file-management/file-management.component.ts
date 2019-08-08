@@ -283,6 +283,24 @@ export class FileManagementComponent implements OnInit {
 
     this.newAssessment = false;
   }
+  exportAssessment() {
+    this.indexdbstore.viewFromQuickSaveStore().then(() => {
+      this.data.currentQuickSaveItem.subscribe(quickSave => {
+        if (quickSave[0] !== undefined) {
+          if (quickSave[0].storeName !== 'assessment') {
+            alert('Please select Assessment to Export');
+          } else {
+            this.indexdbstore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
+              this.data.currentAssessmentItem.subscribe(assessment => {
+                this.exportCsv.createJsonFileAssessment(assessment);
+              });
+            });
+          }
+        }
+      });
+    });
+    alert('Exported');
+  }
 
 }
 
