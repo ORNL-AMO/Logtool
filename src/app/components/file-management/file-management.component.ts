@@ -63,6 +63,7 @@ export class FileManagementComponent implements OnInit {
       {street: '', city: '', state: '', zip: 0, country: ''},
       0, 0, '', '');
   }
+
   metaDataReset() {
     this.activeMetaData = new FileMetaData(0, 0, '', '', '', '',
       {street: '', city: '', state: '', zip: 0, country: ''},
@@ -72,7 +73,7 @@ export class FileManagementComponent implements OnInit {
   generateAssessmentList() {
     this.indexdbstore.viewFromAssessmentStore().then(() => {
       this.data.currentAssessmentItemArray.subscribe(assessmentListDB => {
-          this.assessmentList = assessmentListDB;
+        this.assessmentList = assessmentListDB;
       });
     }, error => {
       console.log(error);
@@ -133,23 +134,14 @@ export class FileManagementComponent implements OnInit {
     this.activeID = assessment.id;
     this.activeName = assessment.name;
     this.activeMetaData = assessment.metaData;
-    this.tableTabs = [];
-
     // reset csv table
     this.tableTabs = [];
     for (let i = 0; i < assessment.csv.length; i++) {
-      this.addDataSetsToTable(parseInt(assessment.csv[i].id, 10));
-    }
-    if (assessment.csv.length > 0) {
-      this.tabTableSelect(0);
-    } else {
-      this.tableActive = -1;
-    }
       this.addDataSetsToTable(assessment.csv[i].id);
     }
     console.log(assessment.csv.length);
     if (assessment.csv.length < 0) {
-         this.tableActive = -1;
+      this.tableActive = -1;
     } else {
       this.tableActive = assessment.csv[0].id;
       this.changeDisplayTable();
@@ -162,13 +154,16 @@ export class FileManagementComponent implements OnInit {
       this.indexdbstore.insertIntoQuickSaveStore(quickSave);
     });
   }
+
   removeAssessment(event: MouseEvent, i: number) {
     const id = this.assessmentList[i].id;
     const current = (id === this.activeID);
-    const initialState = {message: 'WARNING! Attempting to delete assessment: \n' +
-                                         this.assessmentList[i].name + '\n' +
-                           'This will completely remove the record from your system. \n' +
-                                           'Do you want to proceed?' };
+    const initialState = {
+      message: 'WARNING! Attempting to delete assessment: \n' +
+        this.assessmentList[i].name + '\n' +
+        'This will completely remove the record from your system. \n' +
+        'Do you want to proceed?'
+    };
     this.confirmRef = this.modalService.show(ConfirmationModalComponent, {initialState});
 
     this.confirmRef.content.onClose.subscribe(result => {
@@ -179,7 +174,7 @@ export class FileManagementComponent implements OnInit {
           if (current) {
             // clear quicksave
             this.indexdbstore.clearQuickSaveStore().then(() => {
-               console.log('Record Cleared');
+              console.log('Record Cleared');
               this.assessmentActive = false;
             });
           }
