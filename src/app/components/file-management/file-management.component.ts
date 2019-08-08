@@ -238,7 +238,7 @@ export class FileManagementComponent implements OnInit {
     this.tableTabs = [];
     this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
-        this.tableTabs.push({name: csvFile.name, id: csvFile.id, tabID: this.tableTabs.length});
+        this.tableTabs.push(csvFile);
       });
     });
   }

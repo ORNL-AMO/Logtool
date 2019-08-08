@@ -43,7 +43,6 @@ export class PlotGraphComponent implements OnInit {
 
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
-      console.log('Running');
       this.annotationListLine = [];
       this.annotationListScatter = [];
       this.displayGraph(this.graphType);
@@ -136,7 +135,6 @@ export class PlotGraphComponent implements OnInit {
   }
 
   loadDisplayGraph(graph) {
-    console.log('Running');
     this.graph = graph;
     if (this.graph.layout.title === 'Line Plot') {
       this.annotationListLine = this.graph.layout.annotations;
