@@ -77,6 +77,7 @@ export class ImportDataComponent implements OnInit {
 
   onFileSelect(event) {
     this.stage = 1;
+    this.headerFind = 'auto';
     const files = event.target.files;
     const f = files[0];
     this.fileName = f.name;
@@ -90,9 +91,11 @@ export class ImportDataComponent implements OnInit {
       try {
         this.workbook = XLSX.readFile(f.path, {cellDates: true});
         this.worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
-        console.log(this.worksheet);
+        //console.log(this.worksheet);
         this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
         this.stage = 2;
+        const range = XLSX.utils.decode_range(this.worksheet['!ref']);
+        this.originalrange = {s: {r: 0, c: 0}, e: {r: range.e.r, c: range.e.c}};
         this.AutoHeaders();
       } catch (e) {
         this.stage = 404;
@@ -131,8 +134,9 @@ export class ImportDataComponent implements OnInit {
     let headerIndex = 0;
     let checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
 
+    this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
     const range = XLSX.utils.decode_range(this.worksheet['!ref']);
-    this.originalrange = {s: {r: 0, c: 0}, e: {r: range.e.r, c: range.e.c}};
+
     const numColumns = range.e.c + 1; // range is 0 based;
 
     let check3 = 0, check2 = 0, check1 = checkHeader.length;
@@ -155,6 +159,31 @@ export class ImportDataComponent implements OnInit {
     }
     this.header = checkHeader;
     this.headerIndex = headerIndex;
+    this.getDataWithHeader();
+  }
+
+  noHeaders(){
+
+    this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
+    this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
+    this.fileContent = '';
+    let start = this.originalrange.s.c;
+    let end = this.originalrange.e.c;
+    this.header = new Array(end - start + 1);
+    this.header.fill('');
+    console.log(start, end, this.header);
+    this.selectedHeader = [];
+
+    this.start = '';
+    this.end = '';
+    this.data_count = '';
+    this.number_columns = '';
+
+    this.readFirstRow = Object.values(this.dataArrayColumns[0]);
+    this.dataWithHeader = [];
+
+
+    this.headerIndex = 0;
     this.getDataWithHeader();
   }
 
@@ -289,7 +318,10 @@ export class ImportDataComponent implements OnInit {
         this.manualSample[i] = this.manualSample[i].slice(0, 5);
       }
     }
-
+    console.log(this.manualSample, this.manualSample[0]);
+    let table = document.getElementsByClassName('test');
+    console.log(this.manualSample[0].length * 135);
+    table[0].setAttribute('width', this.manualSample[0].length * 135 + 'px');
     this.testModRef = this.modalService.show(template, Object.assign({}, {class: 'modal-lg'}));
   }
 
@@ -300,7 +332,26 @@ export class ImportDataComponent implements OnInit {
     this.getDataWithHeader();
   }
 
+  headersfilled(){
+    if (this.headerFind !== 'none') {
+      return true;
+    }
+
+    for (let i = 0; i <this.selectedHeader.length; i++){
+      if (this.selectedHeader[i].checked && this.fileRename[i] === '') {
+        return false;
+      }
+    }
+    return true;
+  }
+
   submitCheckBox() {
+
+    if( !this.headersfilled()) {
+      alert('Not all selected columns are named, please name all selected columns');
+      return;
+    }
+
     const displayHeader = [];
     for (let i = 0; i < this.selectedHeader.length; i++) {
       if (this.selectedHeader[i].checked) {
@@ -349,6 +400,7 @@ export class ImportDataComponent implements OnInit {
 
   columnNameChange(event) {
     this.fileRename[parseInt(event.target.id, 10)] = event.target.value;
+    console.log(this.fileRename);
   }
 
   rename(event) {

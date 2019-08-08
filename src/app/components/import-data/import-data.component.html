@@ -1,6 +1,7 @@
 <!-- may have to rework line graph section-->
 <!-- row renaming is not implimented -->
-<div class=" modal-lg my-modal" style="position: absolute; top: 50px; left:-225px;"  bsModal (onHidden)="handler('onHidden', $event)">
+<div class=" modal-lg my-modal" style="position: absolute; top: 30px; left:-151px;" bsModal
+     (onHidden)="handler('onHidden', $event)">
 
   <!-- Header Data && Close button-------------------------------------------------------------------------------->
   <div class="row" style="top:20px; margin: 0px; background-color: lightskyblue;">
@@ -54,26 +55,31 @@
     <div class="col-4" style="text-align: center"
          tooltip=" Select this if the number of headers below are correct, you may rename them later">
       <label for="auto">Auto Find &nbsp;</label>
-      <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind" (change)="check('auto'); AutoHeaders();">
+      <input type="radio" name="header" value="auto" id="auto" [(ngModel)]="headerFind"
+             (change)="check('auto'); AutoHeaders();">
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file contains headers different from those shown below">
       <label for="manual"> Manual selection &nbsp;
-        <input type="radio" name="header" value="manual" id="manual" [(ngModel)]="headerFind" (change)="check('manual'); manualHeaders(pop);">
+        <input type="radio" name="header" value="manual" id="manual" [(ngModel)]="headerFind"
+               (change)="check('manual'); manualHeaders(pop);">
       </label>
     </div>
     <div class="col-4" style="text-align: center"
          tooltip="Select this if your file does not have headers you will be able to manually assign column headers below">
       <label for="none"> No header &nbsp; </label>
-      <input type="radio" name="header" value="none" id="none" [(ngModel)]="headerFind" (change)="check('none')">
+      <input type="radio" name="header" value="none" id="none" [(ngModel)]="headerFind"
+             (change)="check('none'); noHeaders();">
     </div>
 
   </div>
 
   <div class="row justify-content-center" *ngIf="stage == 2">
-    <p style="margin:0">Auto-Detected Column Headers </p>
+    <p *ngIf="headerFind == 'auto' " style="margin:0">Auto-Detected Column Headers </p>
+    <p *ngIf="headerFind == 'manual' " style="margin:0">Selected Column Headers </p>
+
   </div>
-  <div *ngIf="stage == 2" style="max-width: 800px; margin:auto; overflow-x: auto;">
+  <div *ngIf="stage == 2 &&  headerFind != 'none'" style="max-width: 800px; margin:auto; overflow-x: auto;">
     <table>
       <tr>
         <td style="max-height: 100px; white-space: nowrap" *ngFor="let head of header">{{head}}</td>
@@ -82,7 +88,8 @@
   </div>
 
   <div class="row justify-content-center" *ngIf="stage >= 2 && stage < 5">
-    <button *ngIf="stage === 2" (click)="progress($event)">Confirm Headers</button>
+    <button *ngIf="stage === 2 && headerFind != 'none'" (click)="progress($event)">Confirm Headers</button>
+    <button *ngIf="stage === 2 && headerFind == 'none'" (click)="progress($event)">Continue</button>
     <button *ngIf="stage === 3" (click)="regress()">Go Back to Header Selection</button>
   </div>
 
@@ -114,11 +121,17 @@
         <col/>
       </colgroup>
       <tr>
-        <th tooltip="Detected column name"
+        <th *ngIf="headerFind == 'none' " tooltip="Assign name to column. Original File is uneffected"
+            placement="bottom">
+          Name (Required)
+        </th>
+
+
+        <th *ngIf="headerFind != 'none' " tooltip="Detected column name"
             placement="bottom">
           Column Name
         </th>
-        <th tooltip="Change name assigned to dataset. Original File is uneffected"
+        <th *ngIf="headerFind != 'none' " tooltip="Change name assigned to dataset. Original File is uneffected"
             placement="bottom">
           Rename (Optional)
         </th>
@@ -133,7 +146,7 @@
         </th>
       </tr>
       <tr *ngFor="let head of selectedHeader; let i = index" [attr.data-index]="i">
-        <th style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
+        <th *ngIf="headerFind != 'none' " style="background-color: rgba(0,25,0,.5)">{{head.name}}</th>
         <td><input [attr.id]="i" type="text" (change)="columnNameChange($event)" value="{{head.name}}"></td>
         <td>{{readFirstRow[i]}}</td>
         <td><input type="checkbox" value="head.checked" [(ngModel)]="head.checked" name="{{head.id}}"></td>
@@ -151,31 +164,30 @@
   </div>
 
 </div>
-<ng-template #headerTemplate>
-  <div class="modal-header">
-    <h4 class="modal-title pull-left">Second modal</h4>
-  </div>
-  <div class="modal-body">
-    This is nested modal.<br>
-  </div>
-</ng-template>
+
 
 <ng-template #pop id="bob">
 
-  <div style="width:800px; height:350px; position: absolute; top: 270px; left:-76px; background: white; border: 3px solid black;" class="panel">
-    <div class="row" style="height: 50px; margin: 0 ; background: lightskyblue">
-      <div class="col">
-      <p style="font-size: 22px; font-weight: bold">Click the Row containing the headers</p>
+  <div style="width:800px; height:350px; position: absolute; top: 250px; left:0; ">
+    <div class="row justify-content-center">
+      <div class="panel" style="background: white; border: 3px solid black; padding-bottom: 5px">
+        <div class="row " style="height: 50px; margin: 0 ; background: lightskyblue">
+          <div class="col" style="padding-right: 0">
+            <p style="font-size: 20px; font-weight: bold">Click the Row containing the headers</p>
+          </div>
+          <div class="col-1">
+            <span class="close pull-right" style="padding: 0;" aria-hidden="true"
+                  (click)="testModRef.hide();">&times;</span>
+          </div>
+        </div>
+        <div class="row test justify-content-center" style="max-width:700px; height: 50px; margin-left: 5px; margin-right: 5px;"
+             *ngFor=" let item of manualSample; let i = index " (click)="manualRow(index)">
+          <div style="width:135px; height: 50px; overflow: hidden; border: 1px solid black;"
+               *ngFor="let col of manualSample[0]; let j =index">
+            <p class="tight-fit" style="padding: 5px; margin: 0">{{manualSample[i][j]}}</p>
+          </div>
+        </div>
       </div>
-      <div class="col-1">
-      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="testModRef.hide();">&times;</span>
     </div>
-    </div>
-    <div class="row test" style="width:700px; height: 50px; margin-left: 50px" *ngFor = " let index of [0,1,2,3,4]" (click)="manualRow(index)">
-    <div style="width:140px; height: 50px; overflow: hidden; border: 1px solid black;  " *ngFor="let col of manualSample[index]">
-      <p class="tight-fit" style="padding: 5px; margin: 0">{{col}}</p>
-    </div>
-  </div>
-
   </div>
 </ng-template>

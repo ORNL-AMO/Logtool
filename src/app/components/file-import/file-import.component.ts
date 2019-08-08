@@ -42,7 +42,7 @@ export class FileImportComponent implements OnInit {
   }
 
   showImportModal() {
-    this.ImportRef = this.modalService.show(ImportDataComponent);
+    this.ImportRef = this.modalService.show(ImportDataComponent, {backdrop: true});
     this.modalService.onHide.subscribe(() => {
       this.generatecsvList();
     });

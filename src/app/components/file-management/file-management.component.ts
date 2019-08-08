@@ -35,13 +35,14 @@ export class FileManagementComponent implements OnInit {
   private FileRef: BsModalRef;
   private confirmRef: BsModalRef;
   private activeName;
+  private activeID;
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService, private dbOperation: DatabaseOperationService) {
   }
 
   ngOnInit() {
-    this.selected = [];
+
     this.generateAssessmentList();
     this.indexdbstore.viewFromQuickSaveStore().then(() => {
       this.data.currentQuickSaveItem.subscribe(quickSave => {
@@ -62,7 +63,6 @@ export class FileManagementComponent implements OnInit {
       {street: '', city: '', state: '', zip: 0, country: ''},
       0, 0, '', '');
   }
-
   metaDataReset() {
     this.activeMetaData = new FileMetaData(0, 0, '', '', '', '',
       {street: '', city: '', state: '', zip: 0, country: ''},
@@ -70,37 +70,45 @@ export class FileManagementComponent implements OnInit {
   }
 
   generateAssessmentList() {
-    this.indexdbstore.viewFromAssessmentStore().then(result => {
-      this.assessmentList = result;
-      if (this.assessmentList === null || this.assessmentList === undefined) {
-      } else {
-
-      }
+    this.indexdbstore.viewFromAssessmentStore().then(() => {
+      this.data.currentAssessmentItemArray.subscribe(assessmentListDB => {
+          this.assessmentList = assessmentListDB;
+      });
     }, error => {
       console.log(error);
     });
+  }
+
+  createNew() {
+    this.assessmentActive = true;
+    this.newAssessment = true;
+
+    // unhide sections by default
+    this.metaHidden = false;
+    this.dataHidden = false;
+    this.reportsHidden = false;
+
+    // clear metaData
+    this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
+
+    // clear csv table
+    this.tableActive = -1;
+    this.tableTabs = [];
+
+    // create default name and id
+    const today = new Date();
+    this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
+    this.activeID = null;
   }
 
   importAssessment() {
 
   }
 
-  createNew() {
-    this.assessmentActive = true;
-    this.newAssessment = true;
-    this.metaHidden = false;
-    this.dataHidden = false;
-    this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
-    const today = new Date();
-    this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
-  }
-
-
-  assessmentSelect(i: number, assessment: Assessment) {
-
-    console.log(this.newAssessment);
+  selectAssessment(i: number, assessment: Assessment) {
+    // console.log(this.newAssessment);
     if (this.newAssessment) {
-      const initialState = {message: 'Current Assessment has not been saved. \t' + 'Do you want to proceed without saving?'};
+      const initialState = {message: 'Current Assessment has not been saved. \n' + 'Do you want to proceed without saving?'};
       this.confirmRef = this.modalService.show(ConfirmationModalComponent, {initialState});
       this.confirmRef.content.onClose.subscribe(result => {
         if (!result) {
@@ -122,10 +130,13 @@ export class FileManagementComponent implements OnInit {
   loadAssessment(assessment) {
     this.assessmentActive = true;
     this.newAssessment = false;
+    this.activeID = assessment.id;
     this.activeName = assessment.name;
     this.activeMetaData = assessment.metaData;
     this.tableTabs = [];
 
+    // reset csv table
+    this.tableTabs = [];
     for (let i = 0; i < assessment.csv.length; i++) {
       this.addDataSetsToTable(parseInt(assessment.csv[i].id, 10));
     }
@@ -133,6 +144,15 @@ export class FileManagementComponent implements OnInit {
       this.tabTableSelect(0);
     } else {
       this.tableActive = -1;
+    }
+      this.addDataSetsToTable(assessment.csv[i].id);
+    }
+    console.log(assessment.csv.length);
+    if (assessment.csv.length < 0) {
+         this.tableActive = -1;
+    } else {
+      this.tableActive = assessment.csv[0].id;
+      this.changeDisplayTable();
     }
     this.indexdbstore.clearQuickSaveStore().then(() => {
       const quickSave: QuickSave = {
@@ -142,16 +162,45 @@ export class FileManagementComponent implements OnInit {
       this.indexdbstore.insertIntoQuickSaveStore(quickSave);
     });
   }
-
   removeAssessment(event: MouseEvent, i: number) {
-    console.log(i);
-    console.log(event);
+    const id = this.assessmentList[i].id;
+    const current = (id === this.activeID);
+    const initialState = {message: 'WARNING! Attempting to delete assessment: \n' +
+                                         this.assessmentList[i].name + '\n' +
+                           'This will completely remove the record from your system. \n' +
+                                           'Do you want to proceed?' };
+    this.confirmRef = this.modalService.show(ConfirmationModalComponent, {initialState});
+
+    this.confirmRef.content.onClose.subscribe(result => {
+      if (!result) {
+        return;
+      } else {
+        this.indexdbstore.deleteFromAssessmentStore(id).then(() => {
+          if (current) {
+            // clear quicksave
+            this.indexdbstore.clearQuickSaveStore().then(() => {
+               console.log('Record Cleared');
+              this.assessmentActive = false;
+            });
+          }
+          // remove assessment from list
+          this.assessmentList.splice(i, 1);
+        }, error => {
+          console.log(error);
+        });
+      }
+    });
+
   }
 
+
+  // Stuff related to table ----------------
   tabTableSelect(tabId) {
     this.tableActive = tabId;
     if (this.tableTabs.length > 0) {
       this.activeUpdated();
+    } else {
+      this.tableActive = -1;
     }
 
   }
@@ -161,6 +210,7 @@ export class FileManagementComponent implements OnInit {
   }
 
   changeDisplayTable() {
+    console.log(this.tableActive);
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
@@ -185,7 +235,6 @@ export class FileManagementComponent implements OnInit {
     this.FileRef.content.returnList.subscribe(result => {
       for (let i = 0; i < result.length; i++) {
         this.addDataSetsToTable(result[i]);
-
       }
     });
   }
@@ -194,12 +243,12 @@ export class FileManagementComponent implements OnInit {
     this.tableTabs = [];
     this.indexdbstore.viewSelectedCSVStore(id).then(result => {
       this.data.currentCSVItem.subscribe(csvFile => {
-        this.tableTabs.push(csvFile);
+        this.tableTabs.push({name: csvFile.name, id: csvFile.id, tabID: this.tableTabs.length});
       });
     });
   }
 
-
+  // Creating/Updating assessments
   createAssessment() {
     const assessmentId = this.data.getRandomInt(9999999);
     const metaDataId = this.data.getRandomInt(9999999);
