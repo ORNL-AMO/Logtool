@@ -61,6 +61,7 @@ export class HomeComponent implements OnInit, DoCheck {
         if (quickSave[0] !== undefined) {
           this.indexFileStore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
             this.data.currentAssessmentItem.subscribe(assessment => {
+              console.log(assessment);
                 this.assessment = assessment;
                 this.dataFromDialog = assessment.csv;
                 if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
