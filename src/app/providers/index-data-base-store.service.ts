@@ -148,7 +148,7 @@ export class IndexDataBaseStoreService {
           name: assessment.name,
           csv: assessment.csv,
           metaDataId: assessment.metaDataId,
-          metadata: assessment.metaData,
+          metaData: assessment.metaData,
           graphId: assessment.graphId,
           graph: assessment.graph,
           dayTypeId: assessment.dayTypeId,
@@ -167,14 +167,24 @@ export class IndexDataBaseStoreService {
     });
   }
 
-  updateGraphAssessmentStore(assessment) {
+  updateGraphAssessmentStore(assessment: Assessment) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
       db.update('assessment',
         {
           id: assessment.id,
+          name: assessment.name,
+          csv: assessment.csv,
+          metaDataId: assessment.metaDataId,
+          metaData: assessment.metaData,
+          graphId: assessment.graphId,
           graph: assessment.graph,
+          dayTypeId: assessment.dayTypeId,
+          dayType: assessment.dayType,
+          reportGraph: assessment.reportGraph,
+          reportDayType: assessment.reportDayType,
+          assessmentMode: assessment.assessmentMode
         }).then(() => {
         },
         error => {
@@ -495,17 +505,45 @@ export class IndexDataBaseStoreService {
     });
   }
 
-  insertIntoGraphStore(graph: Graph) {
+  insertIntoGraphStore(graph: Graph, assessment: Assessment) {
     const db = new NgxIndexedDB('LOGGER', 1);
     db.openDatabase(1, evt => {
     }).then(() => {
       db.add('graph',
         {
           id: graph.id,
+          assessmentId: graph.assessmentId,
           displayName: graph.displayName,
           graph: graph.graph,
           visualizeMode: graph.visualizeMode
         }).then(() => {
+          assessment.graph = graph.graph;
+          assessment.metaData = assessment.metaData;
+          this.updateGraphAssessmentStore(assessment);
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateGraphStore(graph: Graph, assessment: any) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('graph',
+        {
+          id: graph.id,
+          assessmentId: graph.assessmentId,
+          displayName: graph.displayName,
+          graph: graph.graph,
+          visualizeMode: graph.visualizeMode
+        }).then(() => {
+          assessment.graph = graph.graph;
+          assessment.metaData = assessment.metaData;
+          this.updateGraphAssessmentStore(assessment);
         },
         error => {
           alert('File already Imported');

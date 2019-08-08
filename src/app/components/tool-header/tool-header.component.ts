@@ -14,11 +14,4 @@ export class ToolHeaderComponent implements OnInit {
   ngOnInit() {
 
   }
-  changeActive(tab) {
-    const dataSend = {
-      loadMode: false
-    };
-    this.routeService.storage = dataSend;
-    this.active = tab;
-  }
 }

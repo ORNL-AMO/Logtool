@@ -17,6 +17,8 @@ import {Graph} from '../../types/graph';
 export class PlotGraphComponent implements OnInit {
   graph: any;
   dataInput = [];
+  assessment;
+  assessmentGraph;
   xValue = [];
   yValue = [];
   timeSeries = [];
@@ -41,17 +43,20 @@ export class PlotGraphComponent implements OnInit {
 
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
+      console.log('Running');
       this.annotationListLine = [];
       this.annotationListScatter = [];
       this.displayGraph(this.graphType);
     } else {
-      const loadMode = this.routeDataTransfer.storage.loadMode;
-      if (loadMode) {
-        this.loadDisplayGraph(this.routeDataTransfer.storage.graph);
+      this.assessment = this.routeDataTransfer.storage.assessment;
+      this.assessmentGraph = this.routeDataTransfer.storage.assessmentGraph;
+      if (this.assessment.graph !== undefined && this.assessmentGraph) {
+        this.graphType = this.routeDataTransfer.storage.graphType;
+        this.loadDisplayGraph(this.assessment.graph);
       } else {
         this.annotationListLine = [];
         this.annotationListScatter = [];
-        // this.dataInput will have current quickSave Data init
+        this.dataInput = this.routeDataTransfer.storage.csv;
         this.graphType = this.routeDataTransfer.storage.graphType;
         this.displayGraph(this.graphType);
       }
@@ -114,18 +119,32 @@ export class PlotGraphComponent implements OnInit {
       return;
     } else {
       const graph: Graph = {
-        id: this.data.getRandomInt(999999),
-        assessmentId: 12345,
-        displayName: '1233445656',
+        id: this.assessment.graphId,
+        assessmentId: this.assessment.id,
+        displayName: this.graph.layout.title,
         graph: this.graph,
         visualizeMode: true
       };
-      this.indexFileStore.insertIntoGraphStore(graph);
+      if (this.assessment.graph !== undefined) {
+        this.indexFileStore.updateGraphStore(graph, this.assessment);
+        alert('Graph Updated');
+      } else {
+        this.indexFileStore.insertIntoGraphStore(graph, this.assessment);
+        alert('Graph Saved');
+      }
     }
   }
 
   loadDisplayGraph(graph) {
+    console.log('Running');
     this.graph = graph;
+    if (this.graph.layout.title === 'Line Plot') {
+      this.annotationListLine = this.graph.layout.annotations;
+    } else if (this.graph.layout.title === 'Scatter Plot') {
+      this.annotationListScatter = this.graph.layout.annotations;
+    } else if (this.graph.layout.title === 'Standard Deviation Histogram') {
+
+    }
   }
 
   displayGraph(type) {
@@ -135,21 +154,35 @@ export class PlotGraphComponent implements OnInit {
     this.timeSeries = [];
     this.plotGraph = [];
     if (type === 'line_graph') {
-      this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
-      this.yValue = this.routeDataTransfer.storage.value;
-      for (let i = 0; i < this.yValue.length; i++) {
-        const value = this.yValue[i].value.split(',');
-        this.plotGraph.push({
-          x: this.dataInput[parseInt(this.timeSeries[0], 10)].dataArrayColumns[parseInt(this.timeSeries[1], 10)],
-          y: this.dataInput[parseInt(value[0], 10)].dataArrayColumns[parseInt(value[1], 10)],
-          type: 'linegl',
-          mode: 'lines',
-          name: this.yValue[i].name
-        });
+      if (!this.assessmentGraph) {
+        this.timeSeries = this.routeDataTransfer.storage.timeSeries[0].value.split(',');
+        this.yValue = this.routeDataTransfer.storage.value;
+        for (let i = 0; i < this.yValue.length; i++) {
+          const value = this.yValue[i].value.split(',');
+          this.plotGraph.push({
+            x: this.dataInput[parseInt(this.timeSeries[0], 10)].dataArrayColumns[parseInt(this.timeSeries[1], 10)],
+            y: this.dataInput[parseInt(value[0], 10)].dataArrayColumns[parseInt(value[1], 10)],
+            type: 'linegl',
+            mode: 'lines',
+            name: this.yValue[i].name
+          });
+        }
+      } else {
+        this.plotGraph = this.assessment.graph.data;
       }
       let layout;
       if (this.annotationListLine.length > 0) {
-        layout = this.graph.layout;
+        layout = {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Line Plot',
+          annotations: this.annotationListLine,
+          xaxis: {
+            autorange: false,
+            range: this.graph.layout.xaxis.range
+          },
+          yaxis: this.graph.layout.yaxis
+        };
       } else {
         layout = {
           hovermode: 'closest',
@@ -179,17 +212,34 @@ export class PlotGraphComponent implements OnInit {
       };
       this.calculatePlotStats();
     } else if (type === 'scatter_graph') {
-      this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
-      this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
-      this.plotGraph.push({
-        x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
-        y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
-        type: 'scattergl',
-        mode: 'markers'
-      });
+      if (!this.assessmentGraph) {
+        this.xValue = this.routeDataTransfer.storage.x[0].value.split(',');
+        this.yValue = this.routeDataTransfer.storage.y[0].value.split(',');
+        this.plotGraph.push({
+          x: this.dataInput[parseInt(this.xValue[0], 10)].dataArrayColumns[parseInt(this.xValue[1], 10)],
+          y: this.dataInput[parseInt(this.yValue[0], 10)].dataArrayColumns[parseInt(this.yValue[1], 10)],
+          type: 'scattergl',
+          mode: 'markers'
+        });
+      } else {
+        this.plotGraph = this.assessment.graph.data;
+      }
       let layout;
       if (this.annotationListScatter.length > 0) {
-        layout = this.graph.layout;
+        layout = {
+          hovermode: 'closest',
+          autosize: true,
+          title: 'Scatter Plot',
+          annotations: this.annotationListScatter,
+          xaxis: {
+            title: this.graph.layout.xaxis.title,
+            autorange: false,
+            range: this.graph.layout.xaxis.range
+          },
+          yaxis: {
+            title: this.graph.layout.yaxis.title,
+          }
+        };
       } else {
         layout = {
           hovermode: 'closest',
