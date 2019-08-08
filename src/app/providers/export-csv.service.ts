@@ -93,7 +93,7 @@ export class ExportCSVService {
 
   readJsonFileVisualizer(data: Graph[]) {
     for (let i = 0; i < data.length; i++) {
-      this.indexFileStore.insertIntoGraphStore(data[i]);
+      // this.indexFileStore.insertIntoGraphStore(data[i]);
     }
   }
 }

@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit, DoCheck {
   temp2;
   temp3;
   temp4;
+  assessment;
 // Line Graph
   lineListY: any = [];
   timeSeriesY: any = [];
@@ -40,7 +41,6 @@ export class HomeComponent implements OnInit, DoCheck {
   bsModalRef: BsModalRef;
   activeTab;
   differ: any;
-  loadMode = false;
   binType = -1;
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
@@ -61,11 +61,10 @@ export class HomeComponent implements OnInit, DoCheck {
         if (quickSave[0] !== undefined) {
           this.indexFileStore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
             this.data.currentAssessmentItem.subscribe(assessment => {
-                console.log(assessment);
+                this.assessment = assessment;
                 this.dataFromDialog = assessment.csv;
                 if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
                 } else {
-                  this.plotGraph.ngOnInit();
                   this.tabs = [];
                   for (let i = 0; i < this.dataFromDialog.length; i++) {
                     this.tabs.push({
@@ -97,22 +96,24 @@ export class HomeComponent implements OnInit, DoCheck {
       alert('Please select Graph type');
     } else if (this.graph === 'line_graph') {
       this.routeDataTransfer.storage = {
+        assessment: this.assessment,
+        csv: this.dataFromDialog,
         value: this.ySelectorListLine,
         timeSeries: this.timeSeriesSelectList,
         graphType: 'line_graph',
-        loadMode: false,
+        assessmentGraph: false
       };
-      console.log(this.routeDataTransfer.storage);
       this.plotGraph.ngOnInit();
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
+        assessment: this.assessment,
+        csv: this.dataFromDialog,
         x: this.xSelectorListScatter,
         y: this.ySelectorListScatter,
         graphType: 'scatter_graph',
-        loadMode: false,
+        assessmentGraph: false
       };
       this.plotGraph.ngOnInit();
-
     } else if (this.graph === 'histogram') {
       console.log('in histogram call');
       if (this.binType === -1) {
@@ -247,21 +248,26 @@ export class HomeComponent implements OnInit, DoCheck {
   populateGraph() {
     if (this.graph === '' || this.graph === undefined) {
       this.routeDataTransfer.storage = {
-        graphType: 'empty'
+        assessment: this.assessment,
+        assessmentGraph: true,
+        graphType: 'load_graph'
       };
     } else if (this.graph === 'line_graph') {
       this.routeDataTransfer.storage = {
+        assessment: this.assessment,
         value: this.ySelectorListLine,
         timeSeries: this.timeSeriesSelectList,
         graphType: 'line_graph'
       };
     } else if (this.graph === 'scatter_graph') {
       this.routeDataTransfer.storage = {
+        assessment: this.assessment,
         x: this.xSelectorListScatter,
         y: this.ySelectorListScatter,
         graphType: 'scatter_graph'
       };
     }
+    this.plotGraph.ngOnInit();
   }
 
   removeFile(event, id, tabId) {
