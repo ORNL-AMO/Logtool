@@ -12,6 +12,7 @@ import {DatabaseOperationService} from '../../providers/database-operation.servi
 import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {Assessment} from '../../types/assessment';
+import {ImportDataComponent} from '../import-data/import-data.component';
 
 
 @Component({
@@ -231,6 +232,13 @@ export class FileManagementComponent implements OnInit {
       for (let i = 0; i < result.length; i++) {
         this.addDataSetsToTable(result[i]);
       }
+    });
+  }
+
+  showImportModal(){
+    this.FileRef = this.modalService.show(ImportDataComponent);
+    this.modalService.onHide.subscribe(() => {
+      // Do stuff here
     });
   }
 
