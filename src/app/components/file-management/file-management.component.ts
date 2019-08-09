@@ -13,7 +13,6 @@ import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {Assessment} from '../../types/assessment';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {initialState} from 'ngx-bootstrap/timepicker/reducer/timepicker.reducer';
 
 
 @Component({
@@ -141,7 +140,7 @@ export class FileManagementComponent implements OnInit {
     for (let i = 0; i < assessment.csv.length; i++) {
       this.addDataSetsToTable(assessment.csv[i].id);
     }
-    // console.log(assessment.csv.length);
+    console.log(assessment.csv.length);
     if (assessment.csv.length < 0) {
       this.tableActive = -1;
     } else {
@@ -211,9 +210,26 @@ export class FileManagementComponent implements OnInit {
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
-          value: this.activeID,
-          position: this.tableActive
+          csvId: this.tableActive,
+          call: 'file-management'
         }
+      });
+    });
+  }
+
+  showImportModal(type) {
+    const initialState = {type: type};
+    this.FileRef = this.modalService.show(ImportDataComponent, {initialState});
+    this.modalService.onHide.subscribe(() => {
+      this.indexdbstore.viewFromCSVStore().then(() => {
+        this.data.currentCSVItemArray.subscribe(csvitems => {
+          console.log(csvitems);
+          for (let i = 0; i < csvitems.length; i++) {
+            if (this.tableTabs.indexOf(csvitems[i]) < 0) {
+              this.tableTabs.push(csvitems[i]);
+            }
+          }
+        });
       });
     });
   }
@@ -234,25 +250,6 @@ export class FileManagementComponent implements OnInit {
       for (let i = 0; i < result.length; i++) {
         this.addDataSetsToTable(result[i]);
       }
-    });
-  }
-
-  showImportModal(type) {
-    const initialState = {type: type};
-    this.FileRef = this.modalService.show(ImportDataComponent, {initialState});
-    this.modalService.onHide.subscribe(() => {
-
-      this.indexdbstore.viewFromCSVStore().then(() => {
-        this.data.currentCSVItemArray.subscribe(csvitems => {
-          console.log(csvitems);
-          for (let i = 0; i < csvitems.length; i++) {
-            if (this.tableTabs.indexOf(csvitems[i]) < 0) {
-              this.tableTabs.push(csvitems[i]);
-            }
-          }
-        });
-      });
-      //this.addDataSetsToTable(assessment.csv[i].id);
     });
   }
 
@@ -288,6 +285,7 @@ export class FileManagementComponent implements OnInit {
         };
         this.indexdbstore.insertIntoQuickSaveStore(quickSave);
         this.newAssessment = false;
+        this.indexdbstore.clearCSVStore();
         this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
           this.router.navigate(['visualize']);
         });
@@ -305,6 +303,7 @@ export class FileManagementComponent implements OnInit {
 
     this.newAssessment = false;
   }
+
   exportAssessment() {
     this.indexdbstore.viewFromQuickSaveStore().then(() => {
       this.data.currentQuickSaveItem.subscribe(quickSave => {

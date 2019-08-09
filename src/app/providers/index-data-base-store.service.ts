@@ -387,6 +387,22 @@ export class IndexDataBaseStoreService {
     });
   }
 
+  clearCSVStore() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.clear('csv').then(() => {
+            console.log('Deleted');
+            resolve();
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
   viewFromCSVStore() {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
@@ -785,4 +801,5 @@ export class IndexDataBaseStoreService {
       });
     });
   }
+
 }
