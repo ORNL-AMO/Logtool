@@ -13,6 +13,8 @@ import {CSVFileInput} from '../../types/csvfile-input';
 export class TableDataComponent implements OnInit {
   assessmentId;
   csv;
+  csvId;
+  call;
   position;
   show = false;
   graph: any;
@@ -24,14 +26,15 @@ export class TableDataComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams
       .subscribe(params => {
-        this.assessmentId = params.value;
-        this.position = params.position;
-        if (this.position !== -1) {
-          if (this.assessmentId === undefined) {
+        this.call = params.call;
+        if (this.call === 'file-management') {
+          this.csvId = params.csvId;
+          if (this.csvId === undefined) {
           } else {
-            this.indexDbStore.viewSelectedAssessmentStore(parseInt(this.assessmentId, 10)).then(() => {
-              this.data.currentAssessmentItem.subscribe(result => {
-                this.csv = result.csv[this.position];
+            this.indexDbStore.viewSelectedCSVStore(parseInt(this.csvId, 10)).then(() => {
+              this.data.currentCSVItem.subscribe(result => {
+                console.log(result);
+                this.csv = result;
                 this.show = true;
                 const columnDefs = this.csv.selectedHeader;
                 const dataArrayColumns = this.csv.dataArrayColumns;
@@ -46,6 +49,32 @@ export class TableDataComponent implements OnInit {
                 this.displayTable(header, dataArrayColumns, width);
               });
             });
+          }
+        } else if (this.call === 'visualize') {
+          this.assessmentId = params.assessmentId;
+          this.position = params.position;
+          if (this.position !== -1) {
+            if (this.assessmentId === undefined) {
+            } else {
+              this.indexDbStore.viewSelectedAssessmentStore(parseInt(this.assessmentId, 10)).then(() => {
+                this.data.currentAssessmentItem.subscribe(result => {
+                  console.log(result);
+                  this.csv = result.csv[this.position];
+                  this.show = true;
+                  const columnDefs = this.csv.selectedHeader;
+                  const dataArrayColumns = this.csv.dataArrayColumns;
+                  const header = [];
+                  let width = 1000;
+                  for (let i = 0; i < columnDefs.length; i++) {
+                    header.push(columnDefs[i].headerName);
+                    if (i > 5) {
+                      width = width + 100;
+                    }
+                  }
+                  this.displayTable(header, dataArrayColumns, width);
+                });
+              });
+            }
           }
         }
       });

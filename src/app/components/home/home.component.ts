@@ -70,13 +70,13 @@ export class HomeComponent implements OnInit, DoCheck {
                   for (let i = 0; i < this.dataFromDialog.length; i++) {
                     this.tabs.push({
                       name: this.dataFromDialog[i].name,
-                      id: this.dataFromDialog[i].id,
+                      id: this.assessment.id,
                       tabId: i
                     });
                   }
                   this.populateSpinner();
                   this.populateGraph();
-                  this.changeDisplayTable(this.dataFromDialog[0].id);
+                  this.changeDisplayTable(this.assessment.id, 0);
                 }
               }, error => {
                 console.log(error);
@@ -136,11 +136,13 @@ export class HomeComponent implements OnInit, DoCheck {
     console.log(this.plotGraph.stats);
   }
 
-  changeDisplayTable(value) {
+  changeDisplayTable(value, position) {
     this.router.navigateByUrl('visualize/table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['visualize/table-data'], {
         queryParams: {
-          value: value
+          assessmentId: value,
+          position: position,
+          call: 'visualize'
         }
       });
     });
