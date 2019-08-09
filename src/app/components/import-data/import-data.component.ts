@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {CSVFileInput} from '../../types/csvfile-input';
+import {Subject} from 'rxjs';
 
 
 @Component({
@@ -51,9 +52,10 @@ export class ImportDataComponent implements OnInit {
   headerFind: any;
   private manualSample: any[];
 
+  public tableItem: Subject<any>;
 
   testModRef: BsModalRef;
-
+  type;
 
   constructor(private modalService: BsModalService, private indexFileStore: IndexDataBaseStoreService,
               private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
@@ -86,9 +88,12 @@ export class ImportDataComponent implements OnInit {
 
     try {
       this.dataFromFile = JSON.parse(fs.readFileSync(this.filePath).toLocaleString());
+      if (this.type !== 'json') { throw (Error); }
       this.stage = 5;
+
     } catch {
       try {
+        if (this.type !== 'csv') { throw (Error); }
         this.workbook = XLSX.readFile(f.path, {cellDates: true});
         this.worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
         //console.log(this.worksheet);
@@ -347,7 +352,7 @@ export class ImportDataComponent implements OnInit {
 
   submitCheckBox() {
 
-    if( !this.headersfilled()) {
+    if ( !this.headersfilled()) {
       alert('Not all selected columns are named, please name all selected columns');
       return;
     }

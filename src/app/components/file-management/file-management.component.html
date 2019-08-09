@@ -17,7 +17,7 @@
             New
           </button>
 
-          <button class="btn col-5" (click)="showImportModal()" style="height: 30px; width:30%; margin-left: 10px;">
+          <button class="btn col-5" (click)="showImportModal('json')" style="height: 30px; width:30%; margin-left: 10px;">
             Import
           </button>
 
@@ -217,13 +217,13 @@
               </ul>
               <ul class="tight-fit" style="margin-top: 1px; margin-left: 3px">
                 <li>
-                  <button class=" btn " style="" (click)="showDataModal()">+</button>
+                  <button class=" btn " style="" (click)="showImportModal('csv')">+</button>
                 </li>
               </ul>
             </div>
             <div *ngIf="tableTabs == undefined || tableTabs.length == 0 " class="row justify-content-center"
                  style="margin-left: 2%; margin-right: 2%; width:96%;">
-              <button class=" btn " (click)="showDataModal()">Add DataSets</button>
+              <button class=" btn " (click)="showImportModal('csv')">Add DataSets</button>
             </div>
 
             <div class="table-display" *ngIf="tableActive >= 0" style="margin-left: 0">
