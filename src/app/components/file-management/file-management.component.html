@@ -17,7 +17,7 @@
             New
           </button>
 
-          <button class="btn col-5" (click)="importAssessment()" style="height: 30px; width:30%; margin-left: 10px;">
+          <button class="btn col-5" (click)="showImportModal('json')" style="height: 30px; width:30%; margin-left: 10px;">
             Import
           </button>
 
@@ -62,8 +62,10 @@
     <div class="panel" style="width:100%">
       <div class="row header tight-fit justify-content-end" style="height: 35px;">
         <p class="col-12" style="margin: 5px 0 5px 0"> Assessment Information </p>
+
         <div style="position: relative; top:-100%;">
           <button (click)="exportAssessment()" class=" btn " style="margin: 5px 5px 5px 0">
+
             Export
           </button>
         </div>
@@ -207,7 +209,7 @@
               <ul class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
                 <li class="nav-item" *ngFor="let tab of tableTabs">
                   <!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
-                  <div class="nav-link" (click)="tabTableSelect(tab.id)" id = 'tab{{tab.tabID}}'
+                  <div class="nav-link" (click)="tabTableSelect(tab.id)" id='tab{{tab.tabID}}'
                        [ngStyle]="{'background': tableActive == tab.id ? 'blue': 'rgba(0,0,255,.5)' }">
                     <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
 
@@ -217,13 +219,13 @@
               </ul>
               <ul class="tight-fit" style="margin-top: 1px; margin-left: 3px">
                 <li>
-                  <button class=" btn " style="" (click)="showDataModal()">+</button>
+                  <button class=" btn " style="" (click)="showImportModal('csv')">+</button>
                 </li>
               </ul>
             </div>
             <div *ngIf="tableTabs == undefined || tableTabs.length == 0 " class="row justify-content-center"
                  style="margin-left: 2%; margin-right: 2%; width:96%;">
-              <button class=" btn " (click)="showDataModal()">Add DataSets</button>
+              <button class=" btn " (click)="showImportModal('csv')">Add DataSets</button>
             </div>
 
             <div class="table-display" *ngIf="tableActive >= 0" style="margin-left: 0">
@@ -235,7 +237,7 @@
         </div>
       </div>
 
-      <!-- -->
+      <!-- Reports -->
       <div class="row snug">
         <div class="panel">
           <div class="row header tight-fit justify-content-end" style="height: 35px;">
@@ -252,30 +254,74 @@
             </div>
           </div>
           <div *ngIf="!reportsHidden">
+            <div class="row" style="margin:auto">
+              <div class="col-6" style="border: 3px solid black;border-right-width: 0;">
+                <div class="row justify-content-center">
+                  <p class=" header  tight-fit"
+                     style="width: 70%; margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Visualization
+                    Reports</p>
+                </div>
+
+                <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+                  <div class="row test tight-fit justify-content-center" *ngFor="let file of VisList"
+                       style="border-bottom: 1px solid black; border-top: 1px solid black"
+                       [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}">
+                    <div class="tight-fit nonSelectable col-11" (click)="routeToVisual(file)">
+                      <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-6" style="border: 3px solid black;border-right-width: 0;">
+                <div class="row justify-content-center">
+                  <p class=" header tight-fit"
+                     style=" width: 70%; margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Visualization
+                    Reports</p>
+                </div>
+
+                <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
+                  <div class="row test tight-fit justify-content-center" *ngFor="let file of DayTypeList"
+                       style="border-bottom: 1px solid black; border-top: 1px solid black"
+                       [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}">
+                    <div class="tight-fit nonSelectable col-11" (click)="routeToDayType(file)">
+                      <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
             <div class="row justify-content-center">
               <button class="btn">Attach</button>
             </div>
+
           </div>
 
-        </div>
-      </div>
 
-
-      <div class="row snug justify-content-center">
-        <button *ngIf="newAssessment" class="col-2 btn" (click)="createAssessment()">Finialize</button>
-        <button *ngIf="!newAssessment" class="col-2 btn">Update</button>
       </div>
     </div>
-  </div>
 
-  <!-- Instructions -->
-  <div class="snug col-2" style="min-height: 100%; margin-right: 20px; min-width:200px;">
-    <div class="row snug">
-      <div class="panel">
-        <div class="header tight-fit">Instructions</div>
-      </div>
+
+    <div class="row snug justify-content-center">
+      <button *ngIf="newAssessment" class="col-2 btn" (click)="createAssessment()">Finialize</button>
+      <button *ngIf="!newAssessment" class="col-2 btn">Update</button>
     </div>
   </div>
+</div>
+
+<!-- Instructions -->
+<div class="snug col-2" style="min-height: 100%; margin-right: 20px; min-width:200px;">
+  <div class="row snug">
+    <div class="panel">
+      <div class="header tight-fit">Instructions</div>
+    </div>
+  </div>
+</div>
 
 
 </div>
