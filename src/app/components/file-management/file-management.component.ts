@@ -209,7 +209,8 @@ export class FileManagementComponent implements OnInit {
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
-          value: this.tableActive
+          value: this.activeID,
+          position: this.tableActive
         }
       });
     });

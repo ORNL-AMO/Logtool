@@ -11,7 +11,9 @@ import {CSVFileInput} from '../../types/csvfile-input';
   styleUrls: ['./table-data.component.scss']
 })
 export class TableDataComponent implements OnInit {
+  assessmentId;
   csv;
+  position;
   show = false;
   graph: any;
 
@@ -22,14 +24,17 @@ export class TableDataComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams
       .subscribe(params => {
-        this.csv = params.value;
-        if (this.csv === undefined) {
-        } else {
-          this.indexDbStore.viewSelectedCSVStore(parseInt(this.csv, 10)).then(() => {
-              this.data.currentCSVItem.subscribe(result => {
+        this.assessmentId = params.value;
+        this.position = params.position;
+        if (this.position !== -1) {
+          if (this.assessmentId === undefined) {
+          } else {
+            this.indexDbStore.viewSelectedAssessmentStore(parseInt(this.assessmentId, 10)).then(() => {
+              this.data.currentAssessmentItem.subscribe(result => {
+                this.csv = result.csv[this.position];
                 this.show = true;
-                const columnDefs = result.selectedHeader;
-                const dataArrayColumns = result.dataArrayColumns;
+                const columnDefs = this.csv.selectedHeader;
+                const dataArrayColumns = this.csv.dataArrayColumns;
                 const header = [];
                 let width = 1000;
                 for (let i = 0; i < columnDefs.length; i++) {
@@ -40,7 +45,8 @@ export class TableDataComponent implements OnInit {
                 }
                 this.displayTable(header, dataArrayColumns, width);
               });
-          });
+            });
+          }
         }
       });
   }
