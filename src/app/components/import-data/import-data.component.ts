@@ -29,7 +29,7 @@ export class ImportDataComponent implements OnInit {
   worksheet: XLSX.WorkSheet;
   dataFromFile: any[];
   originalrange: XLSX.Range;
-
+  id;
   header = [];
   selectedHeader = [];
 
@@ -88,15 +88,18 @@ export class ImportDataComponent implements OnInit {
 
     try {
       this.dataFromFile = JSON.parse(fs.readFileSync(this.filePath).toLocaleString());
-      if (this.type !== 'json') { throw (Error); }
+      if (this.type !== 'json') {
+        throw (Error);
+      }
       this.stage = 5;
 
     } catch {
       try {
-        if (this.type !== 'csv') { throw (Error); }
+        if (this.type !== 'csv') {
+          throw (Error);
+        }
         this.workbook = XLSX.readFile(f.path, {cellDates: true});
         this.worksheet = this.workbook.Sheets[this.workbook.SheetNames[0]];
-        //console.log(this.worksheet);
         this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
         this.stage = 2;
         const range = XLSX.utils.decode_range(this.worksheet['!ref']);
@@ -167,13 +170,13 @@ export class ImportDataComponent implements OnInit {
     this.getDataWithHeader();
   }
 
-  noHeaders(){
+  noHeaders() {
 
     this.worksheet['!ref'] = XLSX.utils.encode_range(this.originalrange);
     this.dataArrayColumns = XLSX.utils.sheet_to_json(this.worksheet, {header: 1});
     this.fileContent = '';
-    let start = this.originalrange.s.c;
-    let end = this.originalrange.e.c;
+    const start = this.originalrange.s.c;
+    const end = this.originalrange.e.c;
     this.header = new Array(end - start + 1);
     this.header.fill('');
     console.log(start, end, this.header);
@@ -337,12 +340,12 @@ export class ImportDataComponent implements OnInit {
     this.getDataWithHeader();
   }
 
-  headersfilled(){
+  headersfilled() {
     if (this.headerFind !== 'none') {
       return true;
     }
 
-    for (let i = 0; i <this.selectedHeader.length; i++){
+    for (let i = 0; i < this.selectedHeader.length; i++) {
       if (this.selectedHeader[i].checked && this.fileRename[i] === '') {
         return false;
       }
@@ -352,7 +355,7 @@ export class ImportDataComponent implements OnInit {
 
   submitCheckBox() {
 
-    if ( !this.headersfilled()) {
+    if (!this.headersfilled()) {
       alert('Not all selected columns are named, please name all selected columns');
       return;
     }
@@ -380,6 +383,7 @@ export class ImportDataComponent implements OnInit {
     }
     this.dataArrayColumns = holder;
     const id = this.data.getRandomInt(9999999);
+    this.id = id;
     const dataList: CSVFileInput = {
       id: id,
       name: this.alias,
