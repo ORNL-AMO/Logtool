@@ -83,25 +83,27 @@ export class FileManagementComponent implements OnInit {
   }
 
   createNew() {
-    this.assessmentActive = true;
-    this.newAssessment = true;
+    this.indexdbstore.clearCSVStore().then(() => {
+      this.assessmentActive = true;
+      this.newAssessment = true;
 
-    // unhide sections by default
-    this.metaHidden = false;
-    this.dataHidden = false;
-    this.reportsHidden = false;
+      // unhide sections by default
+      this.metaHidden = false;
+      this.dataHidden = false;
+      this.reportsHidden = false;
 
-    // clear metaData
-    this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
+      // clear metaData
+      this.activeMetaData = this.blankMetaData(this.assessmentList.length + 1);
 
-    // clear csv table
-    this.tableActive = -1;
-    this.tableTabs = [];
+      // clear csv table
+      this.tableActive = -1;
+      this.tableTabs = [];
 
-    // create default name and id
-    const today = new Date();
-    this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
-    this.activeID = null;
+      // create default name and id
+      const today = new Date();
+      this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
+      this.activeID = null;
+    });
   }
 
   importAssessment() {
