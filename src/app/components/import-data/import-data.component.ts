@@ -53,6 +53,7 @@ export class ImportDataComponent implements OnInit {
   private manualSample: any[];
 
   public tableItem: Subject<any>;
+  public id: Subject<number>;
 
   testModRef: BsModalRef;
   type;
@@ -73,6 +74,7 @@ export class ImportDataComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.id = new Subject();
     this.stage = 1;
     this.headerFind = 'auto';
   }
@@ -158,7 +160,7 @@ export class ImportDataComponent implements OnInit {
       check1 = checkHeader.length;
 
       if (check3 === check1 && check3 === check2) {
-        console.log(headerIndex);
+        //console.log(headerIndex);
         headerIndex = headerIndex - 2;
         checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
         break;
@@ -245,12 +247,12 @@ export class ImportDataComponent implements OnInit {
     const timeCheck = /[0-9][0-9]:[0-9][0-9]/;
     const dateCheck = /[0-9]-[0-9]|\/\/|\/[0-9]/;
 
-    console.log(new Date('6-30-1991 5:00'));
+   // console.log(new Date('6-30-1991 5:00'));
 
     const timelist = [];
 
     const index = headerIndex + 1;
-    console.log(this.dataArrayColumns[index - 1]);
+   // console.log(this.dataArrayColumns[index - 1]);
     for (let i = 0; i < this.header.length; i++) {
       // column is timeSeries if not a number and parsable as date , or matches regex above
       if ((isNaN(parseInt(this.dataArrayColumns[index][i], 10)) && !isNaN(Date.parse(this.dataArrayColumns[index][i]))) ||
@@ -354,8 +356,7 @@ export class ImportDataComponent implements OnInit {
   }
 
   submitCheckBox() {
-
-    if (!this.headersfilled()) {
+    if ( !this.headersfilled()) {
       alert('Not all selected columns are named, please name all selected columns');
       return;
     }
@@ -400,11 +401,15 @@ export class ImportDataComponent implements OnInit {
       fileType: this.fileType,
       dateUpload: 'DateUpload'
     };
-    this.indexFileStore.insertIntoCSVStore(dataList);
+    this.indexFileStore.insertIntoCSVStore(dataList).then( () => {
+
+      this.id.next(id);
+    });
     setTimeout(() => {
       this.bsModalRef.hide();
       console.log('Send Data');
     }, 2000);
+
   }
 
   columnNameChange(event) {

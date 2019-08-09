@@ -373,7 +373,6 @@ export class IndexDataBaseStoreService {
       });
     });
   }
-
   deleteFromCSVStore(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
