@@ -341,36 +341,38 @@ export class IndexDataBaseStoreService {
   }
 
   insertIntoCSVStore(csv: CSVFileInput) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('csv',
-        {
-          id: csv.id,
-          name: csv.name,
-          content: csv.content,
-          dataArrayColumns: csv.dataArrayColumns,
-          headerDetails: csv.headerDetails,
-          selectedHeader: csv.selectedHeader,
-          header: csv.header,
-          startDate: csv.startDate,
-          endDate: csv.endDate,
-          interval: csv.interval,
-          countOfRow: csv.countOfRow,
-          countOfColumn: csv.countOfColumn,
-          fileType: csv.fileType,
-          dateUpload: csv.dateUpload
-        }).then(() => {
-        },
-        error => {
-          alert('File already Imported');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('csv',
+          {
+            id: csv.id,
+            name: csv.name,
+            content: csv.content,
+            dataArrayColumns: csv.dataArrayColumns,
+            headerDetails: csv.headerDetails,
+            selectedHeader: csv.selectedHeader,
+            header: csv.header,
+            startDate: csv.startDate,
+            endDate: csv.endDate,
+            interval: csv.interval,
+            countOfRow: csv.countOfRow,
+            countOfColumn: csv.countOfColumn,
+            fileType: csv.fileType,
+            dateUpload: csv.dateUpload
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('File already Imported');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
   }
-
   deleteFromCSVStore(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);

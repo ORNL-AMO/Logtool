@@ -13,6 +13,7 @@ import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {Assessment} from '../../types/assessment';
 import {ImportDataComponent} from '../import-data/import-data.component';
+import {ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS} from '@angular/platform-browser-dynamic';
 
 
 @Component({
@@ -219,19 +220,20 @@ export class FileManagementComponent implements OnInit {
 
   showImportModal(type) {
     const initialState = {type: type};
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    };
+
     this.FileRef = this.modalService.show(ImportDataComponent, {initialState});
-    this.modalService.onHide.subscribe(() => {
-      this.indexdbstore.viewFromCSVStore().then(() => {
-        this.data.currentCSVItemArray.subscribe(csvitems => {
-          console.log(csvitems);
-          for (let i = 0; i < csvitems.length; i++) {
-            if (this.tableTabs.indexOf(csvitems[i]) < 0) {
-              this.tableTabs.push(csvitems[i]);
-            }
-          }
+      this.FileRef.content.id.subscribe(result => {
+        console.log(result);
+        this.indexdbstore.viewSelectedCSVStore(result).then(() => {
+            this.data.currentCSVItem.subscribe( csvitem => {
+              console.log(csvitem);
+            this.tableTabs.push(csvitem);
+          });
         });
       });
-    });
   }
 
   showDataModal() {
