@@ -200,10 +200,10 @@
       <!-- labels and nav tabs -->
       <div>
         <!--Label and Import Button ------------------------------------------------------------------------------->
-        <div class="row justify-content-between header" style="height:50%; min-height:40px;">
-          <span class="col-3 panel-title" style="width:100%">Data Table</span>
+        <div class="row justify-content-between header" style="height:50%; min-height:20px;">
+          <span class="col-3 panel-title" style="width:100%">Reports</span>
           <div class="col-6"></div>
-          <button class="btn col-3 " style="height:100%; max-width: 200px;" (click)="plotGraph.saveGraph()">Save</button>
+          <button class="btn-primary" style="alignment: center" (click)="plotGraph.saveGraph()">Save</button>
           <br>
         </div>
 
@@ -239,8 +239,11 @@
       <!-- labels and nav tabs -->
       <div>
         <!--Label and Import Button ------------------------------------------------------------------------------->
-        <div class="row justify-content-center header" style="height:50%; min-height:40px;">
-          <span class="col-12 panel-title" style="width:100%">Reports</span>
+        <div class="row justify-content-between header" style="height:50%; min-height:20px;">
+          <span class="col-3 panel-title" style="width:100%">Reports</span>
+          <div class="col-6"></div>
+          <button class="btn-primary" style="alignment: center" (click)="plotGraph.generateReport()">Generate Report</button>
+          <br>
         </div>
 
     </div>
@@ -253,5 +256,4 @@
     </div>
   </div>
 </div>
-
-
+</div>

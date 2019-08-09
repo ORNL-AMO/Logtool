@@ -29,7 +29,6 @@ export class ImportDataComponent implements OnInit {
   worksheet: XLSX.WorkSheet;
   dataFromFile: any[];
   originalrange: XLSX.Range;
-  id;
   header = [];
   selectedHeader = [];
 
@@ -53,7 +52,7 @@ export class ImportDataComponent implements OnInit {
   private manualSample: any[];
 
   public tableItem: Subject<any>;
-  public id: Subject<number>;
+  id: Subject<number>;
 
   testModRef: BsModalRef;
   type;
@@ -160,7 +159,6 @@ export class ImportDataComponent implements OnInit {
       check1 = checkHeader.length;
 
       if (check3 === check1 && check3 === check2) {
-        //console.log(headerIndex);
         headerIndex = headerIndex - 2;
         checkHeader = Object.values(this.dataArrayColumns[headerIndex]);
         break;
@@ -287,7 +285,6 @@ export class ImportDataComponent implements OnInit {
             this.dataArrayColumns[i][timelist[0].index] = new Date(date.toString().slice(4, 15) + ' ' + time);
             /*this.dataArrayColumns[i][timelist[0].index] = new Date(date.getMonth + ' ' + date.getDate + ' ' + date.getFullYear() +
                                  ' ' +  this.dataArrayColumns[i][timelist[1].index]);*/
-            //console.log(this.dataArrayColumns[i][0]);
           }
 
 
@@ -329,7 +326,7 @@ export class ImportDataComponent implements OnInit {
       }
     }
     console.log(this.manualSample, this.manualSample[0]);
-    let table = document.getElementsByClassName('test');
+    const table = document.getElementsByClassName('test');
     console.log(this.manualSample[0].length * 135);
     table[0].setAttribute('width', this.manualSample[0].length * 135 + 'px');
     this.testModRef = this.modalService.show(template, Object.assign({}, {class: 'modal-lg'}));
@@ -384,7 +381,6 @@ export class ImportDataComponent implements OnInit {
     }
     this.dataArrayColumns = holder;
     const id = this.data.getRandomInt(9999999);
-    this.id = id;
     const dataList: CSVFileInput = {
       id: id,
       name: this.alias,

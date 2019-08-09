@@ -64,7 +64,6 @@ export class HomeComponent implements OnInit, DoCheck {
               console.log(assessment);
                 this.assessment = assessment;
                 this.dataFromDialog = assessment.csv;
-                console.log(this.dataFromDialog);
                 if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
                 } else {
                   this.tabs = [];
@@ -117,7 +116,6 @@ export class HomeComponent implements OnInit, DoCheck {
       };
       this.plotGraph.ngOnInit();
     } else if (this.graph === 'histogram') {
-      console.log('in histogram call');
       if (this.binType === -1) {
         alert('Please Select Bin Generation Scheme');
         return;
@@ -134,7 +132,6 @@ export class HomeComponent implements OnInit, DoCheck {
       };
       this.plotGraph.ngOnInit();
     }
-    console.log(this.plotGraph.stats);
   }
 
   changeDisplayTable(value, position) {
@@ -223,7 +220,6 @@ export class HomeComponent implements OnInit, DoCheck {
     this.scatterList = [];
     for (let i = 0; i < this.tabs.length; i++) {
       const filename = this.tabs[i].name;
-      console.log(this.dataFromDialog);
       for (let j = 0; j < this.dataFromDialog[i].selectedHeader.length; j++) {
         const columnName = this.dataFromDialog[i].selectedHeader[j].headerName;
         this.scatterList.push({
@@ -279,14 +275,12 @@ export class HomeComponent implements OnInit, DoCheck {
     const initialState = {message: 'Are you sure you want to delete this record'};
     this.bsModalRef = this.modalService.show(ConfirmationModalComponent, {initialState});
     this.bsModalRef.content.onClose.subscribe(result => {
-      console.log(result);
       if (result) {
         this.indexFileStore.deleteFromCSVStore(id).then(result2 => {
           console.log('before', this.tabs);
           this.tabs.splice(tabId, 1);
         });
       }
-
       console.log('after', this.tabs);
     });
   }
@@ -319,7 +313,6 @@ export class HomeComponent implements OnInit, DoCheck {
     } else if (event.target.value.trim() === 'numBins') {
       this.binType = 1;
     }
-    console.log(event.target.value.trim());
   }
 
   numberBin(event) {

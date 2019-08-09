@@ -33,7 +33,6 @@ export class TableDataComponent implements OnInit {
           } else {
             this.indexDbStore.viewSelectedCSVStore(parseInt(this.csvId, 10)).then(() => {
               this.data.currentCSVItem.subscribe(result => {
-                console.log(result);
                 this.csv = result;
                 this.show = true;
                 const columnDefs = this.csv.selectedHeader;
@@ -58,7 +57,6 @@ export class TableDataComponent implements OnInit {
             } else {
               this.indexDbStore.viewSelectedAssessmentStore(parseInt(this.assessmentId, 10)).then(() => {
                 this.data.currentAssessmentItem.subscribe(result => {
-                  console.log(result);
                   this.csv = result.csv[this.position];
                   this.show = true;
                   const columnDefs = this.csv.selectedHeader;

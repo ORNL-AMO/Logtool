@@ -145,6 +145,32 @@ export class PlotGraphComponent implements OnInit {
     }
   }
 
+  generateReport() {
+    if (this.graphType === undefined || this.graphType === '') {
+      alert('No Graph to Save');
+      return;
+    } else {
+      const graph: Graph = {
+        id: this.data.getRandomInt(99999),
+        assessmentId: this.assessment.id,
+        displayName: this.graph.layout.title,
+        graph: this.graph,
+        visualizeMode: true
+      };
+      this.indexFileStore.viewSelectedGraphReport(this.assessment.id).then(() => {
+        this.data.currentGraphItemArray.subscribe(graphReport => {
+          this.indexFileStore.insertIntoGraphReportStore(graph, this.assessment, graphReport);
+          alert('Report Generated');
+        });
+      });
+    }
+
+  }
+
+  loadGeneratedReport(reportId) {
+
+  }
+
   displayGraph(type) {
     this.type = type;
     this.xValue = [];

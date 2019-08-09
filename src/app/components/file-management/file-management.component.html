@@ -207,9 +207,9 @@
             <!-- tabs -->
             <div *ngIf="tableTabs.length>0" class="row " style="margin-left: 19px; margin-right: 18px;">
               <ul class="scrolling-wrapper-flexbox flex-shrink-1 tight-fit">
-                <li class="nav-item" *ngFor="let tab of tableTabs">
+                <li class="nav-item" *ngFor="let tab of tableTabs; let i = index">
                   <!-- [ngStyle]="{'min-width' : getTabWidth(tab)}"> -->
-                  <div class="nav-link" (click)="tabTableSelect(tab.id)" id='tab{{tab.tabID}}'
+                  <div class="nav-link" (click)="tabTableSelect(tab.id, i)" id='tab{{tab.tabID}}'
                        [ngStyle]="{'background': tableActive == tab.id ? 'blue': 'rgba(0,0,255,.5)' }">
                     <span id={{tab.tabId}} style="margin: 10px 5px; font-size: 15px;">{{tab.name}}</span>
 

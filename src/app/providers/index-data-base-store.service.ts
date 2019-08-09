@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {NgxIndexedDB} from 'ngx-indexed-db';
+import {IndexDetails, NgxIndexedDB} from 'ngx-indexed-db';
 import {Assessment} from '../types/assessment';
 import {FileMetaData} from '../types/file-meta-data';
 import {CSVFileInput} from '../types/csvfile-input';
@@ -803,5 +803,107 @@ export class IndexDataBaseStoreService {
       });
     });
   }
+
+  insertIntoGraphReportStore(graph: Graph, assessment: Assessment, graphReport: Array<Graph>) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.add('graphReport',
+        {
+          id: graph.id,
+          assessmentId: graph.assessmentId,
+          displayName: graph.displayName,
+          graph: graph.graph,
+          visualizeMode: graph.visualizeMode
+        }).then(() => {
+          console.log(graphReport);
+          assessment.reportGraph = graphReport;
+          assessment.reportGraph.push(graph);
+          this.updateGraphAssessmentStore(assessment);
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  updateGraphReportStore(graph: Graph, assessment: any) {
+    const db = new NgxIndexedDB('LOGGER', 1);
+    db.openDatabase(1, evt => {
+    }).then(() => {
+      db.update('graphReport',
+        {
+          id: graph.id,
+          assessmentId: graph.assessmentId,
+          displayName: graph.displayName,
+          graph: graph.graph,
+          visualizeMode: graph.visualizeMode
+        }).then(() => {
+          assessment.graph = graph.graph;
+          this.updateGraphAssessmentStore(assessment);
+        },
+        error => {
+          alert('File already Imported');
+        });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  viewGraphReportStore() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('graphReport').then(graph => {
+            this.data.changeGraphItemArray(graph);
+            resolve();
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewSelectedGraphReport(assessmentId) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          const index_detail: IndexDetails = {
+            indexName: 'assessmentId',
+            order: 'asc'
+          };
+          db.getAll('graphReport', IDBKeyRange.only(assessmentId), index_detail).then(graph => {
+            console.log(graph);
+            this.data.changeGraphItemArray(graph);
+            resolve(graph);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  deleteFromGraphStoreReport(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('graphReport', id).then(() => {
+            console.log('Deleted');
+            resolve();
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
 
 }

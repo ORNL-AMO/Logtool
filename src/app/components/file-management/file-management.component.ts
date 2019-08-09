@@ -13,7 +13,6 @@ import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {Assessment} from '../../types/assessment';
 import {ImportDataComponent} from '../import-data/import-data.component';
-import {ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS} from '@angular/platform-browser-dynamic';
 
 
 @Component({
@@ -138,17 +137,15 @@ export class FileManagementComponent implements OnInit {
     this.activeID = assessment.id;
     this.activeName = assessment.name;
     this.activeMetaData = assessment.metaData;
-    // reset csv table
     this.tableTabs = [];
     for (let i = 0; i < assessment.csv.length; i++) {
-      this.addDataSetsToTable(assessment.csv[i].id);
+      this.addDataSetsToTableLoad(assessment.csv[i]);
     }
-    console.log(assessment.csv.length);
     if (assessment.csv.length < 0) {
       this.tableActive = -1;
     } else {
-      this.tableActive = assessment.csv[0].id;
-      this.changeDisplayTable();
+      this.tableActive = assessment.csv.id;
+      this.changeDisplayTableLoad(this.activeID, 0);
     }
     this.indexdbstore.clearQuickSaveStore().then(() => {
       const quickSave: QuickSave = {
@@ -194,22 +191,26 @@ export class FileManagementComponent implements OnInit {
 
 
   // Stuff related to table ----------------
-  tabTableSelect(tabId) {
+  tabTableSelect(tabId, i) {
     this.tableActive = tabId;
     if (this.tableTabs.length > 0) {
-      this.activeUpdated();
+      this.activeUpdated(i);
     } else {
       this.tableActive = -1;
     }
 
   }
 
-  activeUpdated() {
-    this.changeDisplayTable();
+  activeUpdated(i) {
+    if (!this.newAssessment) {
+      this.changeDisplayTableLoad(this.activeID, i);
+    } else {
+      this.changeDisplayTable();
+    }
+
   }
 
   changeDisplayTable() {
-    console.log(this.tableActive);
     this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
       this.router.navigate(['table-data'], {
         queryParams: {
@@ -220,22 +221,32 @@ export class FileManagementComponent implements OnInit {
     });
   }
 
+  changeDisplayTableLoad(assessmentId, position) {
+    this.router.navigateByUrl('table-data', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['table-data'], {
+        queryParams: {
+          assessmentId: assessmentId,
+          position: position,
+          call: 'visualize'
+        }
+      });
+    });
+  }
+
   showImportModal(type) {
     const initialState = {type: type};
     const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
     };
 
     this.FileRef = this.modalService.show(ImportDataComponent, {initialState});
-      this.FileRef.content.id.subscribe(result => {
-        console.log(result);
-        this.indexdbstore.viewSelectedCSVStore(result).then(() => {
-            this.data.currentCSVItem.subscribe( csvitem => {
-              console.log(csvitem);
-            this.tableTabs.push(csvitem);
-          });
+    this.FileRef.content.id.subscribe(result => {
+      this.indexdbstore.viewSelectedCSVStore(result).then(() => {
+        this.data.currentCSVItem.subscribe(csvitem => {
+          this.tableTabs.push(csvitem);
         });
       });
+    });
   }
 
   showDataModal() {
@@ -264,6 +275,10 @@ export class FileManagementComponent implements OnInit {
         this.tableTabs.push(csvFile);
       });
     });
+  }
+
+  addDataSetsToTableLoad(csvFile) {
+    this.tableTabs.push(csvFile);
   }
 
   // Creating/Updating assessments
