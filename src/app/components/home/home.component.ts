@@ -6,6 +6,8 @@ import {BsModalRef, BsModalService} from 'ngx-bootstrap';
 import {PlotGraphComponent} from '../plot-graph/plot-graph.component';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {DataService} from '../../providers/data.service';
+import {RouteIndicatorService} from '../../providers/route-indicator.service';
+import {Assessment} from '../../types/assessment';
 
 
 @Component({
@@ -23,6 +25,9 @@ export class HomeComponent implements OnInit, DoCheck {
   temp3;
   temp4;
   assessment;
+  routeType;
+  reportTitle: any;
+  graphReportList;
 // Line Graph
   lineListY: any = [];
   timeSeriesY: any = [];
@@ -45,8 +50,10 @@ export class HomeComponent implements OnInit, DoCheck {
 
   @ViewChild(PlotGraphComponent) plotGraph: PlotGraphComponent;
 
+
   constructor(private router: Router, private indexFileStore: IndexDataBaseStoreService, private data: DataService,
-              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers) {
+              private routeDataTransfer: RouteDataTransferService, private modalService: BsModalService, private differs: IterableDiffers,
+              private routeIndicator: RouteIndicatorService) {
     this.differ = differs.find([]).create(null);
   }
 
@@ -56,12 +63,13 @@ export class HomeComponent implements OnInit, DoCheck {
     this.lineListY = [];
     this.timeSeriesY = [];
     this.scatterList = [];
+    this.routeType = this.routeIndicator.storage.value;
     this.indexFileStore.viewFromQuickSaveStore().then(() => {
       this.data.currentQuickSaveItem.subscribe(quickSave => {
         if (quickSave[0] !== undefined) {
           this.indexFileStore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
             this.data.currentAssessmentItem.subscribe(assessment => {
-              console.log(assessment);
+                console.log(assessment);
                 this.assessment = assessment;
                 this.dataFromDialog = assessment.csv;
                 if (this.dataFromDialog === null || this.dataFromDialog === undefined) {
@@ -74,6 +82,7 @@ export class HomeComponent implements OnInit, DoCheck {
                       tabId: i
                     });
                   }
+                  this.generateGraphReportList(assessment);
                   this.populateSpinner();
                   this.populateGraph();
                   this.changeDisplayTable(this.assessment.id, 0);
@@ -213,6 +222,46 @@ export class HomeComponent implements OnInit, DoCheck {
     });
   }
 
+  generateGraphReportList(assessment: Assessment) {
+    this.graphReportList = [];
+    if (assessment.reportGraph !== undefined) {
+      for (let i = 0; i < assessment.reportGraph.length; i++) {
+        const graphReport = {
+          name: assessment.reportGraph[i].displayName,
+          value: assessment.reportGraph[i]
+        };
+        this.graphReportList.push(graphReport);
+      }
+    }
+  }
+
+  routeToVisual(file: any) {
+    const params = {
+      value: 'load_report',
+      graph: file.value.graph
+    };
+    this.routeIndicator.storage = params;
+    this.ngOnInit();
+  }
+
+  generateReport() {
+    if (this.reportTitle === '' || this.reportTitle === undefined) {
+      alert('Invalid name. Please try again');
+      return;
+    }
+    this.plotGraph.generateReport(this.reportTitle).then(() => {
+      this.indexFileStore.viewSelectedAssessmentStore(parseInt(this.assessment.id, 10)).then(() => {
+        this.data.currentAssessmentItem.subscribe(assessment => {
+          this.generateGraphReportList(assessment);
+          document.getElementById('generate_report').click();
+        });
+      });
+    });
+  }
+  closePopUpReport() {
+    document.getElementById('generate_report').click();
+  }
+
 // Custom Function
   populateSpinner() {
     this.lineListY = [];
@@ -247,25 +296,34 @@ export class HomeComponent implements OnInit, DoCheck {
   }
 
   populateGraph() {
-    if (this.graph === '' || this.graph === undefined) {
+    if (this.routeType === 'link' || this.routeType === 'create_new') {
+      if (this.graph === '' || this.graph === undefined) {
+        this.routeDataTransfer.storage = {
+          assessment: this.assessment,
+          assessmentGraph: true,
+          graphType: 'load_graph'
+        };
+      } else if (this.graph === 'line_graph') {
+        this.routeDataTransfer.storage = {
+          assessment: this.assessment,
+          value: this.ySelectorListLine,
+          timeSeries: this.timeSeriesSelectList,
+          graphType: 'line_graph'
+        };
+      } else if (this.graph === 'scatter_graph') {
+        this.routeDataTransfer.storage = {
+          assessment: this.assessment,
+          x: this.xSelectorListScatter,
+          y: this.ySelectorListScatter,
+          graphType: 'scatter_graph'
+        };
+      }
+    } else if (this.routeType === 'load_report') {
       this.routeDataTransfer.storage = {
         assessment: this.assessment,
         assessmentGraph: true,
-        graphType: 'load_graph'
-      };
-    } else if (this.graph === 'line_graph') {
-      this.routeDataTransfer.storage = {
-        assessment: this.assessment,
-        value: this.ySelectorListLine,
-        timeSeries: this.timeSeriesSelectList,
-        graphType: 'line_graph'
-      };
-    } else if (this.graph === 'scatter_graph') {
-      this.routeDataTransfer.storage = {
-        assessment: this.assessment,
-        x: this.xSelectorListScatter,
-        y: this.ySelectorListScatter,
-        graphType: 'scatter_graph'
+        graphType: 'report_graph',
+        report: this.routeIndicator.storage.graph
       };
     }
     this.plotGraph.ngOnInit();
@@ -318,4 +376,6 @@ export class HomeComponent implements OnInit, DoCheck {
   numberBin(event) {
     this.numberOfBin = event.target.value;
   }
+
+
 }

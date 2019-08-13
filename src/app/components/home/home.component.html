@@ -235,19 +235,26 @@
       </div>
     </div>
 
-    <div class="col-4 panel col2" style="min-height: 300px;   height:100%;">
+    <div class="col-2 panel col2" style="min-height: 300px;   height:100%;">
       <!-- labels and nav tabs -->
       <div>
-        <!--Label and Import Button ------------------------------------------------------------------------------->
         <div class="row justify-content-between header" style="height:50%; min-height:20px;">
-          <span class="col-3 panel-title" style="width:100%">Reports</span>
-          <div class="col-6"></div>
-          <button class="btn-primary" style="alignment: center" (click)="plotGraph.generateReport()">Generate Report</button>
+          <span class="col-1 panel-title" style="width:100%">Reports</span>
+          <div class="col-4"></div>
+          <button id="generate_report" class="btn-primary" style="alignment: center" [popover]="pop">Generate Report</button>
           <br>
         </div>
-
     </div>
-
+          <div class="list-container" style="margin-top:0; max-height: 15vh;">
+            <div class="row test tight-fit justify-content-center" *ngFor="let file of graphReportList"
+                 style="border-bottom: 1px solid black; border-top: 1px solid black"
+                 [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}">
+              <div class="tight-fit nonSelectable col-11" (click)="routeToVisual(file)">
+                <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+              </div>
+            </div>
+          </div>
   </div>
 
   <div class="row" style="margin-left: 7px">
@@ -257,3 +264,20 @@
   </div>
 </div>
 </div>
+<ng-template #pop id="bob">
+  <div style="width:200px; height:100px">
+    <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
+      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="closePopUpReport()">&times;</span>
+    </div>
+    <div class="row justify-content-center">
+      <input type="text" style="width:190px; text-align: center; height:20px; margin:auto 5px 5px 5px;"
+             [(ngModel)]="reportTitle" placeholder="Report Title">
+    </div>
+    <div class="row justify-content-center">
+      <button class="btn" style="width:190px; height:30px; font-size:14px; vertical-align: middle;"
+              (click)="generateReport()">Confirm
+      </button>
+    </div>
+
+  </div>
+</ng-template>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ExportCSVService} from '../../providers/export-csv.service';
 import {DataService} from '../../providers/data.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap';
@@ -13,6 +13,8 @@ import {QuickSave} from '../../types/quick-save';
 import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
 import {Assessment} from '../../types/assessment';
 import {ImportDataComponent} from '../import-data/import-data.component';
+import {RouteIndicatorService} from '../../providers/route-indicator.service';
+import {ToolHeaderComponent} from '../tool-header/tool-header.component';
 
 
 @Component({
@@ -37,13 +39,17 @@ export class FileManagementComponent implements OnInit {
   private confirmRef: BsModalRef;
   private activeName;
   private activeID;
+  private graphReportList = [];
+  private dayTypeReportList = [];
+
+  @ViewChild(ToolHeaderComponent) toolHeader: ToolHeaderComponent;
 
   constructor(private router: Router, private data: DataService, private indexdbstore: IndexDataBaseStoreService,
-              private modalService: BsModalService, private exportCsv: ExportCSVService, private dbOperation: DatabaseOperationService) {
+              private modalService: BsModalService, private exportCsv: ExportCSVService, private dbOperation: DatabaseOperationService,
+              private routeIndicator: RouteIndicatorService) {
   }
 
   ngOnInit() {
-
     this.generateAssessmentList();
     this.indexdbstore.viewFromQuickSaveStore().then(() => {
       this.data.currentQuickSaveItem.subscribe(quickSave => {
@@ -120,13 +126,9 @@ export class FileManagementComponent implements OnInit {
           return;
         } else {
           this.loadAssessment(assessment);
-
-
         }
       });
-
     } else if (this.newAssessment === undefined || !this.newAssessment) {
-
       this.loadAssessment(assessment);
     }
   }
@@ -152,8 +154,51 @@ export class FileManagementComponent implements OnInit {
         id: assessment.id,
         storeName: 'assessment'
       };
-      this.indexdbstore.insertIntoQuickSaveStore(quickSave);
+      this.indexdbstore.insertIntoQuickSaveStore(quickSave).then(() => {
+        this.generateGraphReportList(assessment);
+        this.generateDayTypeReportList(assessment);
+      });
     });
+  }
+
+  clickLoadAssessment() {
+    const params = {
+      value: 'link'
+    };
+    this.routeIndicator.storage = params;
+    this.router.navigateByUrl('visualize', {skipLocationChange: false}).then(() => {
+      this.router.navigate(['visualize']).then(() => {
+        this.toolHeader = new ToolHeaderComponent(this.router, this.routeIndicator);
+        this.toolHeader.colorChangeMethod('visualize');
+      });
+    });
+  }
+
+  generateGraphReportList(assessment: Assessment) {
+    this.graphReportList = [];
+    if (assessment.reportGraph !== undefined) {
+      for (let i = 0; i < assessment.reportGraph.length; i++) {
+        const graphReport = {
+          name: assessment.reportGraph[i].displayName,
+          value: assessment.reportGraph[i]
+        };
+        this.graphReportList.push(graphReport);
+      }
+      console.log(this.graphReportList);
+    }
+  }
+
+  generateDayTypeReportList(assessment: Assessment) {
+    if (assessment.reportDayType !== undefined) {
+      for (let i = 0; i < assessment.reportDayType.length; i++) {
+        const dayTypeReport = {
+          name: assessment.reportDayType[i].displayName,
+          value: assessment.reportDayType[i]
+        };
+        this.dayTypeReportList.push(dayTypeReport);
+      }
+      console.log(this.dayTypeReportList);
+    }
   }
 
   removeAssessment(event: MouseEvent, i: number) {
@@ -297,21 +342,45 @@ export class FileManagementComponent implements OnInit {
       alert('Please select File for Assessment');
     } else {
       this.indexdbstore.clearQuickSaveStore().then(() => {
-        this.dbOperation.createAssessment(assessmentId, name, csv, metaDataId, metaData, graphId, dayTypeId, assessmentMode);
-        const quickSave: QuickSave = {
-          id: assessmentId,
-          storeName: 'assessment'
-        };
-        this.indexdbstore.insertIntoQuickSaveStore(quickSave);
-        this.newAssessment = false;
-        this.indexdbstore.clearCSVStore();
-        this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
-          this.router.navigate(['visualize']);
+        this.dbOperation.createAssessment(assessmentId, name, csv, metaDataId, metaData, graphId, dayTypeId, assessmentMode).then(() => {
+          const quickSave: QuickSave = {
+            id: assessmentId,
+            storeName: 'assessment'
+          };
+          this.indexdbstore.insertIntoQuickSaveStore(quickSave).then(() => {
+            this.newAssessment = false;
+            this.indexdbstore.clearCSVStore().then(() => {
+              const params = {
+                value: 'create_new'
+              };
+              this.routeIndicator.storage = params;
+              this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
+                this.router.navigate(['visualize']).then(() => {
+                  this.toolHeader = new ToolHeaderComponent(this.router, this.routeIndicator);
+                  this.toolHeader.colorChangeMethod('visualize');
+                });
+              });
+            });
+          });
         });
       }, error => {
         console.log(error);
       });
     }
+  }
+
+  routeToVisual(file: any) {
+    const params = {
+      value: 'load_report',
+      graph: file.value.graph
+    };
+    this.routeIndicator.storage = params;
+    this.router.navigateByUrl('visualize', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['visualize']).then(() => {
+        this.toolHeader = new ToolHeaderComponent(this.router, this.routeIndicator);
+        this.toolHeader.colorChangeMethod('visualize');
+      });
+    });
   }
 
   updateAssessment() {
@@ -341,6 +410,5 @@ export class FileManagementComponent implements OnInit {
     });
     alert('Exported');
   }
-
 }
 

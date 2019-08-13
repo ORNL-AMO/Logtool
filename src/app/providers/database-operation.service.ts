@@ -91,26 +91,30 @@ export class DatabaseOperationService {
 
   createAssessment(id: number, name: string, csv: any[], metaDataId: number, metaData: FileMetaData,
                    graphId: number, dayTypeId: number, assessmentMode: boolean) {
-    const csvList = [];
-    for (let i = 0; i < csv.length; i++) {
-          csvList.push(csv[i]);
-    }
-    const assessmentItem: Assessment = {
-      id: id,
-      name: name,
-      csv: csvList,
-      metaDataId: metaDataId,
-      metaData: metaData,
-      graphId: graphId,
-      graph: undefined,
-      dayTypeId: dayTypeId,
-      dayType: undefined,
-      reportGraph: undefined,
-      reportDayType: undefined,
-      assessmentMode: assessmentMode
-    };
-    this.indexFileStore.insertIntoMetaStore(metaData);
-    this.indexFileStore.insertIntoAssessmentStore(assessmentItem);
+    return new Promise(resolve => {
+      const csvList = [];
+      for (let i = 0; i < csv.length; i++) {
+        csvList.push(csv[i]);
+      }
+      const assessmentItem: Assessment = {
+        id: id,
+        name: name,
+        csv: csvList,
+        metaDataId: metaDataId,
+        metaData: metaData,
+        graphId: graphId,
+        graph: undefined,
+        dayTypeId: dayTypeId,
+        dayType: undefined,
+        reportGraph: undefined,
+        reportDayType: undefined,
+        assessmentMode: assessmentMode
+      };
+      this.indexFileStore.insertIntoMetaStore(metaData).then(() => {
+        this.indexFileStore.insertIntoAssessmentStore(assessmentItem).then(() => {
+          resolve();
+        });
+      });
+    });
   }
-
 }

@@ -24,6 +24,7 @@ export class PlotGraphComponent implements OnInit {
   timeSeries = [];
   plotGraph = [];
   graphType = '';
+  reportGraph;
   histValue = [];
   annotationListLine = [];
   annotationListScatter = [];
@@ -49,9 +50,12 @@ export class PlotGraphComponent implements OnInit {
     } else {
       this.assessment = this.routeDataTransfer.storage.assessment;
       this.assessmentGraph = this.routeDataTransfer.storage.assessmentGraph;
-      if (this.assessment.graph !== undefined && this.assessmentGraph) {
-        this.graphType = this.routeDataTransfer.storage.graphType;
+      this.graphType = this.routeDataTransfer.storage.graphType;
+      if (this.assessment.graph !== undefined && this.assessmentGraph && this.graphType === 'load_graph') {
         this.loadDisplayGraph(this.assessment.graph);
+      } else if (this.graphType === 'report_graph' && this.routeDataTransfer.storage.report !== undefined) {
+        this.reportGraph = this.routeDataTransfer.storage.report;
+        this.loadDisplayGraph(this.reportGraph);
       } else {
         this.annotationListLine = [];
         this.annotationListScatter = [];
@@ -145,30 +149,29 @@ export class PlotGraphComponent implements OnInit {
     }
   }
 
-  generateReport() {
-    if (this.graphType === undefined || this.graphType === '') {
-      alert('No Graph to Save');
-      return;
-    } else {
-      const graph: Graph = {
-        id: this.data.getRandomInt(99999),
-        assessmentId: this.assessment.id,
-        displayName: this.graph.layout.title,
-        graph: this.graph,
-        visualizeMode: true
-      };
-      this.indexFileStore.viewSelectedGraphReport(this.assessment.id).then(() => {
-        this.data.currentGraphItemArray.subscribe(graphReport => {
-          this.indexFileStore.insertIntoGraphReportStore(graph, this.assessment, graphReport);
-          alert('Report Generated');
+  generateReport(reportTitle) {
+    return new Promise(resolve => {
+      if (this.graphType === undefined || this.graphType === '') {
+        alert('No Graph to Save');
+        return;
+      } else {
+        const graph: Graph = {
+          id: this.data.getRandomInt(99999),
+          assessmentId: this.assessment.id,
+          displayName: reportTitle,
+          graph: this.graph,
+          visualizeMode: true
+        };
+        this.indexFileStore.viewSelectedGraphReport(this.assessment.id).then(() => {
+          this.data.currentGraphItemArray.subscribe(graphReport => {
+            this.indexFileStore.insertIntoGraphReportStore(graph, this.assessment, graphReport).then(() => {
+              alert('Report Generated');
+              resolve();
+            });
+          });
         });
-      });
-    }
-
-  }
-
-  loadGeneratedReport(reportId) {
-
+      }
+    });
   }
 
   displayGraph(type) {
@@ -191,8 +194,10 @@ export class PlotGraphComponent implements OnInit {
             name: this.yValue[i].name
           });
         }
-      } else {
+      } else if (this.graphType === 'load_graph') {
         this.plotGraph = this.assessment.graph.data;
+      } else if (this.graphType === 'report_graph') {
+        this.plotGraph = this.reportGraph.data;
       }
       let layout;
       if (this.annotationListLine.length > 0) {
@@ -245,8 +250,10 @@ export class PlotGraphComponent implements OnInit {
           type: 'scattergl',
           mode: 'markers'
         });
-      } else {
+      } else if (this.graphType === 'load_graph') {
         this.plotGraph = this.assessment.graph.data;
+      } else if (this.graphType === 'report_graph') {
+        this.plotGraph = this.reportGraph.data;
       }
       let layout;
       if (this.annotationListScatter.length > 0) {

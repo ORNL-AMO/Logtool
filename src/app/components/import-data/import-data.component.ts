@@ -69,6 +69,7 @@ export class ImportDataComponent implements OnInit {
   }
 
   regress() {
+    this.selectedHeader = [];
     this.stage--;
   }
 
@@ -353,6 +354,7 @@ export class ImportDataComponent implements OnInit {
   }
 
   submitCheckBox() {
+    console.log('submit checkbox');
     if ( !this.headersfilled()) {
       alert('Not all selected columns are named, please name all selected columns');
       return;

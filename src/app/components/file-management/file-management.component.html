@@ -263,7 +263,7 @@
                 </div>
 
                 <div class="list-container" style="margin-top:0; max-height: 15vh;  border-right: 1px solid black">
-                  <div class="row test tight-fit justify-content-center" *ngFor="let file of VisList"
+                  <div class="row test tight-fit justify-content-center" *ngFor="let file of graphReportList"
                        style="border-bottom: 1px solid black; border-top: 1px solid black"
                        [ngStyle]="{'background' : file.selected ? 'blue': '',
                            'color' : file.selected ? 'white': ''}">
@@ -277,7 +277,7 @@
               <div class="col-6" style="border: 3px solid black;border-right-width: 0;">
                 <div class="row justify-content-center">
                   <p class=" header tight-fit"
-                     style=" width: 70%; margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Visualization
+                     style=" width: 70%; margin-top: 5px;margin-bottom: 5px; border: 1px solid black;">Day Type
                     Reports</p>
                 </div>
 
@@ -309,7 +309,7 @@
 
     <div class="row snug justify-content-center">
       <button *ngIf="newAssessment" class="col-2 btn" (click)="createAssessment()">Finialize</button>
-      <button *ngIf="!newAssessment" class="col-2 btn">Update</button>
+      <button *ngIf="!newAssessment" class="col-2 btn" (click)="clickLoadAssessment()">Load</button>
     </div>
   </div>
 </div>

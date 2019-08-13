@@ -26,7 +26,7 @@ export class IndexDataBaseStoreService {
       const transaction = evt.currentTarget.result;
       let objectStore = transaction.createObjectStore('assessment', {keyPath: 'id', unique: true});
       objectStore.createIndex('id', 'id', {unique: true});
-      objectStore.createIndex('name', 'name', {unique: true});
+      objectStore.createIndex('name', 'name', {unique: false});
       objectStore.createIndex('csv', 'csv', {unique: false});
       objectStore.createIndex('metaDataId', 'metaDataId', {unique: true});
       objectStore.createIndex('metaData', 'metaData', {unique: false});
@@ -139,61 +139,70 @@ export class IndexDataBaseStoreService {
   }
 
   insertIntoAssessmentStore(assessment: Assessment) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('assessment',
-        {
-          id: assessment.id,
-          name: assessment.name,
-          csv: assessment.csv,
-          metaDataId: assessment.metaDataId,
-          metaData: assessment.metaData,
-          graphId: assessment.graphId,
-          graph: assessment.graph,
-          dayTypeId: assessment.dayTypeId,
-          dayType: assessment.dayType,
-          reportGraph: assessment.reportGraph,
-          reportDayType: assessment.reportDayType,
-          assessmentMode: assessment.assessmentMode
-        }).then(() => {
-        },
-        error => {
-          alert('Assessment Inserted');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        console.log(assessment);
+        db.add('assessment',
+          {
+            id: assessment.id,
+            name: assessment.name,
+            csv: assessment.csv,
+            metaDataId: assessment.metaDataId,
+            metaData: assessment.metaData,
+            graphId: assessment.graphId,
+            graph: assessment.graph,
+            dayTypeId: assessment.dayTypeId,
+            dayType: assessment.dayType,
+            reportGraph: assessment.reportGraph,
+            reportDayType: assessment.reportDayType,
+            assessmentMode: assessment.assessmentMode
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('Assessment Error');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   updateGraphAssessmentStore(assessment: Assessment) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.update('assessment',
-        {
-          id: assessment.id,
-          name: assessment.name,
-          csv: assessment.csv,
-          metaDataId: assessment.metaDataId,
-          metaData: assessment.metaData,
-          graphId: assessment.graphId,
-          graph: assessment.graph,
-          dayTypeId: assessment.dayTypeId,
-          dayType: assessment.dayType,
-          reportGraph: assessment.reportGraph,
-          reportDayType: assessment.reportDayType,
-          assessmentMode: assessment.assessmentMode
-        }).then(() => {
-        },
-        error => {
-          alert('Error');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.update('assessment',
+          {
+            id: assessment.id,
+            name: assessment.name,
+            csv: assessment.csv,
+            metaDataId: assessment.metaDataId,
+            metaData: assessment.metaData,
+            graphId: assessment.graphId,
+            graph: assessment.graph,
+            dayTypeId: assessment.dayTypeId,
+            dayType: assessment.dayType,
+            reportGraph: assessment.reportGraph,
+            reportDayType: assessment.reportDayType,
+            assessmentMode: assessment.assessmentMode
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('Error');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   updateDayTypeAssessmentStore(assessment) {
@@ -306,21 +315,24 @@ export class IndexDataBaseStoreService {
   }
 
   insertIntoQuickSaveStore(quickSave: QuickSave) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('quickSave',
-        {
-          id: quickSave.id,
-          storeName: quickSave.storeName,
-        }).then(() => {
-        },
-        error => {
-          alert('Assessment Inserted');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('quickSave',
+          {
+            id: quickSave.id,
+            storeName: quickSave.storeName,
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('Assessment Inserted');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
   }
 
@@ -373,6 +385,7 @@ export class IndexDataBaseStoreService {
       });
     });
   }
+
   deleteFromCSVStore(id) {
     return new Promise(resolve => {
       const db = new NgxIndexedDB('LOGGER', 1);
@@ -438,30 +451,33 @@ export class IndexDataBaseStoreService {
   }
 
   insertIntoMetaStore(metaData: FileMetaData) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('meta',
-        {
-          id: metaData.id,
-          assessmentId: metaData.assessmentId,
-          companyName: metaData.companyName,
-          facilityName: metaData.facilityName,
-          facilityContactName: metaData.facilityContactName,
-          assessmentContactName: metaData.assessmentContactName,
-          address: metaData.address,
-          facilityContact: metaData.facilityContact,
-          assessmentContact: metaData.assessmentContact,
-          facilityEmail: metaData.facilityEmail,
-          assessmentEmail: metaData.assessmentEmail
-        }).then(() => {
-        },
-        error => {
-          alert('File already Imported');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('meta',
+          {
+            id: metaData.id,
+            assessmentId: metaData.assessmentId,
+            companyName: metaData.companyName,
+            facilityName: metaData.facilityName,
+            facilityContactName: metaData.facilityContactName,
+            assessmentContactName: metaData.assessmentContactName,
+            address: metaData.address,
+            facilityContact: metaData.facilityContact,
+            assessmentContact: metaData.assessmentContact,
+            facilityEmail: metaData.facilityEmail,
+            assessmentEmail: metaData.assessmentEmail
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('File already Imported');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
   }
 
@@ -805,28 +821,32 @@ export class IndexDataBaseStoreService {
   }
 
   insertIntoGraphReportStore(graph: Graph, assessment: Assessment, graphReport: Array<Graph>) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('graphReport',
-        {
-          id: graph.id,
-          assessmentId: graph.assessmentId,
-          displayName: graph.displayName,
-          graph: graph.graph,
-          visualizeMode: graph.visualizeMode
-        }).then(() => {
-          console.log(graphReport);
-          assessment.reportGraph = graphReport;
-          assessment.reportGraph.push(graph);
-          this.updateGraphAssessmentStore(assessment);
-        },
-        error => {
-          alert('File already Imported');
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('graphReport',
+          {
+            id: graph.id,
+            assessmentId: graph.assessmentId,
+            displayName: graph.displayName,
+            graph: graph.graph,
+            visualizeMode: graph.visualizeMode
+          }).then(() => {
+            assessment.reportGraph = graphReport;
+            assessment.reportGraph.push(graph);
+            this.updateGraphAssessmentStore(assessment).then(() => {
+              resolve();
+            });
+          },
+          error => {
+            alert('File already Imported');
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   updateGraphReportStore(graph: Graph, assessment: any) {

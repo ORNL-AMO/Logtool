@@ -1,16 +1,13 @@
 <div class="container">
   <ul class="nav" >
     <li class="nav-items" >
-      <a class="nav-link" routerLink="/"
-         [ngStyle]="{'background-color' :active === 0 ? 'darkblue':'', 'color' :active === 0 ? 'white':''}">File Management</a>
+      <a id="file" class="nav-link" (click)="route('file_management')">File Management</a>
     </li>
     <li class="nav-items" >
-      <a class="nav-link" routerLink="/holder-day-type"
-         [ngStyle]="{'background-color' :active === 1 ? 'darkblue':'', 'color' :active === 1 ? 'white':''}"> Day Type Plots</a>
+      <a id="day_type_link" class="nav-link"(click)="route('day_type')"> Day Type Plots</a>
     </li>
     <li class="nav-items" >
-      <a class="nav-link" routerLink="/visualize"
-         [ngStyle]="{'background-color' :active === 2 ? 'darkblue':'', 'color' :active === 2 ? 'white':''}">Visualize</a>
+      <a id="visualize_link" class="nav-link" (click)="route('visualize')">Visualize</a>
     </li>
   </ul>
 </div>
