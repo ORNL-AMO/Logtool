@@ -206,22 +206,36 @@ export class IndexDataBaseStoreService {
   }
 
   updateDayTypeAssessmentStore(assessment) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.update('assessment',
-        {
-          id: assessment.id,
-          dayType: assessment.dayType,
-        }).then(() => {
-        },
-        error => {
-          alert('Error');
-          console.log(error);
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.update('assessment',
+          {
+            id: assessment.id,
+            name: assessment.name,
+            csv: assessment.csv,
+            metaDataId: assessment.metaDataId,
+            metaData: assessment.metaData,
+            graphId: assessment.graphId,
+            graph: assessment.graph,
+            dayTypeId: assessment.dayTypeId,
+            dayType: assessment.dayType,
+            reportGraph: assessment.reportGraph,
+            reportDayType: assessment.reportDayType,
+            assessmentMode: assessment.assessmentMode
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('Error');
+            console.log(error);
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   updateInitialAssessmentStore(assessment) {
@@ -288,8 +302,8 @@ export class IndexDataBaseStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
           db.getByIndex('assessment', 'id', id).then(assessment => {
-            resolve(assessment);
             this.data.changeAssessmentItem(assessment);
+            resolve(assessment);
           });
         },
         error => {
@@ -637,42 +651,46 @@ export class IndexDataBaseStoreService {
 
 
   insertIntoDayTypeStore(dayType: DayType) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.add('dayType',
-        {
-          id: dayType.id,
-          assessmentId: dayType.assessmentId,
-          name: dayType.name,
-          displayName: dayType.displayName,
-          loadDataFromFile: dayType.loadDataFromFile,
-          loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
-          loadValueColumnCount: dayType.loadValueColumnCount,
-          loadColumnMainArray: dayType.loadColumnMainArray,
-          loadSumArray: dayType.loadSumArray,
-          loadBinList: dayType.loadBinList,
-          loadDisplayBinList: dayType.loadDisplayBinList,
-          loadSelectedBinList: dayType.loadSelectedBinList,
-          loadDays: dayType.loadDays,
-          loadSelectedDates: dayType.loadSelectedDates,
-          loadGraphDayAverage: dayType.loadGraphDayAverage,
-          loadGraphBinAverage: dayType.loadGraphBinAverage,
-          loadShowBinMode: dayType.loadShowBinMode,
-          loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
-          loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
-          loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
-          loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
-          loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
-          dayTypeMode: dayType.dayTypeMode
-        }).then(() => {
-        },
-        error => {
-          alert('File already Imported');
-        });
-    }, error => {
-      console.log(error);
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('dayType',
+          {
+            id: dayType.id,
+            assessmentId: dayType.assessmentId,
+            name: dayType.name,
+            displayName: dayType.displayName,
+            loadDataFromFile: dayType.loadDataFromFile,
+            loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
+            loadValueColumnCount: dayType.loadValueColumnCount,
+            loadColumnMainArray: dayType.loadColumnMainArray,
+            loadSumArray: dayType.loadSumArray,
+            loadBinList: dayType.loadBinList,
+            loadDisplayBinList: dayType.loadDisplayBinList,
+            loadSelectedBinList: dayType.loadSelectedBinList,
+            loadDays: dayType.loadDays,
+            loadSelectedDates: dayType.loadSelectedDates,
+            loadGraphDayAverage: dayType.loadGraphDayAverage,
+            loadGraphBinAverage: dayType.loadGraphBinAverage,
+            loadShowBinMode: dayType.loadShowBinMode,
+            loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
+            loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
+            loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
+            loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
+            loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
+            dayTypeMode: dayType.dayTypeMode
+          }).then(() => {
+            resolve();
+          },
+          error => {
+            alert('File already Imported');
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   insertIntoDayTypeStoreFromFile(dayType: DayType) {
@@ -733,43 +751,50 @@ export class IndexDataBaseStoreService {
     });
   }
 
-  updateDayTypeStore(dayType: DayType) {
-    const db = new NgxIndexedDB('LOGGER', 1);
-    db.openDatabase(1, evt => {
-    }).then(() => {
-      db.update('dayType',
-        {
-          id: dayType.id,
-          assessmentId: dayType.assessmentId,
-          name: dayType.name,
-          displayName: dayType.displayName,
-          loadDataFromFile: dayType.loadDataFromFile,
-          loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
-          loadValueColumnCount: dayType.loadValueColumnCount,
-          loadColumnMainArray: dayType.loadColumnMainArray,
-          loadSumArray: dayType.loadSumArray,
-          loadBinList: dayType.loadBinList,
-          loadDisplayBinList: dayType.loadDisplayBinList,
-          loadSelectedBinList: dayType.loadSelectedBinList,
-          loadDays: dayType.loadDays,
-          loadSelectedDates: dayType.loadSelectedDates,
-          loadGraphDayAverage: dayType.loadGraphDayAverage,
-          loadGraphBinAverage: dayType.loadGraphBinAverage,
-          loadShowBinMode: dayType.loadShowBinMode,
-          loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
-          loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
-          loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
-          loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
-          loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
-          dayTypeMode: dayType.dayTypeMode
-        }).then(() => {
-        },
-        error => {
-          alert('File already Imported');
-        });
-    }, error => {
-      console.log(error);
+  updateDayTypeStore(dayType: DayType, assessment: Assessment) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.update('dayType',
+          {
+            id: dayType.id,
+            assessmentId: dayType.assessmentId,
+            name: dayType.name,
+            displayName: dayType.displayName,
+            loadDataFromFile: dayType.loadDataFromFile,
+            loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
+            loadValueColumnCount: dayType.loadValueColumnCount,
+            loadColumnMainArray: dayType.loadColumnMainArray,
+            loadSumArray: dayType.loadSumArray,
+            loadBinList: dayType.loadBinList,
+            loadDisplayBinList: dayType.loadDisplayBinList,
+            loadSelectedBinList: dayType.loadSelectedBinList,
+            loadDays: dayType.loadDays,
+            loadSelectedDates: dayType.loadSelectedDates,
+            loadGraphDayAverage: dayType.loadGraphDayAverage,
+            loadGraphBinAverage: dayType.loadGraphBinAverage,
+            loadShowBinMode: dayType.loadShowBinMode,
+            loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
+            loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
+            loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
+            loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
+            loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
+            dayTypeMode: dayType.dayTypeMode
+          }).then(() => {
+            assessment.dayType = dayType;
+            this.updateDayTypeAssessmentStore(assessment).then(() => {
+              resolve();
+            });
+          },
+          error => {
+            alert('File already Imported');
+          });
+      }, error => {
+        console.log(error);
+      });
     });
+
   }
 
   viewDayTypeStore() {
@@ -915,6 +940,152 @@ export class IndexDataBaseStoreService {
       db.openDatabase(1, evt => {
       }).then(() => {
         db.delete('graphReport', id).then(() => {
+            console.log('Deleted');
+            resolve();
+          },
+          error => {
+            console.log(error);
+          });
+      });
+    });
+  }
+
+  insertIntoDayTypeReportStore(dayType: DayType, assessment: Assessment, dayTypeReport: Array<DayType>) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.add('dayTypeReport',
+          {
+            id: dayType.id,
+            assessmentId: dayType.assessmentId,
+            name: dayType.name,
+            displayName: dayType.displayName,
+            loadDataFromFile: dayType.loadDataFromFile,
+            loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
+            loadValueColumnCount: dayType.loadValueColumnCount,
+            loadColumnMainArray: dayType.loadColumnMainArray,
+            loadSumArray: dayType.loadSumArray,
+            loadBinList: dayType.loadBinList,
+            loadDisplayBinList: dayType.loadDisplayBinList,
+            loadSelectedBinList: dayType.loadSelectedBinList,
+            loadDays: dayType.loadDays,
+            loadSelectedDates: dayType.loadSelectedDates,
+            loadGraphDayAverage: dayType.loadGraphDayAverage,
+            loadGraphBinAverage: dayType.loadGraphBinAverage,
+            loadShowBinMode: dayType.loadShowBinMode,
+            loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
+            loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
+            loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
+            loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
+            loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
+            dayTypeMode: dayType.dayTypeMode
+          }).then(() => {
+            assessment.reportDayType = dayTypeReport;
+            assessment.reportDayType.push(dayType);
+            this.updateDayTypeAssessmentStore(assessment).then(() => {
+              resolve();
+            });
+          },
+          error => {
+            alert('File already Imported');
+          });
+      }, error => {
+        console.log(error);
+      });
+    });
+
+  }
+
+  updateDayTypeReportStore(dayType: DayType, assessment: Assessment, dayTypeReport: Array<DayType>) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.update('dayTypeReport',
+          {
+            id: dayType.id,
+            assessmentId: dayType.assessmentId,
+            name: dayType.name,
+            displayName: dayType.displayName,
+            loadDataFromFile: dayType.loadDataFromFile,
+            loadTimeSeriesDayType: dayType.loadTimeSeriesDayType,
+            loadValueColumnCount: dayType.loadValueColumnCount,
+            loadColumnMainArray: dayType.loadColumnMainArray,
+            loadSumArray: dayType.loadSumArray,
+            loadBinList: dayType.loadBinList,
+            loadDisplayBinList: dayType.loadDisplayBinList,
+            loadSelectedBinList: dayType.loadSelectedBinList,
+            loadDays: dayType.loadDays,
+            loadSelectedDates: dayType.loadSelectedDates,
+            loadGraphDayAverage: dayType.loadGraphDayAverage,
+            loadGraphBinAverage: dayType.loadGraphBinAverage,
+            loadShowBinMode: dayType.loadShowBinMode,
+            loadToggleRelayoutDay: dayType.loadToggleRelayoutDay,
+            loadAnnotationListDayAverage: dayType.loadAnnotationListDayAverage,
+            loadAnnotationListBinAverage: dayType.loadAnnotationListBinAverage,
+            loadGlobalYAverageDay: dayType.loadGlobalYAverageDay,
+            loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
+            dayTypeMode: dayType.dayTypeMode
+          }).then(() => {
+            assessment.reportDayType = dayTypeReport;
+            assessment.reportDayType.push(dayType);
+            this.updateDayTypeAssessmentStore(assessment).then(() => {
+              resolve();
+            });
+          },
+          error => {
+            alert('File already Imported');
+          });
+      }, error => {
+        console.log(error);
+      });
+    });
+  }
+
+  viewDayTypeReportStore() {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          db.getAll('dayTypeReport').then(dayType => {
+            this.data.changeDayTypeItemArray(dayType);
+            resolve();
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  viewSelectedDayTypeReport(assessmentId) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+          const index_detail: IndexDetails = {
+            indexName: 'assessmentId',
+            order: 'asc'
+          };
+          db.getAll('dayTypeReport', IDBKeyRange.only(assessmentId), index_detail).then(dayType => {
+            console.log(dayType);
+            this.data.changeDayTypeItemArray(dayType);
+            resolve(dayType);
+          });
+        },
+        error => {
+          console.log(error);
+        });
+    });
+  }
+
+  deleteFromDayTypeStoreReport(id) {
+    return new Promise(resolve => {
+      const db = new NgxIndexedDB('LOGGER', 1);
+      db.openDatabase(1, evt => {
+      }).then(() => {
+        db.delete('dayTypeReport', id).then(() => {
             console.log('Deleted');
             resolve();
           },

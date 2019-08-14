@@ -12,6 +12,12 @@ import {ExportCSVService} from '../../providers/export-csv.service';
 import {CalendarComponent} from '../calendar/calendar.component';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {DatabaseOperationService} from '../../providers/database-operation.service';
+import {error} from 'util';
+import {DayType} from '../../types/day-type';
+import {RouteIndicatorService} from '../../providers/route-indicator.service';
+import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
+import {Assessment} from '../../types/assessment';
+import {ToolHeaderComponent} from '../tool-header/tool-header.component';
 
 
 @Component({
@@ -24,15 +30,14 @@ export class HolderDayTypeComponent implements OnInit {
   constructor(private data: DataService, private graphCalculation: GraphCalculationService,
               private graphCreation: GraphCreationService, private indexFileStore: IndexDataBaseStoreService,
               private modalService: BsModalService, private exportCsv: ExportCSVService,
-              private dbOperation: DatabaseOperationService) {
+              private dbOperation: DatabaseOperationService, private routeIndicator: RouteIndicatorService,
+              private routeDataTransfer: RouteDataTransferService) {
   }
 
   @ViewChild(CalendarComponent)
   private calendar: CalendarComponent;
 
   shift = 'data';
-  currentFile: string;
-  currentId: string;
 
 
   scrollActive = false;
@@ -53,6 +58,7 @@ export class HolderDayTypeComponent implements OnInit {
   loadTimeSeriesDayType = [];
   loadValueColumnCount = [];
   columnMainArray = [];
+  assessment;
   assessmentId;
   sumArray = [];
 
@@ -92,57 +98,116 @@ export class HolderDayTypeComponent implements OnInit {
   showBinMode = true;
   dayTypeMode = false;
   loadDayTypeId;
-  loadSessionData;
-  snapShotStash: any[];
-  bsModalRef;
+  loadSessionData: DayType;
+  dayTypeReportList = [];
+  routeType;
+  reportName;
 
   ngOnInit() {
+    this.plotGraphDayAverageInit();
+    this.plotGraphBinAverageInit();
+    this.routeType = this.routeIndicator.storage.value;
     this.mac = window.navigator.platform.includes('Mac') || window.navigator.platform.includes('mac');
-    this.indexFileStore.viewFromQuickSaveStore().then(result => {
-      console.log(result);
-      if (result === undefined) {
-        this.selectedDates = new Set([]);
-        this.plotGraphDayAverage(0);
-        this.plotGraphBinAverage(0);
-        this.indexFileStore.viewSelectedAssessmentStore(125365).then(assessment => {
-          this.dataFromInput = assessment;
-          this.tabs = [];
-          for (let i = 0; i < this.dataFromInput.length; i++) {
-            this.tabs.push({
-              name: this.dataFromInput[i].name,
-              id: this.dataFromInput[i].id,
-              tabId: i
+    this.indexFileStore.viewFromQuickSaveStore().then(() => {
+      this.data.currentQuickSaveItem.subscribe(quickSave => {
+        if (quickSave[0] !== undefined) {
+          this.indexFileStore.viewSelectedAssessmentStore(parseInt(quickSave[0].id, 10)).then(() => {
+            this.data.currentAssessmentItem.subscribe(assessment => {
+              this.assessment = assessment;
+              this.assessmentId = this.assessment.id;
+              this.loadDayTypeId = this.assessment.dayTypeId;
+              this.selectedDates = new Set([]);
+              this.dataFromInput = this.assessment.csv;
+              this.tabs = [];
+              for (let i = 0; i < this.dataFromInput.length; i++) {
+                this.tabs.push({
+                  name: this.dataFromInput[i].name,
+                  id: this.dataFromInput[i].id,
+                  tabId: i
+                });
+              }
+              this.generateDayTypeReportList(assessment);
+              this.populateSpinner();
+              if (this.routeType === 'link' || this.routeType === 'create_new') {
+                if (this.assessment.dayType !== undefined) {
+                  this.loadSession(this.assessment.dayType);
+                }
+              } else if (this.routeType === 'load_report') {
+                const reportLoad = this.routeIndicator.storage.dayType;
+                this.loadSession(reportLoad);
+              }
+            }, err => {
+              console.log(err);
             });
-          }
-          this.populateSpinner();
-        });
-      } else {
-        this.dayTypeMode = false;
-        if (this.dayTypeMode) {
-          this.plotGraphDayAverage(0);
-          this.plotGraphBinAverage(0);
-          const id = result;
-          this.loadSession(id);
-        } else {
-          this.selectedDates = new Set([]);
-          this.plotGraphDayAverage(0);
-          this.plotGraphBinAverage(0);
-          this.indexFileStore.viewSelectedAssessmentStore(125365).then(assessment => {
-            this.dataFromInput = assessment;
-            this.tabs = [];
-            for (let i = 0; i < this.dataFromInput.length; i++) {
-              this.tabs.push({
-                name: this.dataFromInput[i].name,
-                id: this.dataFromInput[i].id,
-                tabId: i
-              });
-            }
-            this.populateSpinner();
           });
         }
-      }
+      });
     });
+  }
 
+  loadSession(dayType) {
+    this.loadSessionData = dayType;
+    this.dayTypeMode = this.loadSessionData.dayTypeMode;
+    this.loadDayTypeNavigation(false);
+  }
+
+  generateReport() {
+    if (this.reportName !== '' || this.reportName !== undefined) {
+      if (this.columnMainArray.length > 0) {
+        let valueColumnCount, timeSeries, dataFromFile;
+        if (this.dayTypeMode) {
+          dataFromFile = this.loadSessionData.loadDataFromFile;
+          timeSeries = this.loadSessionData.loadTimeSeriesDayType;
+          valueColumnCount = this.loadSessionData.loadValueColumnCount;
+        } else {
+          dataFromFile = this.loadDataFromFile;
+          timeSeries = this.loadTimeSeriesDayType;
+          valueColumnCount = this.loadValueColumnCount;
+        }
+        this.dbOperation.generateDayTypeReport(this.assessmentId, this.graphDayAverage.layout.title, this.reportName,
+          dataFromFile, timeSeries, valueColumnCount, this.columnMainArray, this.sumArray,
+          this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
+          this.graphBinAverage, this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,
+          this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true, this.assessment).then(() => {
+          this.indexFileStore.viewSelectedAssessmentStore(parseInt(this.assessmentId, 10)).then(() => {
+            this.data.currentAssessmentItem.subscribe(assessment => {
+              this.generateDayTypeReportList(assessment);
+              document.getElementById('generate_report').click();
+            });
+          });
+        });
+
+      } else {
+        alert('Create Graph');
+      }
+    }
+  }
+
+  generateDayTypeReportList(assessment: Assessment) {
+    console.log(assessment);
+    this.dayTypeReportList = [];
+    if (assessment.reportDayType !== undefined) {
+      for (let i = 0; i < assessment.reportDayType.length; i++) {
+        const dayTypeReport = {
+          name: assessment.reportDayType[i].displayName,
+          value: assessment.reportDayType[i]
+        };
+        this.dayTypeReportList.push(dayTypeReport);
+      }
+    }
+  }
+
+  routeToDayType(file: any) {
+    const params = {
+      value: 'load_report',
+      dayType: file.value
+    };
+    this.routeIndicator.storage = params;
+    this.ngOnInit();
+  }
+
+  hideReport() {
+    document.getElementById('generate_report').click();
   }
 
   allocateBins() {
@@ -211,7 +276,6 @@ export class HolderDayTypeComponent implements OnInit {
     this.columnSelector = [];
     const currentSelectedFile = event.target.value;
     const tempHeader = this.dataFromInput[parseInt(currentSelectedFile, 10)].selectedHeader;
-    this.assessmentId = this.dataFromInput.assessmentId;
     for (let i = 0; i < tempHeader.length; i++) {
 
       if (!(this.dataFromInput[currentSelectedFile].dataArrayColumns[i][0] instanceof Date)) {
@@ -229,12 +293,11 @@ export class HolderDayTypeComponent implements OnInit {
   columnSelectorEvent(event) {
     this.annotationListDayAverage = [];
     this.annotationListBinAverage = [];
-    // this.columnSelectorList.pop();
+    this.columnSelectorList.pop();
     this.columnSelectorList.push({
       name: this.columnSelector[event.target.options.selectedIndex].name,
       value: event.target.value
     });
-    // console.log(this.columnSelectorList);
   }
 
   binToggled(event) {
@@ -461,12 +524,10 @@ export class HolderDayTypeComponent implements OnInit {
       const timeSeriesColumnPointer = this.timeSeriesFileDayType.split(',');
       this.timeSeriesDayType = dataFromFile[parseInt(timeSeriesColumnPointer[0],
         10)].dataArrayColumns[parseInt(timeSeriesColumnPointer[1], 10)];
-      // console.log(this.timeSeriesDayType);
       timeSeriesDayType = this.data.curateTimeSeries(this.timeSeriesDayType);
       const returnObject = this.graphCalculation.averageCalculation(dataFromFile, timeSeriesDayType,
         this.selectedColumnPointer, this.dayTypeMode);
       this.days = returnObject.days;
-      // console.log(this.timeSeriesDayType);
       this.columnMainArray = returnObject.columnMainArray;
       this.loadDataFromFile = returnObject.loadDataFromFile;
       this.loadTimeSeriesDayType = returnObject.loadTimeSeriesDayType;
@@ -475,12 +536,10 @@ export class HolderDayTypeComponent implements OnInit {
       this.plotGraphDayAverage(0);
       this.calculateBinAverage(0);
       this.calendar.binList = this.binList;
-      // console.log(this.timeSeriesDayType);
       this.calendar.days = this.days;
       this.calendar.daysToNest = timeSeriesDayType;
       this.calendar.load();
     }
-    // console.log(this.columnMainArray);
   }
 
   loadDayTypeNavigation(reset) {
@@ -539,7 +598,6 @@ export class HolderDayTypeComponent implements OnInit {
   calculateBinAverage(channelId) {
     this.sumArray = this.graphCalculation.calculateBinAverage(channelId, this.binList, this.days,
       this.selectedColumnPointer, this.columnMainArray);
-    // console.log(this.sumArray);
     this.plotGraphBinAverage(0);
   }
 
@@ -549,6 +607,14 @@ export class HolderDayTypeComponent implements OnInit {
     if (this.graphDayAverage.data.length > 0) {
       this.calculatePlotStatsDay();
     }
+  }
+
+  plotGraphDayAverageInit() {
+    this.graphDayAverage = this.graphCreation.plotGraphDayAverageInit();
+  }
+
+  plotGraphBinAverageInit() {
+    this.graphBinAverage = this.graphCreation.plotGraphBinAverageInit();
   }
 
   plotGraphBinAverage(channelId) {
@@ -600,32 +666,34 @@ export class HolderDayTypeComponent implements OnInit {
   }
 
   saveSession() {
+    let valueColumnCount, timeSeries, dataFromFile;
     if (this.dayTypeMode) {
-      this.dbOperation.updateSession(this.loadDayTypeId, this.assessmentId, this.columnSelectorList[0].name, this.sesName,
-        this.loadDataFromFile, this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray,
+      dataFromFile = this.loadSessionData.loadDataFromFile;
+      timeSeries = this.loadSessionData.loadTimeSeriesDayType;
+      valueColumnCount = this.loadSessionData.loadValueColumnCount;
+    } else {
+      dataFromFile = this.loadDataFromFile;
+      timeSeries = this.loadTimeSeriesDayType;
+      valueColumnCount = this.loadValueColumnCount;
+    }
+    if (this.dayTypeMode) {
+      this.dbOperation.updateSession(this.loadDayTypeId, this.assessmentId, this.graphDayAverage.layout.title, this.sesName,
+        dataFromFile, timeSeries, valueColumnCount, this.columnMainArray, this.sumArray,
         this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
         this.graphBinAverage, this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,
-        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.dayTypeMode);
+        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, this.dayTypeMode, this.assessment);
     } else {
       if (this.sesName === '' || this.sesName === undefined) {
         alert('Invalid name. Please try again');
         return;
       }
-      this.dbOperation.saveSession(this.assessmentId, this.columnSelectorList[0].name, this.sesName, this.loadDataFromFile,
-        this.loadTimeSeriesDayType, this.loadValueColumnCount, this.columnMainArray, this.sumArray, this.binList,
-        this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage, this.graphBinAverage,
-        this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,
-        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true);
+      this.dbOperation.saveSession(this.loadDayTypeId, this.assessmentId, this.columnSelectorList[0].name, this.sesName,
+        dataFromFile, timeSeries, valueColumnCount, this.columnMainArray, this.sumArray,
+        this.binList, this.displayBinList, this.selectedBinList, this.days, this.selectedDates, this.graphDayAverage,
+        this.graphBinAverage, this.showBinMode, this.toggleRelayoutDay, this.annotationListDayAverage,
+        this.annotationListBinAverage, this.globalYAverageDay, this.globalYAverageBin, true, this.assessment);
       document.getElementById('save_btn').click();
     }
-  }
-
-  loadSession(id) {
-    this.indexFileStore.viewSelectedDayType(id).then(dayType => {
-      this.loadSessionData = dayType;
-      this.dayTypeMode = this.loadSessionData.dayTypeMode;
-      this.loadDayTypeNavigation(false);
-    });
   }
 
   hideSave() {

@@ -197,9 +197,24 @@
 
     <!-- help -->
     <div class="col panel tight-fit" style="height: 250px; max-width:100%;margin-right: 25px; margin-top:5px">
-      <p class="header"> Help panel </p>
-
-
+      <div>
+        <div class="row justify-content-between header">
+          <span class="col-1 panel-title" style="width:100%">Reports</span>
+          <div class="col-5"></div>
+          <button id="generate_report" class="btn-primary" style="alignment: center" [popover]="pop2">Generate Report
+          </button>
+        </div>
+        <div class="list-container" style="margin-top:0; max-height: 15vh;">
+          <div class="row test tight-fit justify-content-center" *ngFor="let file of dayTypeReportList"
+               style="border-bottom: 1px solid black; border-top: 1px solid black"
+               [ngStyle]="{'background' : file.selected ? 'blue': '',
+                           'color' : file.selected ? 'white': ''}">
+            <div class="tight-fit nonSelectable col-11" (click)="routeToDayType(file)">
+              <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -277,10 +292,8 @@
             <option value="bin">Bin Averages</option>
           </select>
         </div>
-        <button class="btn pull-right" (click)="exportDayAverageData()">Export</button>
       </div>
       <div [hidden]="!showBinMode">
-
         <plotly-plot [data]="graphDayAverage.data" [layout]="graphDayAverage.layout" [config]="graphDayAverage.config"
                      (click)="clickAnnotationDayAverage($event)" (relayout)="calculatePlotStatsDay()"></plotly-plot>
       </div>
@@ -295,25 +308,19 @@
   <!-- table panel-->
   <div class="row" style="margin-top:10px">
     <div class="col-sm-3 panel" style=" visibility: hidden; max-width:250px; min-height: 50px">Placeholder</div>
-
     <!-- table container-->
     <div id="table" class="col panel" style="min-height: 50px; margin-right:25px">
-
-      <!-- channel name -->
+        <button class="btn-primary" style="" (click)="exportDayAverageData()">Export</button>
       <div style="width: 96% ;  margin:5px auto 0px auto ;">
-
         <div style="min-width: 96%; margin:auto;">
           <p *ngIf="sumArray.length < 1;" class="tight-fit"
              style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">Channel Name</p>
         </div>
-
         <div *ngFor="let thing of sumArray" style="min-width: 96%; margin:auto;">
           <p *ngIf="thing.length > 0;" class="tight-fit"
              style="border: 1px solid black; text-align: center; min-width: 100%; margin:auto;">{{thing[0].channelName}}</p>
-
         </div>
       </div>
-
       <!-- table -->
       <div id="tablescroll" style="width: 96% ; overflow: auto; margin: 0 auto 10px auto; max-height: 125px"
            (mousedown)="$event.stopPropagation(); startDrag($event, 'tablescroll');"
@@ -355,6 +362,24 @@
     <div class="row justify-content-center">
       <button class="btn" style="width:190px; height:30px; font-size:14px; vertical-align: middle;"
               (click)="saveSession()">Confirm
+      </button>
+    </div>
+
+  </div>
+</ng-template>
+
+<ng-template #pop2 id="bob2">
+  <div style="width:200px; height:100px">
+    <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
+      <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="hideReport()">&times;</span>
+    </div>
+    <div class="row justify-content-center">
+      <input type="text" style="width:190px; text-align: center; height:20px; margin:auto 5px 5px 5px;"
+             [(ngModel)]="reportName" placeholder="Report Name">
+    </div>
+    <div class="row justify-content-center">
+      <button class="btn" style="width:190px; height:30px; font-size:14px; vertical-align: middle;"
+              (click)="generateReport()">Confirm
       </button>
     </div>
 
