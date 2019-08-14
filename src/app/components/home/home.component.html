@@ -6,193 +6,195 @@
     <div class="col-sm-3 panel" style="min-width: 225px; max-width: 15vw">
       <!-- title -->
 
-        <p class="panel-title header"> Graph Selection </p>
+      <p class="panel-title header"> Graph Selection </p>
 
 
-        <!--Radio Buttons--------------------------------------------------------------------------------->
-        <div class="row justify-content-center" style="margin:auto; border: 1px solid black;">
-          <div class="col-4" style="padding:0;">
+      <!--Radio Buttons--------------------------------------------------------------------------------->
+      <div class="row justify-content-center" style="margin:auto; border: 1px solid black;">
+        <div class="col-4" style="padding:0;">
           <!--  <div class="row justify-content-center">-->
-              <p class="tight-fit" style="margin:auto; text-align: center;"> Line </p>
-            <div class="row justify-content-center">
-              <label>
-                <input type="radio"  name="graph" value="line_graph" [(ngModel)]="graph" (change)="checkboxSelect($event)">
-              </label>
-            </div>
-          </div>
-
-          <!--        <div class="row justify-content-center">-->
-          <div class="col-4 " style="padding:0;">
-            <p class="tight-fit" style="margin:auto; text-align: center;"> Scatter </p>
-            <div class="row justify-content-center">
-              <label>
-                <input type="radio" name="graph" value="scatter_graph" [(ngModel)]="graph"
-                       (change)="checkboxSelect($event)">
-              </label>
-            </div>
-          </div>
-
-
-          <div class="col-4" style="padding:0;">
-            <p class="tight-fit" style="margin:auto; text-align: center;"> Histogram </p>
-            <div class="row justify-content-center">
+          <p class="tight-fit" style="margin:auto; text-align: center;"> Line </p>
+          <div class="row justify-content-center">
             <label>
-                <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
-                       (change)="checkboxSelect($event)">
-              </label>
-            </div>
-          </div>
-        </div>
-        <!------------------------------------------------------------------------------------------------>
-
-        <!-- Line graph-------------------------------->
-        <div style="padding-left:0;" *ngIf="graph === 'line_graph'">
-
-          <!-- Y select -->
-          <div class="row">
-            <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
-              <p class="tight-fit">Y:</p>
-            </div>
-
-            <div style="width: 70%; margin-right: 2.5%;">
-              <label style="margin-bottom: 0">
-                <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)">
-                  <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
-                </select>
-              </label>
-
-              <div class="list-box selectable" style="overflow-x: hidden">
-                <div class="row" *ngFor="let selector of ySelectorListLine let i= index"
-                     (click)="removeFromListLine($event)" style="margin:0">
-                  <p class="col-11 list">{{selector.name}}</p>
-                  <p id="{{i}}" class="col-1 align-self-end list"
-                     style="padding:0; margin:0; background-color: rgba(150,150,150,100); border: 1px solid black;">
-                    x</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- X select -->
-          <div class="row label-row">
-            <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
-              <p class="tight-fit" style="position:relative; ">Time Series:</p>
-            </div>
-            <div style="width: 70%; margin-right: 2.5%;">
-
-              <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
-                <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
-              </select>
-              <div class="list-box">
-                <p class="list" style="border:none;" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
-              </div>
-            </div>
+              <input type="radio" name="graph" value="line_graph" [(ngModel)]="graph" (change)="checkboxSelect($event)">
+            </label>
           </div>
         </div>
 
-        <!-- Scatter graph----------------------------->
-        <div style="padding-left:0;" *ngIf="graph === 'scatter_graph'">
-          <div class="row">
-            <div class="col-1">
-              <p class="tight-fit">Y:</p>
-            </div>
-            <div class="col-10">
-              <select name="ySpinner" [(ngModel)]="temp4" (click)="scatterSelector($event)">
-                <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
-              </select>
-              <div class="list-box">
-                <p class="list" *ngFor="let selector of ySelectorListScatter"
-                   title="ySelectorListScatter">{{selector.name}}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- X selection -->
-          <div class="row">
-            <div class="col-1">
-              <p class="tight-fit">X:</p>
-            </div>
-            <div class="col-10">
-              <select name="xSpinner" [(ngModel)]="temp3" (click)="scatterSelector($event)">
-                <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
-              </select>
-              <div class="list-box">
-                <p class="list" *ngFor="let selector of xSelectorListScatter"
-                   title="xSelectorListScatter">{{selector.name}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Histogram -------------------------------->
-        <div style="padding-left:0;" *ngIf="graph === 'histogram'">
+        <!--        <div class="row justify-content-center">-->
+        <div class="col-4 " style="padding:0;">
+          <p class="tight-fit" style="margin:auto; text-align: center;"> Scatter </p>
           <div class="row justify-content-center">
-            <p class=" panel-title header tight-fit">Histogram Type Selection</p>
-          </div>
-
-          <!-- bin type radio -->
-          <div class="row justify-content-center" style="margin: auto; border: 1px solid black">
-            <!-- stdev radio -->
-            <div class="col-6 ">
-              <div class="row justify-content-center">
-                <p class="tight-fit">Stdev</p>
-              </div>
-
-              <div class="row justify-content-center" style="max-height: 25px;">
-                <label> &nbsp;
-                  <input type="radio"  name="bin" value="stdev" style="transform: scale(1)"
-                          (change)="checkboxSelectHistogram($event)">
-                </label>
-              </div>
-
-            </div>
-
-            <!-- # radio -->
-            <div class="col-6 ">
-              <div class="row justify-content-center">
-                <p class="tight-fit">Number</p>
-              </div>
-              <div class="row justify-content-center" style="max-height: 25px;">
-                <label>
-                  <input type="radio" name="bin" value="numBins" style="transform: scale(1)"
-                         (change)="checkboxSelectHistogram($event)">
-                </label>
-              </div>
-            </div>
-          </div>
-          <!--histogram column selector-->
-          <div class="row" >
-            <div class="col-2"></div>
-            <div class="col-2">
-              <p class="tight-fit">Data:</p>
-            </div>
-            <div class="col">
-              <select name="histogramDataSelector" [(ngModel)]="temp1" (click)="columnSelectorEventHistogram($event)"
-                      style="max-width: 175px">
-                <option *ngFor="let column of dataListHistogram" value="{{column.identifier}}">{{column.name}}</option>
-              </select>
-              <div class="col-2"></div>
-            </div>
-          </div>
-
-          <div class="row justify-content-center">
-            <div class="list-box" style="width:80%;">
-                <p class="list" style="overflow: hidden" *ngFor="let selector of columnSelectorListHistogram">{{selector.name}}</p>
-            </div>
-          </div>
-          <div *ngIf="binType==1" class="row justify-content-center">
-            <input type="text" style="text-align: center" (change)="numberBin($event)" name="numBin" placeholder="Number of bins">
-          </div>
-
-          <div>
+            <label>
+              <input type="radio" name="graph" value="scatter_graph" [(ngModel)]="graph"
+                     (change)="checkboxSelect($event)">
+            </label>
           </div>
         </div>
-        <!--Button-------------------------------------------------------------------->
+
+
+        <div class="col-4" style="padding:0;">
+          <p class="tight-fit" style="margin:auto; text-align: center;"> Histogram </p>
+          <div class="row justify-content-center">
+            <label>
+              <input type="radio" checked="checked" name="graph" value="histogram" [(ngModel)]="graph"
+                     (change)="checkboxSelect($event)">
+            </label>
+          </div>
+        </div>
+      </div>
+      <!------------------------------------------------------------------------------------------------>
+
+      <!-- Line graph-------------------------------->
+      <div style="padding-left:0;" *ngIf="graph === 'line_graph'">
+
+        <!-- Y select -->
         <div class="row">
-          <button class="btn" type="submit" (click)="plotGraphNavigation()" style="margin:auto; z-index:10;">Show</button>
+          <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
+            <p class="tight-fit">Y:</p>
+          </div>
+
+          <div style="width: 70%; margin-right: 2.5%;">
+            <label style="margin-bottom: 0">
+              <select name="ySpinner" [(ngModel)]="temp1" (change)="ySelector($event)">
+                <option *ngFor="let column of lineListY" value="{{column.identifier}}">{{column.name}}</option>
+              </select>
+            </label>
+
+            <div class="list-box selectable" style="overflow-x: hidden">
+              <div class="row" *ngFor="let selector of ySelectorListLine let i= index"
+                   (click)="removeFromListLine($event)" style="margin:0">
+                <p class="col-11 list">{{selector.name}}</p>
+                <p id="{{i}}" class="col-1 align-self-end list"
+                   style="padding:0; margin:0; background-color: rgba(150,150,150,100); border: 1px solid black;">
+                  x</p>
+              </div>
+            </div>
+          </div>
+
         </div>
-     <!-- </form>-->
+
+        <!-- X select -->
+        <div class="row label-row">
+          <div style="min-width: 50px; width:20%; text-align: center; margin-left: 2.5%; margin-right: 2.5%;">
+            <p class="tight-fit" style="position:relative; ">Time Series:</p>
+          </div>
+          <div style="width: 70%; margin-right: 2.5%;">
+
+            <select name="timeSeriesLine" [(ngModel)]="temp2" (change)="timeSeriesLineY($event)">
+              <option *ngFor="let row of timeSeriesY" value="{{row.identifier}}">{{row.name}}</option>
+            </select>
+            <div class="list-box">
+              <p class="list" style="border:none;" *ngFor="let selector of timeSeriesSelectList">{{selector.name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scatter graph----------------------------->
+      <div style="padding-left:0;" *ngIf="graph === 'scatter_graph'">
+        <div class="row">
+          <div class="col-1">
+            <p class="tight-fit">Y:</p>
+          </div>
+          <div class="col-10">
+            <select name="ySpinner" [(ngModel)]="temp4" (click)="scatterSelector($event)">
+              <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
+            </select>
+            <div class="list-box">
+              <p class="list" *ngFor="let selector of ySelectorListScatter"
+                 title="ySelectorListScatter">{{selector.name}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- X selection -->
+        <div class="row">
+          <div class="col-1">
+            <p class="tight-fit">X:</p>
+          </div>
+          <div class="col-10">
+            <select name="xSpinner" [(ngModel)]="temp3" (click)="scatterSelector($event)">
+              <option *ngFor="let column of scatterList" value="{{column.identifier}}">{{column.name}}</option>
+            </select>
+            <div class="list-box">
+              <p class="list" *ngFor="let selector of xSelectorListScatter"
+                 title="xSelectorListScatter">{{selector.name}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Histogram -------------------------------->
+      <div style="padding-left:0;" *ngIf="graph === 'histogram'">
+        <div class="row justify-content-center">
+          <p class=" panel-title header tight-fit">Histogram Type Selection</p>
+        </div>
+
+        <!-- bin type radio -->
+        <div class="row justify-content-center" style="margin: auto; border: 1px solid black">
+          <!-- stdev radio -->
+          <div class="col-6 ">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Stdev</p>
+            </div>
+
+            <div class="row justify-content-center" style="max-height: 25px;">
+              <label> &nbsp;
+                <input type="radio" name="bin" value="stdev" style="transform: scale(1)"
+                       (change)="checkboxSelectHistogram($event)">
+              </label>
+            </div>
+
+          </div>
+
+          <!-- # radio -->
+          <div class="col-6 ">
+            <div class="row justify-content-center">
+              <p class="tight-fit">Number</p>
+            </div>
+            <div class="row justify-content-center" style="max-height: 25px;">
+              <label>
+                <input type="radio" name="bin" value="numBins" style="transform: scale(1)"
+                       (change)="checkboxSelectHistogram($event)">
+              </label>
+            </div>
+          </div>
+        </div>
+        <!--histogram column selector-->
+        <div class="row">
+          <div class="col-2"></div>
+          <div class="col-2">
+            <p class="tight-fit">Data:</p>
+          </div>
+          <div class="col">
+            <select name="histogramDataSelector" [(ngModel)]="temp1" (click)="columnSelectorEventHistogram($event)"
+                    style="max-width: 175px">
+              <option *ngFor="let column of dataListHistogram" value="{{column.identifier}}">{{column.name}}</option>
+            </select>
+            <div class="col-2"></div>
+          </div>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="list-box" style="width:80%;">
+            <p class="list" style="overflow: hidden"
+               *ngFor="let selector of columnSelectorListHistogram">{{selector.name}}</p>
+          </div>
+        </div>
+        <div *ngIf="binType==1" class="row justify-content-center">
+          <input type="text" style="text-align: center" (change)="numberBin($event)" name="numBin"
+                 placeholder="Number of bins">
+        </div>
+
+        <div>
+        </div>
+      </div>
+      <!--Button-------------------------------------------------------------------->
+      <div class="row">
+        <button class="btn" type="submit" (click)="plotGraphNavigation()" style="margin:auto; z-index:10;">Show</button>
+      </div>
+      <!-- </form>-->
     </div>
 
     <!-- Table formating -->
@@ -201,7 +203,7 @@
       <div>
         <!--Label and Import Button ------------------------------------------------------------------------------->
         <div class="row justify-content-between header" style="height:50%; min-height:20px;">
-          <span class="col-3 panel-title" style="width:100%">Reports</span>
+          <span class="col-3 panel-title" style="width:100%">Files</span>
           <div class="col-6"></div>
           <button class="btn-primary" style="alignment: center" (click)="plotGraph.saveGraph()">Save</button>
           <br>
@@ -220,10 +222,9 @@
                     }">
                 <!--tab.name.length * 12 + 10 + 'px' }">-->
                 <span id={{tab.tabId}} style="margin: 10px 5px;">{{tab.name}}</span>
-                <button (click)="removeFile($event, tab.id, tab.tabId)"
+                <!--<button (click)="removeFile($event, tab.id, tab.tabId)"
                         style="padding-top: 0; margin-top:0; float: right; font-size: 10px; ">x
-                </button>
-
+                </button>-->
               </div>
             </li>
           </ul>
@@ -241,28 +242,29 @@
         <div class="row justify-content-between header" style="height:50%; min-height:20px;">
           <span class="col-1 panel-title" style="width:100%">Reports</span>
           <div class="col-4"></div>
-          <button id="generate_report" class="btn-primary" style="alignment: center" [popover]="pop">Generate Report</button>
+          <button id="generate_report" class="btn-primary" style="alignment: center" [popover]="pop">Generate Report
+          </button>
           <br>
         </div>
-    </div>
-          <div class="list-container" style="margin-top:0; max-height: 15vh;">
-            <div class="row test tight-fit justify-content-center" *ngFor="let file of graphReportList"
-                 style="border-bottom: 1px solid black; border-top: 1px solid black"
-                 [ngStyle]="{'background' : file.selected ? 'blue': '',
+      </div>
+      <div class="list-container" style="margin-top:0; max-height: 15vh;">
+        <div class="row test tight-fit justify-content-center" *ngFor="let file of graphReportList"
+             style="border-bottom: 1px solid black; border-top: 1px solid black"
+             [ngStyle]="{'background' : file.selected ? 'blue': '',
                            'color' : file.selected ? 'white': ''}">
-              <div class="tight-fit nonSelectable col-11" (click)="routeToVisual(file)">
-                <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
-              </div>
-            </div>
+          <div class="tight-fit nonSelectable col-11" (click)="routeToVisual(file)">
+            <p class="tight-fit" style="text-align: center;">{{file.name}}</p>
           </div>
-  </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="row" style="margin-left: 7px">
-    <div class="col-11 panel">
-      <app-plot-graph style="max-height: 200px;"></app-plot-graph>
+    <div class="row" style="margin-left: 7px">
+      <div class="col-11 panel">
+        <app-plot-graph style="max-height: 200px;"></app-plot-graph>
+      </div>
     </div>
   </div>
-</div>
 </div>
 <ng-template #pop id="bob">
   <div style="width:200px; height:100px">

@@ -10,6 +10,60 @@ export class GraphCreationService {
   constructor(private data: DataService) {
   }
 
+  plotGraphDayAverageInit() {
+    const dayAverage = {
+      data: [],
+      layout: {
+        hovermode: 'closest',
+        autosize: true,
+        title: 'Average Day',
+        xaxis: {
+          autorange: true,
+        },
+        yaxis: {
+          autorange: true,
+          type: 'linear'
+        }
+      },
+      config: {
+        'showLink': false,
+        'scrollZoom': true,
+        'displayModeBar': true,
+        'editable': false,
+        'responsive': true,
+        'displaylogo': false
+      }
+    };
+    return dayAverage;
+  }
+
+  plotGraphBinAverageInit() {
+    const binAverage = {
+      data: [],
+      layout: {
+        hovermode: 'closest',
+        autosize: true,
+        title: 'Average Day',
+        xaxis: {
+          autorange: true,
+        },
+        yaxis: {
+          autorange: true,
+          type: 'linear'
+        }
+      },
+      config: {
+        'showLink': false,
+        'scrollZoom': true,
+        'displayModeBar': true,
+        'editable': false,
+        'responsive': true,
+        'displaylogo': false
+      }
+    };
+    return binAverage;
+  }
+
   plotGraphDayAverage(graphDayAverage, channelId, columnMainArray, days, displayBinList, annotationListDayAverage, toggleRelayoutDay) {
     let name = '';
     const plotDataDayAverages = [];
@@ -198,6 +252,7 @@ export class GraphCreationService {
     }
     return graphBinAverage;
   }
+
   calculatePlotStatsDay(graphDayAverage) {
     let globalXMinDay, globalXMaxDay, globalYMinDay, globalYMaxDay;
     let globalYAverageDay;
@@ -236,18 +291,20 @@ export class GraphCreationService {
       globalXMaxDay = graphDayAverage.layout.xaxis.range[1];
       globalYAverageDay = [];
       for (let dataLength = 0; dataLength < graphDayAverage.data.length; dataLength++) {
+        let averageDeno = 0;
         const len = graphDayAverage.data[dataLength].y.length;
         let sumAverage = 0;
         for (let i = 0; i < len; i++) {
           const y = graphDayAverage.data[dataLength].y[i];
           if (y >= globalYMinDay && y < globalYMaxDay && i >= globalXMinDay && i < globalXMaxDay) {
+            averageDeno++;
             sumAverage = sumAverage + y;
           }
         }
-        if (isNaN(sumAverage / len)) {
+        if (isNaN(sumAverage / averageDeno)) {
         } else {
           globalYAverageDay.push({
-            value: sumAverage / len,
+            value: sumAverage / averageDeno,
             name: graphDayAverage.data[dataLength].name,
             color: graphDayAverage.data[dataLength].line.color,
             stroke: graphDayAverage.data[dataLength].line.width
@@ -269,17 +326,19 @@ export class GraphCreationService {
       globalXMaxBin = graphBinAverage.layout.xaxis.range[1];
       globalYAverageBin = [];
       for (let dataLength = 0; dataLength < graphBinAverage.data.length; dataLength++) {
+        let averageDeno = 0;
         const len = graphBinAverage.data[dataLength].y.length;
         let sumAverage = 0;
         let y = 0;
         for (let i = 0; i < len; i++) {
           y = parseFloat(graphBinAverage.data[dataLength].y[i]);
           if (y >= globalYMinBin && y < globalYMaxBin && i >= globalXMinBin && i < globalXMaxBin) {
+            averageDeno++;
             sumAverage = sumAverage + y;
           }
         }
         globalYAverageBin.push({
-          value: sumAverage / len,
+          value: sumAverage / averageDeno,
           name: graphBinAverage.data[dataLength].name,
           color: graphBinAverage.data[dataLength].line.color,
           stroke: 1
@@ -288,58 +347,59 @@ export class GraphCreationService {
     }
     return globalYAverageBin;
   }
+
   clickAnnotationDayAverage(data, annotationListDayAverage, graphDayAverage) {
-      annotationListDayAverage = graphDayAverage.layout.annotations || [];
-      for (let i = 0; i < data.points.length; i++) {
-        const annotationText = data.points[i].data.name + ', '
-          + graphDayAverage.layout.title + ' = ' + data.points[i].y.toPrecision(4);
-        const annotation = {
-          text: annotationText,
-          x: data.points[i].x,
-          y: parseFloat(data.points[i].y.toPrecision(4)),
-          font: {
-            color: 'black',
-            size: 12,
-            family: 'Courier New, monospace',
-          },
-        };
-        if (annotationListDayAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
-          annotationListDayAverage.splice(annotationListDayAverage
-            .indexOf(annotationListDayAverage
-              .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
-        } else {
-          annotationListDayAverage.push(annotation);
-        }
+    annotationListDayAverage = graphDayAverage.layout.annotations || [];
+    for (let i = 0; i < data.points.length; i++) {
+      const annotationText = data.points[i].data.name + ', '
+        + graphDayAverage.layout.title + ' = ' + data.points[i].y.toPrecision(4);
+      const annotation = {
+        text: annotationText,
+        x: data.points[i].x,
+        y: parseFloat(data.points[i].y.toPrecision(4)),
+        font: {
+          color: 'black',
+          size: 12,
+          family: 'Courier New, monospace',
+        },
+      };
+      if (annotationListDayAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+        annotationListDayAverage.splice(annotationListDayAverage
+          .indexOf(annotationListDayAverage
+            .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+      } else {
+        annotationListDayAverage.push(annotation);
       }
+    }
     return annotationListDayAverage;
   }
 
   clickAnnotationBinAverage(data, annotationListBinAverage, graphBinAverage) {
-      annotationListBinAverage = graphBinAverage.layout.annotations || [];
-      for (let i = 0; i < data.points.length; i++) {
-        const annotationText = 'x = ' + data.points[i].x + ' y = ' + data.points[i].y.toPrecision(4);
-        const annotation = {
-          text: annotationText,
-          x: data.points[i].x,
-          y: parseFloat(data.points[i].y.toPrecision(4)),
-          font: {
-            color: 'blue',
-            size: 20,
-            family: 'Courier New, monospace',
-          },
-          bordercolor: data.points[i].fullData.line.color,
-          borderwidth: 3,
-          borderpad: 4,
-        };
-        if (annotationListBinAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
-          annotationListBinAverage.splice(annotationListBinAverage
-            .indexOf(annotationListBinAverage
-              .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
-        } else {
-          annotationListBinAverage.push(annotation);
-        }
-
+    annotationListBinAverage = graphBinAverage.layout.annotations || [];
+    for (let i = 0; i < data.points.length; i++) {
+      const annotationText = 'x = ' + data.points[i].x + ' y = ' + data.points[i].y.toPrecision(4);
+      const annotation = {
+        text: annotationText,
+        x: data.points[i].x,
+        y: parseFloat(data.points[i].y.toPrecision(4)),
+        font: {
+          color: 'blue',
+          size: 20,
+          family: 'Courier New, monospace',
+        },
+        bordercolor: data.points[i].fullData.line.color,
+        borderwidth: 3,
+        borderpad: 4,
+      };
+      if (annotationListBinAverage.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+        annotationListBinAverage.splice(annotationListBinAverage
+          .indexOf(annotationListBinAverage
+            .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+      } else {
+        annotationListBinAverage.push(annotation);
       }
+
+    }
     return annotationListBinAverage;
   }
 }

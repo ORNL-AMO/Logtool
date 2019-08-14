@@ -108,6 +108,10 @@ export class FileManagementComponent implements OnInit {
       const today = new Date();
       this.activeName = 'Assessment- ' + today.getMonth() + '/' + today.getDate() + '/' + today.getFullYear();
       this.activeID = null;
+
+      // clear Report List
+      this.graphReportList = [];
+      this.dayTypeReportList = [];
     });
   }
 
@@ -379,6 +383,20 @@ export class FileManagementComponent implements OnInit {
       this.router.navigate(['visualize']).then(() => {
         this.toolHeader = new ToolHeaderComponent(this.router, this.routeIndicator);
         this.toolHeader.colorChangeMethod('visualize');
+      });
+    });
+  }
+
+  routeToDayType(file: any) {
+    const params = {
+      value: 'load_report',
+      dayType: file.value
+    };
+    this.routeIndicator.storage = params;
+    this.router.navigateByUrl('holder-day-type', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['holder-day-type']).then(() => {
+        this.toolHeader = new ToolHeaderComponent(this.router, this.routeIndicator);
+        this.toolHeader.colorChangeMethod('day_type');
       });
     });
   }
