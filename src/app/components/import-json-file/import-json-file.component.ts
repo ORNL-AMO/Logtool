@@ -11,7 +11,7 @@ import {DayType} from '../../types/day-type';
 })
 export class ImportJsonFileComponent implements OnInit {
 
-  constructor(private modalService: BsModalService, private bsModalRef: BsModalRef, private exportCSV: ExportCSVService) {
+  constructor(private modalService: BsModalService, public bsModalRef: BsModalRef, private exportCSV: ExportCSVService) {
   }
 
   ngOnInit() {

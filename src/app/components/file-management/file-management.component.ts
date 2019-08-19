@@ -23,24 +23,24 @@ import {ToolHeaderComponent} from '../tool-header/tool-header.component';
   styleUrls: ['./file-management.component.scss']
 })
 export class FileManagementComponent implements OnInit {
-  private assessmentList: any;
-  private selected: any;
-  private tableTabs = [];
-  private tableActive;
-  private newAssessment = false;
+  assessmentList: any;
+  selected: any;
+  tableTabs = [];
+  tableActive;
+  newAssessment = false;
 
 
-  private assessmentActive: boolean;
-  private metaHidden = false;
-  private dataHidden = false;
-  private reportsHidden = false;
-  private activeMetaData: FileMetaData;
-  private FileRef: BsModalRef;
-  private confirmRef: BsModalRef;
-  private activeName;
-  private activeID;
-  private graphReportList = [];
-  private dayTypeReportList = [];
+  assessmentActive: boolean;
+  metaHidden = false;
+  dataHidden = false;
+  reportsHidden = false;
+  activeMetaData: FileMetaData;
+  FileRef: BsModalRef;
+  confirmRef: BsModalRef;
+  activeID;
+  activeName;
+  graphReportList = [];
+  dayTypeReportList = [];
 
   @ViewChild(ToolHeaderComponent) toolHeader: ToolHeaderComponent;
 

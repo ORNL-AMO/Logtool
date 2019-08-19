@@ -19,16 +19,16 @@ export class FileImportComponent implements OnInit {
 
   public returnList: Subject<any>;
   public test: { type: string, path: string };
-  private fileType: any;
-  private inputFile: any;
-  private dataFromDialogCSV: any;
-  private csvList: any[];
+  fileType: any;
+  inputFile: any;
+  dataFromDialogCSV: any;
+  csvList: any[];
   ImportRef: BsModalRef;
-  private selected: any[];
-  private originalSet;
+  selected: any[];
+  originalSet;
 
   constructor(private modalService: BsModalService, private indexDatabaseStoreService: IndexDataBaseStoreService,
-              private selfModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService) {
+              public selfModalRef: BsModalRef) {
   }
 
   fileName: any;
@@ -69,7 +69,7 @@ export class FileImportComponent implements OnInit {
   }
 
   clickSelect(file) {
-    let index = this.selected.findIndex(obj => obj.id === file.id);
+    const index = this.selected.findIndex(obj => obj.id === file.id);
     if ( index >= 0) {
       console.log('removing', file, index);
 
