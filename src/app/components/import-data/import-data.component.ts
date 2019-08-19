@@ -49,7 +49,7 @@ export class ImportDataComponent implements OnInit {
   number;
 
   headerFind: any;
-  private manualSample: any[];
+  manualSample: any[];
 
   public tableItem: Subject<any>;
   id: Subject<number>;
@@ -58,7 +58,7 @@ export class ImportDataComponent implements OnInit {
   type;
 
   constructor(private modalService: BsModalService, private indexFileStore: IndexDataBaseStoreService,
-              private bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
+              public bsModalRef: BsModalRef, private data: DataService, private routerData: RouteDataTransferService,
               private exportCSV: ExportCSVService) {
   }
 
