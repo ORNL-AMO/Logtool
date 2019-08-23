@@ -7,6 +7,9 @@ import * as XLSX from 'xlsx';
 import * as stats from 'stats-lite';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {Graph} from '../../types/graph';
+import {ConfirmationModalComponent} from '../confirmation-modal/confirmation-modal.component';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap';
+import {GraphTextAnnotationComponent} from '../graph-text-annotation/graph-text-annotation.component';
 
 
 @Component({
@@ -35,12 +38,14 @@ export class PlotGraphComponent implements OnInit {
   globalXMax;
   globalXAverage = [];
   type;
+  bsModalRef: BsModalRef;
 
   constructor(private data: DataService, private csvexport: ExportCSVService, private routeDataTransfer: RouteDataTransferService,
-              private indexFileStore: IndexDataBaseStoreService) {
+              private indexFileStore: IndexDataBaseStoreService, private modalService: BsModalService) {
   }
 
   public stats: GraphStats;
+  graphText: any;
 
   ngOnInit() {
     if (this.routeDataTransfer.storage === undefined) {
@@ -376,9 +381,82 @@ export class PlotGraphComponent implements OnInit {
     }
   }
 
+  graphTextAnnotation(message, data) {
+    const initialState = {message: message};
+    this.bsModalRef = this.modalService.show(GraphTextAnnotationComponent, {initialState});
+    this.bsModalRef.content.onClose.subscribe(result => {
+      if (result !== undefined || result !== '') {
+        console.log(result);
+        for (let i = 0; i < data.points.length; i++) {
+          if (data.points[i].data.type === 'scattergl') {
+            if (this.graph.data[0].type === 'scattergl') {
+              this.annotationListScatter = this.graph.layout.annotations;
+            } else {
+              this.annotationListScatter = [];
+            }
+            const annotation = {
+              text: result,
+              x: data.points[i].x,
+              y: parseFloat(data.points[i].y.toPrecision(4)),
+              font: {
+                color: 'black',
+                size: 12,
+                family: 'Courier New, monospace',
+              },
+            };
+            if (this.annotationListScatter.length > 0) {
+              if (this.annotationListScatter.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+                this.annotationListScatter.splice(this.annotationListScatter
+                  .indexOf(this.annotationListScatter
+                    .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+              } else {
+                this.annotationListScatter.push(annotation);
+              }
+            } else {
+              this.annotationListScatter.push(annotation);
+            }
+            this.displayGraph('scatter_graph');
+          } else if (data.points[i].data.type === 'linegl') {
+            if (this.graph.data[0].type === 'linegl') {
+              this.annotationListLine = this.graph.layout.annotations;
+            } else {
+              this.annotationListLine = [];
+            }
+            const annotation = {
+              text: result,
+              x: data.points[i].x,
+              y: parseFloat(data.points[i].y.toPrecision(4)),
+              font: {
+                color: 'black',
+                size: 12,
+                family: 'Courier New, monospace',
+              },
+            };
+            if (this.annotationListLine.length > 0) {
+              if (this.annotationListLine.find(obj => obj.x === annotation.x && obj.y === annotation.y)) {
+                this.annotationListLine.splice(this.annotationListLine
+                  .indexOf(this.annotationListLine
+                    .find(obj => obj.x === annotation.x && obj.y === annotation.y)), 1);
+              } else {
+                this.annotationListLine.push(annotation);
+              }
+            } else {
+              this.annotationListLine.push(annotation);
+            }
+            this.displayGraph('line_graph');
+          }
+        }
+      } else {
+        return;
+      }
+    });
+  }
+
   clickAnnotation(data) {
     if (data.points === undefined) {
 
+    } else if (data.event.ctrlKey) {
+      this.graphTextAnnotation('', data);
     } else {
       for (let i = 0; i < data.points.length; i++) {
         if (data.points[i].data.type === 'scattergl') {
