@@ -39,6 +39,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { ImportJsonFileComponent } from './components/import-json-file/import-json-file.component';
 import { FileManagementComponent } from './components/file-management/file-management.component';
 import { FileImportComponent } from './components/file-import/file-import.component';
+import { GraphTextAnnotationComponent } from './components/graph-text-annotation/graph-text-annotation.component';
 
 
 
@@ -65,10 +66,11 @@ PlotlyModule.plotlyjs = PlotlyJS;
     CalendarComponent,
     ImportJsonFileComponent,
     FileManagementComponent,
-    FileImportComponent
+    FileImportComponent,
+    GraphTextAnnotationComponent
 
   ],
-  entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent, FileImportComponent],
+  entryComponents: [ImportDataComponent, ConfirmationModalComponent, ImportJsonFileComponent, FileImportComponent, GraphTextAnnotationComponent],
   imports: [
     BrowserModule,
     FormsModule,
