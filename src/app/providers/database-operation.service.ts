@@ -49,11 +49,8 @@ export class DatabaseOperationService {
       loadGlobalYAverageBin: globalYAverageBin,
       dayTypeMode: dayTypeMode
     };
-    this.indexFileStore.insertIntoDayTypeStore(saveSessionData).then(() => {
-      assessment.dayType = saveSessionData;
-      this.indexFileStore.updateDayTypeAssessmentStore(assessment).then(() => {
-        return;
-      });
+    this.indexFileStore.insertIntoDayTypeStore(saveSessionData, assessment).then(() => {
+      alert('Day Type Saved');
     });
   }
 
@@ -93,7 +90,7 @@ export class DatabaseOperationService {
     };
     console.log(saveSessionData);
     this.indexFileStore.updateDayTypeStore(saveSessionData, assessment).then(() => {
-       alert('Report Updated');
+       alert('Day Type Updated');
     });
   }
 

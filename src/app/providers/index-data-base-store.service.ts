@@ -667,7 +667,7 @@ export class IndexDataBaseStoreService {
     }
 
 
-    insertIntoDayTypeStore(dayType: DayType) {
+    insertIntoDayTypeStore(dayType: DayType, assessment: Assessment) {
         return new Promise(resolve => {
             const db = new NgxIndexedDB('LOGGER', 1);
             db.openDatabase(1, evt => {
@@ -698,7 +698,9 @@ export class IndexDataBaseStoreService {
                         loadGlobalYAverageBin: dayType.loadGlobalYAverageBin,
                         dayTypeMode: dayType.dayTypeMode
                     }).then(() => {
-                        resolve();
+                        assessment.dayType = dayType;
+                        this.updateDayTypeAssessmentStore(assessment).then(() => {
+                        });
                     },
                     error => {
                         alert('File already Imported');
@@ -805,12 +807,6 @@ export class IndexDataBaseStoreService {
                         });
                     },
                     error => {
-                        this.insertIntoDayTypeStore(dayType).then(() => {
-                            assessment.dayType = dayType;
-                            this.updateDayTypeAssessmentStore(assessment).then(() => {
-                                resolve();
-                            });
-                        });
                     });
             }, error => {
                 console.log(error);

@@ -278,7 +278,7 @@
         </div>
         <div class="col-4 tight-fit">
           <div class="row justify-content-center tight-fit">
-            <button id="save_btn" class="btn" style="width: 100%">Save</button>
+            <button id="save_btn" class="btn" style="width: 100%" [popover]="pop" >Save</button>
           </div>
         </div>
       </div>
@@ -350,7 +350,7 @@
   </div>
 </div>
 
-<!--<ng-template #pop id="bob">
+<ng-template #pop id="bob">
   <div style="width:200px; height:100px">
     <div class="row justify-content-end" style="height: 10px; margin-bottom: 10px;">
       <span class="close pull-right" style="padding: 0;" aria-hidden="true" (click)="hideSave()">&times;</span>
@@ -365,7 +365,7 @@
       </button>
     </div>
   </div>
-</ng-template>-->
+</ng-template>
 
 <ng-template #pop2 id="bob2">
   <div style="width:200px; height:100px">

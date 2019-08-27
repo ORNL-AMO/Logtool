@@ -12,13 +12,10 @@ import {ExportCSVService} from '../../providers/export-csv.service';
 import {CalendarComponent} from '../calendar/calendar.component';
 import {IndexDataBaseStoreService} from '../../providers/index-data-base-store.service';
 import {DatabaseOperationService} from '../../providers/database-operation.service';
-import {error} from 'util';
 import {DayType} from '../../types/day-type';
 import {RouteIndicatorService} from '../../providers/route-indicator.service';
 import {RouteDataTransferService} from '../../providers/route-data-transfer.service';
 import {Assessment} from '../../types/assessment';
-import {ToolHeaderComponent} from '../tool-header/tool-header.component';
-import {CommonService} from '../../providers/common.service';
 
 
 @Component({
@@ -32,12 +29,7 @@ export class HolderDayTypeComponent implements OnInit {
                 private graphCreation: GraphCreationService, private indexFileStore: IndexDataBaseStoreService,
                 private modalService: BsModalService, private exportCsv: ExportCSVService,
                 private dbOperation: DatabaseOperationService, private routeIndicator: RouteIndicatorService,
-                private routeDataTransfer: RouteDataTransferService, private commonService: CommonService) {
-        this.commonService.invokeEvent.subscribe(value => {
-            if (value === 'dayType') {
-                this.saveSession();
-            }
-        });
+                private routeDataTransfer: RouteDataTransferService) {
     }
 
     @ViewChild(CalendarComponent)
