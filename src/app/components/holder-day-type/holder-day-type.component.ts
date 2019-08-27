@@ -663,6 +663,14 @@ export class HolderDayTypeComponent implements OnInit {
         }
     }
 
+    exportBinAverageData() {
+        if (this.graphBinAverage.data.length < 1) {
+            alert('Please import Data first');
+        } else {
+            this.exportCsv.exportBinAverageData(this.graphBinAverage);
+        }
+    }
+
     saveSession() {
         let valueColumnCount, timeSeries, dataFromFile;
         if (this.dayTypeMode) {
