@@ -23,7 +23,6 @@ export class DayTypeBinComponent implements OnInit {
   @Output() addTypeOutput = new EventEmitter<any>();
   @Output() removeTypeOutput = new EventEmitter<string>();
   show: boolean;
-  fontColor: string;
 
   constructor() {}
 

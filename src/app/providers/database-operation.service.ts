@@ -91,8 +91,9 @@ export class DatabaseOperationService {
       loadGlobalYAverageBin: globalYAverageBin,
       dayTypeMode: dayTypeMode
     };
+    console.log(saveSessionData);
     this.indexFileStore.updateDayTypeStore(saveSessionData, assessment).then(() => {
-      alert('Report Updated');
+       alert('Report Updated');
     });
   }
 
