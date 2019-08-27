@@ -180,7 +180,7 @@
             </div>
 
             <div *ngIf="!newAssessment" class="row justify-content-center">
-              <button class="btn">Update</button>
+              <button *ngIf="!newAssessment" class="btn" (click)="updateAssessment()">Update</button>
             </div>
           </div>
         </div>
